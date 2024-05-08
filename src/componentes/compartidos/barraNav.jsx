@@ -35,7 +35,7 @@ const BarraNav = () => {
               <Link className="button is-light" to="/login">
                 Login
               </Link>
-              <Link className="button is-primary" to="#">
+              <Link className="button is-primary" to="/registro">
                 Registro
               </Link>
             </div>
