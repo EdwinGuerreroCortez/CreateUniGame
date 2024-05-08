@@ -10,7 +10,7 @@ const App = () => {
     <Router>
         <Routes>
         <Route path="/" element={< LayoutConEncab ><PaginaPrincipal /></ LayoutConEncab >} />
-          {/* Otra ruta del mismisimo GERAGOD */}
+          {/* Otra ruta del mismisimo GERAGOD GUAPO */}
         </Routes>
     </Router>
   );
