@@ -11,9 +11,9 @@ const BarraNav = () => {
   return (
     <nav className="navbar has-background-black has-text-white" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">
-        <a className="navbar-item" href="#">
+        <Link className="navbar-item" to="/">
           <strong>My App</strong>
-        </a>
+        </Link>
 
         <a role="button" className="navbar-burger burger" aria-label="menu" aria-expanded={isActive} data-target="navbarBasicExample" onClick={toggleBurgerMenu}>
           <span aria-hidden="true"></span>
@@ -24,7 +24,7 @@ const BarraNav = () => {
 
       <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
         <div className="navbar-start">
-          <a className="navbar-item" href="#">
+          <Link className="navbar-item" to="/">
             Inicio
           </Link>
         </div>
@@ -32,10 +32,10 @@ const BarraNav = () => {
         <div className="navbar-end">
           <div className="navbar-item">
             <div className="buttons">
-              <a className="button is-light" href="#">
+              <Link className="button is-light" to="/login_registro">
                 Login
               </Link>
-              <Link className="button is-primary" to="/login_registro">
+              <Link className="button is-primary" to="#">
                 Registro
               </Link>
             </div>
