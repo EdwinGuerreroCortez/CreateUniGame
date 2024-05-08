@@ -45,5 +45,5 @@ const BarraNav = () => {
     </nav>
   );
 }
-
+//,sndksndjn
 export default BarraNav;
