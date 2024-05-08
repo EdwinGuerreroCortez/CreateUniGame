@@ -18,7 +18,7 @@ const barraNav= () => {
       <div id="navbarBasicExample" className="navbar-menu">
         <div className="navbar-start">
           <a className="navbar-item" href="/paginaPrincipal">
-            Inicio
+            Inicio 
           </a>
         </div>
 
