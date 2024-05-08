@@ -11,6 +11,9 @@ const App = () => {
     <Router>
         <Routes>
         <Route path="/" element={< LayoutConEncab ><PaginaPrincipal /></ LayoutConEncab >} />
+        <Route path="/login_registro" element={< LayoutConEncab ><Formlogin /></ LayoutConEncab >} />
+        <Route path="/paginaPrincipal" element={< LayoutConEncab ><PaginaPrincipal /></ LayoutConEncab >} />
+          {/* Otra ruta del mismisimo GERAGOD GUAPO Y FAMULARDO NOOOOOO hay7 eedcoito? hay coito?*/}
         </Routes>
     </Router>
   );
