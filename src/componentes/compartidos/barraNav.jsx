@@ -25,7 +25,7 @@ const barraNav= () => {
         <div className="navbar-end">
           <div className="navbar-item">
             <div className="buttons">
-              <a className="button is-light" href="#">
+              <a className="button is-light" href="/login_registro">
                 Login
               </a>
               <a className="button is-primary" href="#">
