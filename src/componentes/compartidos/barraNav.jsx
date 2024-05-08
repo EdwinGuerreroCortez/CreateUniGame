@@ -5,7 +5,7 @@ const barraNav= () => {
     <nav className="navbar has-background-black has-text-white" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">
         <a className="navbar-item" href="#">
-          <strong>My App</strong>
+          <strong>UNIGAME</strong>
         </a>
 
         <a role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
@@ -17,7 +17,7 @@ const barraNav= () => {
 
       <div id="navbarBasicExample" className="navbar-menu">
         <div className="navbar-start">
-          <a className="navbar-item" href="#">
+          <a className="navbar-item" href="/paginaPrincipal">
             Inicio
           </a>
         </div>
