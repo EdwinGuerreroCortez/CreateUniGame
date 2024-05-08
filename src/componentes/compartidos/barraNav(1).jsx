@@ -1,5 +1,5 @@
 import React from 'react';
-//ndnndm
+//ndnndmaaaaaaa
 const barraNav= () => {
   return (
     <nav className="navbar has-background-black has-text-white" role="navigation" aria-label="main navigation">
