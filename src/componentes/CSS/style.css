@@ -1,0 +1,13 @@
+/* styles.css */
+
+#imagenGrande {
+    width: 500px; /* Ancho deseado */
+    height: 600px; /* Alto deseado */
+    padding: 40px;
+  }
+  
+  .tarjeta-larga {
+    width: 600px;
+    
+  }
+  
