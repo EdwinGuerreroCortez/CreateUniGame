@@ -32,7 +32,7 @@ const BarraNav = () => {
         <div className="navbar-end">
           <div className="navbar-item">
             <div className="buttons">
-              <Link className="button is-light" to="/login_registro">
+              <Link className="button is-light" to="/login">
                 Login
               </Link>
               <Link className="button is-primary" to="#">

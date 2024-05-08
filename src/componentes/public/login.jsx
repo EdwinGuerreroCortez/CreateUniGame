@@ -3,10 +3,10 @@ import 'bulma/css/bulma.min.css'; // Importar Bulma CSS
 
 const FormRegistro = () => {
   return (
-    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '0 auto', padding: '20px' }}>
+    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', }}>
       <div className="card-content">
         <h2 className="title has-text-centered">Iniciar Sesión</h2>
-        <p className="has-text-centered" style={{ marginBottom: '20px' }}>Ingresa tus datos para acceder a tu cuenta.</p>  {/* Instrucciones agregadas */}
+        <p className="has-text-centered" style={{ marginBottom: '20px' }}>Ingresa tus datos para acceder a tu cuenta.</p>
         <form>
           <div className="field">
             <label className="label has-text-white">Email</label>
