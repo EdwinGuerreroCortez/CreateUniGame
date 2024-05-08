@@ -5,12 +5,12 @@ import barraNav from './componentes/compartidos/barraNav';
 import LayoutConEncab from './componentes/compartidos/LayoutConEncabezado';
 import PaginaPrincipal from './componentes/compartidos/paginaPrincipal';
 
+
 const App = () => {
   return (
     <Router>
         <Routes>
         <Route path="/" element={< LayoutConEncab ><PaginaPrincipal /></ LayoutConEncab >} />
-          {/* Otra ruta del mismisimo GERAGOD GUAPO Y FAMULARDO NOOOOOO hay7 eedcoito? hay coito?*/}
         </Routes>
     </Router>
   );

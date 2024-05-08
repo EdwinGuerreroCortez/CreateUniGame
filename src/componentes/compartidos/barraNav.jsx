@@ -1,36 +1,43 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
-const barraNav= () => {
+const BarraNav = () => {
+  const [isActive, setIsActive] = useState(false);
+
+  const toggleBurgerMenu = () => {
+    setIsActive(!isActive);
+  };
+
   return (
     <nav className="navbar has-background-black has-text-white" role="navigation" aria-label="main navigation">
       <div className="navbar-brand">
-        <a className="navbar-item" href="#">
+        <Link className="navbar-item" to="/">
           <strong>My App</strong>
-        </a>
+        </Link>
 
-        <a role="button" className="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+        <a role="button" className="navbar-burger burger" aria-label="menu" aria-expanded={isActive} data-target="navbarBasicExample" onClick={toggleBurgerMenu}>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div id="navbarBasicExample" className="navbar-menu">
+      <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
         <div className="navbar-start">
-          <a className="navbar-item" href="#">
+          <Link className="navbar-item" to="/">
             Inicio
-          </a>
+          </Link>
         </div>
 
         <div className="navbar-end">
           <div className="navbar-item">
             <div className="buttons">
-              <a className="button is-light" href="#">
+              <Link className="button is-light" to="/login">
                 Login
-              </a>
-              <a className="button is-primary" href="#">
+              </Link>
+              <Link className="button is-primary" to="/login_registro">
                 Registro
-              </a>
+              </Link>
             </div>
           </div>
         </div>
@@ -39,4 +46,4 @@ const barraNav= () => {
   );
 }
 
-export default barraNav;
+export default BarraNav;
