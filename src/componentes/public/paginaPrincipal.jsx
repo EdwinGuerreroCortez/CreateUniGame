@@ -1,14 +1,31 @@
 import React from 'react';
-import imagen from '../img/unity.gif';
-import '../CSS/style.css'; // Importa el archivo CSS aquí
+import Slider from 'react-slick';
+import juego1 from '../img/Unity.jpg';
+import juego2 from '../img/juego2.png';
+import juego3 from '../img/juego2d.jpg';
+import juego4 from '../img/juego4.jpg';
+import juego5 from '../img/juego5.jpg';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import '../CSS/style.css'; // Importa el archivo CSS de Bulma aquí
 
 const PaginaPrincipal = () => {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000 // Cambia la velocidad de cambio a 2 segundos
+  };
+
   return (
     <section className="section">
       <div className="container">
         <div className="columns is-centered">
           <div className="column is-half">
-            <div className="card tarjeta-larga"> {/* Agrega la clase tarjeta-larga */}
+            <div className="card tarjeta-larga">
               <div className="card-content">
                 <h1 className="title has-text-centered">Bienvenido a nuestra plataforma de tutoriales</h1>
                 <p className="subtitle has-text-centered">
@@ -29,9 +46,23 @@ const PaginaPrincipal = () => {
             </div>
           </div>
           <div className="column is-one-third">
-            <div className="image" id="imagenGrande"> {/* Aplica el ID aquí */}
-              <img src={imagen} alt="Descripción de la imagen" />
-            </div>
+            <Slider {...settings}>
+              <div>
+                <img src={juego1} alt="Slide 1" />
+              </div>
+              <div>
+                <img src={juego2} alt="Slide 2" />
+              </div>
+              <div>
+                <img src={juego3} alt="Slide 3" />
+              </div>
+              <div>
+                <img src={juego4} alt="Slide 4" />
+              </div>
+              <div>
+                <img src={juego5} alt="Slide 5" />
+              </div>
+            </Slider>
           </div>
         </div>
       </div>
