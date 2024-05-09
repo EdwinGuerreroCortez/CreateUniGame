@@ -1,6 +1,5 @@
 import React from 'react';
 import Slider from 'react-slick';
-import juego1 from '../img/Unity.jpg';
 import juego2 from '../img/juego2.png';
 import juego3 from '../img/juego2d.jpg';
 import juego4 from '../img/juego4.jpg';
@@ -47,9 +46,6 @@ const PaginaPrincipal = () => {
           </div>
           <div className="column is-one-third">
             <Slider {...settings}>
-              <div>
-                <img src={juego1} alt="Slide 1" />
-              </div>
               <div>
                 <img src={juego2} alt="Slide 2" />
               </div>

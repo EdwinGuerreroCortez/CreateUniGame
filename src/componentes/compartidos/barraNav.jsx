@@ -24,7 +24,7 @@ const BarraNav = () => {
 
       <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
         <div className="navbar-start">
-          <a className="navbar-item" href="/paginaPrincipal">
+          <a className="navbar-item" href="/">
             Inicio
           </a>
         </div>
@@ -36,10 +36,10 @@ const BarraNav = () => {
                 Login
               </Link>
               <Link className="button is-primary" to="/registro">
-                Registro
+                Registra
               </Link>
             </div>
-          </div>w
+          </div>
         </div>
       </div>
     </nav>
