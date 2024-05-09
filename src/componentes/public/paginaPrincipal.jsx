@@ -1,7 +1,6 @@
 
 import React from 'react';
 import Slider from 'react-slick';
-import juego1 from '../img/Unity.jpg';
 import juego2 from '../img/juego2.png';
 import juego3 from '../img/juego2d.jpg';
 import juego4 from '../img/juego4.jpg';
@@ -18,15 +17,18 @@ const PaginaPrincipal = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000 // Cambia la velocidad de cambio a 2 segundos
+    autoplaySpeed: 2500, // Cambia la velocidad de cambio a 2 segundos
+    customPaging: function(i) {
+      return <div className="dot"></div>; // Personaliza el estilo de los puntos de navegación
+    }
   };
-
+  
   return (
-    <section className="section has-background-black-bis"> {/* Fondo #14161A */}
+    <section className="section has-background-black-bis">
       <div className="container">
         <div className="columns is-centered">
           <div className="column is-half">
-            <div className="card tarjeta-larga has-background-black has-border-white has-shadow" style={{boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)'}}> {/* Fondo negro, borde blanco y sombra */}
+            <div className="card tarjeta-larga has-background-black has-border-white has-shadow" style={{ boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
               <div className="card-content">
                 <h1 className="title has-text-centered has-text-white">Bienvenido a nuestra plataforma de tutoriales</h1>
                 <p className="subtitle has-text-centered has-text-white">
@@ -47,22 +49,19 @@ const PaginaPrincipal = () => {
             </div>
           </div>
           <div className="column is-one-third">
-            <div className="slider-container">
+            <div className="slider-container" style={{width: '150%', margin: 'auto' }}> {/* Ajusta el ancho del contenedor del carrusel */}
               <Slider {...settings}>
                 <div className="slider-slide">
-                  <img src={juego1} alt="Slide 1" />
+                  <img src={juego2} alt="Slide 2" style={{ width: '100%', maxHeight: '500px', objectFit: 'cover' }} />
                 </div>
                 <div className="slider-slide">
-                  <img src={juego2} alt="Slide 2" />
+                  <img src={juego3} alt="Slide 3" style={{ width: '100%', maxHeight: '500px', objectFit: 'cover' }} />
                 </div>
                 <div className="slider-slide">
-                  <img src={juego3} alt="Slide 3" />
+                  <img src={juego4} alt="Slide 4" style={{ width: '100%', maxHeight: '500px', objectFit: 'cover' }} />
                 </div>
                 <div className="slider-slide">
-                  <img src={juego4} alt="Slide 4" />
-                </div>
-                <div className="slider-slide">
-                  <img src={juego5} alt="Slide 5" />
+                  <img src={juego5} alt="Slide 5" style={{ width: '100%', maxHeight: '500px', objectFit: 'cover' }} />
                 </div>
               </Slider>
             </div>
