@@ -21,10 +21,9 @@ const StepOne = ({ formData, setFormData, nextStep }) => (
                 <input className="input is-black" type="number" placeholder="Edad" name="edad" value={formData.edad} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
                 <div className="select is-fullwidth" style={inputStyle}>
                     <select name="sexo" value={formData.sexo} onChange={handleChange(formData, setFormData)}>
-                        <option value="">Selecciona el sexo</option>
+                        <option value="">Selecciona el Genero</option>
                         <option value="M">Masculino</option>
                         <option value="F">Femenino</option>
-                        <option value="O">Otro</option>
                     </select>
                 </div>
             </div>
