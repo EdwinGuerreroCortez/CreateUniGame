@@ -69,54 +69,47 @@ const handleChangeLenguajes = (formData, setFormData, value) => {
     setFormData({ ...formData, lenguajes: newLenguajes });
   };
   
-  const StepFour = ({ formData, setFormData, prevStep, finishRegistration }) => {
-    const finishAndRedirect = () => {
-        finishRegistration();  // Asumiendo que esto maneja la lógica necesaria
-        window.location.href = '/login'; // Cambia la URL a la página de login
-    };
-
-    return ( // Asegúrate de incluir el return aquí
-        <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px' }}>
-            <div className="card-content">
-                <h2 className="title has-text-centered">Experiencia en Lenguajes</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '20px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '10px' }}>
-                        {['Python', 'JavaScript', 'C#', 'C++'].map((lang) => (
-                            <label className="checkbox" key={lang} style={{ marginRight: '10px' }}>
-                                <input 
-                                    type="checkbox" 
-                                    name="lenguajes" 
-                                    value={lang} 
-                                    checked={formData.lenguajes.includes(lang)} 
-                                    onChange={() => handleChangeLenguajes(formData, setFormData, lang)} 
-                                    style={{ marginRight: '5px' }}
-                                />
-                                {lang}
-                            </label>
-                        ))}
-                    </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                        {['Java', 'Lua', 'HTML5', 'Swift'].map((lang) => (
-                            <label className="checkbox" key={lang} style={{ marginRight: '10px' }}>
-                                <input 
-                                    type="checkbox" 
-                                    name="lenguajes" 
-                                    value={lang} 
-                                    checked={formData.lenguajes.includes(lang)} 
-                                    onChange={() => handleChangeLenguajes(formData, setFormData, lang)} 
-                                    style={{ marginRight: '5px' }}
-                                />
-                                {lang}
-                            </label>
-                        ))}
-                    </div>
+ const StepFour = ({ formData, setFormData, prevStep, finishRegistration }) => (
+    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px' }}>
+        <div className="card-content">
+            <h2 className="title has-text-centered">Experiencia en Lenguajes</h2>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '20px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '10px' }}>
+                    {['Python', 'JavaScript', 'C#', 'C++'].map((lang) => (
+                        <label className="checkbox" key={lang} style={{ marginRight: '10px' }}>
+                            <input 
+                                type="checkbox" 
+                                name="lenguajes" 
+                                value={lang} 
+                                checked={formData.lenguajes.includes(lang)} 
+                                onChange={() => handleChangeLenguajes(formData, setFormData, lang)} 
+                                style={{ marginRight: '5px' }}
+                            />
+                            {lang}
+                        </label>
+                    ))}
                 </div>
-                <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={prevStep}>Anterior</button>
-                <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={finishAndRedirect}>Registrar</button>
+                <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                    {['Java', 'Lua', 'HTML5', 'Swift'].map((lang) => (
+                        <label className="checkbox" key={lang} style={{ marginRight: '10px' }}>
+                            <input 
+                                type="checkbox" 
+                                name="lenguajes" 
+                                value={lang} 
+                                checked={formData.lenguajes.includes(lang)} 
+                                onChange={() => handleChangeLenguajes(formData, setFormData, lang)} 
+                                style={{ marginRight: '5px' }}
+                            />
+                            {lang}
+                        </label>
+                    ))}
+                </div>
             </div>
+            <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={prevStep}>Anterior</button>
+            <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={finishRegistration}>Registrar</button>
         </div>
-    );
-};
+    </div>
+);
 
   
   
@@ -137,6 +130,7 @@ const FormRegistro = () => {
         confirmarContrasena: '',
         lenguajes: []
     });
+    
 
     const nextStep = () => {
         setStep(step + 1);
@@ -146,10 +140,39 @@ const FormRegistro = () => {
         setStep(step - 1);
     };
 
-    const finishRegistration = () => {
-        alert('Registro completado!');
-        // Aquí podrías añadir código para procesar los datos del formulario
+    const finishRegistration = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/usuarios', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    nombre: formData.nombre,
+                    apellido_paterno: formData.apellidoPaterno,
+                    apellido_materno: formData.apellidoMaterno,
+                    edad: formData.edad,
+                    genero: formData.sexo,
+                    telefono: formData.telefono,
+                    correo: formData.correoElectronico,
+                    grado_de_estudios: formData.gradoEstudio,
+                    usuario: formData.usuario,
+                    password: formData.contrasena,
+                    experiencia_en_lenguaje_de_programacion: formData.lenguajes,
+                }),
+            });
+    
+            if (!response.ok) {
+                throw new Error('Error al registrar el usuario');
+            }
+    
+            alert('Registro completado!');
+            window.location.href = '/login';
+        } catch (error) {
+            alert('Hubo un problema al registrar el usuario: ' + error.message);
+        }
     };
+    
 
     switch (step) {
         case 1:
