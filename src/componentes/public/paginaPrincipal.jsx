@@ -1,6 +1,5 @@
 import React from 'react';
 import Slider from 'react-slick';
-import juego1 from '../img/Unity.jpg';
 import juego2 from '../img/juego2.png';
 import juego3 from '../img/juego2d.jpg';
 import juego4 from '../img/juego4.jpg';
