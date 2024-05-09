@@ -1,5 +1,7 @@
+
 import React from 'react';
 import Slider from 'react-slick';
+import juego1 from '../img/Unity.jpg';
 import juego2 from '../img/juego2.png';
 import juego3 from '../img/juego2d.jpg';
 import juego4 from '../img/juego4.jpg';
@@ -24,7 +26,7 @@ const PaginaPrincipal = () => {
       <div className="container">
         <div className="columns is-centered">
           <div className="column is-half">
-            <div className="card tarjeta-larga has-background-black has-border-white has-shadow"style={{ boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}> {/* Fondo negro, borde blanco y sombra */}
+            <div className="card tarjeta-larga has-background-black has-border-white has-shadow" style={{boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)'}}> {/* Fondo negro, borde blanco y sombra */}
               <div className="card-content">
                 <h1 className="title has-text-centered has-text-white">Bienvenido a nuestra plataforma de tutoriales</h1>
                 <p className="subtitle has-text-centered has-text-white">
