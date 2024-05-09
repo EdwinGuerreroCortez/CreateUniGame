@@ -11,7 +11,8 @@ const buttonStyle = { marginTop: '10px', marginBottom: '10px' };  // Estilo para
 
 
 const StepOne = ({ formData, setFormData, nextStep }) => (
-    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px' }}>
+    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
+    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
         <div className="card-content">
             <h2 className="title has-text-centered">Registro - Paso 1</h2>
             <div className="field" >
@@ -30,10 +31,12 @@ const StepOne = ({ formData, setFormData, nextStep }) => (
             <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={nextStep}>Siguiente</button>
         </div>
     </div>
+    </div>
 );
 
 const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
-    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px' }}>
+    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
+    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px',boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
         <div className="card-content">
             <h2 className="title has-text-centered">Registro - Paso 2</h2>
             <div className="field">
@@ -45,10 +48,12 @@ const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
             <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={nextStep}>Siguiente</button>
         </div>
     </div>
+    </div>
 );
 
 const StepThree = ({ formData, setFormData, prevStep, nextStep }) => (
-    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px' }}>
+    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
+    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px',boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
         <div className="card-content">
             <h2 className="title has-text-centered">Registro - Paso 3</h2>
             <div className="field">
@@ -60,6 +65,7 @@ const StepThree = ({ formData, setFormData, prevStep, nextStep }) => (
             <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={nextStep}>Siguiente</button>
         </div>
     </div>
+    </div>
 );
 
 const handleChangeLenguajes = (formData, setFormData, value) => {
@@ -70,7 +76,8 @@ const handleChangeLenguajes = (formData, setFormData, value) => {
   };
   
  const StepFour = ({ formData, setFormData, prevStep, finishRegistration }) => (
-    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px' }}>
+    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
+    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px' ,boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)'}}>
         <div className="card-content">
             <h2 className="title has-text-centered">Experiencia en Lenguajes</h2>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '20px' }}>
@@ -108,6 +115,7 @@ const handleChangeLenguajes = (formData, setFormData, value) => {
             <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={prevStep}>Anterior</button>
             <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={finishRegistration}>Registrar</button>
         </div>
+    </div>
     </div>
 );
 

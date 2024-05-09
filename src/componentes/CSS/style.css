@@ -10,4 +10,33 @@
     width: 600px;
     
   }
+  /* Agrega estilos personalizados al carrusel y a las imágenes */
+.slider-container {
+    max-width: 800px; /* Ajusta el ancho máximo del carrusel según tus necesidades */
+    margin: auto; /* Centra el carrusel horizontalmente */
+  }
+  
+  .slider-slide {
+    text-align: center; /* Centra las imágenes dentro del carrusel */
+  }
+  
+  .slider-slide img {
+    max-width: 100%; /* Hace que las imágenes ocupen el 100% del ancho del contenedor */
+    height: auto; /* Permite que la altura se ajuste automáticamente para mantener la proporción */
+  }
+  .has-background-light-black {
+    background-color: rgba(46, 40, 40, 0.8);
+  }
+  .change-color-on-hover:hover {
+    color: black;
+  }
+  .has-text-white:hover {
+    color: black;
+    color:rgb(189, 189, 189)
+  }
+ 
+
+  
+  
+  
   
