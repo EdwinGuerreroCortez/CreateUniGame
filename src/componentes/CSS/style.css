@@ -34,8 +34,22 @@
     color: black;
     color:rgb(189, 189, 189)
   }
- 
-
+  @keyframes colorChange {
+    0% {
+      color: rgb(72, 255, 154);
+    }
+    50% {
+      color: rgb(122, 238, 139);
+    }
+    100% {
+      color: rgb(87, 255, 115);
+    }
+  }
+  .color-change {
+    text-shadow: 0 0 10px rgb(21, 21, 34), 0 0 20px rgb(195, 195, 255), 0 0 30px rgb(248, 248, 255);
+    animation: colorChange 2s infinite alternate;
+  }
+  
   
   
   
