@@ -90,7 +90,7 @@
 }
 
 .title, .subtitle, .has-text-white {
-  margin-bottom: 1rem; /* Espacio entre los textos */
+  margin-bottom: .5rem; /* Espacio entre los textos */
 }
 
 .animate__bounceInLeft {

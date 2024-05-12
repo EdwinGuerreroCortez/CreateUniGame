@@ -60,11 +60,11 @@ const temasIniciales = [
       backgroundColor: '#14161A',
     },
     header: {
-      fontSize: '24px',
-      color: 'white',
-      textAlign: 'center',
-      margin: '20px 0',
-    },
+        fontSize: '28px', // Tamaño de fuente aumentado
+        color: 'white', // Color de texto para mejorar la legibilidad sobre fondo oscuro
+        textAlign: 'center',
+        margin: '20px 0'
+      },
     grid: {
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
