@@ -20,8 +20,12 @@ const temasIniciales = [
   const Temas = () => {
     const [temaActivo, setTemaActivo] = useState(null);
   
-    const toggleTema = id => {
-      setTemaActivo(temaActivo === id ? null : id);
+    const mostrarModal = id => {
+      setTemaActivo(id);
+    };
+  
+    const ocultarModal = () => {
+      setTemaActivo(null);
     };
   
     return (
@@ -29,13 +33,16 @@ const temasIniciales = [
         <h1 style={styles.header}>Temas a Aprender</h1>
         <div style={styles.grid}>
           {temasIniciales.map(tema => (
-            <div key={tema.id} style={styles.card}>
-              <div onClick={() => toggleTema(tema.id)} style={styles.title}>
-                <h2>{tema.titulo}</h2>
-              </div>
+            <div key={tema.id} style={styles.card} 
+                 onMouseEnter={() => mostrarModal(tema.id)}
+                 onMouseLeave={ocultarModal}>
+              <h2 style={styles.title}>{tema.titulo}</h2>
               {temaActivo === tema.id && (
-                <div style={styles.expandedContent}>
-                  <p>{tema.contenido}</p>
+                <div style={styles.modal}>
+                  <div style={styles.modalContent}>
+                    <h2>{tema.titulo}</h2>
+                    <p>{tema.contenido}</p>
+                  </div>
                 </div>
               )}
             </div>
@@ -50,10 +57,11 @@ const temasIniciales = [
       maxWidth: '1200px',
       margin: '0 auto',
       padding: '20px',
-      position: 'relative',  // Set the relative positioning here for absolute child
+      backgroundColor: '#14161A',
     },
     header: {
       fontSize: '24px',
+      color: 'white',
       textAlign: 'center',
       margin: '20px 0',
     },
@@ -63,28 +71,32 @@ const temasIniciales = [
       gap: '15px',
     },
     card: {
-      position: 'relative',  // Needed to position the expanded content absolutely
-      border: '1px solid #ccc',
+      backgroundColor: '#1e2025',
+      border: '1px solid #333',
       borderRadius: '5px',
       padding: '10px',
       cursor: 'pointer',
-      transition: 'all 0.3s ease',
+      position: 'relative',
     },
     title: {
       fontWeight: 'bold',
+      color: 'white',
       marginBottom: '10px',
     },
-    expandedContent: {
+    modal: {
       position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      backgroundColor: 'white',
-      boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-      zIndex: 1000,  // Ensure it's above other content
-      padding: '10px',
-      border: '1px solid black',
+      top: '50%',
+      left: '50%',
+      transform: 'translate(-50%, -50%)',
+      width: '90%',
+      backgroundColor: '#2c2f33',
+      padding: '20px',
       borderRadius: '5px',
+      boxShadow: '0 4px 8px rgba(0,0,0,0.5)',
+      zIndex: 1000,
+    },
+    modalContent: {
+      color: 'white',
     }
   };
   

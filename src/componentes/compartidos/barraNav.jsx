@@ -1,94 +1,50 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import '../CSS/style.css'; // Importa el archivo CSS
+import logo from '../img/logo.gif';
+
 
 const BarraNav = () => {
   const [isActive, setIsActive] = useState(false);
-  const [isHoveredUniGame, setIsHoveredUniGame] = useState(false); // Estado para controlar si el cursor está sobre "UniGame"
-  const [isHoveredInicio, setIsHoveredInicio] = useState(false); // Estado para controlar si el cursor está sobre "Inicio"
-  const location = useLocation();
 
   const toggleBurgerMenu = () => {
     setIsActive(!isActive);
   };
 
-  const handleMouseEnterUniGame = () => {
-    setIsHoveredUniGame(true);
-  };
-
-  const handleMouseLeaveUniGame = () => {
-    setIsHoveredUniGame(false);
-  };
-
-  const handleMouseEnterInicio = () => {
-    setIsHoveredInicio(true);
-  };
-
-  const handleMouseLeaveInicio = () => {
-    setIsHoveredInicio(false);
-  };
-
-  // Color del texto "UniGame" según el estado del hover
-  const textColorUniGame = isHoveredUniGame ? '#000000' : 'rgb(189, 189, 189)';
-
-  // Color del texto "Inicio" según el estado del hover
-  const textColorInicio = isHoveredInicio ? '#000000': 'rgb(189, 189, 189)';
-
   return (
-    <nav className="navbar has-background-black" role="navigation" aria-label="main navigation">
-    <div className="navbar-brand">
-      <Link className="navbar-item" to="/">
-        <strong className="has-text" onMouseEnter={handleMouseEnterUniGame} onMouseLeave={handleMouseLeaveUniGame} style={{ color: textColorUniGame }}>
-          UniGame
-        </strong>
-      </Link>
-  
-      <a role="button" className={`navbar-burger burger ${isActive ? 'is-active' : ''}`} aria-label="menu" aria-expanded={isActive ? 'true' : 'false'} data-target="navbarBasicExample" onClick={toggleBurgerMenu}>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-        <span aria-hidden="true"></span>
-      </a>
-    </div>
-  
-    <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
-      <div className="navbar-start">
-        <Link className={`navbar-item`} to="/paginaPrincipal" >
-          <strong className="has-text" onMouseEnter={handleMouseEnterInicio} onMouseLeave={handleMouseLeaveInicio} style={{ color: textColorInicio }}>
-            Inicio
-          </strong>
-        </Link>
+    <nav className="navbar has-background-black" role="navigation" aria-label="main navigation" style={{ height: '5rem' }}>
+      <div className="navbar-brand">
+        <img src={logo} alt="Logo" className="navbar-item" style={{ height: '5rem' }} />
+        <Link className="navbar-item has-text-white" to="/">UniGame</Link>
+        <a role="button" className={`navbar-burger burger ${isActive ? 'is-active' : ''}`} aria-label="menu" aria-expanded={isActive ? 'true' : 'false'} onClick={toggleBurgerMenu}>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </a>
       </div>
-  
-      <div className="navbar-end">
-        <div className="navbar-item">
-          <div className="field has-addons">
-            <div className="control">
-              <div className="select is-primary">
-                <select>
-                  <option>Cursos</option>
-                  <option>Curso 1</option>
-                  <option>Curso 2</option>
-                  <option>Curso 3</option>
-                </select>
-              </div>
+
+      <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
+        <div className="navbar-start">
+          <div className="navbar-item has-dropdown is-hoverable">
+            <a className="navbar-link has-text-white">Cursos</a>
+            <div className="navbar-dropdown">
+              <Link className="navbar-item" to="/curso1">Curso 1</Link>
+              <Link className="navbar-item" to="/curso2">Curso 2</Link>
+              <Link className="navbar-item" to="/curso3">Curso 3</Link>
             </div>
           </div>
+          <Link className="navbar-item has-text-white" to="/">Inicio</Link>
         </div>
-  
-        <div className="navbar-item">
-          <div className="buttons">
-            <Link className="button is-light" to="/login">
-              Login
-            </Link>
-            <Link className="button is-primary" to="/registro">
-              Registro
-            </Link>
+
+        <div className="navbar-end">
+          <div className="navbar-item">
+            <Link className="button is-light" to="/login" style={{ marginRight: '0.5rem' }}>Login</Link>
+            <Link className="button is-primary" to="/registro">Registro</Link>
           </div>
         </div>
+
       </div>
-    </div>
-  </nav>
-  
+    </nav>
   );
 }
 

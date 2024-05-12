@@ -6,8 +6,7 @@ import juego4 from '../img/juego4.jpg';
 import juego5 from '../img/juego5.jpg';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import '../CSS/style.css'; // Importa el archivo CSS de Bulma aquí
-
+import '../CSS/style.css';
 
 const PaginaPrincipal = () => {
   const settings = {
@@ -17,62 +16,56 @@ const PaginaPrincipal = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2500, // Cambia la velocidad de cambio a 2 segundos
-    customPaging: function(i) {
-      return <div className="dot"></div>; // Personaliza el estilo de los puntos de navegación
-    }
+    autoplaySpeed: 2500,
+    customPaging: (i) => <div className="dot"></div>
   };
 
   return (
-    <section className="section has-background-black-bis">
+    <section className="section has-background-black-bis" >
       <div className="container">
         <div className="columns is-vcentered">
           <div className="column is-half">
-            <Slider {...settings}>
-              <div className="slider-slide">
-                <img src={juego2} alt="Slide 2" style={{ width: '100%', maxHeight: '100vh', objectFit: 'cover' }} />
-              </div>
-              <div className="slider-slide">
-                <img src={juego3} alt="Slide 3" style={{ width: '100%', maxHeight: '100vh', objectFit: 'cover' }} />
-              </div>
-              <div className="slider-slide">
-                <img src={juego4} alt="Slide 4" style={{ width: '100%', maxHeight: '100vh', objectFit: 'cover' }} />
-              </div>
-              <div className="slider-slide">
-                <img src={juego5} alt="Slide 5" style={{ width: '100%', maxHeight: '100vh', objectFit: 'cover' }} />
-              </div>
-            </Slider>
+            <div style={{ padding: '40px', justifyContent: 'center' }}>
+              <Slider {...settings}>
+                {[juego2, juego3, juego4, juego5].map((imgSrc, index) => (
+                  <div key={index} className="slider-frame" style={{ width: '100%', height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <img src={imgSrc} alt={`Slide ${index + 2}`} className="slider-image" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                  </div>
+                ))}
+              </Slider>
+
+            </div>
           </div>
           <div className="column is-half">
-            <div className="card tarjeta-larga has-background-black has-border-white has-shadow">
+            <div className="card tarjeta-larga has-background-black has-border-white has-shadow" style={{ margin: '20px' }}>
               <div className="card-content">
-                <h1 className="title has-text-centered has-text-white">Bienvenido a nuestra plataforma</h1>
-                <p className="subtitle has-text-centered has-text-white">
-                  Aprende a crear tu propio juego con Unity y C#
-                </p>
-                <div className="content has-text-white">
-                  <p>
-                    Aprenderás a crear tus juegos con Unity y C#. Aquí encontrarás una variedad de videos tutoriales que te guiarán paso a paso a través del proceso de creación de tu propio juego, desde los conceptos básicos hasta técnicas avanzadas.
+                <div className="content has-text-centered">
+                  <h1 className="title has-text-white">Explora el mundo de la creación de juegos</h1>
+                  <p className="subtitle has-text-white">
+                  </p>
+                  <p className="has-text-white">
+                    Nuestra plataforma te ofrece todas las herramientas necesarias para comenzar a desarrollar tus propios videojuegos, abarcando desde conceptos fundamentales hasta técnicas de programación y diseño gráfico.
+                  </p>
+                  <p className="is-size-4 has-text-white animate__animated animate__bounceInLeft">
+                    ¡No esperes más y comienza tu aventura en el desarrollo de juegos hoy mismo!
                   </p>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div className="has-text-white has-text-centered" style={{ marginTop: '20px' }}>
-          <h1 className="is-size-3">
-            Comienza usar Unity. Da vida a todo lo que puedas imaginar con Unity.
-          </h1>
-          <div className="container">
-  <h1 className="is-size-3 animate__animated animate__bounceInLeft color-change">
-    ¡Empieza tu trayecto de aprendizaje hoy!
-  </h1>
 </div>
-
-
-
+        <div className="has-text-white has-text-centered" style={{ marginTop: '20px' }}>
+          <h2 className="is-size-4">
+            Comienza a usar Unity. Da vida a todo lo que puedas imaginar con Unity.
+          </h2>
+          <div className="container">
+            <h2 className="is-size-4 animate__animated animate__bounceInLeft color-change">
+              Explora nuestros temas; contamos con videos que explicarán paso a paso el proceso para la creación de un pequeño videojuego.
+            </h2>
+          </div>
         </div>
-      </div>
+      
     </section>
   );
 }

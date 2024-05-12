@@ -1,56 +1,118 @@
 /* styles.css */
 
 #imagenGrande {
-    width: 500px; /* Ancho deseado */
-    height: 600px; /* Alto deseado */
-    padding: 40px;
-  }
-  
-  .tarjeta-larga {
-    width: 600px;
-    
-  }
-  /* Agrega estilos personalizados al carrusel y a las imágenes */
+  width: 500px;
+  /* Ancho deseado */
+  height: 600px;
+  /* Alto deseado */
+  padding: 40px;
+}
+
+.tarjeta-larga {
+  width: 600px;
+
+}
+
+/* Agrega estilos personalizados al carrusel y a las imágenes */
 .slider-container {
-    max-width: 800px; /* Ajusta el ancho máximo del carrusel según tus necesidades */
-    margin: auto; /* Centra el carrusel horizontalmente */
+  max-width: 800px;
+  /* Ajusta el ancho máximo del carrusel según tus necesidades */
+  margin: auto;
+  /* Centra el carrusel horizontalmente */
+}
+
+.slider-slide {
+  text-align: center;
+  /* Centra las imágenes dentro del carrusel */
+}
+
+.slider-slide img {
+  max-width: 100%;
+  /* Hace que las imágenes ocupen el 100% del ancho del contenedor */
+  height: auto;
+  /* Permite que la altura se ajuste automáticamente para mantener la proporción */
+}
+
+.has-background-light-black {
+  background-color: rgba(46, 40, 40, 0.8);
+}
+
+.change-color-on-hover:hover {
+  color: black;
+}
+
+.has-text-white:hover {
+  color: black;
+  color: rgb(189, 189, 189)
+}
+
+@keyframes colorChange {
+  0% {
+    color: rgb(72, 255, 154);
   }
-  
-  .slider-slide {
-    text-align: center; /* Centra las imágenes dentro del carrusel */
+
+  50% {
+    color: rgb(122, 238, 139);
   }
-  
-  .slider-slide img {
-    max-width: 100%; /* Hace que las imágenes ocupen el 100% del ancho del contenedor */
-    height: auto; /* Permite que la altura se ajuste automáticamente para mantener la proporción */
+
+  100% {
+    color: rgb(87, 255, 115);
   }
-  .has-background-light-black {
-    background-color: rgba(46, 40, 40, 0.8);
-  }
-  .change-color-on-hover:hover {
-    color: black;
-  }
-  .has-text-white:hover {
-    color: black;
-    color:rgb(189, 189, 189)
-  }
-  @keyframes colorChange {
-    0% {
-      color: rgb(72, 255, 154);
-    }
-    50% {
-      color: rgb(122, 238, 139);
-    }
-    100% {
-      color: rgb(87, 255, 115);
-    }
-  }
-  .color-change {
-    text-shadow: 0 0 10px rgb(21, 21, 34), 0 0 20px rgb(195, 195, 255), 0 0 30px rgb(248, 248, 255);
-    animation: colorChange 2s infinite alternate;
-  }
-  
-  
-  
-  
-  
+}
+
+.color-change {
+  text-shadow: 0 0 10px rgb(21, 21, 34), 0 0 20px rgb(195, 195, 255), 0 0 30px rgb(248, 248, 255);
+  animation: colorChange 2s infinite alternate;
+}
+
+.navbar-item:hover, .button:hover, .navbar-link:hover {
+  color: #000000;
+  /* Color negro al pasar el cursor */
+}
+
+/* Estilo para los botones en la barra de navegación */
+.navbar-item .button {
+  margin-right: 1rem;
+  /* Añade un margen derecho para separar los botones */
+}
+
+/* Cambio de color al pasar el cursor sobre los botones */
+.navbar-item .button:hover {
+  background-color: #000000;
+  /* Cambia el fondo a negro */
+  color: #ffffff;
+  /* Cambia el texto a blanco */
+}
+
+
+.content {
+  margin-top: 2rem; /* Asegura un margen superior para el texto */
+}
+
+.title, .subtitle, .has-text-white {
+  margin-bottom: 1rem; /* Espacio entre los textos */
+}
+
+.animate__bounceInLeft {
+  animation-duration: 2s; /* Duración de la animación para el efecto */
+}
+
+.slider-frame {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* Asegura que el frame ocupe todo el espacio vertical disponible */
+}
+
+.slider-image {
+  width: auto;
+  max-height: 300px; /* Limita la altura de las imágenes para evitar desbordamientos */
+  object-fit: cover;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background: white;
+  border-radius: 50%;
+}

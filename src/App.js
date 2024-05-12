@@ -5,19 +5,19 @@ import FormRegistro from './componentes/public/registro';
 import LayoutConEncab from './componentes/compartidos/LayoutConEncabezado';
 import PaginaPrincipal from './componentes/public/paginaPrincipal';
 import Temas from './componentes/public/temas';
-
-
+import Extra from './componentes/public/extra';
 
 const App = () => {
   return (
     <Router>
+      <LayoutConEncab>
         <Routes>
-        <Route path="/" element={< LayoutConEncab ><PaginaPrincipal />< Temas/></ LayoutConEncab >} />
-        <Route path="/login" element={< LayoutConEncab ><Formlogin /></ LayoutConEncab >} />
-        <Route path="/registro" element={< LayoutConEncab ><FormRegistro /></ LayoutConEncab >} />  
-        <Route path="/paginaPrincipal" element={< LayoutConEncab ><PaginaPrincipal /></ LayoutConEncab >} />
-
+          <Route path="/" element={<><PaginaPrincipal /><Temas/><Extra/></>} />
+          <Route path="/login" element={<Formlogin />} />
+          <Route path="/registro" element={<FormRegistro />} />  
+          <Route path="/paginaPrincipal" element={<PaginaPrincipal />} />
         </Routes>
+      </LayoutConEncab>
     </Router>
   );
 };
