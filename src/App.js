@@ -6,13 +6,14 @@ import LayoutConEncab from './componentes/compartidos/LayoutConEncabezado';
 import PaginaPrincipal from './componentes/public/paginaPrincipal';
 import Temas from './componentes/public/temas';
 import Extra from './componentes/public/extra';
+import Fqs from './componentes/public/faqs';
 
 const App = () => {
   return (
     <Router>
       <LayoutConEncab>
         <Routes>
-          <Route path="/" element={<><PaginaPrincipal /><Temas/><Extra/></>} />
+          <Route path="/" element={<><PaginaPrincipal /><Temas/><Extra/><Fqs/></>} />
           <Route path="/login" element={<Formlogin />} />
           <Route path="/registro" element={<FormRegistro />} />  
           <Route path="/paginaPrincipal" element={<PaginaPrincipal />} />
