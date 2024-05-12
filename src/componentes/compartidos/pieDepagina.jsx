@@ -13,8 +13,8 @@ const PieDePagina = () => {
           <div className="column">
             <p>Únete a nuestra comunidad:</p>
             <div className="buttons is-centered">
-              <Link className="button is-link" to="/registrate">Únete</Link>
-              <Link className="button is-info" to="/iniciar-sesion">Iniciar sesión</Link>
+              <Link className="button is-link" to="/registro">Únete</Link>
+              <Link className="button is-info" to="/login">Conéctate</Link>
             </div>
           </div>
         </div>
