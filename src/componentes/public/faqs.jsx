@@ -85,8 +85,7 @@ const styles = {
     borderRadius: '8px',
     maxWidth: '800px',
     margin: '20px auto',
-    color: 'white',
-     boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)'
+    color: 'white'
   },
   header: {
     fontSize: '28px', // Tamaño de fuente aumentado
