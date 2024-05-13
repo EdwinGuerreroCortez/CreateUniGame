@@ -89,7 +89,7 @@ const styles = {
   },
   header: {
     fontSize: '28px', // Tamaño de fuente aumentado
-    color: 'white', // Color de texto para mejorar la legibilidad sobre fondo oscuro
+    color: 'white', 
     textAlign: 'center',
     margin: '20px 0'
   },
