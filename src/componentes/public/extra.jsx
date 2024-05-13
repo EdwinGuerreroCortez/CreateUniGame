@@ -26,6 +26,7 @@ const caracteristicas = [
 
 const Extra = () => {
   return (
+    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
     <div className="container" style={{ backgroundColor: '#14161A', padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       <h1 className="title has-text-centered has-text-white is-size-4">¿Por qué funciona UniGame?</h1>
       <div className="columns is-multiline">
@@ -45,6 +46,7 @@ const Extra = () => {
           </div>
         ))}
       </div>
+    </div>
     </div>
   );
 };

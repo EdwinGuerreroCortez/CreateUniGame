@@ -3,11 +3,11 @@ import React from 'react';
 import unityLogo from  '../img/unitylogo.jpg';
 import cSharpLogo from  '../img/csharplogo.png';
 
-const Bienvenida = ({ usuario }) => {
+const Bienvenida = () => {
   return (
     <div className="section">
       <div className="container">
-        <h1 className="title">Bienvenido, {usuario.nombre}!</h1>
+        <h1 className="title">Bienvenido!</h1>
         <p>Gracias por unirte a nuestra plataforma.</p>
         <p>En esta plataforma encontrarás una gran variedad de recursos y contenido para aprender y mejorar tus habilidades en el desarrollo de videojuegos con Unity y C#.</p>
         

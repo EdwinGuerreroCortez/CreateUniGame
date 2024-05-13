@@ -1,6 +1,6 @@
 import React from 'react';
 import 'bulma/css/bulma.min.css'; // Importar Bulma CSS
-
+import { Link } from 'react-router-dom';
 const FormRegistro = () => {
   return (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
@@ -31,7 +31,9 @@ const FormRegistro = () => {
 
             <div className="field">
               <div className="control">
-                <button className="button is-primary is-fullwidth">Iniciar sesión</button>
+             <Link  to="/bienvenida">
+              <button className="button is-primary is-fullwidth">Iniciar sesión</button>
+             </Link>
               </div>
             </div>
           </form>

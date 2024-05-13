@@ -57,6 +57,7 @@ const FAQ = () => {
   };
 
   return (
+    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
     <div style={styles.container}>
       <h1 style={styles.header}>Preguntas Frecuentes</h1>
       {faqs.map((faq, index) => (
@@ -72,6 +73,7 @@ const FAQ = () => {
         </div>
       ))}
     </div>
+    </div>
   );
 };
 
@@ -83,7 +85,8 @@ const styles = {
     borderRadius: '8px',
     maxWidth: '800px',
     margin: '20px auto',
-    color: 'white'
+    color: 'white',
+     boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)'
   },
   header: {
     fontSize: '28px', // Tamaño de fuente aumentado

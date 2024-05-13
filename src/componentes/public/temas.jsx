@@ -29,6 +29,7 @@ const temasIniciales = [
     };
   
     return (
+      <div style={{ backgroundColor: '#14161A' }}>
       <div style={styles.container}>
         <h1 style={styles.header}>Temas a Aprender</h1>
         <div style={styles.grid}>
@@ -48,6 +49,7 @@ const temasIniciales = [
             </div>
           ))}
         </div>
+      </div>
       </div>
     );
   };
