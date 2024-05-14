@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import 'bulma/css/bulma.min.css';
 
 // Datos de las preguntas frecuentes
 const faqs = [
@@ -46,8 +47,7 @@ const faqs = [
       pregunta: "▶ ¿Existen restricciones de licencia para los juegos desarrollados en Unity?",
       respuesta: "Unity tiene diferentes licencias dependiendo del tamaño de tus ingresos o financiación, pero puedes empezar completamente gratis con Unity Personal si tu empresa gana menos de $100,000 al año."
     }
-  ];
-  
+];
 
 const FAQ = () => {
   const [activeIndex, setActiveIndex] = useState(null); // Controla qué FAQ está expandido
@@ -57,39 +57,48 @@ const FAQ = () => {
   };
 
   return (
-    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center'  }}>
-    <div style={styles.container}>
-      <h1 style={styles.header}>Preguntas Frecuentes</h1>
-      {faqs.map((faq, index) => (
-        <div key={index} style={styles.faqItem}>
-          <div style={styles.question} onClick={() => toggleFAQ(index)}>
-            {faq.pregunta}
-          </div>
-          {activeIndex === index && (
-            <div style={styles.answer}>
-              {faq.respuesta}
+    <div style={styles.outerContainer}>
+      <div style={styles.container}>
+        <h1 style={styles.header}>Preguntas Frecuentes</h1>
+        {faqs.map((faq, index) => (
+          <div key={index} style={styles.faqItem}>
+            <div style={styles.question} onClick={() => toggleFAQ(index)}>
+              {faq.pregunta}
             </div>
-          )}
-        </div>
-      ))}
-    </div>
+            {activeIndex === index && (
+              <div style={styles.answer}>
+                {faq.respuesta}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
 // Estilos para el componente
 const styles = {
+  outerContainer: {
+    backgroundColor: '#14161A',
+    minHeight: '100vh',
+    paddingBottom: '20px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
   container: {
     backgroundColor: '#14161A',
     padding: '20px',
     borderRadius: '8px',
     maxWidth: '800px',
     margin: '20px auto',
-    color: 'white'
+    color: 'white',
+    width: '90%' // Agregado para asegurarse de que el contenedor no se expanda fuera de la pantalla
   },
   header: {
     fontSize: '28px', // Tamaño de fuente aumentado
-    color: 'white', 
+    color: 'white', // Color de texto para mejorar la legibilidad sobre fondo oscuro
     textAlign: 'center',
     margin: '20px 0'
   },
