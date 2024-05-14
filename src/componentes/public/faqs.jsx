@@ -57,7 +57,7 @@ const FAQ = () => {
   };
 
   return (
-    <div style={{ backgroundColor: '#14161A'  }}>
+    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center'  }}>
     <div style={styles.container}>
       <h1 style={styles.header}>Preguntas Frecuentes</h1>
       {faqs.map((faq, index) => (

@@ -14,7 +14,7 @@ const StepOne = ({ formData, setFormData, nextStep }) => (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
     <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
         <div className="card-content">
-            <h2 className="title has-text-centered">Registro - Paso 1</h2>
+            <h2 className="title has-text-centered has-text-white">Registro - Paso 1</h2>
             <div className="field" >
                 <input className="input is-black" type="text" placeholder="Nombre" name="nombre" value={formData.nombre} onChange={handleChange(formData, setFormData)} style={inputStyle} />
                 <input className="input is-black" type="text" placeholder="Apellido Paterno" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
@@ -38,7 +38,7 @@ const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
     <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px',boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
         <div className="card-content">
-            <h2 className="title has-text-centered">Registro - Paso 2</h2>
+            <h2 className="title has-text-centered has-text-white">Registro - Paso 2</h2>
             <div className="field">
                 <input className="input is-black" type="text" placeholder="Teléfono" name="telefono" value={formData.telefono} onChange={handleChange(formData, setFormData)} style={inputStyle} />
                 <input className="input is-black" type="email" placeholder="Correo Electrónico" name="correoElectronico" value={formData.correoElectronico} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
@@ -55,7 +55,7 @@ const StepThree = ({ formData, setFormData, prevStep, nextStep }) => (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
     <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px',boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
         <div className="card-content">
-            <h2 className="title has-text-centered">Registro - Paso 3</h2>
+            <h2 className="title has-text-centered has-text-white">Registro - Paso 3</h2>
             <div className="field">
                 <input className="input is-black" type="text" placeholder="Usuario" name="usuario" value={formData.usuario} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
                 <input className="input is-black" type="password" placeholder="Contraseña" name="contrasena" value={formData.contrasena} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
@@ -79,7 +79,7 @@ const handleChangeLenguajes = (formData, setFormData, value) => {
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
     <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px' ,boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)'}}>
         <div className="card-content">
-            <h2 className="title has-text-centered">Experiencia en Lenguajes</h2>
+            <h2 className="title has-text-centered has-text-white">Experiencia en Lenguajes</h2>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '20px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '10px' }}>
                     {['Python', 'JavaScript', 'C#', 'C++'].map((lang) => (
