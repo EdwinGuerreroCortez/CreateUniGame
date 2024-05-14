@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "bulma/css/bulma.min.css";
 import '../CSS/carga.css'; 
+
 const temas = [
   {
     id: 1,
@@ -111,10 +112,10 @@ const temas = [
     video: "video18.mp4",
   },
 ];
-
 const Curso = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [temaSeleccionado, setTemaSeleccionado] = useState(null);
+  const [evidencia, setEvidencia] = useState({ tipo: "", archivo: null });
   const temasPorPagina = 6;
 
   const indiceUltimoTema = paginaActual * temasPorPagina;
@@ -131,8 +132,25 @@ const Curso = () => {
     setTemaSeleccionado(null); // Deseleccionar tema al cambiar de página
   };
 
+  const handleTypeChange = (e) => {
+    const { value } = e.target;
+    setEvidencia({ tipo: value, archivo: null });
+  };
+
+  const handleFileChange = (e) => {
+    const { files } = e.target;
+    setEvidencia((prev) => ({ ...prev, archivo: files[0] }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Aquí se puede manejar la lógica para enviar la evidencia
+    console.log("Evidencia enviada:", evidencia);
+  };
+
   return (
-    <div className="section has-background-light">
+    
+    <div className="section has-background-black-bis">
       <div className="container">
         <div className="columns">
           <div className="column is-one-quarter">
@@ -179,6 +197,45 @@ const Curso = () => {
                   <source src={temaSeleccionado.video} type="video/mp4" />
                   Tu navegador no soporta el video.
                 </video>
+                <form onSubmit={handleSubmit}>
+                  <div className="field">
+                    <label className="label">Tipo de evidencia</label>
+                    <div className="control">
+                      <div className="select">
+                        <select onChange={handleTypeChange} value={evidencia.tipo}>
+                          <option value="" disabled>
+                            Selecciona tipo de evidencia
+                          </option>
+                          <option value="imagen">Imagen</option>
+                          <option value="video">Video</option>
+                          <option value="documento">Documento</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  {evidencia.tipo && (
+                    <div className="field">
+                      <label className="label">Subir {evidencia.tipo}</label>
+                      <div className="control">
+                        <input
+                          className="input"
+                          type="file"
+                          name={evidencia.tipo}
+                          accept={
+                            evidencia.tipo === "imagen" ? "image/*" :
+                            evidencia.tipo === "video" ? "video/*" : "application/pdf"
+                          }
+                          onChange={handleFileChange}
+                        />
+                      </div>
+                    </div>
+                  )}
+                  <div className="control">
+                    <button className="button is-primary" type="submit">
+                      Enviar evidencia
+                    </button>
+                  </div>
+                </form>
               </div>
             ) : (
               <div className="box">
@@ -188,24 +245,24 @@ const Curso = () => {
                 <div
                   aria-label="Orange and tan hamster running in a metal wheel"
                   role="img"
-                  class="wheel-and-hamster"
+                  className="wheel-and-hamster"
                 >
-                  <div class="wheel"></div>
-                  <div class="hamster">
-                    <div class="hamster__body">
-                      <div class="hamster__head">
-                        <div class="hamster__ear"></div>
-                        <div class="hamster__eye"></div>
-                        <div class="hamster__nose"></div>
+                  <div className="wheel"></div>
+                  <div className="hamster">
+                    <div className="hamster__body">
+                      <div className="hamster__head">
+                        <div className="hamster__ear"></div>
+                        <div className="hamster__eye"></div>
+                        <div className="hamster__nose"></div>
                       </div>
-                      <div class="hamster__limb hamster__limb--fr"></div>
-                      <div class="hamster__limb hamster__limb--fl"></div>
-                      <div class="hamster__limb hamster__limb--br"></div>
-                      <div class="hamster__limb hamster__limb--bl"></div>
-                      <div class="hamster__tail"></div>
+                      <div className="hamster__limb hamster__limb--fr"></div>
+                      <div className="hamster__limb hamster__limb--fl"></div>
+                      <div className="hamster__limb hamster__limb--br"></div>
+                      <div className="hamster__limb hamster__limb--bl"></div>
+                      <div className="hamster__tail"></div>
                     </div>
                   </div>
-                  <div class="spoke"></div>
+                  <div className="spoke"></div>
                 </div>
               </div>
             )}
