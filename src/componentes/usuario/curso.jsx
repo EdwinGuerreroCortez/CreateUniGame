@@ -149,7 +149,6 @@ const Curso = () => {
   };
 
   return (
-    
     <div className="section has-background-black-bis">
       <div className="container">
         <div className="columns">
@@ -159,7 +158,7 @@ const Curso = () => {
               {temasActuales.map((tema) => (
                 <div
                   key={tema.id}
-                  className="box"
+                  className="box tema-card has-background-info"
                   style={{ cursor: "pointer" }}
                   onClick={() => seleccionarTema(tema)}
                 >
@@ -202,7 +201,10 @@ const Curso = () => {
                     <label className="label">Tipo de evidencia</label>
                     <div className="control">
                       <div className="select">
-                        <select onChange={handleTypeChange} value={evidencia.tipo}>
+                        <select
+                          onChange={handleTypeChange}
+                          value={evidencia.tipo}
+                        >
                           <option value="" disabled>
                             Selecciona tipo de evidencia
                           </option>
