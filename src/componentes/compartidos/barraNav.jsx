@@ -10,7 +10,8 @@ const BarraNav = () => {
     setIsActive(!isActive);
   };
 
-  // Función para envolver cada letra en un span
+  // Función para envolver cada letra en un span a gera l e gusta trozon 
+
   const renderAnimatedLetters = (word) => {
     return word.split('').map((char, index) => (
       <span key={index} className="animated-letter">{char}</span>
