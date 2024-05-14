@@ -47,8 +47,8 @@ const BarraNav = () => {
 
         <div className="navbar-end">
           <div className="navbar-item">
-            <Link className="button is-light" to="/login" style={{ marginRight: '0.5rem' }}>Login</Link>
-            <Link className="button is-primary" to="/registro">Registro</Link>
+            <Link className="button is-light" to="/login" style={{ marginRight: '0.5rem' }}>Iniciar Sesión</Link>
+            <Link className="button is-primary" to="/registro">Registraté</Link>
           </div>
         </div>
       </div>
