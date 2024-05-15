@@ -10,8 +10,7 @@ const BarraNav = () => {
     setIsActive(!isActive);
   };
 
-  // Función para envolver cada letra en un span a gera l e gusta trozon 
-
+  // Función para envolver cada letra en un span
   const renderAnimatedLetters = (word) => {
     return word.split('').map((char, index) => (
       <span key={index} className="animated-letter">{char}</span>
@@ -35,20 +34,20 @@ const BarraNav = () => {
       <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
         <div className="navbar-start">
           <div className="navbar-item has-dropdown is-hoverable">
-            <a className="navbar-link has-text-white">Explorar</a>
+            <a className="navbar-link has-text-success">Explorar</a>
             <div className="navbar-dropdown">
-              <Link className="navbar-item" to="/acerca-de">Acerca de</Link>
-              <Link className="navbar-item" to="/contactanos">Contáctanos</Link>
-              <Link className="navbar-item" to="/soporte">Soporte</Link>
-              <Link className="navbar-item" to="/blog">Blog</Link>
+              <Link className="navbar-item has-text-success" to="/acerca-de">Acerca de</Link>
+              <Link className="navbar-item has-text-success" to="/contactanos">Contáctanos</Link>
+              <Link className="navbar-item has-text-success" to="/soporte">Soporte</Link>
+              <Link className="navbar-item has-text-success" to="/blog">Blog</Link>
             </div>
           </div>
-          <Link className="navbar-item has-text-white" to="/">Inicio</Link>
+          <Link className="navbar-item has-text-success" to="/">Inicio</Link>
         </div>
 
         <div className="navbar-end">
           <div className="navbar-item">
-            <Link className="button is-light" to="/login" style={{ marginRight: '0.5rem' }}>Iniciar Sesión</Link>
+            <Link className="button is-success" to="/login" style={{ marginRight: '0.5rem' }}>Iniciar Sesión</Link>
             <Link className="button is-primary" to="/registro">Registraté</Link>
           </div>
         </div>

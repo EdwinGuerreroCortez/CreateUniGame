@@ -17,11 +17,37 @@ const PaginaPrincipal = () => {
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 2500,
-    customPaging: (i) => <div className="dot"></div>
+    customPaging: (i) => <div className="dot"></div>,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          infinite: true,
+          dots: true
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+          initialSlide: 2
+        }
+      },
+      {
+        breakpoint: 480,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      }
+    ]
   };
 
   return (
-    <section className="section has-background-black-bis" >
+    <section className="section has-background-black-bis">
       <div className="container">
         <div className="columns is-vcentered">
           <div className="column is-half">
@@ -29,20 +55,17 @@ const PaginaPrincipal = () => {
               <Slider {...settings}>
                 {[juego2, juego3, juego4, juego5].map((imgSrc, index) => (
                   <div key={index} className="slider-frame" style={{ width: '100%', height: '500px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <img src={imgSrc} alt={`Slide ${index + 2}`} className="slider-image" style={{ maxWidth: '100%', maxHeight: '100%' }} />
+                    <img src={imgSrc} alt={`Slide ${index + 2}`} style={{ maxWidth: '100%', maxHeight: '100%' }} />
                   </div>
                 ))}
               </Slider>
-
             </div>
           </div>
-          <div className="column is-half">
-            <div className="card tarjeta-larga has-background-black has-border-white has-shadow" style={{ margin: '20px' }}>
+          <div className="column is-half" style={{ padding: '20px' }}>
+            <div className="card tarjeta-larga has-background-black has-border-white has-shadow" >
               <div className="card-content">
                 <div className="content has-text-centered">
                   <h1 className="title has-text-white">Explora el mundo de la creación de juegos</h1>
-                  <p className="subtitle has-text-white">
-                  </p>
                   <p className="has-text-white">
                     Nuestra plataforma te ofrece todas las herramientas necesarias para comenzar a desarrollar tus propios videojuegos, abarcando desde conceptos fundamentales hasta técnicas de programación y diseño gráfico.
                   </p>
@@ -54,20 +77,17 @@ const PaginaPrincipal = () => {
             </div>
           </div>
         </div>
-</div>
-        <div className="has-text-white has-text-centered" style={{ marginTop: '20px' }}>
+        <div className="has-text-white has-text-centered" style={{ marginTop: '40px' }}>
           <h2 className="is-size-4">
             Comienza a usar Unity. Da vida a todo lo que puedas imaginar con Unity.
           </h2>
-          <div className="container">
-            <h2 className="is-size-4 animate__animated animate__bounceInLeft color-change">
-              Explora nuestros temas; contamos con videos que explicarán paso a paso el proceso para la creación de un pequeño videojuego.
-            </h2>
-          </div>
+          <h2 className="is-size-4 animate__animated animate__bounceInLeft color-change">
+            Explora nuestros temas; contamos con videos que explicarán paso a paso el proceso para la creación de un pequeño videojuego.
+          </h2>
         </div>
-      
+      </div>
     </section>
   );
 }
 
-export default PaginaPrincipal;
+export default PaginaPrincipal

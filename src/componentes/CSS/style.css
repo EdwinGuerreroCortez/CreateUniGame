@@ -1,4 +1,13 @@
-/* styles.css */
+/* Ajustes CSS para mejorar el espaciado en dispositivos móviles */
+@media (max-width: 768px) {
+  .container > .columns {
+      padding-left: 10px; /* Añade un poco de padding a la izquierda */
+      padding-right: 10px; /* Añade un poco de padding a la derecha */
+  }
+  .column.is-half {
+      padding: 10px; /* Añade padding alrededor del contenido de las columnas para evitar que toquen los bordes */
+  }
+}
 
 #imagenGrande {
   width: 500px;

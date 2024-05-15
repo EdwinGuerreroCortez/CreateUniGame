@@ -34,22 +34,22 @@ const BarraNav = () => {
       <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
         <div className="navbar-start">
           <div className="navbar-item has-dropdown is-hoverable">
-            <a className="navbar-link has-text-white">Explorar</a>
+            <a className="navbar-link has-text-success">Explorar</a>
             <div className="navbar-dropdown">
-              <Link className="navbar-item" to="/acerca-de">Acerca de</Link>
-              <Link className="navbar-item" to="/contactanos">Contáctanos</Link>
-              <Link className="navbar-item" to="/soporte">Soporte</Link>
-              <Link className="navbar-item" to="/blog">Blog</Link>
+              <Link className="navbar-item has-text-success" to="/acerca-de">Acerca de</Link>
+              <Link className="navbar-item has-text-success" to="/contactanos">Contáctanos</Link>
+              <Link className="navbar-item has-text-success" to="/soporte">Soporte</Link>
+              <Link className="navbar-item has-text-success" to="/blog">Blog</Link>
             </div>
           </div>
-          <Link className="navbar-item has-text-white" to="/bienvenida">Inicio</Link>
-          <Link className="navbar-item has-text-white" to="/curso">Curso</Link>
-          <Link className="navbar-item has-text-white" to="/recursos">Recursos</Link>
+          <Link className="navbar-item has-text-success" to="/bienvenida">Inicio</Link>
+          <Link className="navbar-item has-text-success" to="/curso">Curso</Link>
+          <Link className="navbar-item has-text-success" to="/recursos">Recursos</Link>
         </div>
 
-        <div className="navbar-end">         
-         <div className="navbar-item">
-          <Link className="button is-primary" to="/#">Perfil</Link>
+        <div className="navbar-end">
+          <div className="navbar-item">
+            <Link className="button is-primary" to="/#">Perfil</Link>
             <Link className="button is-primary" to="/#">Cerrar sesión</Link>
           </div>
         </div>
