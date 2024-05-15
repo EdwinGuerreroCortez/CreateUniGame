@@ -26,7 +26,7 @@ const App = () => {
         <Routes>
           //PaginaPrincipal
         <Route path="/" element={ <LayoutConEncab><PaginaPrincipal /><Temas/><Extra/><Fqs/> </LayoutConEncab>} />
-        <Route path="/login" element={ <LayoutConEncab><Formlogin /> </LayoutConEncab>} />
+        <Route path="/login" element={<Formlogin /> } />
         <Route path="/registro" element={ <LayoutConEncab><FormRegistro/> </LayoutConEncab>} />
         <Route path="/paginaPrincipal" element={ <LayoutConEncab><PaginaPrincipal/> </LayoutConEncab>} />
         //cliente
