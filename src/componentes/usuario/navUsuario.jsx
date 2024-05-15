@@ -43,7 +43,8 @@ const BarraNav = () => {
             </div>
           </div>
           <Link className="navbar-item has-text-white" to="/bienvenida">Inicio</Link>
-          <Link className="navbar-item has-text-white" to="/#">Curso</Link>
+          <Link className="navbar-item has-text-white" to="/curso">Curso</Link>
+          <Link className="navbar-item has-text-white" to="/recursos">Recursos</Link>
         </div>
 
         <div className="navbar-end">         

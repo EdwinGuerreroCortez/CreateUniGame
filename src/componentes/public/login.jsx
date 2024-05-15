@@ -6,7 +6,7 @@ const FormRegistro = () => {
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
       <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }} >
         <div className="card-content">
-          <h2 className="title has-text-centered">Iniciar Sesión</h2>
+          <h2 className="title has-text-centered has-text-white">Iniciar Sesión</h2>
           <p className="has-text-centered" style={{ marginBottom: '20px' }}>Ingresa tus datos para acceder a tu cuenta.</p>
           <form>
             <div className="field">
