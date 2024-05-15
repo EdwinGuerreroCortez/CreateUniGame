@@ -1,5 +1,5 @@
 import React from 'react';
-import animacion from '../img/animacion.gif';
+import animacion from '../img/animacion-unscreen.gif';
 
 const Bienvenida = () => {
   return (

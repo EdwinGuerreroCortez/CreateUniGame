@@ -11,6 +11,8 @@ import Fqs from './componentes/public/faqs';
 import Bienvenida from './componentes/usuario/bienvenida';
 import Recursos from './componentes/usuario/recursos';
 import Curso from './componentes/usuario/curso';
+
+
 const App = () => {
   return (
     <Router>
@@ -20,11 +22,9 @@ const App = () => {
         <Route path="/login" element={ <LayoutConEncab><Formlogin /> </LayoutConEncab>} />
         <Route path="/registro" element={ <LayoutConEncab><FormRegistro/> </LayoutConEncab>} />
         <Route path="/paginaPrincipal" element={ <LayoutConEncab><PaginaPrincipal/> </LayoutConEncab>} />
-
         <Route path="/bienvenida" element={ <LayoutEncabeUser><Bienvenida /> </LayoutEncabeUser>} />
         <Route path="/recursos" element={ <LayoutEncabeUser><Recursos/> </LayoutEncabeUser>} />
         <Route path="/curso" element={ <LayoutEncabeUser><Curso/> </LayoutEncabeUser>} />
-
         </Routes>
 
       
