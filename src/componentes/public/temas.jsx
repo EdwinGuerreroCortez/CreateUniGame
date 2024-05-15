@@ -41,7 +41,6 @@ const Temas = () => {
             {temaActivo === tema.id && (
               <div style={styles.modal}>
                 <div style={styles.modalContent}>
-                  <h2>{tema.titulo}</h2>
                   <p>{tema.contenido}</p>
                 </div>
               </div>
@@ -83,7 +82,7 @@ const styles = {
   title: {
     fontWeight: 'bold',
     color: 'white',
-    marginBottom: '10px',
+    marginBottom: '12px',
   },
   modal: {
     position: 'absolute',
