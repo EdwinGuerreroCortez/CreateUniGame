@@ -17,7 +17,6 @@ import Curso from './componentes/usuario/curso';
 
 //administrativa
 import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
-import navAdministrativo from './componentes/administrativo/navAdministrativo'
 
 const App = () => {
   return (

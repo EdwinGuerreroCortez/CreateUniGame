@@ -28,7 +28,7 @@ const FormRegistro = () => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setBackgroundIndex((current) => (current + 1) % backgrounds.length); // Cambia al siguiente fondo
-    }, 3000); // Cambia la imagen cada 3 segundos
+    }, 5000); // Cambia la imagen cada 3 segundos
 
     return () => clearInterval(intervalId); // Limpia el intervalo cuando el componente se desmonta
   }, []);
