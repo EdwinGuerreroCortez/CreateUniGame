@@ -125,3 +125,8 @@
   background: white;
   border-radius: 50%;
 }
+
+.button-back:hover {
+  background-color: #00D1B2; /* Aquamarine color for the button hover */
+}
+

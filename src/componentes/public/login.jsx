@@ -7,23 +7,18 @@ import img3 from '../img/login3.webp';
 import img4 from '../img/login4.webp';
 import img5 from '../img/login5.jpg';
 import img6 from '../img/login6.jpg';
+import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importa los íconos para el ojo
 
-// Array con las rutas de las imágenes de fondo
-const backgrounds = [
-  img1,
- 
-  img3,
-  img6,
-  img4,
-  img5,
-  img2,
-];
+import '../CSS/style.css';
+
+const backgrounds = [img1, img3, img6, img4, img5, img2];
 
 const FormRegistro = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailValid, setEmailValid] = useState(false);
-  const [backgroundIndex, setBackgroundIndex] = useState(0); // Estado para controlar el índice de la imagen actual
+  const [backgroundIndex, setBackgroundIndex] = useState(0);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,10 +27,9 @@ const FormRegistro = () => {
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setBackgroundIndex((current) => (current + 1) % backgrounds.length); // Cambia al siguiente fondo
-    }, 5000); // Cambia la imagen cada 3 segundos
-
-    return () => clearInterval(intervalId); // Limpia el intervalo cuando el componente se desmonta
+      setBackgroundIndex((current) => (current + 1) % backgrounds.length);
+    }, 5000);
+    return () => clearInterval(intervalId);
   }, []);
 
   const handleSubmit = (event) => {
@@ -48,24 +42,31 @@ const FormRegistro = () => {
   };
 
   const handleBack = () => {
-    navigate('/'); // Navegar atrás
+    navigate('/');
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prevShowPassword) => !prevShowPassword); // Use a callback to toggle based on previous state
+    console.log('Toggling password visibility'); // This will log to the console every time you click the icon
+  };
+
+
   return (
-    <div style={{ 
-        backgroundColor: '#14161A',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundImage: `url(${backgrounds[backgroundIndex]})`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        transition: 'background-image 1s ease-in-out', // Transición suave entre imágenes
-        minHeight: '100vh'
-      }}>
-      <button onClick={handleBack} className="button is-light" style={{ position: 'absolute', top: '10px', left: '10px' }}>
+    <div style={{
+      backgroundColor: '#14161A',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundImage: `url(${backgrounds[backgroundIndex]})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      transition: 'background-image 1s ease-in-out',
+      minHeight: '100vh'
+    }}>
+      <button onClick={handleBack} className="button is-light button-back" style={{ position: 'absolute', top: '10px', left: '10px' }}>
         Atrás
       </button>
+
       <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
         <div className="card-content">
           <h2 className="title has-text-centered has-text-white">Iniciar Sesión</h2>
@@ -83,12 +84,18 @@ const FormRegistro = () => {
 
             <div className="field">
               <label className="label has-text-white">Contraseña</label>
-              <div className="control has-icons-left">
-                <input className="input is-black" type="password" placeholder="********" value={password} onChange={e => setPassword(e.target.value)} />
+              <div className="control has-icons-left has-icons-right">
+                <input className="input is-black" type={showPassword ? 'text' : 'password'} placeholder="********" value={password} onChange={e => setPassword(e.target.value)} />
                 <span className="icon is-small is-left has-text-white">
                   <i className="fas fa-lock"></i>
                 </span>
+                <span className="icon is-small is-right has-text-white" onClick={togglePasswordVisibility} style={{ cursor: 'pointer' }}>
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+
+
               </div>
+
             </div>
 
             <div className="field">
@@ -101,6 +108,6 @@ const FormRegistro = () => {
       </div>
     </div>
   );
-}
+};
 
 export default FormRegistro;
