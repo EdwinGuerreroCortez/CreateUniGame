@@ -17,6 +17,7 @@ import Curso from './componentes/usuario/curso';
 
 //administrativa
 import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
+import BienvenidaAdmin from './componentes/administrativo/bienvenidaAdmin';
 
 const App = () => {
   return (
@@ -33,7 +34,7 @@ const App = () => {
         <Route path="/recursos" element={ <LayoutEncabeUser><Recursos/> </LayoutEncabeUser>} />
         <Route path="/curso" element={ <LayoutEncabeUser><Curso/> </LayoutEncabeUser>} />
         //administrativo
-        <Route path="/administrativa" element={<LayoutEncabeAdmin></LayoutEncabeAdmin>}/>
+        <Route path="/administrativa" element={<LayoutEncabeAdmin><BienvenidaAdmin/></LayoutEncabeAdmin>}/>
         </Routes>
     
     </Router>

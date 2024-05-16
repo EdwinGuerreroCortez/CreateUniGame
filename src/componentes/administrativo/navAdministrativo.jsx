@@ -50,7 +50,7 @@ const BarraNavAdmin = () => {
                 <div className="navbar-end">
                     <div className="navbar-item">
                         <Link className="button is-success" style={{ marginRight: '10px' }} to="/admin/settings">Configuraciones</Link>
-                        <Link className="button is-primary" to="/logout">Cerrar Sesión</Link>
+                        <Link className="button is-primary" to="/">Cerrar Sesión</Link>
                     </div>
                 </div>
             </div>

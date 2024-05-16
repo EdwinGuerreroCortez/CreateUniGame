@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import 'bulma/css/bulma.min.css';
 import { useNavigate } from 'react-router-dom';
-import img1 from '../img/login1.webp';
+import img1 from '../img/login1.jpg';
 import img2 from '../img/login2.webp';
 import img3 from '../img/login3.webp';
 import img4 from '../img/login4.webp';
+import img5 from '../img/login5.jpg';
+import img6 from '../img/login6.jpg';
 
 // Array con las rutas de las imágenes de fondo
 const backgrounds = [
   img1,
-  img2,
+ 
   img3,
+  img6,
   img4,
+  img5,
+  img2,
 ];
 
 const FormRegistro = () => {
