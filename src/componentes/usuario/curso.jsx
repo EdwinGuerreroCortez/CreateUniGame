@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "bulma/css/bulma.min.css";
-import '../CSS/carga.css'; 
+import '../CSS/carga.css';
 
 const temas = [
   {
@@ -112,6 +112,7 @@ const temas = [
     video: "video18.mp4",
   },
 ];
+
 const Curso = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [temaSeleccionado, setTemaSeleccionado] = useState(null);
@@ -153,16 +154,18 @@ const Curso = () => {
       <div className="container">
         <div className="columns">
           <div className="column is-one-quarter">
-            <div className="box">
-              <h2 className="title is-4">Temas</h2>
+            <div className="box" style={{ background: 'rgb(2, 25, 41)', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+              <h2 className="title is-4 has-text-white">Temas</h2>
               {temasActuales.map((tema) => (
                 <div
                   key={tema.id}
-                  className="box tema-card has-background-info"
-                  style={{ cursor: "pointer" }}
+                  className="card has-background-primary"
+                  style={{ cursor: "pointer", marginBottom: "1rem" }}
                   onClick={() => seleccionarTema(tema)}
                 >
-                  {tema.titulo}
+                  <div className="card-content">
+                    <p className="title is-5 has-text-white">{tema.titulo}</p>
+                  </div>
                 </div>
               ))}
               <nav
@@ -189,8 +192,8 @@ const Curso = () => {
           </div>
           <div className="column is-three-quarters">
             {temaSeleccionado ? (
-              <div className="box">
-                <h2 className="title is-4">{temaSeleccionado.titulo}</h2>
+              <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)' }}>
+                <h2 className="title is-4 has-text-white">{temaSeleccionado.titulo}</h2>
                 <p>{temaSeleccionado.descripcion}</p>
                 <video width="100%" controls>
                   <source src={temaSeleccionado.video} type="video/mp4" />
@@ -198,7 +201,7 @@ const Curso = () => {
                 </video>
                 <form onSubmit={handleSubmit}>
                   <div className="field">
-                    <label className="label">Tipo de evidencia</label>
+                    <label className="label has-text-white">Tipo de evidencia</label>
                     <div className="control">
                       <div className="select">
                         <select
@@ -217,7 +220,7 @@ const Curso = () => {
                   </div>
                   {evidencia.tipo && (
                     <div className="field">
-                      <label className="label">Subir {evidencia.tipo}</label>
+                      <label className="label has-text-white">Subir {evidencia.tipo}</label>
                       <div className="control">
                         <input
                           className="input"
@@ -240,8 +243,8 @@ const Curso = () => {
                 </form>
               </div>
             ) : (
-              <div className="box">
-                <h2 className="title is-4">
+              <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)' }}>
+                <h2 className="title is-4 has-text-white">
                   Seleccione un tema para ver los detalles
                 </h2>
                 <div
@@ -274,5 +277,4 @@ const Curso = () => {
     </div>
   );
 };
-
 export default Curso;
