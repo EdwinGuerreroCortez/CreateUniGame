@@ -69,10 +69,7 @@ const validateStepThree = (formData) => {
     return true;
 };
 
-
 const inputStyle = { marginBottom: '15px' };  // Estilo para incrementar el espaciado entre los campos
-const buttonStyle = { marginTop: '10px', marginBottom: '10px' };  // Estilo para el espaciado entre botones
-
 
 const StepOne = ({ formData, setFormData, nextStep }) => (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
@@ -192,9 +189,6 @@ const handleChangeLenguajes = (formData, setFormData, value) => {
     </div>
 );
 
-  
-  
-
 const FormRegistro = () => {
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({
@@ -211,7 +205,6 @@ const FormRegistro = () => {
         confirmarContrasena: '',
         lenguajes: []
     });
-    
 
     const nextStep = () => {
         setStep(step + 1);
@@ -223,37 +216,40 @@ const FormRegistro = () => {
 
     const finishRegistration = async () => {
         try {
-            const response = await fetch('https://gamebackend-5jyi.onrender.com/api/usuarios', {
+            const response = await fetch('http://localhost:3001/api/usuarios', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    nombre: formData.nombre,
-                    apellido_paterno: formData.apellidoPaterno,
-                    apellido_materno: formData.apellidoMaterno,
-                    edad: formData.edad,
-                    genero: formData.sexo,
-                    telefono: formData.telefono,
-                    correo: formData.correoElectronico,
-                    grado_de_estudios: formData.gradoEstudio,
-                    usuario: formData.usuario,
+                    username: formData.usuario,
                     password: formData.contrasena,
+                    tipo: 'cliente',
+                    datos_personales: {
+                        nombre: formData.nombre,
+                        apellido_paterno: formData.apellidoPaterno,
+                        apellido_materno: formData.apellidoMaterno,
+                        edad: parseInt(formData.edad, 10), // Asegurarse de que la edad sea un número
+                        genero: formData.sexo,
+                        telefono: formData.telefono,
+                        correo: formData.correoElectronico,
+                        grado_de_estudios: formData.gradoEstudio,
+                    },
                     experiencia_en_lenguaje_de_programacion: formData.lenguajes,
+                    evaluaciones_realizadas: [], // Inicializar como un array vacío
                 }),
             });
-    
+
             if (!response.ok) {
                 throw new Error('Error al registrar el usuario');
             }
-    
+
             alert('Registro completado!');
             window.location.href = '/login';
         } catch (error) {
             alert('Hubo un problema al registrar el usuario: ' + error.message);
         }
     };
-    
 
     switch (step) {
         case 1:
