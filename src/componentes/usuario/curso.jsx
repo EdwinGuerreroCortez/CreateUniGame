@@ -5,75 +5,76 @@ import '../CSS/carga.css';
 const temas = [
   {
     id: 1,
-    titulo: "Tema 1",
-    descripcion: "Descripción del tema 1",
+    titulo: "Introducción",
+    descripcion: `
+      En este tema, aprenderás sobre los conceptos básicos y la importancia de Unity y C# en el desarrollo de videojuegos. Además, te guiaremos a través del proceso de instalación de Unity y configuración de tu entorno de desarrollo para empezar a programar en C#.
+    `,
+    pasos: `
+      \n1. Visita el sitio web oficial de Unity: [Unity Download](https://unity.com/).
+      \n2. Descarga el Unity Hub, que es una herramienta que te permite instalar y gestionar diferentes versiones de Unity.
+      \n3. Una vez instalado el Unity Hub, abre la aplicación y haz clic en 'Instalar Unity Editor'.
+      \n4. Selecciona la versión de Unity que deseas instalar y sigue las instrucciones para completar la instalación.
+      \n5. Después de instalar Unity, abre el Unity Hub y crea un nuevo proyecto.
+      \n6. Unity incluye Visual Studio, un IDE que soporta C#. Si no está instalado, visita [Visual Studio](https://visualstudio.microsoft.com/) para descargar e instalar la versión gratuita.
+      \n7. Abre tu nuevo proyecto de Unity, y Visual Studio se abrirá automáticamente cuando edites scripts en C#.
+    `,
     video: "video1.mp4",
+    autor: "Juan Pérez",
+    fecha: "2024-05-17",
   },
   {
     id: 2,
     titulo: "Tema 2",
     descripcion: "Descripción del tema 2",
+    pasos: "",
     video: "video2.mp4",
+    autor: "Ana Gómez",
+    fecha: "2024-05-18",
   },
   {
     id: 3,
     titulo: "Tema 3",
     descripcion: "Descripción del tema 3",
+    pasos: "",
     video: "video3.mp4",
+    autor: "Carlos Ruiz",
+    fecha: "2024-05-19",
   },
   {
     id: 4,
     titulo: "Tema 4",
     descripcion: "Descripción del tema 4",
+    pasos: "",
     video: "video4.mp4",
+    autor: "Laura Martínez",
+    fecha: "2024-05-20",
   },
   {
     id: 5,
     titulo: "Tema 5",
     descripcion: "Descripción del tema 5",
+    pasos: "",
     video: "video5.mp4",
+    autor: "Marta Sánchez",
+    fecha: "2024-05-21",
   },
   {
     id: 6,
     titulo: "Tema 6",
     descripcion: "Descripción del tema 6",
+    pasos: "",
     video: "video6.mp4",
+    autor: "Luis Torres",
+    fecha: "2024-05-22",
   },
   {
     id: 7,
     titulo: "Tema 7",
     descripcion: "Descripción del tema 7",
+    pasos: "",
     video: "video7.mp4",
-  },
-  {
-    id: 8,
-    titulo: "Tema 8",
-    descripcion: "Descripción del tema 8",
-    video: "video8.mp4",
-  },
-  {
-    id: 9,
-    titulo: "Tema 9",
-    descripcion: "Descripción del tema 9",
-    video: "video9.mp4",
-  },
-  {
-    id: 10,
-    titulo: "Tema 10",
-    descripcion: "Descripción del tema 10",
-    video: "video10.mp4",
-  },
-  {
-    id: 11,
-    titulo: "Tema 11",
-    descripcion: "Descripción del tema 11",
-    video: "video11.mp4",
-  },
-  {
-    id: 12,
-    titulo: "Tema 12",
-    descripcion: "Descripción del tema 12",
-    video: "video12.mp4",
+    autor: "Elena Díaz",
+    fecha: "2024-05-23",
   },
 ];
 
@@ -158,7 +159,16 @@ const Curso = () => {
             {temaSeleccionado ? (
               <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)' }}>
                 <h2 className="title is-4 has-text-white">{temaSeleccionado.titulo}</h2>
+                <p className="is-size-6">Autor: {temaSeleccionado.autor}</p>
+                <p className="is-size-6">Fecha: {temaSeleccionado.fecha}</p>
+                <h2 className="title is-3 has-text-centered has-text-white">Descripción</h2>
                 <p>{temaSeleccionado.descripcion}</p>
+                {temaSeleccionado.pasos && (
+                  <>
+                    <h2 className="title is-4 has-text-centered has-text-white">Pasos</h2>
+                    <p>{temaSeleccionado.pasos}</p>
+                  </>
+                )}
                 <video width="100%" controls>
                   <source src={temaSeleccionado.video} type="video/mp4" />
                   Tu navegador no soporta el video.
@@ -235,4 +245,5 @@ const Curso = () => {
     </div>
   );
 };
+
 export default Curso;
