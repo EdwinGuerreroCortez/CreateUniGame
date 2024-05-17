@@ -1,18 +1,25 @@
+// navUsuario.jsx
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import '../CSS/style2.css'; // Importa el archivo CSS
+import 'bulma/css/bulma.min.css'; // Importa Bulma CSS
+import '../CSS/style2.css'; // Si necesitas estilos adicionales
 import logo from '../img/logo.gif';
+import Perfil from '../usuario/perfil';
 
 const BarraNav = () => {
-  const [isActive, setIsActive] = useState(false);
+  const [estaActivo, setEstaActivo] = useState(false);
+  const [estaPerfilAbierto, setEstaPerfilAbierto] = useState(false);
 
-  const toggleBurgerMenu = () => {
-    setIsActive(!isActive);
+  const alternarMenuBurger = () => {
+    setEstaActivo(!estaActivo);
   };
 
-  // Función para envolver cada letra en un span
-  const renderAnimatedLetters = (word) => {
-    return word.split('').map((char, index) => (
+  const alternarModalPerfil = () => {
+    setEstaPerfilAbierto(!estaPerfilAbierto);
+  };
+
+  const renderizarLetrasAnimadas = (palabra) => {
+    return palabra.split('').map((char, index) => (
       <span key={index} className="animated-letter">{char}</span>
     ));
   };
@@ -22,16 +29,16 @@ const BarraNav = () => {
       <div className="navbar-brand">
         <img src={logo} alt="Logo" className="navbar-item" style={{ height: '5rem' }} />
         <Link className="navbar-item has-text-white animated-letters" to="/bienvenida">
-          {renderAnimatedLetters("UniGame")}
+          {renderizarLetrasAnimadas("UniGame")}
         </Link>
-        <a role="button" className={`navbar-burger burger ${isActive ? 'is-active' : ''}`} aria-label="menu" aria-expanded={isActive ? 'true' : 'false'} onClick={toggleBurgerMenu}>
+        <a role="button" className={`navbar-burger burger ${estaActivo ? 'is-active' : ''}`} aria-label="menu" aria-expanded={estaActivo ? 'true' : 'false'} onClick={alternarMenuBurger}>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
           <span aria-hidden="true"></span>
         </a>
       </div>
 
-      <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
+      <div id="navbarBasicExample" className={`navbar-menu ${estaActivo ? 'is-active' : ''}`}>
         <div className="navbar-start">
           <div className="navbar-item has-dropdown is-hoverable">
             <a className="navbar-link has-text-success">Explorar</a>
@@ -49,13 +56,15 @@ const BarraNav = () => {
 
         <div className="navbar-end">
           <div className="navbar-item">
-            <Link className="button is-primary" to="/#">Perfil</Link>
+            <button className="button is-primary" onClick={alternarModalPerfil}>Perfil</button>
             <Link className="button is-primary" to="/#">Cerrar sesión</Link>
           </div>
         </div>
       </div>
+
+      <Perfil estaAbierto={estaPerfilAbierto} alCerrar={alternarModalPerfil} />
     </nav>
   );
-}
+};
 
 export default BarraNav;
