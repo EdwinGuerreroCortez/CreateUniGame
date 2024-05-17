@@ -32,10 +32,28 @@ const FormRegistro = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (emailValid && password) {
-      console.log('Formulario enviado:', email, password);
+      try {
+        const response = await fetch('https://gamebackend-1.onrender.com/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Correo o contraseña incorrectos');
+        }
+
+        const data = await response.json();
+        console.log('Inicio de sesión exitoso:', data);
+        navigate('/bienvenida'); // Redirigir a la página de bienvenida
+      } catch (error) {
+        alert(error.message);
+      }
     } else {
       alert('Por favor ingresa un correo válido y una contraseña.');
     }
@@ -49,7 +67,6 @@ const FormRegistro = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword); // Use a callback to toggle based on previous state
     console.log('Toggling password visibility'); // This will log to the console every time you click the icon
   };
-
 
   return (
     <div style={{
@@ -92,10 +109,7 @@ const FormRegistro = () => {
                 <span className="icon is-small is-right has-text-white" onClick={togglePasswordVisibility} style={{ cursor: 'pointer' }}>
                   {showPassword ? <FaEyeSlash /> : <FaEye />}
                 </span>
-
-
               </div>
-
             </div>
 
             <div className="field">
