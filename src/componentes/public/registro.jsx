@@ -216,7 +216,7 @@ const FormRegistro = () => {
 
     const finishRegistration = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/usuarios', {
+            const response = await fetch('https://gamebackend-5jyi.onrender.com/api/usuarios', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
