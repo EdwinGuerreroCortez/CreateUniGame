@@ -1,0 +1,22 @@
+/* src/CSS/AcercaDeUniGame.css */
+
+.glowing-text {
+    text-shadow: 0 0 5px rgba(72, 199, 142, 0.5), 0 0 10px rgba(72, 199, 142, 0.5), 0 0 15px rgba(72, 199, 142, 0.5), 0 0 20px rgba(72, 199, 142, 0.5);
+    font-weight: 600;
+  }
+  
+  .animate-text {
+    display: inline-block;
+    animation: color-change 5s infinite;
+  }
+  
+  @keyframes color-change {
+    0%, 100% { color: #fff; }
+    50% { color: #48C78E; }
+  }
+  
+  h1.title {
+    margin-top: -20px; /* Ajustar el margen superior para colocar el título más arriba */
+    font-size: 3rem; /* Ajustar tamaño de la fuente */
+  }
+  

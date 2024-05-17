@@ -1,0 +1,49 @@
+/* src/CSS/ContactForm.css */
+
+.field .label {
+    color: #48C78E;
+  }
+  
+  .box {
+    border: 1px solid #48C78E;
+    box-shadow: 0 0 10px rgba(72, 199, 142, 0.5);
+  }
+  
+  .input:focus, .textarea:focus {
+    border-color: #48C78E;
+    box-shadow: 0 0 5px rgba(72, 199, 142, 0.5);
+  }
+  
+  .button:hover {
+    background-color: #3AAE71;
+    border-color: #3AAE71;
+  }
+  
+  .icon.is-left {
+    color: #48C78E;
+  }
+  
+  .input::placeholder, .textarea::placeholder {
+    color: #777;
+  }
+  
+  .input.has-icons-left, .textarea.has-icons-left {
+    padding-left: 2.5em; /* Añade espacio para el icono */
+  }
+  
+  textarea {
+    resize: vertical; /* Permitir redimensionar verticalmente */
+  }
+  #text{
+    padding-left: 6%;
+  }
+  
+  @media (max-width: 768px) {
+    .columns {
+      flex-direction: column-reverse;
+    }
+    .box {
+      padding: 20px;
+    }
+  }
+  

@@ -1,3 +1,5 @@
+// src/App.js
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
@@ -9,6 +11,8 @@ import PaginaPrincipal from './componentes/public/paginaPrincipal';
 import Temas from './componentes/public/temas';
 import Extra from './componentes/public/extra';
 import Fqs from './componentes/public/faqs';
+import Acerca from './componentes/public/acerca'
+import Contactanos from'./componentes/public/contactanos';
 
 // Componentes de Usuario
 import LayoutEncabeUser from './componentes/usuario/layoutEncabeUser';
@@ -29,6 +33,9 @@ const App = () => {
         <Route path="/login" element={<Formlogin />} />
         <Route path="/registro" element={<LayoutConEncab><FormRegistro /></LayoutConEncab>} />
         <Route path="/paginaPrincipal" element={<LayoutConEncab><PaginaPrincipal /></LayoutConEncab>} />
+        <Route path="/acerca" element={<LayoutConEncab><Acerca /></LayoutConEncab>} />
+        <Route path="/contactanos" element={<LayoutConEncab><Contactanos /></LayoutConEncab>} />
+
 
         {/* Rutas de Usuario */}
         <Route path="/bienvenida" element={<LayoutEncabeUser><Bienvenida /></LayoutEncabeUser>} />

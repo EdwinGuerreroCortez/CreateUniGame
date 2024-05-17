@@ -1,3 +1,5 @@
+// src/componentes/public/paginaPrincipal.js
+
 import React from 'react';
 import Slider from 'react-slick';
 import juego2 from '../img/juego2.png';
@@ -25,25 +27,25 @@ const PaginaPrincipal = () => {
           slidesToShow: 1,
           slidesToScroll: 1,
           infinite: true,
-          dots: true
-        }
+          dots: true,
+        },
       },
       {
         breakpoint: 600,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
-          initialSlide: 2
-        }
+          initialSlide: 2,
+        },
       },
       {
         breakpoint: 480,
         settings: {
           slidesToShow: 1,
-          slidesToScroll: 1
-        }
-      }
-    ]
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   return (
@@ -62,7 +64,7 @@ const PaginaPrincipal = () => {
             </div>
           </div>
           <div className="column is-half" style={{ padding: '20px' }}>
-            <div className="card tarjeta-larga has-background-black has-border-white has-shadow" >
+            <div className="card tarjeta-larga has-background-black has-border-white has-shadow">
               <div className="card-content">
                 <div className="content has-text-centered">
                   <h1 className="title has-text-white">Explora el mundo de la creación de juegos</h1>
@@ -90,4 +92,4 @@ const PaginaPrincipal = () => {
   );
 }
 
-export default PaginaPrincipal
+export default PaginaPrincipal;
