@@ -75,42 +75,6 @@ const temas = [
     descripcion: "Descripción del tema 12",
     video: "video12.mp4",
   },
-  {
-    id: 13,
-    titulo: "Tema 13",
-    descripcion: "Descripción del tema 13",
-    video: "video13.mp4",
-  },
-  {
-    id: 14,
-    titulo: "Tema 14",
-    descripcion: "Descripción del tema 14",
-    video: "video14.mp4",
-  },
-  {
-    id: 15,
-    titulo: "Tema 15",
-    descripcion: "Descripción del tema 15",
-    video: "video15.mp4",
-  },
-  {
-    id: 16,
-    titulo: "Tema 16",
-    descripcion: "Descripción del tema 16",
-    video: "video16.mp4",
-  },
-  {
-    id: 17,
-    titulo: "Tema 17",
-    descripcion: "Descripción del tema 17",
-    video: "video17.mp4",
-  },
-  {
-    id: 18,
-    titulo: "Tema 18",
-    descripcion: "Descripción del tema 18",
-    video: "video18.mp4",
-  },
 ];
 
 const Curso = () => {
@@ -206,8 +170,7 @@ const Curso = () => {
                       <div className="select">
                         <select
                           onChange={handleTypeChange}
-                          value={evidencia.tipo}
-                        >
+                          value={evidencia.tipo}>
                           <option value="" disabled>
                             Selecciona tipo de evidencia
                           </option>
@@ -230,8 +193,7 @@ const Curso = () => {
                             evidencia.tipo === "imagen" ? "image/*" :
                             evidencia.tipo === "video" ? "video/*" : "application/pdf"
                           }
-                          onChange={handleFileChange}
-                        />
+                          onChange={handleFileChange}/>
                       </div>
                     </div>
                   )}
@@ -247,11 +209,7 @@ const Curso = () => {
                 <h2 className="title is-4 has-text-white">
                   Seleccione un tema para ver los detalles
                 </h2>
-                <div
-                  aria-label="Orange and tan hamster running in a metal wheel"
-                  role="img"
-                  className="wheel-and-hamster"
-                >
+                <div aria-label="Orange and tan hamster running in a metal wheel" role="img" className="wheel-and-hamster">
                   <div className="wheel"></div>
                   <div className="hamster">
                     <div className="hamster__body">
