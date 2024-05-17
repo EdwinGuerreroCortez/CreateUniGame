@@ -76,31 +76,31 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
               <div className="field">
                 <label className="label" >Nombre</label>
                 <div className="control">
-                  <input className="input" type="text" name="nombre" value={usuario.nombre} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
+                  <input id="inputperfil" className="input" type="text" name="nombre" value={usuario.nombre} onChange={handleChange} disabled={!editando} />
                 </div>
               </div>
               <div className="field">
                 <label className="label">Apellido Paterno</label>
                 <div className="control">
-                  <input className="input" type="text" name="apellidoPaterno" value={usuario.apellidoPaterno} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
+                  <input className="input" id="inputperfil"  type="text" name="apellidoPaterno" value={usuario.apellidoPaterno} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
                 </div>
               </div>
               <div className="field">
                 <label className="label" >Apellido Materno</label>
                 <div className="control">
-                  <input className="input" type="text" name="apellidoMaterno" value={usuario.apellidoMaterno} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
+                  <input className="input" id="inputperfil"  type="text" name="apellidoMaterno" value={usuario.apellidoMaterno} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
                 </div>
               </div>
               <div className="field">
                 <label className="label" >Nombre de Usuario</label>
                 <div className="control">
-                  <input className="input" type="text" name="nomusuario" value={usuario.nomusuario} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
+                  <input className="input" id="inputperfil"  type="text" name="nomusuario" value={usuario.nomusuario} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
                 </div>
               </div>
               <div className="field">
                 <label className="label">Edad</label>
                 <div className="control">
-                  <input className="input" type="number" name="edad" value={usuario.edad} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
+                  <input className="input"  id="inputperfil" type="number" name="edad" value={usuario.edad} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
                 </div>
               </div>
               <div className="field">
@@ -118,13 +118,13 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
               <div className="field">
                 <label className="label" >Teléfono</label>
                 <div className="control">
-                  <input className="input" type="text" name="telefono" value={usuario.telefono} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
+                  <input className="input" id="inputperfil"  type="text" name="telefono" value={usuario.telefono} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
                 </div>
               </div>
               <div className="field">
                 <label className="label">Correo</label>
                 <div className="control">
-                  <input className="input" type="email" name="correo" value={usuario.correo} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
+                  <input className="input" id="inputperfil"  type="email" name="correo" value={usuario.correo} onChange={handleChange} disabled={!editando} style={{ backgroundColor: 'white', color: 'black' }} />
                 </div>
               </div>
               <div className="field">

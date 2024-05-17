@@ -136,8 +136,11 @@
   color: black;
 }
 
-.input,
-select {
+/* CSS */
+#inputperfil {
   background-color: white;
   color: black;
+  border: 1px solid black; /* Añade el borde negro */
 }
+
+
