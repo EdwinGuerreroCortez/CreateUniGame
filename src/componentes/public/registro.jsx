@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import 'bulma/css/bulma.min.css';
+import '../CSS/style.css';
 
 const handleChange = (formData, setFormData) => e => {
     const { name, value } = e.target;
@@ -16,15 +17,8 @@ const validateStepOne = (formData) => {
         alert("Nombres y apellidos solo pueden contener letras, espacios, guiones y apóstrofes.");
         return false;
     }
-    if (isNaN(edad) || edad < 0 ) {
+    if (isNaN(edad) || edad < 0 || edad > 80 || edad <= 10) {
         alert("Verifique que la edad sea correcta");
-        return false;
-    }else if(isNaN(edad)|| edad > 80){
-        alert("Su edad es mayor a nuestras condiciones");
-        return false;
-    }
-    else if(isNaN(edad)|| edad <= 10){
-        alert("No tiene edad para tomar este curso");
         return false;
     }
     return true;
@@ -69,37 +63,54 @@ const validateStepThree = (formData) => {
     return true;
 };
 
-const inputStyle = { marginBottom: '15px' };  // Estilo para incrementar el espaciado entre los campos
+const inputStyle = { marginBottom: '15px' };
 
-const StepOne = ({ formData, setFormData, nextStep }) => (
-    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
-    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
-        <div className="card-content">
-            <h2 className="title has-text-centered has-text-white">Registro - Paso 1</h2>
-            <div className="field" >
-                <input className="input is-black" type="text" placeholder="Nombre" name="nombre" value={formData.nombre} onChange={handleChange(formData, setFormData)} style={inputStyle} />
-                <input className="input is-black" type="text" placeholder="Apellido Paterno" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
-                <input className="input is-black" type="text" placeholder="Apellido Materno" name="apellidoMaterno" value={formData.apellidoMaterno} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
-                <input className="input is-black" type="number" placeholder="Edad" name="edad" value={formData.edad} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
-                <div className="select is-fullwidth" style={inputStyle}>
-                    <select name="sexo" value={formData.sexo} onChange={handleChange(formData, setFormData)}>
-                        <option value="">Selecciona el Genero</option>
-                        <option value="M">Masculino</option>
-                        <option value="F">Femenino</option>
-                    </select>
-                </div>
-            </div>
-            <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={() => validateStepOne(formData) && nextStep()}>Siguiente</button>
-        </div>
-    </div>
+const ProgressIndicator = ({ step }) => (
+    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+        {[1, 2, 3, 4].map((item, index) => (
+            <div key={index} style={{
+                width: '10px',
+                height: '10px',
+                margin: '0 5px',
+                backgroundColor: step === item ? '#3273dc' : '#ffffff',
+                borderRadius: '50%',
+                transition: 'background-color 0.3s ease'
+            }}></div>
+        ))}
     </div>
 );
 
-const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
+const StepOne = ({ formData, setFormData, nextStep, step }) => (
+    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
+        <div className="card has-background-black has-text-white" style={{ maxWidth: '360px', margin: '40px auto', padding: '10px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+            <div className="card-content">
+                <h2 className="title has-text-centered has-text-white">Registro - Paso 1</h2>
+                <ProgressIndicator step={step} />
+                <div className="field">
+                    <input className="input is-black" type="text" placeholder="Nombre" name="nombre" value={formData.nombre} onChange={handleChange(formData, setFormData)} style={inputStyle} />
+                    <input className="input is-black" type="text" placeholder="Apellido Paterno" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
+                    <input className="input is-black" type="text" placeholder="Apellido Materno" name="apellidoMaterno" value={formData.apellidoMaterno} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
+                    <input className="input is-black" type="number" placeholder="Edad" name="edad" value={formData.edad} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
+                    <div className="select is-fullwidth" style={inputStyle}>
+                        <select name="sexo" value={formData.sexo} onChange={handleChange(formData, setFormData)}>
+                            <option value="">Selecciona el Genero</option>
+                            <option value="M">Masculino</option>
+                            <option value="F">Femenino</option>
+                        </select>
+                    </div>
+                </div>
+                <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={() => validateStepOne(formData) && nextStep()}>Siguiente</button>
+            </div>
+        </div>
+    </div>
+);
+
+const StepTwo = ({ formData, setFormData, nextStep, prevStep, step }) => (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+        <div className="card has-background-black has-text-white" style={{ maxWidth: '360px', margin: '40px auto', padding: '10px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
             <div className="card-content">
                 <h2 className="title has-text-centered has-text-white">Registro - Paso 2</h2>
+                <ProgressIndicator step={step} />
                 <div className="field">
                     <input className="input is-black" type="text" placeholder="Teléfono" name="telefono" value={formData.telefono} onChange={handleChange(formData, setFormData)} style={inputStyle} />
                     <input className="input is-black" type="email" placeholder="Correo Electrónico" name="correoElectronico" value={formData.correoElectronico} onChange={handleChange(formData, setFormData)} style={inputStyle} />
@@ -121,20 +132,21 @@ const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
     </div>
 );
 
-const StepThree = ({ formData, setFormData, prevStep, nextStep }) => (
+const StepThree = ({ formData, setFormData, prevStep, nextStep, step }) => (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
-    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px',boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
-        <div className="card-content">
-            <h2 className="title has-text-centered has-text-white">Registro - Paso 3</h2>
-            <div className="field">
-                <input className="input is-black" type="text" placeholder="Usuario" name="usuario" value={formData.usuario} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
-                <input className="input is-black" type="password" placeholder="Contraseña" name="contrasena" value={formData.contrasena} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
-                <input className="input is-black" type="password" placeholder="Confirmar Contraseña" name="confirmarContrasena" value={formData.confirmarContrasena} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
+        <div className="card has-background-black has-text-white" style={{  maxWidth: '360px', margin: '40px auto', padding: '10px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+            <div className="card-content">
+                <h2 className="title has-text-centered has-text-white">Registro - Paso 3</h2>
+                <ProgressIndicator step={step} />
+                <div className="field">
+                    <input className="input is-black" type="text" placeholder="Usuario" name="usuario" value={formData.usuario} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
+                    <input className="input is-black" type="password" placeholder="Contraseña" name="contrasena" value={formData.contrasena} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
+                    <input className="input is-black" type="password" placeholder="Confirmar Contraseña" name="confirmarContrasena" value={formData.confirmarContrasena} onChange={handleChange(formData, setFormData)} style={inputStyle}/>
+                </div>
+                <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={prevStep}>Anterior</button>
+                <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={() => validateStepThree(formData) && nextStep()}>Siguiente</button>
             </div>
-            <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={prevStep}>Anterior</button>
-            <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={() => validateStepThree(formData) && nextStep()}>Siguiente</button>
         </div>
-    </div>
     </div>
 );
 
@@ -143,49 +155,50 @@ const handleChangeLenguajes = (formData, setFormData, value) => {
       ? formData.lenguajes.filter(l => l !== value) // Eliminar si ya está
       : [...formData.lenguajes, value]; // Agregar si no está
     setFormData({ ...formData, lenguajes: newLenguajes });
-  };
-  
- const StepFour = ({ formData, setFormData, prevStep, finishRegistration }) => (
+};
+
+const StepFour = ({ formData, setFormData, prevStep, finishRegistration, step }) => (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
-    <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px' ,boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)'}}>
-        <div className="card-content">
-            <h2 className="title has-text-centered has-text-white">Experiencia en Lenguajes</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '10px' }}>
-                    {['Python', 'JavaScript', 'C#', 'C++'].map((lang) => (
-                        <label className="checkbox" key={lang} style={{ marginRight: '10px' }}>
-                            <input 
-                                type="checkbox" 
-                                name="lenguajes" 
-                                value={lang} 
-                                checked={formData.lenguajes.includes(lang)} 
-                                onChange={() => handleChangeLenguajes(formData, setFormData, lang)} 
-                                style={{ marginRight: '5px' }}
-                            />
-                            {lang}
-                        </label>
-                    ))}
+        <div className="card has-background-black has-text-white" style={{ maxWidth: '360px', margin: '40px auto', padding: '10px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)'}}>
+            <div className="card-content">
+                <h2 className="title has-text-centered has-text-white">Experiencia en Lenguajes</h2>
+                <ProgressIndicator step={step} />
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '20px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '10px' }}>
+                        {['Python', 'JavaScript', 'C#', 'C++'].map((lang) => (
+                            <label className="checkbox" key={lang} style={{ marginRight: '10px' }}>
+                                <input 
+                                    type="checkbox" 
+                                    name="lenguajes" 
+                                    value={lang} 
+                                    checked={formData.lenguajes.includes(lang)} 
+                                    onChange={() => handleChangeLenguajes(formData, setFormData, lang)} 
+                                    style={{ marginRight: '5px' }}
+                                />
+                                {lang}
+                            </label>
+                        ))}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                        {['Java', 'Lua', 'HTML5', 'Swift'].map((lang) => (
+                            <label className="checkbox" key={lang} style={{ marginRight: '10px' }}>
+                                <input 
+                                    type="checkbox" 
+                                    name="lenguajes" 
+                                    value={lang} 
+                                    checked={formData.lenguajes.includes(lang)} 
+                                    onChange={() => handleChangeLenguajes(formData, setFormData, lang)} 
+                                    style={{ marginRight: '5px' }}
+                                />
+                                {lang}
+                            </label>
+                        ))}
+                    </div>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                    {['Java', 'Lua', 'HTML5', 'Swift'].map((lang) => (
-                        <label className="checkbox" key={lang} style={{ marginRight: '10px' }}>
-                            <input 
-                                type="checkbox" 
-                                name="lenguajes" 
-                                value={lang} 
-                                checked={formData.lenguajes.includes(lang)} 
-                                onChange={() => handleChangeLenguajes(formData, setFormData, lang)} 
-                                style={{ marginRight: '5px' }}
-                            />
-                            {lang}
-                        </label>
-                    ))}
-                </div>
+                <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={prevStep}>Anterior</button>
+                <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={finishRegistration}>Registrar</button>
             </div>
-            <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={prevStep}>Anterior</button>
-            <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={finishRegistration}>Registrar</button>
         </div>
-    </div>
     </div>
 );
 
@@ -229,14 +242,14 @@ const FormRegistro = () => {
                         nombre: formData.nombre,
                         apellido_paterno: formData.apellidoPaterno,
                         apellido_materno: formData.apellidoMaterno,
-                        edad: parseInt(formData.edad, 10), // Asegurarse de que la edad sea un número
+                        edad: parseInt(formData.edad, 10),
                         genero: formData.sexo,
                         telefono: formData.telefono,
                         correo: formData.correoElectronico,
                         grado_de_estudios: formData.gradoEstudio,
                     },
                     experiencia_en_lenguaje_de_programacion: formData.lenguajes,
-                    evaluaciones_realizadas: [], // Inicializar como un array vacío
+                    evaluaciones_realizadas: [],
                 }),
             });
 
@@ -251,18 +264,14 @@ const FormRegistro = () => {
         }
     };
 
-    switch (step) {
-        case 1:
-            return <StepOne formData={formData} setFormData={setFormData} nextStep={nextStep} />;
-        case 2:
-            return <StepTwo formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />;
-        case 3:
-            return <StepThree formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />;
-        case 4:
-            return <StepFour formData={formData} setFormData={setFormData} prevStep={prevStep} finishRegistration={finishRegistration} />;
-        default:
-            return <StepOne formData={formData} setFormData={setFormData} nextStep={nextStep} />;
-    }
+    return (
+        <div>
+            {step === 1 && <StepOne formData={formData} setFormData={setFormData} nextStep={nextStep} step={step} />}
+            {step === 2 && <StepTwo formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} step={step} />}
+            {step === 3 && <StepThree formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} step={step} />}
+            {step === 4 && <StepFour formData={formData} setFormData={setFormData} prevStep={prevStep} finishRegistration={finishRegistration} step={step} />}
+        </div>
+    );
 };
 
 export default FormRegistro;

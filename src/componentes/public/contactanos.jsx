@@ -30,14 +30,14 @@ const ContactForm = () => {
       <div className="container">
         <div className="columns is-vcentered is-variable is-8">
           <div className="column is-half">
-            <figure className="image">
+            <figure className="image-container" style={styles.imageContainer}>
               <img src={contactImage} alt="Contact Us" style={styles.image} />
             </figure>
           </div>
           <div className="column is-half">
             <div className="box has-background-dark" style={styles.box}>
               <h1 className="title has-text-white is-size-3">Contáctanos</h1>
-              <p className="has-text-white is-size-8">
+              <p className="has-text-white">
                 Para cualquier sugerencia o queja, por favor completa el siguiente formulario.
               </p>
               <form onSubmit={handleSubmit}>
@@ -56,7 +56,7 @@ const ContactForm = () => {
                   <label className="label has-text-white">Correo Electrónico</label>
                   <div className="control has-icons-left">
                     <input 
-                      className="input" 
+                      className="input has-icons-left" 
                       type="email" 
                       name="email" 
                       value={formData.email} 
@@ -74,8 +74,7 @@ const ContactForm = () => {
                   <label className="label has-text-white">Mensaje</label>
                   <div className="control has-icons-left">
                     <textarea 
-                        id='text'
-                      className="textarea" 
+                      className="textarea has-icons-left" 
                       name="message" 
                       value={formData.message} 
                       onChange={handleChange} 
@@ -111,7 +110,14 @@ const styles = {
     padding: '40px 20px',
     fontFamily: 'Poppins, sans-serif',
   },
+  imageContainer: {
+    position: 'relative',
+    display: 'inline-block',
+    boxShadow: '0 0 15px 5px rgba(72, 199, 142, 0.5)', // Borde luminoso alrededor de la imagen
+    borderRadius: '10px',
+  },
   image: {
+    display: 'block',
     borderRadius: '10px',
     maxWidth: '100%',
     height: 'auto',
@@ -119,6 +125,7 @@ const styles = {
   box: {
     backgroundColor: '#090A0C',
     padding: '30px',
+    borderRadius: '10px',
   },
   input: {
     backgroundColor: '#2C2F33',

@@ -7,8 +7,6 @@ import img3 from '../img/login3.webp';
 import img4 from '../img/login4.webp';
 import img5 from '../img/login5.jpg';
 import img6 from '../img/login6.jpg';
-import { FaEye, FaEyeSlash } from 'react-icons/fa'; // Importa los íconos para el ojo
-
 import '../CSS/style.css';
 
 const backgrounds = [img1, img3, img6, img4, img5, img2];
@@ -64,8 +62,7 @@ const FormRegistro = () => {
   };
 
   const togglePasswordVisibility = () => {
-    setShowPassword((prevShowPassword) => !prevShowPassword); // Use a callback to toggle based on previous state
-    console.log('Toggling password visibility'); // This will log to the console every time you click the icon
+    setShowPassword((prevShowPassword) => !prevShowPassword);
   };
 
   return (
@@ -84,10 +81,10 @@ const FormRegistro = () => {
         Atrás
       </button>
 
-      <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+      <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '10px', display: 'flex', flexDirection: 'column', justifyContent: 'center', boxShadow: '0px 0px 20px 0px rgba(255,255,255,0.8)', borderRadius: '10px' }}>
         <div className="card-content">
           <h2 className="title has-text-centered has-text-white">Iniciar Sesión</h2>
-          <p className="has-text-centered" style={{ marginBottom: '20px' }}>Ingresa tus datos para acceder a tu cuenta.</p>
+          <p className="has-text-centered" style={{ marginBottom: '10px' }}>Ingresa tus datos para acceder a tu cuenta.</p>
           <form onSubmit={handleSubmit}>
             <div className="field">
               <label className="label has-text-white">Email</label>
@@ -101,14 +98,14 @@ const FormRegistro = () => {
 
             <div className="field">
               <label className="label has-text-white">Contraseña</label>
-              <div className="control has-icons-left has-icons-right">
-                <input className="input is-black" type={showPassword ? 'text' : 'password'} placeholder="********" value={password} onChange={e => setPassword(e.target.value)} />
+              <div className="control has-icons-left has-icons-right is-flex">
+                <input className="input is-black" type={showPassword ? 'text' : 'password'} placeholder="********" value={password} onChange={e => setPassword(e.target.value)} style={{ flexGrow: 1 }} />
                 <span className="icon is-small is-left has-text-white">
                   <i className="fas fa-lock"></i>
                 </span>
-                <span className="icon is-small is-right has-text-white" onClick={togglePasswordVisibility} style={{ cursor: 'pointer' }}>
-                  {showPassword ? <FaEyeSlash /> : <FaEye />}
-                </span>
+                <button type="button" onClick={togglePasswordVisibility} className="button is-light is-small" style={{ marginLeft: '-10px' }}>
+                  {showPassword ? 'Ocultar' : 'Mostrar'}
+                </button>
               </div>
             </div>
 
@@ -118,6 +115,9 @@ const FormRegistro = () => {
               </div>
             </div>
           </form>
+          <div className="has-text-centered" style={{ marginTop: '10px' }}>
+            <p className="has-text-white"style={{fontSize: '15px'}} >¿No tienes cuenta? <a href="/registro" className="has-text-link" style={{fontSize: '15px'}}>Regístrate</a></p>
+          </div>
         </div>
       </div>
     </div>

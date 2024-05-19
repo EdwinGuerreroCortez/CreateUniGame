@@ -270,3 +270,27 @@
     transform: rotate(-1turn);
   }
 }
+/* archivo CSS existente, añadir al final */
+@media (max-width: 768px) {
+  .tema-panel {
+    display: none;
+  }
+  
+  .tema-panel-button {
+    display: block;
+  }
+
+  .tema-panel.is-active {
+    display: block;
+  }
+}
+
+@media (min-width: 769px) {
+  .tema-panel-button {
+    display: none;
+  }
+
+  .tema-panel {
+    display: block;
+  }
+}

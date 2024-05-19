@@ -82,6 +82,7 @@ const Curso = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [temaSeleccionado, setTemaSeleccionado] = useState(null);
   const [evidencia, setEvidencia] = useState({ tipo: "", archivo: null });
+  const [mostrarTemas, setMostrarTemas] = useState(false);
   const temasPorPagina = 6;
 
   const indiceUltimoTema = paginaActual * temasPorPagina;
@@ -91,6 +92,7 @@ const Curso = () => {
 
   const seleccionarTema = (tema) => {
     setTemaSeleccionado(tema);
+    setMostrarTemas(false); // Ocultar el panel de temas en móviles al seleccionar un tema
   };
 
   const cambiarPagina = (numeroPagina) => {
@@ -110,7 +112,6 @@ const Curso = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Aquí se puede manejar la lógica para enviar la evidencia
     console.log("Evidencia enviada:", evidencia);
   };
 
@@ -119,13 +120,19 @@ const Curso = () => {
       <div className="container">
         <div className="columns">
           <div className="column is-one-quarter">
-            <div className="box" style={{ background: 'rgb(2, 25, 41)', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+            <button
+              className="button is-primary tema-panel-button"
+              onClick={() => setMostrarTemas(!mostrarTemas)}
+            >
+              {mostrarTemas ? "Ocultar Temas" : "Mostrar Temas"}
+            </button>
+            <div className={`box tema-panel ${mostrarTemas ? 'is-active' : ''}`} style={{ background: 'rgb(2, 25, 41)', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)', marginTop:'20px' }}>
               <h2 className="title is-4 has-text-white">Temas</h2>
               {temasActuales.map((tema) => (
                 <div
                   key={tema.id}
                   className="card has-background-primary"
-                  style={{ cursor: "pointer", marginBottom: "1rem" }}
+                  style={{ cursor: "pointer", marginBottom: "1rem", marginTop:'20px'}}
                   onClick={() => seleccionarTema(tema)}
                 >
                   <div className="card-content">
@@ -157,7 +164,7 @@ const Curso = () => {
           </div>
           <div className="column is-three-quarters">
             {temaSeleccionado ? (
-              <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)' }}>
+              <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)' , marginTop:'20px'}}>
                 <h2 className="title is-4 has-text-white">{temaSeleccionado.titulo}</h2>
                 <p className="is-size-6">Autor: {temaSeleccionado.autor}</p>
                 <p className="is-size-6">Fecha: {temaSeleccionado.fecha}</p>

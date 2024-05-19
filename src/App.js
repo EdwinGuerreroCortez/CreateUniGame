@@ -41,6 +41,9 @@ const App = () => {
         <Route path="/bienvenida" element={<LayoutEncabeUser><Bienvenida /></LayoutEncabeUser>} />
         <Route path="/recursos" element={<LayoutEncabeUser><Recursos /></LayoutEncabeUser>} />
         <Route path="/curso" element={<LayoutEncabeUser><Curso /></LayoutEncabeUser>} />
+        <Route path="/acerca-de" element={<LayoutEncabeUser><Acerca /></LayoutEncabeUser>} />
+        <Route path="/contacto" element={<LayoutEncabeUser><Contactanos /></LayoutEncabeUser>} />
+
 
         {/* Rutas Administrativas */}
         <Route path="/administrativa" element={<LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin>} />

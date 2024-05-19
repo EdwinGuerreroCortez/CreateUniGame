@@ -1,21 +1,21 @@
 import React from 'react';
 import BarraNavAdmin from './navAdministrativo.jsx'; 
-import PieDePagina from '../compartidos/pieDepagina'; 
+import PieDePaginaAdmin from '../compartidos/pideDePaginaAdmin.jsx';
 
 const layoutEncabeAdmin = ({ children }) => {
   return (
     <div className="layout">
       <header>
-        <BarraNavAdmin /> 
+        <BarraNavAdmin />
       </header>
       <main className="main-content">
-        {children}  
+        {children}
       </main>
       <footer>
-        <PieDePagina />  
+        <PieDePaginaAdmin />
       </footer>
     </div>
   );
-}
+};
 
 export default layoutEncabeAdmin;

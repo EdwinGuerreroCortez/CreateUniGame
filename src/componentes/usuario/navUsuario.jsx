@@ -44,9 +44,8 @@ const BarraNav = () => {
             <a className="navbar-link has-text-success">Explorar</a>
             <div className="navbar-dropdown">
               <Link className="navbar-item has-text-success" to="/acerca-de">Acerca de</Link>
-              <Link className="navbar-item has-text-success" to="/contactanos">Contáctanos</Link>
-              <Link className="navbar-item has-text-success" to="/soporte">Soporte</Link>
-              <Link className="navbar-item has-text-success" to="/blog">Blog</Link>
+              <Link className="navbar-item has-text-success" to="/contacto">Contáctanos</Link>
+
             </div>
           </div>
           <Link className="navbar-item has-text-success" to="/bienvenida">Inicio</Link>
