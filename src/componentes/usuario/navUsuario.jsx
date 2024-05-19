@@ -55,7 +55,7 @@ const BarraNav = () => {
 
         <div className="navbar-end">
           <div className="navbar-item">
-            <button className="button is-primary" onClick={alternarModalPerfil}>Perfil</button>
+            <button className="button is-success" onClick={alternarModalPerfil}>Perfil</button>
             <Link className="button is-primary" to="/#">Cerrar sesión</Link>
           </div>
         </div>
