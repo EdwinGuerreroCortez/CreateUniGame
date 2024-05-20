@@ -1,6 +1,5 @@
-// navUsuario.jsx
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import 'bulma/css/bulma.min.css'; // Importa Bulma CSS
 import '../CSS/style2.css'; // Si necesitas estilos adicionales
 import logo from '../img/logo_empresa.gif';
@@ -9,6 +8,7 @@ import Perfil from '../usuario/perfil';
 const BarraNav = () => {
   const [estaActivo, setEstaActivo] = useState(false);
   const [estaPerfilAbierto, setEstaPerfilAbierto] = useState(false);
+  const navigate = useNavigate();
 
   const alternarMenuBurger = () => {
     setEstaActivo(!estaActivo);
@@ -22,6 +22,12 @@ const BarraNav = () => {
     return palabra.split('').map((char, index) => (
       <span key={index} className="animated-letter">{char}</span>
     ));
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userData');
+    navigate('/');
   };
 
   return (
@@ -45,7 +51,6 @@ const BarraNav = () => {
             <div className="navbar-dropdown">
               <Link className="navbar-item has-text-success" to="/acerca-de">Acerca de</Link>
               <Link className="navbar-item has-text-success" to="/contacto">Contáctanos</Link>
-
             </div>
           </div>
           <Link className="navbar-item has-text-success" to="/bienvenida">Inicio</Link>
@@ -56,7 +61,7 @@ const BarraNav = () => {
         <div className="navbar-end">
           <div className="navbar-item">
             <button className="button is-success" onClick={alternarModalPerfil}>Perfil</button>
-            <Link className="button is-primary" to="/#">Cerrar sesión</Link>
+            <button className="button is-primary" onClick={handleLogout}>Cerrar sesión</button>
           </div>
         </div>
       </div>
