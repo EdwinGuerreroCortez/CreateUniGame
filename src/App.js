@@ -23,6 +23,11 @@ import Curso from './componentes/usuario/curso';
 // Componentes Administrativos
 import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
 import BienvenidaAdmin from './componentes/administrativo/bienvenidaAdmin';
+import FAQform from './componentes/administrativo/fqsform';
+import Mision from './componentes/administrativo/mision';
+import Vision from './componentes/administrativo/vision';
+import TemasAdd from './componentes/administrativo/temas';
+import Usuarios from './componentes/administrativo/Usuarios.jsx'
 
 const App = () => {
   return (
@@ -41,9 +46,21 @@ const App = () => {
         <Route path="/bienvenida" element={<LayoutEncabeUser><Bienvenida /></LayoutEncabeUser>} />
         <Route path="/recursos" element={<LayoutEncabeUser><Recursos /></LayoutEncabeUser>} />
         <Route path="/curso" element={<LayoutEncabeUser><Curso /></LayoutEncabeUser>} />
+        <Route path="/acerca-de" element={<LayoutEncabeUser><Acerca /></LayoutEncabeUser>} />
+        <Route path="/contacto" element={<LayoutEncabeUser><Contactanos /></LayoutEncabeUser>} />
 
-        {/* Rutas Administrativas */}
-        <Route path="/administrativa" element={<LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin>} />
+         {/* Rutas Administrativas */}
+         <Route path="/administrativa" element={<LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin>} />
+        <Route path="/admin/users" element={<LayoutEncabeAdmin><Usuarios/></LayoutEncabeAdmin>} />
+        <Route path="/admin/temas" element={<LayoutEncabeAdmin><TemasAdd/></LayoutEncabeAdmin>} />
+        <Route path="/admin/calificaciones/enero" element={<LayoutEncabeAdmin><div>Calificaciones Enero</div></LayoutEncabeAdmin>} />
+        <Route path="/admin/calificaciones/febrero" element={<LayoutEncabeAdmin><div>Calificaciones Febrero</div></LayoutEncabeAdmin>} />
+        <Route path="/admin/calificaciones/marzo" element={<LayoutEncabeAdmin><div>Calificaciones Marzo</div></LayoutEncabeAdmin>} />
+        <Route path="/admin/cuestionarios" element={<LayoutEncabeAdmin><div>Cuestionarios</div></LayoutEncabeAdmin>} />
+        <Route path="/admin/informacion/faqs" element={<LayoutEncabeAdmin><FAQform/></LayoutEncabeAdmin>} />
+        <Route path="/admin/informacion/mision" element={<LayoutEncabeAdmin><Mision/></LayoutEncabeAdmin>} />
+        <Route path="/admin/informacion/vision" element={<LayoutEncabeAdmin><Vision/></LayoutEncabeAdmin>} />
+        <Route path="/admin/settings" element={<LayoutEncabeAdmin><div>Configuraciones</div></LayoutEncabeAdmin>} />
       </Routes>
     </Router>
   );

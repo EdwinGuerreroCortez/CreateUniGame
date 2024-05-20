@@ -1,7 +1,9 @@
+// src/componentes/public/BarraNavAdmin.js
+
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/style2.css'; // Asegúrate de que este archivo contenga los estilos apropiados
-import logo from '../img/logo.gif'; // Logo similar al usado en otras barras de navegación
+import logo from '../img/logo_empresa.gif';
 
 const BarraNavAdmin = () => {
     const [isActive, setIsActive] = useState(false);
@@ -21,7 +23,7 @@ const BarraNavAdmin = () => {
         <nav className="navbar has-background-black" role="navigation" aria-label="main navigation" style={{ height: '5rem' }}>
             <div className="navbar-brand">
                 <img src={logo} alt="Logo" className="navbar-item" style={{ height: '5rem' }} />
-                <Link className="navbar-item has-text-white animated-letters" to="/bienvenida">
+                <Link className="navbar-item has-text-white animated-letters" to="/administrativa">
                     {renderAnimatedLetters("UniGame")}
                 </Link>
                 <a role="button" className={`navbar-burger burger ${isActive ? 'is-active' : ''}`} aria-label="menu" aria-expanded={isActive ? 'true' : 'false'} onClick={toggleBurgerMenu}>
@@ -44,8 +46,14 @@ const BarraNavAdmin = () => {
                         </div>
                     </div>
                     <Link className="navbar-item has-text-success" to="/admin/cuestionarios">Cuestionarios</Link>
-                    <Link className="navbar-item has-text-success" to="/admin/informacion">Información</Link>
-                </div>
+                    <div className="navbar-item has-dropdown is-hoverable">
+                        <a className="navbar-link has-text-success">Informacion</a>
+                        <div className="navbar-dropdown">
+                            <Link className="navbar-item" to="/admin/informacion/faqs">Preguntas Frecuentes</Link>
+                            <Link className="navbar-item" to="/admin/informacion/mision">mision</Link>
+                            <Link className="navbar-item" to="/admin/informacion/vision">vision</Link>
+                        </div>
+                    </div>                </div>
 
                 <div className="navbar-end">
                     <div className="navbar-item">

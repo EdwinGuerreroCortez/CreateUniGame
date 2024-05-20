@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/style2.css'; // Importa el archivo CSS
-import logo from '../img/logo.gif';
+import logo from '../img/logo_empresa.gif';
 
 const BarraNav = () => {
   const [isActive, setIsActive] = useState(false);
@@ -38,8 +38,7 @@ const BarraNav = () => {
             <div className="navbar-dropdown">
               <Link className="navbar-item has-text-success" to="/acerca">Acerca de Unigame</Link>
               <Link className="navbar-item has-text-success" to="/contactanos">Contáctanos</Link>
-              <Link className="navbar-item has-text-success" to="/soporte">Soporte</Link>
-              <Link className="navbar-item has-text-success" to="/blog">Blog</Link>
+
             </div>
           </div>
           <Link className="navbar-item has-text-success" to="/">Inicio</Link>

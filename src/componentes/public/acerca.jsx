@@ -11,7 +11,7 @@ const AcercaDeUniGame = () => {
       <div className="container">
         <div className="columns is-vcentered">
           <div className="column is-half">
-            <figure className="image">
+            <figure className="image-container" style={styles.imageContainer}>
               <img src={imagenUniGame} alt="UniGame" style={styles.image} />
             </figure>
           </div>
@@ -36,12 +36,21 @@ const styles = {
   section: {
     backgroundColor: '#14161A',
     color: 'white',
-    padding: '40px 20px',
-    fontFamily: 'Poppins, sans-serif', // Aplicamos la fuente Poppins
+    padding: '60px 20px',
+    fontFamily: 'Poppins, sans-serif',
+  },
+  imageContainer: {
+    position: 'relative',
+    display: 'inline-block',
+    boxShadow: '0 0 15px 5px rgba(72, 199, 142, 0.5)', // Borde luminoso alrededor de la imagen
+    borderRadius: '10px',
   },
   image: {
+    display: 'block',
     borderRadius: '10px',
-  }
+    maxWidth: '100%',
+    height: 'auto',
+  },
 };
 
 export default AcercaDeUniGame;

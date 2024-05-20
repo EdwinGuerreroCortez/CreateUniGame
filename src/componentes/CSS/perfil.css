@@ -1,0 +1,58 @@
+.perfil-box {
+    background-color: #1f1f1f;
+    color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(50, 115, 220, 0.5); /* Borde luminoso */
+}
+
+.perfil-imagen {
+    margin: 0 auto;
+    box-shadow: 0 0 15px 5px rgba(72, 199, 142, 0.5); /* Borde luminoso alrededor de la imagen */
+    border-radius: 100px;
+}
+
+.inputperfil {
+    background-color: #2C2F33;
+    color: white;
+    border: none;
+    box-shadow: none;
+}
+
+.inputperfil:focus {
+    border: 1px solid #48C78E;
+    box-shadow: 0 0 5px rgba(72, 199, 142, 0.5);
+}
+
+button.is-info {
+    background-color: #48C78E;
+    border-color: #48C78E;
+}
+
+button.is-info:hover {
+    background-color: #3AAE71;
+    border-color: #3AAE71;
+}
+
+button.is-danger {
+    margin-left: 10px;
+}
+
+.modal-content {
+    max-width: 800px;
+    width: 100%;
+}
+
+.modal-close {
+    background-color: transparent;
+}
+
+.datos-titulo {
+    color: #48C78E;
+    text-shadow: 0 0 5px rgba(72, 199, 142, 0.5);
+}
+
+.usuario-titulo {
+    color: #3273dc;
+    text-shadow: 0 0 5px rgba(50, 115, 220, 0.5);
+}

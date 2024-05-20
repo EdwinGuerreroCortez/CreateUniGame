@@ -54,10 +54,10 @@ const Temas = () => {
 
 const styles = {
   container: {
-    maxWidth: '1200px',
     margin: '0 auto',
-    padding: '20px',
     backgroundColor: '#14161A',
+    padding: '20px',
+    paddingInline: '10%',
   },
   header: {
     fontSize: '28px',

@@ -1,8 +1,8 @@
 import React from 'react';
-import BarraNavUser from '../usuario/navUsuario';
-import PieDePagina from '../compartidos/pieDepagina';
+import BarraNavUser from './navUsuario';
+import PieDePaginaUser from '../compartidos/pieDePaginaUser';
 
-const layoutEncabeUser = ({ children }) => {
+const LayoutEncabeUser = ({ children }) => {
   return (
     <div className="layout">
       <header>
@@ -12,10 +12,10 @@ const layoutEncabeUser = ({ children }) => {
         {children}
       </main>
       <footer>
-        <PieDePagina />
+        <PieDePaginaUser />
       </footer>
     </div>
   );
-}
+};
 
-export default layoutEncabeUser;
+export default LayoutEncabeUser;

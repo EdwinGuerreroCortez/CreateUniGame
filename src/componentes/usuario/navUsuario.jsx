@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'bulma/css/bulma.min.css'; // Importa Bulma CSS
 import '../CSS/style2.css'; // Si necesitas estilos adicionales
-import logo from '../img/logo.gif';
+import logo from '../img/logo_empresa.gif';
 import Perfil from '../usuario/perfil';
 
 const BarraNav = () => {
@@ -44,9 +44,8 @@ const BarraNav = () => {
             <a className="navbar-link has-text-success">Explorar</a>
             <div className="navbar-dropdown">
               <Link className="navbar-item has-text-success" to="/acerca-de">Acerca de</Link>
-              <Link className="navbar-item has-text-success" to="/contactanos">Contáctanos</Link>
-              <Link className="navbar-item has-text-success" to="/soporte">Soporte</Link>
-              <Link className="navbar-item has-text-success" to="/blog">Blog</Link>
+              <Link className="navbar-item has-text-success" to="/contacto">Contáctanos</Link>
+
             </div>
           </div>
           <Link className="navbar-item has-text-success" to="/bienvenida">Inicio</Link>
@@ -56,7 +55,7 @@ const BarraNav = () => {
 
         <div className="navbar-end">
           <div className="navbar-item">
-            <button className="button is-primary" onClick={alternarModalPerfil}>Perfil</button>
+            <button className="button is-success" onClick={alternarModalPerfil}>Perfil</button>
             <Link className="button is-primary" to="/#">Cerrar sesión</Link>
           </div>
         </div>
