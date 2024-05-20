@@ -1,8 +1,6 @@
-// src/componentes/administrativo/TemaForm.js
-
 import React, { useState } from 'react';
 import 'bulma/css/bulma.min.css';
-import '../CSS/adminForms.css'; // Archivo CSS adicional para estilos específicos
+import '../CSS/adminForms2.css'; // Archivo CSS adicional para estilos específicos
 
 const TemaForm = () => {
   const [step, setStep] = useState(1);
@@ -52,31 +50,31 @@ const TemaForm = () => {
   };
 
   return (
-    <div className="container">
-      <h1 className="title has-text-centered">Administrar Temas</h1>
+    <div className="container" style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
+      <h1 className="title has-text-centered has-text-white">Administrar Temas</h1>
       <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
         {step === 1 && (
           <div>
             <div className="field">
-              <label className="label">Título</label>
+              <label className="label has-text-white">Título</label>
               <div className="control">
                 <input className="input" type="text" name="titulo" value={formData.titulo} onChange={handleChange} placeholder="Título" required />
               </div>
             </div>
             <div className="field">
-              <label className="label">Autor</label>
+              <label className="label has-text-white">Autor</label>
               <div className="control">
                 <input className="input" type="text" name="autor" value={formData.autor} onChange={handleChange} placeholder="Autor" required />
               </div>
             </div>
             <div className="field">
-              <label className="label">Fecha</label>
+              <label className="label has-text-white">Fecha</label>
               <div className="control">
                 <input className="input" type="date" name="fecha" value={formData.fecha} onChange={handleChange} placeholder="Fecha" required />
               </div>
             </div>
             <div className="field">
-              <label className="label">Descripción</label>
+              <label className="label has-text-white">Descripción</label>
               <div className="control">
                 <textarea className="textarea" name="descripcion" value={formData.descripcion} onChange={handleChange} placeholder="Descripción" required></textarea>
               </div>
@@ -90,9 +88,9 @@ const TemaForm = () => {
         )}
         {step === 2 && (
           <div>
-            <h1 className="title has-text-centered">Pasos a seguir</h1>
+            <h1 className="title has-text-centered has-text-white">Pasos a seguir</h1>
             <div className="field">
-              <label className="label">Pasos</label>
+              <label className="label has-text-white">Pasos</label>
               <div className="control">
                 <textarea className="textarea" name="pasos" value={formData.pasos} onChange={handleChange} placeholder="Escribe los pasos" required></textarea>
               </div>
@@ -109,9 +107,9 @@ const TemaForm = () => {
         )}
         {step === 3 && (
           <div>
-            <h1 className="title has-text-centered">Video</h1>
+            <h1 className="title has-text-centered has-text-white">Video</h1>
             <div className="field">
-              <label className="label">URL del Video</label>
+              <label className="label has-text-white">URL del Video</label>
               <div className="control">
                 <input className="input" type="url" name="video" value={formData.video} onChange={handleChange} placeholder="URL del video" required />
               </div>
@@ -127,29 +125,29 @@ const TemaForm = () => {
           </div>
         )}
       </div>
-      <div className="box">
-        <h2 className="title is-4 has-text-centered">Lista de Temas</h2>
+      <div className="box" style={{ backgroundColor: '#090A0C' }}>
+        <h2 className="title is-4 has-text-centered has-text-white">Lista de Temas</h2>
         <table className="table is-fullwidth is-striped is-hoverable">
           <thead>
             <tr>
-              <th>Título</th>
-              <th>Autor</th>
-              <th>Fecha</th>
-              <th>Descripción</th>
-              <th>Pasos</th>
-              <th>Video</th>
-              <th>Acciones</th>
+              <th className="has-text-white">Título</th>
+              <th className="has-text-white">Autor</th>
+              <th className="has-text-white">Fecha</th>
+              <th className="has-text-white">Descripción</th>
+              <th className="has-text-white">Pasos</th>
+              <th className="has-text-white">Video</th>
+              <th className="has-text-white">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {temas.map((tema, index) => (
               <tr key={index}>
-                <td>{tema.titulo}</td>
-                <td>{tema.autor}</td>
-                <td>{tema.fecha}</td>
-                <td>{tema.descripcion}</td>
-                <td>{tema.pasos}</td>
-                <td><a href={tema.video} target="_blank" rel="noopener noreferrer">Ver Video</a></td>
+                <td className="has-text-white">{tema.titulo}</td>
+                <td className="has-text-white">{tema.autor}</td>
+                <td className="has-text-white">{tema.fecha}</td>
+                <td className="has-text-white">{tema.descripcion}</td>
+                <td className="has-text-white">{tema.pasos}</td>
+                <td><a className="has-text-link" href={tema.video} target="_blank" rel="noopener noreferrer">Ver Video</a></td>
                 <td>
                   <button className="button is-danger is-small" onClick={() => handleEliminarTema(index)}>Eliminar</button>
                 </td>

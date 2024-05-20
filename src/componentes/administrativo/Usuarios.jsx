@@ -1,8 +1,6 @@
-// src/componentes/administrativo/GestionUsuariosForm.js
-
 import React, { useState } from 'react';
 import 'bulma/css/bulma.min.css';
-import '../CSS/adminForms.css'; // Archivo CSS adicional para estilos específicos
+import '../CSS/adminForms2.css'; // Archivo CSS adicional para estilos específicos
 
 const GestionUsuariosForm = () => {
   const [usuario, setUsuario] = useState({
@@ -44,26 +42,26 @@ const GestionUsuariosForm = () => {
   };
 
   return (
-    <div className="container">
-      <h1 className="title has-text-centered">Gestión de Usuarios</h1>
-      <div className="box">
+    <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
+      <h1 className="title has-text-centered has-text-white">Gestión de Usuarios</h1>
+      <div className="box" style={{ backgroundColor: '#1F1F1F' }}>
         <form onSubmit={handleSubmit}>
           <div className="columns is-multiline">
             <div className="column is-half">
               <div className="field">
-                <label className="label">Nombre</label>
+                <label className="label has-text-white">Nombre</label>
                 <div className="control">
                   <input className="input" type="text" name="nombre" value={usuario.nombre} onChange={handleChange} placeholder="Nombre" required />
                 </div>
               </div>
               <div className="field">
-                <label className="label">Apellido Paterno</label>
+                <label className="label has-text-white">Apellido Paterno</label>
                 <div className="control">
                   <input className="input" type="text" name="apellidoPaterno" value={usuario.apellidoPaterno} onChange={handleChange} placeholder="Apellido Paterno" required />
                 </div>
               </div>
               <div className="field">
-                <label className="label">Apellido Materno</label>
+                <label className="label has-text-white">Apellido Materno</label>
                 <div className="control">
                   <input className="input" type="text" name="apellidoMaterno" value={usuario.apellidoMaterno} onChange={handleChange} placeholder="Apellido Materno" required />
                 </div>
@@ -71,25 +69,25 @@ const GestionUsuariosForm = () => {
             </div>
             <div className="column is-half">
               <div className="field">
-                <label className="label">Nombre de Usuario</label>
+                <label className="label has-text-white">Nombre de Usuario</label>
                 <div className="control">
                   <input className="input" type="text" name="nomusuario" value={usuario.nomusuario} onChange={handleChange} placeholder="Nombre de Usuario" required />
                 </div>
               </div>
               <div className="field">
-                <label className="label">Correo Electrónico</label>
+                <label className="label has-text-white">Correo Electrónico</label>
                 <div className="control">
                   <input className="input" type="email" name="correo" value={usuario.correo} onChange={handleChange} placeholder="Correo Electrónico" required />
                 </div>
               </div>
               <div className="field">
-                <label className="label">Contraseña</label>
+                <label className="label has-text-white">Contraseña</label>
                 <div className="control">
                   <input className="input" type="password" name="contrasena" value={usuario.contrasena} onChange={handleChange} placeholder="Contraseña" required />
                 </div>
               </div>
               <div className="field">
-                <label className="label">Rol</label>
+                <label className="label has-text-white">Rol</label>
                 <div className="control">
                   <div className="select is-fullwidth">
                     <select name="rol" value={usuario.rol} onChange={handleChange}>
@@ -108,29 +106,29 @@ const GestionUsuariosForm = () => {
           </div>
         </form>
       </div>
-      <div className="box">
-        <h2 className="title is-4 has-text-centered">Lista de Usuarios</h2>
+      <div className="box" style={{ backgroundColor: '#1F1F1F' }}>
+        <h2 className="title is-4 has-text-centered has-text-white">Lista de Usuarios</h2>
         <table className="table is-fullwidth is-striped is-hoverable">
           <thead>
             <tr>
-              <th>Nombre</th>
-              <th>Apellido Paterno</th>
-              <th>Apellido Materno</th>
-              <th>Nombre de Usuario</th>
-              <th>Correo</th>
-              <th>Rol</th>
-              <th>Acciones</th>
+              <th className="has-text-white">Nombre</th>
+              <th className="has-text-white">Apellido Paterno</th>
+              <th className="has-text-white">Apellido Materno</th>
+              <th className="has-text-white">Nombre de Usuario</th>
+              <th className="has-text-white">Correo</th>
+              <th className="has-text-white">Rol</th>
+              <th className="has-text-white">Acciones</th>
             </tr>
           </thead>
           <tbody>
             {usuarios.map((u, index) => (
               <tr key={index}>
-                <td>{u.nombre}</td>
-                <td>{u.apellidoPaterno}</td>
-                <td>{u.apellidoMaterno}</td>
-                <td>{u.nomusuario}</td>
-                <td>{u.correo}</td>
-                <td>{u.rol}</td>
+                <td className="has-text-white">{u.nombre}</td>
+                <td className="has-text-white">{u.apellidoPaterno}</td>
+                <td className="has-text-white">{u.apellidoMaterno}</td>
+                <td className="has-text-white">{u.nomusuario}</td>
+                <td className="has-text-white">{u.correo}</td>
+                <td className="has-text-white">{u.rol}</td>
                 <td>
                   <button className="button is-danger is-small" onClick={() => handleEliminarUsuario(index)}>Eliminar</button>
                 </td>
