@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import animacion from '../img/animacion-unscreen.gif';
 
 const Bienvenida = () => {
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(() => {
+    const savedUserData = localStorage.getItem('userData');
+    return savedUserData ? JSON.parse(savedUserData) : {};
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -11,21 +15,22 @@ const Bienvenida = () => {
       const userId = localStorage.getItem('userId');
       if (userId) {
         try {
-          const response = await fetch(`http://localhost:3001/api/usuarios/${userId}`);
-          if (!response.ok) {
-            throw new Error('Error al obtener los datos del usuario');
-          }
-          const data = await response.json();
+          const response = await axios.get(`http://localhost:3001/api/usuarios/${userId}`);
+          const data = response.data;
           setUserData(data);
+          localStorage.setItem('userData', JSON.stringify(data));
         } catch (error) {
-          console.error(error);
+          console.error('Error al obtener los datos del usuario', error);
         }
       } else {
         navigate('/'); // Redirige al usuario al inicio de sesión si no hay ID en localStorage
       }
     };
 
-    fetchUserData();
+    // Solo realizar la solicitud si no hay datos en localStorage
+    if (!localStorage.getItem('userData')) {
+      fetchUserData();
+    }
   }, [navigate]);
 
   return (
