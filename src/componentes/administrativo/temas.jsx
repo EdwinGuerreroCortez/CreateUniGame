@@ -50,7 +50,8 @@ const TemaForm = () => {
   };
 
   return (
-    <div className="container" style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
+    <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
+    <div className="container" >
       <h1 className="title has-text-centered has-text-white">Administrar Temas</h1>
       <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
         {step === 1 && (
@@ -157,6 +158,7 @@ const TemaForm = () => {
         </table>
       </div>
     </div>
+     </div>
   );
 };
 

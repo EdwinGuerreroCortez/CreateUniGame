@@ -22,8 +22,9 @@ const FAQsForm = () => {
   };
 
   return (
+    <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
     <div className="container">
-      <h1 className="title has-text-centered">Administrar Preguntas Frecuentes</h1>
+      <h1 className="title has-text-centered has-text-white">Administrar Preguntas Frecuentes</h1>
       <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
         <div className="columns is-multiline">
           <div className="column is-half">
@@ -61,7 +62,7 @@ const FAQsForm = () => {
             </div>
           </div>
           <div className="column is-half">
-            <h2 className="title is-4">Lista de Preguntas Frecuentes</h2>
+            <h2 className="title is-4 has-text-white">Lista de Preguntas Frecuentes</h2>
             <ul>
               {faqs.map((faq, index) => (
                 <li key={index} className="box" style={{ backgroundColor: '#2C2F33', marginBottom: '1rem' }}>
@@ -76,6 +77,7 @@ const FAQsForm = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };

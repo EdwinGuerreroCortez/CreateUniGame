@@ -20,8 +20,9 @@ const MisionForm = () => {
   };
 
   return (
+    <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
     <div className="container">
-      <h1 className="title has-text-centered">Administrar Misión</h1>
+      <h1 className="title has-text-centered has-text-white">Administrar Misión</h1>
       <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
         <div className="columns is-multiline">
           <div className="column is-half">
@@ -46,7 +47,7 @@ const MisionForm = () => {
             </div>
           </div>
           <div className="column is-half">
-            <h2 className="title is-4">Lista de Misiones</h2>
+            <h2 className="title is-4 has-text-white">Lista de Misiones</h2>
             <ul>
               {misiones.map((m, index) => (
                 <li key={index} className="box" style={{ backgroundColor: '#2C2F33', marginBottom: '1rem' }}>
@@ -60,6 +61,7 @@ const MisionForm = () => {
           </div>
         </div>
       </div>
+    </div>
     </div>
   );
 };
