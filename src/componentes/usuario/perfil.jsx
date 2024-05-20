@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import 'bulma/css/bulma.min.css'; // Importa Bulma CSS
 import '../CSS/perfil.css';
 
@@ -18,7 +19,37 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
   const [editando, setEditando] = useState(false);
   const [cargando, setCargando] = useState(false);
   const [imagenTemporal, setImagenTemporal] = useState('');
+  const [imagenFile, setImagenFile] = useState(null); // Para almacenar el archivo de imagen
   const [mensajeExito, setMensajeExito] = useState(false);
+  const [mensajeError, setMensajeError] = useState('');
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        try {
+          const response = await axios.get(`http://localhost:3001/api/usuarios/${userId}`);
+          const data = response.data;
+          setUsuario({
+            nombreUsuario: data.username,
+            nombre: data.datos_personales.nombre,
+            apellidoPaterno: data.datos_personales.apellido_paterno,
+            apellidoMaterno: data.datos_personales.apellido_materno,
+            edad: data.datos_personales.edad,
+            telefono: data.datos_personales.telefono,
+            correo: data.datos_personales.correo,
+            contrasena: '',
+            imagen: data.imagenPerfil
+          });
+        } catch (error) {
+          console.error('Error al obtener los datos del usuario', error);
+          setMensajeError('Error al obtener los datos del usuario.');
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,25 +60,73 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
   };
 
   const handleImagenChange = (e) => {
-    setImagenTemporal(URL.createObjectURL(e.target.files[0]));
+    const file = e.target.files[0];
+    setImagenTemporal(URL.createObjectURL(file));
+    setImagenFile(file); // Guardar el archivo de imagen
   };
 
-  const handleGuardarImagen = () => {
-    setUsuario({
-      ...usuario,
-      imagen: imagenTemporal
-    });
-    setImagenTemporal('');
+  const handleGuardarImagen = async () => {
+    if (!imagenFile) return;
+
+    const formData = new FormData();
+    formData.append('imagen', imagenFile);
+
+    try {
+      const response = await axios.post('http://localhost:3001/api/imagenes/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      const imageUrl = response.data.url;
+      const userId = localStorage.getItem('userId');
+
+      await axios.put(`http://localhost:3001/api/usuarios/${userId}/imagen`, {
+        imagenPerfil: imageUrl
+      });
+
+      setUsuario({
+        ...usuario,
+        imagen: imageUrl
+      });
+      setImagenTemporal('');
+      setImagenFile(null);
+      setMensajeExito('¡Imagen actualizada correctamente!');
+      setTimeout(() => setMensajeExito(''), 3000); // Ocultar el mensaje después de 3 segundos
+    } catch (error) {
+      console.error('Error al subir la imagen a Cloudinary', error);
+      setMensajeError('Error al subir la imagen a Cloudinary.');
+      setTimeout(() => setMensajeError(''), 3000); // Ocultar el mensaje después de 3 segundos
+    }
   };
 
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     setCargando(true);
-    setTimeout(() => {
+    try {
+      const userId = localStorage.getItem('userId');
+      await axios.put(`http://localhost:3001/api/usuarios/${userId}`, {
+        username: usuario.nombreUsuario,
+        datos_personales: {
+          nombre: usuario.nombre,
+          apellido_paterno: usuario.apellidoPaterno,
+          apellido_materno: usuario.apellidoMaterno,
+          edad: usuario.edad,
+          telefono: usuario.telefono,
+          correo: usuario.correo
+        },
+        imagenPerfil: usuario.imagen,
+        ...(usuario.contrasena && { password: usuario.contrasena }) // Solo enviar la contraseña si se ha cambiado
+      });
       setCargando(false);
       setEditando(false);
-      setMensajeExito(true);
-      setTimeout(() => setMensajeExito(false), 3000); // Ocultar el mensaje después de 3 segundos
-    }, 1000);
+      setMensajeExito('¡Datos actualizados correctamente!');
+      setTimeout(() => setMensajeExito(''), 3000); // Ocultar el mensaje después de 3 segundos
+    } catch (error) {
+      console.error('Error al guardar los datos del usuario', error);
+      setMensajeError('Error al guardar los datos del usuario.');
+      setCargando(false);
+      setTimeout(() => setMensajeError(''), 3000); // Ocultar el mensaje después de 3 segundos
+    }
   };
 
   return (
@@ -57,8 +136,14 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
         <div className="box perfil-box">
           {mensajeExito && (
             <div className="notification is-success">
-              <button className="delete" onClick={() => setMensajeExito(false)}></button>
-              ¡Tus datos han sido actualizados correctamente!
+              <button className="delete" onClick={() => setMensajeExito('')}></button>
+              {mensajeExito}
+            </div>
+          )}
+          {mensajeError && (
+            <div className="notification is-danger">
+              <button className="delete" onClick={() => setMensajeError('')}></button>
+              {mensajeError}
             </div>
           )}
           <h2 className="title has-text-centered usuario-titulo">
@@ -119,7 +204,7 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
                   <div className="field">
                     <label className="label">Edad</label>
                     <div className="control">
-                      <input className="input inputperfil" type="text" name="edad" value={usuario.edad} onChange={handleChange} disabled={!editando} />
+                      <input className="input inputperfil" type="number" name="edad" value={usuario.edad} onChange={handleChange} disabled={!editando} />
                     </div>
                   </div>
                   <div className="field">
@@ -137,14 +222,14 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
                   <div className="field">
                     <label className="label">Contraseña</label> 
                     <div className="control">
-                      <input className="input inputperfil" type="password" name="contrasena" value={usuario.contrasena} onChange={handleChange} disabled={!editando} />
+                      <input className="input inputperfil" type="password" name="contrasena" value={usuario.contrasena} onChange={handleChange} disabled={!editando} placeholder="••••••••" />
                     </div>
                   </div>
                 </div>
               </div>
               <div className="field is-grouped is-grouped-right mt-4">
                 <div className="control">
-                  <button className="button is-info" onClick={() => setEditando(!editando)} disabled={cargando}>
+                  <button className="button is-info" onClick={() => { if (editando) handleGuardar(); setEditando(!editando); }} disabled={cargando}>
                     {editando ? 'Guardar' : 'Editar'}
                   </button>
                 </div>

@@ -4,10 +4,7 @@ import axios from 'axios';
 import animacion from '../img/animacion-unscreen.gif';
 
 const Bienvenida = () => {
-  const [userData, setUserData] = useState(() => {
-    const savedUserData = localStorage.getItem('userData');
-    return savedUserData ? JSON.parse(savedUserData) : {};
-  });
+  const [userData, setUserData] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,17 +24,18 @@ const Bienvenida = () => {
       }
     };
 
-    // Solo realizar la solicitud si no hay datos en localStorage
-    if (!localStorage.getItem('userData')) {
-      fetchUserData();
-    }
+    fetchUserData();
+
+    const intervalId = setInterval(fetchUserData, 500); // Actualiza los datos del usuario cada 30 segundos
+
+    return () => clearInterval(intervalId); // Limpia el intervalo cuando el componente se desmonte
   }, [navigate]);
 
   return (
     <div className="section has-background-black-bis">
       <div className="container">
         <div className="columns is-centered">
-          <div className="column is-half-tablet is-one-third-desktop" style={{ marginBottom: '1.5rem' }}> {/* Ajuste de columna para diferentes pantallas y margen */}
+          <div className="column is-half-tablet is-one-third-desktop" style={{ marginBottom: '1.5rem' }}>
             <div className="card profile-card" style={{ backgroundColor: '#001f3f', border: '2px solid #3273dc', borderRadius: '8px', boxShadow: '0 4px 8px rgba(50, 115, 220, 0.5)', color: '#ffffff', padding: '1.1rem', height: '100%' }}>
               <div className="card-content has-text-centered">
                 <div className="content">
@@ -52,7 +50,7 @@ const Bienvenida = () => {
               </div>
             </div>
           </div>
-          <div className="column is-half-tablet is-one-third-desktop" style={{ marginBottom: '1.5rem' }}> {/* Ajuste de columna para diferentes pantallas y margen */}
+          <div className="column is-half-tablet is-one-third-desktop" style={{ marginBottom: '1.5rem' }}>
             <div className="card" style={{ backgroundColor: '#001f3f', border: '2px solid #3273dc', borderRadius: '8px', boxShadow: '0 4px 8px rgba(50, 115, 220, 0.5)', color: '#ffffff', height: '100%' }}>
               <div className="card-content has-text-centered">
                 <div className="content">
