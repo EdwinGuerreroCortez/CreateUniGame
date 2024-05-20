@@ -1,0 +1,67 @@
+/* src/CSS/temaForm.css */
+
+.container {
+    margin-top: 2rem;
+  }
+  
+  .box {
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+  
+  .field {
+    margin-bottom: 1.5rem;
+  }
+  
+  .input,
+  .textarea {
+    border: 1px solid #48C78E;
+    border-radius: 5px;
+  }
+  
+  .input:focus,
+  .textarea:focus {
+    border-color: #48C78E;
+    box-shadow: 0 0 5px rgba(72, 199, 142, 0.5);
+  }
+  
+  .button.is-primary {
+    background-color: #3273DC;
+    border-color: #3273DC;
+  }
+  
+  .button.is-primary:hover {
+    background-color: #275fbd;
+    border-color: #275fbd;
+  }
+  
+  .button.is-success {
+    background-color: #48C78E;
+    border-color: #48C78E;
+  }
+  
+  .button.is-success:hover {
+    background-color: #3AAE71;
+    border-color: #3AAE71;
+  }
+  
+  .button.is-light {
+    background-color: #eaeaea;
+    border-color: #eaeaea;
+  }
+  
+  .button.is-light:hover {
+    background-color: #d4d4d4;
+    border-color: #d4d4d4;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+    .box {
+      padding: 1rem;
+    }
+  }
+  

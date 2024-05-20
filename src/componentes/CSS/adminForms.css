@@ -8,24 +8,27 @@
     background-color: #1f1f1f;
     color: white;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(72, 199, 142, 0.5);
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     margin-bottom: 2rem;
   }
   
-  .label {
-    color: #48C78E;
+  .field {
+    margin-bottom: 1.5rem;
   }
   
   .input,
-  .textarea {
+  .textarea,
+  .select select {
     background-color: #2C2F33;
     color: white;
     border: none;
-    margin-bottom: 1rem; /* Añadimos margen inferior */
+    margin-bottom: 1rem;
   }
   
   .input:focus,
-  .textarea:focus {
+  .textarea:focus,
+  .select select:focus {
     border: 1px solid #48C78E;
     box-shadow: 0 0 5px rgba(72, 199, 142, 0.5);
   }
@@ -50,16 +53,23 @@
     border-color: #e02d4f;
   }
   
-  .faq-item {
-    margin-bottom: 1rem; /* Añadimos margen inferior */
-  }
-  
   @media screen and (max-width: 768px) {
     .container {
       padding: 1rem;
     }
     .box {
       padding: 1rem;
+    }
+    .columns.is-multiline {
+      display: block;
+    }
+    .column.is-half {
+      width: 100%;
+    }
+    .table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
     }
   }
   

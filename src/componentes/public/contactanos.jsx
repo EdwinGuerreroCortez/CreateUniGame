@@ -1,7 +1,7 @@
 // src/componentes/public/ContactForm.js
 
 import React, { useState } from 'react';
-import contactImage from '../img/login1.jpg'; // Suponiendo que tienes una imagen representativa
+import contactImage from '../img/contactanos.webp'; // Suponiendo que tienes una imagen representativa
 import 'bulma/css/bulma.min.css';
 import '../CSS/ContactForm.css'; // Archivo CSS para los estilos adicionales
 

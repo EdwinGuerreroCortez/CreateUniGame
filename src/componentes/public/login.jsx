@@ -7,9 +7,13 @@ import img3 from '../img/login3.webp';
 import img4 from '../img/login4.webp';
 import img5 from '../img/login5.jpg';
 import img6 from '../img/login6.jpg';
+import img7 from '../img/img11.jpg';
+import img8 from '../img/img9.jpg';
+import img9 from '../img/img8.jpg';
+
 import '../CSS/style.css';
 
-const backgrounds = [img1, img3, img6, img4, img5, img2];
+const backgrounds = [img9, img1, img3, img6, img4, img8, img5, img2, img7];
 
 const FormRegistro = () => {
   const [email, setEmail] = useState('');
@@ -99,13 +103,15 @@ const FormRegistro = () => {
             <div className="field">
               <label className="label has-text-white">Contraseña</label>
               <div className="control has-icons-left has-icons-right is-flex">
-                <input className="input is-black" type={showPassword ? 'text' : 'password'} placeholder="********" value={password} onChange={e => setPassword(e.target.value)} style={{ flexGrow: 1 }} />
+                <div style={{ display: 'flex', width: '100%' }}>
+                  <input className="input is-black" type={showPassword ? 'text' : 'password'} placeholder="********" value={password} onChange={e => setPassword(e.target.value)} style={{ flexGrow: 1 }} />
+                  <button type="button" onClick={togglePasswordVisibility} className="button is-light is-small" style={{ marginLeft: '10px', height: '70%' }}>
+                    {showPassword ? 'Ocultar' : 'Mostrar'}
+                  </button>
+                </div>
                 <span className="icon is-small is-left has-text-white">
                   <i className="fas fa-lock"></i>
                 </span>
-                <button type="button" onClick={togglePasswordVisibility} className="button is-light is-small" style={{ marginLeft: '-10px' }}>
-                  {showPassword ? 'Ocultar' : 'Mostrar'}
-                </button>
               </div>
             </div>
 
@@ -116,7 +122,7 @@ const FormRegistro = () => {
             </div>
           </form>
           <div className="has-text-centered" style={{ marginTop: '10px' }}>
-            <p className="has-text-white"style={{fontSize: '15px'}} >¿No tienes cuenta? <a href="/registro" className="has-text-link" style={{fontSize: '15px'}}>Regístrate</a></p>
+            <p className="has-text-white" style={{ fontSize: '15px' }} >¿No tienes cuenta? <a href="/registro" className="has-text-link" style={{ fontSize: '15px' }}>Regístrate</a></p>
           </div>
         </div>
       </div>

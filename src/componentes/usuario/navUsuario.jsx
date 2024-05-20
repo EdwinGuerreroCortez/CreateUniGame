@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'bulma/css/bulma.min.css'; // Importa Bulma CSS
 import '../CSS/style2.css'; // Si necesitas estilos adicionales
-import logo from '../img/logo.gif';
+import logo from '../img/logo_empresa.gif';
 import Perfil from '../usuario/perfil';
 
 const BarraNav = () => {

@@ -26,6 +26,8 @@ import BienvenidaAdmin from './componentes/administrativo/bienvenidaAdmin';
 import FAQform from './componentes/administrativo/fqsform';
 import Mision from './componentes/administrativo/mision';
 import Vision from './componentes/administrativo/vision';
+import TemasAdd from './componentes/administrativo/temas';
+import Usuarios from './componentes/administrativo/Usuarios.jsx'
 
 const App = () => {
   return (
@@ -49,8 +51,8 @@ const App = () => {
 
          {/* Rutas Administrativas */}
          <Route path="/administrativa" element={<LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin>} />
-        <Route path="/admin/users" element={<LayoutEncabeAdmin><div>Gestión de Usuarios</div></LayoutEncabeAdmin>} />
-        <Route path="/admin/temas" element={<LayoutEncabeAdmin><div>Temas</div></LayoutEncabeAdmin>} />
+        <Route path="/admin/users" element={<LayoutEncabeAdmin><Usuarios/></LayoutEncabeAdmin>} />
+        <Route path="/admin/temas" element={<LayoutEncabeAdmin><TemasAdd/></LayoutEncabeAdmin>} />
         <Route path="/admin/calificaciones/enero" element={<LayoutEncabeAdmin><div>Calificaciones Enero</div></LayoutEncabeAdmin>} />
         <Route path="/admin/calificaciones/febrero" element={<LayoutEncabeAdmin><div>Calificaciones Febrero</div></LayoutEncabeAdmin>} />
         <Route path="/admin/calificaciones/marzo" element={<LayoutEncabeAdmin><div>Calificaciones Marzo</div></LayoutEncabeAdmin>} />

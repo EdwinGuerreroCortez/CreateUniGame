@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/style2.css'; // Asegúrate de que este archivo contenga los estilos apropiados
-import logo from '../img/logo.gif'; // Logo similar al usado en otras barras de navegación
+import logo from '../img/logo_empresa.gif';
 
 const BarraNavAdmin = () => {
     const [isActive, setIsActive] = useState(false);

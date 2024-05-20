@@ -1,0 +1,64 @@
+/* src/CSS/gestionUsuariosForm.css */
+
+.container {
+    margin-top: 2rem;
+  }
+  
+  .box {
+    background-color: #1f1f1f;
+    color: white;
+    border-radius: 10px;
+    padding: 2rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+  }
+  
+  .field {
+    margin-bottom: 1.5rem;
+  }
+  
+  .input,
+  .textarea,
+  .select select {
+    background-color: #2C2F33;
+    color: white;
+    border: none;
+    margin-bottom: 1rem;
+  }
+  
+  .input:focus,
+  .textarea:focus,
+  .select select:focus {
+    border: 1px solid #48C78E;
+    box-shadow: 0 0 5px rgba(72, 199, 142, 0.5);
+  }
+  
+  .button.is-success {
+    background-color: #48C78E;
+    border-color: #48C78E;
+  }
+  
+  .button.is-success:hover {
+    background-color: #3AAE71;
+    border-color: #3AAE71;
+  }
+  
+  .button.is-danger {
+    background-color: #FF3860;
+    border-color: #FF3860;
+  }
+  
+  .button.is-danger:hover {
+    background-color: #e02d4f;
+    border-color: #e02d4f;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .container {
+      padding: 1rem;
+    }
+    .box {
+      padding: 1rem;
+    }
+  }
+  
