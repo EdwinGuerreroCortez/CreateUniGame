@@ -36,7 +36,7 @@ const FormRegistro = () => {
     event.preventDefault();
     if (emailValid && password) {
       try {
-        const response = await fetch('https://gamebackend-1.onrender.com/api/login', {
+        const response = await fetch('http://localhost:3001/api/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -50,7 +50,20 @@ const FormRegistro = () => {
 
         const data = await response.json();
         console.log('Inicio de sesión exitoso:', data);
-        navigate('/bienvenida'); // Redirigir a la página de bienvenida
+
+        // Verificar si el ID del usuario está presente en la respuesta
+        if (data.userId) {
+          // Almacenar solo el ID del usuario en localStorage
+          localStorage.setItem('userId', data.userId);
+
+          // Recuperar el ID del usuario almacenado y mostrarlo en la consola
+          const storedUserId = localStorage.getItem('userId');
+          console.log('ID del usuario almacenado en localStorage:', storedUserId);
+
+          navigate('/bienvenida'); // Redirigir a la página de bienvenida
+        } else {
+          throw new Error('ID del usuario no encontrado en la respuesta');
+        }
       } catch (error) {
         alert(error.message);
       }
