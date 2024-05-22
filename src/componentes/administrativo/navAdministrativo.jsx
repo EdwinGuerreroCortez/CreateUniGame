@@ -20,7 +20,7 @@ const BarraNavAdmin = () => {
     };
 
     return (
-        <nav className="navbar has-background-black" role="navigation" aria-label="main navigation" style={{ height: '5rem' }}>
+        <nav className="navbar custom-navbar" role="navigation" aria-label="main navigation" style={{ height: '5rem' }}>
             <div className="navbar-brand">
                 <img src={logo} alt="Logo" className="navbar-item" style={{ height: '5rem' }} />
                 <Link className="navbar-item has-text-white animated-letters" to="/administrativa">
@@ -53,7 +53,8 @@ const BarraNavAdmin = () => {
                             <Link className="navbar-item" to="/admin/informacion/mision">mision</Link>
                             <Link className="navbar-item" to="/admin/informacion/vision">vision</Link>
                         </div>
-                    </div>                </div>
+                    </div>                
+                </div>
 
                 <div className="navbar-end">
                     <div className="navbar-item">
