@@ -11,22 +11,22 @@ const GestionUsuariosForm = () => {
     nomusuario: '',
     correo: '',
     contrasena: '',
-    rol: 'cliente' // Valor predeterminado
   });
 
   const [usuarios, setUsuarios] = useState([]);
+  const [notification, setNotification] = useState({ message: '', type: '' });
 
   useEffect(() => {
     obtenerUsuarios();
     const interval = setInterval(() => {
-      obtenerUsuarios(); // Consultar la base de datos cada 5 segundos
-    }, 500); // 500 milisegundos = 0.5 segundos
+      obtenerUsuarios(); // Consultar la base de datos cada 0.5 segundos
+    }, 500);
     return () => clearInterval(interval);
   }, []);
 
   const obtenerUsuarios = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/usuarios');
+      const response = await axios.get('https://gamebackend-1.onrender.com/api/usuarios');
       setUsuarios(response.data);
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
@@ -43,8 +43,9 @@ const GestionUsuariosForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const endpoint = 'https://gamebackend-1.onrender.com/api/usuarios/admin';
     try {
-      await axios.post('http://localhost:3001/api/usuarios', usuario);
+      await axios.post(endpoint, { ...usuario });
       obtenerUsuarios();
       setUsuario({
         nombre: '',
@@ -53,25 +54,34 @@ const GestionUsuariosForm = () => {
         nomusuario: '',
         correo: '',
         contrasena: '',
-        rol: 'cliente'
       });
+      setNotification({ message: 'Usuario registrado con éxito.', type: 'is-success' });
     } catch (error) {
       console.error('Error al guardar usuario:', error);
+      setNotification({ message: 'Error al registrar usuario. Intente de nuevo.', type: 'is-danger' });
     }
   };
-  
+
   const handleEliminarUsuario = async (index, id) => {
     try {
-      await axios.delete(`http://localhost:3001/api/usuarios/${id}`);
+      await axios.delete(`https://gamebackend-1.onrender.com/api/usuarios/${id}`);
       setUsuarios(usuarios.filter((_, i) => i !== index));
+      setNotification({ message: 'Usuario eliminado con éxito.', type: 'is-success' });
     } catch (error) {
       console.error('Error al eliminar usuario:', error);
+      setNotification({ message: 'Error al eliminar usuario. Intente de nuevo.', type: 'is-danger' });
     }
   };
 
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <h1 className="title has-text-centered has-text-white">Gestión de Usuarios</h1>
+      {notification.message && (
+        <div className={`notification ${notification.type}`}>
+          <button className="delete" onClick={() => setNotification({ message: '', type: '' })}></button>
+          {notification.message}
+        </div>
+      )}
       <div className="box" style={{ backgroundColor: '#1F1F1F' }}>
         <form onSubmit={handleSubmit}>
           <div className="columns is-multiline">
@@ -114,17 +124,6 @@ const GestionUsuariosForm = () => {
                   <input className="input" type="password" name="contrasena" value={usuario.contrasena} onChange={handleChange} placeholder="Contraseña" required />
                 </div>
               </div>
-              <div className="field">
-                <label className="label has-text-white">Rol</label>
-                <div className="control">
-                  <div className="select is-fullwidth">
-                    <select name="rol" value={usuario.rol} onChange={handleChange}>
-                      <option value="cliente">Cliente</option>
-                      <option value="administrador">Administrador</option>
-                    </select>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
           <div className="field is-grouped is-grouped-centered">
@@ -134,7 +133,7 @@ const GestionUsuariosForm = () => {
           </div>
         </form>
       </div>
-      <div className="box" style={{ backgroundColor: '#090A0C' }}>
+      <div className="box" style={{ backgroundColor: '#1F1F1F' }}>
         <h2 className="title is-4 has-text-centered has-text-white">Lista de Usuarios</h2>
         <table className="table is-fullwidth is-striped is-hoverable">
           <thead>
@@ -168,4 +167,5 @@ const GestionUsuariosForm = () => {
     </div>
   );
 };
+
 export default GestionUsuariosForm;
