@@ -134,7 +134,7 @@ const GestionUsuariosForm = () => {
           </div>
         </form>
       </div>
-      <div className="box" style={{ backgroundColor: '#1F1F1F' }}>
+      <div className="box" style={{ backgroundColor: '#090A0C' }}>
         <h2 className="title is-4 has-text-centered has-text-white">Lista de Usuarios</h2>
         <table className="table is-fullwidth is-striped is-hoverable">
           <thead>

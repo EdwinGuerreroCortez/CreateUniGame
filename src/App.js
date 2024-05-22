@@ -27,7 +27,7 @@ import FAQform from './componentes/administrativo/fqsform';
 import Mision from './componentes/administrativo/mision';
 import Vision from './componentes/administrativo/vision';
 import TemasAdd from './componentes/administrativo/temas';
-import Usuarios from './componentes/administrativo/Usuarios.jsx'
+import Usuarios from './componentes/administrativo/Usuarios'
 
 const App = () => {
   return (
