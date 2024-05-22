@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import 'bulma/css/bulma.min.css';
 import '../CSS/adminForms2.css'; // Archivo CSS adicional para estilos específicos
 
@@ -15,6 +16,23 @@ const GestionUsuariosForm = () => {
 
   const [usuarios, setUsuarios] = useState([]);
 
+  useEffect(() => {
+    obtenerUsuarios();
+    const interval = setInterval(() => {
+      obtenerUsuarios(); // Consultar la base de datos cada 5 segundos
+    }, 500); // 500 milisegundos = 0.5 segundos
+    return () => clearInterval(interval);
+  }, []);
+
+  const obtenerUsuarios = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/usuarios');
+      setUsuarios(response.data);
+    } catch (error) {
+      console.error('Error al obtener usuarios:', error);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUsuario({
@@ -23,22 +41,32 @@ const GestionUsuariosForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setUsuarios([...usuarios, usuario]);
-    setUsuario({
-      nombre: '',
-      apellidoPaterno: '',
-      apellidoMaterno: '',
-      nomusuario: '',
-      correo: '',
-      contrasena: '',
-      rol: 'cliente'
-    });
+    try {
+      await axios.post('http://localhost:3001/api/usuarios', usuario);
+      obtenerUsuarios();
+      setUsuario({
+        nombre: '',
+        apellidoPaterno: '',
+        apellidoMaterno: '',
+        nomusuario: '',
+        correo: '',
+        contrasena: '',
+        rol: 'cliente'
+      });
+    } catch (error) {
+      console.error('Error al guardar usuario:', error);
+    }
   };
-
-  const handleEliminarUsuario = (index) => {
-    setUsuarios(usuarios.filter((_, i) => i !== index));
+  
+  const handleEliminarUsuario = async (index, id) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/usuarios/${id}`);
+      setUsuarios(usuarios.filter((_, i) => i !== index));
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error);
+    }
   };
 
   return (
@@ -123,22 +151,21 @@ const GestionUsuariosForm = () => {
           <tbody>
             {usuarios.map((u, index) => (
               <tr key={index}>
-                <td className="has-text-white">{u.nombre}</td>
-                <td className="has-text-white">{u.apellidoPaterno}</td>
-                <td className="has-text-white">{u.apellidoMaterno}</td>
-                <td className="has-text-white">{u.nomusuario}</td>
-                <td className="has-text-white">{u.correo}</td>
-                <td className="has-text-white">{u.rol}</td>
+                <td className="has-text-white">{u.datos_personales.nombre}</td>
+                <td className="has-text-white">{u.datos_personales.apellido_paterno}</td>
+                <td className="has-text-white">{u.datos_personales.apellido_materno}</td>
+                <td className="has-text-white">{u.username}</td>
+                <td className="has-text-white">{u.datos_personales.correo}</td>
+                <td className="has-text-white">{u.tipo}</td>
                 <td>
-                  <button className="button is-danger is-small" onClick={() => handleEliminarUsuario(index)}>Eliminar</button>
+                  <button className="button is-danger is-small" onClick={() => handleEliminarUsuario(index, u._id)}>Eliminar</button>
                 </td>
               </tr>
             ))}
-          </tbody>
+         </tbody>
         </table>
       </div>
     </div>
   );
 };
-
 export default GestionUsuariosForm;
