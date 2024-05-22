@@ -1,4 +1,4 @@
-//login.js
+// login.js
 import React, { useState, useEffect } from 'react';
 import 'bulma/css/bulma.min.css';
 import { useNavigate } from 'react-router-dom';
@@ -46,26 +46,33 @@ const FormRegistro = () => {
           },
           body: JSON.stringify({ email, password }),
         });
-
+  
         if (!response.ok) {
           throw new Error('Correo o contraseña incorrectos');
         }
-
+  
         const data = await response.json();
         console.log('Inicio de sesión exitoso:', data);
-
-        // Verificar si el ID del usuario está presente en la respuesta
-        if (data.userId) {
-          // Almacenar solo el ID del usuario en localStorage
-          localStorage.setItem('userId', data.userId);
-
-          // Recuperar el ID del usuario almacenado y mostrarlo en la consola
-          const storedUserId = localStorage.getItem('userId');
-          console.log('ID del usuario almacenado en localStorage:', storedUserId);
-
-          navigate('/bienvenida'); // Redirigir a la página de bienvenida
+  
+        // Verificar si el ID del usuario y el tipo están presentes en la respuesta
+        const userId = data.userId;
+        const userType = data.tipo;
+  
+        if (userId && userType) {
+          // Almacenar el ID del usuario y el tipo en localStorage
+          localStorage.setItem('userId', userId);
+          localStorage.setItem('userType', userType);
+  
+          // Redirigir según el tipo de usuario
+          if (userType === 'cliente') {
+            navigate('/bienvenida'); // Redirigir a la página de bienvenida
+          } else if (userType === 'administrador') {
+            navigate('/administrativa'); // Redirigir a la página administrativa
+          } else {
+            throw new Error('Tipo de usuario desconocido');
+          }
         } else {
-          throw new Error('ID del usuario no encontrado en la respuesta');
+          throw new Error('ID del usuario o tipo no encontrados en la respuesta');
         }
       } catch (error) {
         alert(error.message);
@@ -74,6 +81,7 @@ const FormRegistro = () => {
       alert('Por favor ingresa un correo válido y una contraseña.');
     }
   };
+  
 
   const handleBack = () => {
     navigate('/');
