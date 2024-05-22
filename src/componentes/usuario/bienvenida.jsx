@@ -4,7 +4,8 @@ import axios from 'axios';
 import animacion from '../img/animacion-unscreen.gif';
 
 const Bienvenida = () => {
-  const [userData, setUserData] = useState({});
+  const [userData, setUserData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,8 +17,10 @@ const Bienvenida = () => {
           const data = response.data;
           setUserData(data);
           localStorage.setItem('userData', JSON.stringify(data));
+          setIsLoading(false);
         } catch (error) {
           console.error('Error al obtener los datos del usuario', error);
+          navigate('/'); // Redirige al usuario al inicio de sesión en caso de error
         }
       } else {
         navigate('/'); // Redirige al usuario al inicio de sesión si no hay ID en localStorage
@@ -26,10 +29,30 @@ const Bienvenida = () => {
 
     fetchUserData();
 
-    const intervalId = setInterval(fetchUserData, 500); // Actualiza los datos del usuario cada 30 segundos
+    const intervalId = setInterval(fetchUserData, 500); // Actualiza los datos del usuario cada 0.5 segundos
 
     return () => clearInterval(intervalId); // Limpia el intervalo cuando el componente se desmonte
   }, [navigate]);
+
+  if (isLoading) {
+    return (
+      <div className="section has-background-black-bis">
+        <div className="container">
+          <div className="columns is-centered">
+            <div className="column is-half-tablet is-one-third-desktop" style={{ marginBottom: '1.5rem' }}>
+              <div className="card profile-card" style={{ backgroundColor: '#001f3f', border: '2px solid #3273dc', borderRadius: '8px', boxShadow: '0 4px 8px rgba(50, 115, 220, 0.5)', color: '#ffffff', padding: '1.1rem', height: '100%' }}>
+                <div className="card-content has-text-centered">
+                  <div className="content">
+                    <h2 className="title has-text-white">Cargando...</h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="section has-background-black-bis">
@@ -39,13 +62,13 @@ const Bienvenida = () => {
             <div className="card profile-card" style={{ backgroundColor: '#001f3f', border: '2px solid #3273dc', borderRadius: '8px', boxShadow: '0 4px 8px rgba(50, 115, 220, 0.5)', color: '#ffffff', padding: '1.1rem', height: '100%' }}>
               <div className="card-content has-text-centered">
                 <div className="content">
-                  <h2 className="title has-text-white">{userData.username ? userData.username : 'Nombre del Usuario'}</h2>
+                  <h2 className="title has-text-white">{userData.username}</h2>
                   <img 
-                    src={userData.imagenPerfil ? userData.imagenPerfil : "https://via.placeholder.com/150"} 
+                    src={userData.imagenPerfil} 
                     alt="Foto de perfil" 
                     style={{ borderRadius: '50%', width: '150px', height: '150px' }}
                   />
-                  <p>{userData.datos_personales && userData.datos_personales.correo ? userData.datos_personales.correo : 'Correo del Usuario'}</p>
+                  <p>{userData.datos_personales.correo}</p>
                 </div>
               </div>
             </div>
