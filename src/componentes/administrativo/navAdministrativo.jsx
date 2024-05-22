@@ -1,15 +1,20 @@
-// src/componentes/public/BarraNavAdmin.js
-
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../CSS/style2.css'; // Asegúrate de que este archivo contenga los estilos apropiados
 import logo from '../img/logo_empresa.gif';
 
 const BarraNavAdmin = () => {
     const [isActive, setIsActive] = useState(false);
+    const navigate = useNavigate();
 
     const toggleBurgerMenu = () => {
         setIsActive(!isActive);
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('userId'); // Eliminar la sesión de localStorage
+        localStorage.removeItem('userData'); // Eliminar los datos del usuario de localStorage si están almacenados
+        navigate('/'); // Redirigir al usuario a la página de inicio de sesión
     };
 
     // Función para envolver cada letra en un span
@@ -50,8 +55,8 @@ const BarraNavAdmin = () => {
                         <a className="navbar-link has-text-success">Informacion</a>
                         <div className="navbar-dropdown">
                             <Link className="navbar-item" to="/admin/informacion/faqs">Preguntas Frecuentes</Link>
-                            <Link className="navbar-item" to="/admin/informacion/mision">mision</Link>
-                            <Link className="navbar-item" to="/admin/informacion/vision">vision</Link>
+                            <Link className="navbar-item" to="/admin/informacion/mision">Misión</Link>
+                            <Link className="navbar-item" to="/admin/informacion/vision">Visión</Link>
                         </div>
                     </div>                
                 </div>
@@ -59,7 +64,7 @@ const BarraNavAdmin = () => {
                 <div className="navbar-end">
                     <div className="navbar-item">
                         <Link className="button is-success" style={{ marginRight: '10px' }} to="/admin/settings">Configuraciones</Link>
-                        <Link className="button is-primary" to="/">Cerrar Sesión</Link>
+                        <button className="button is-primary" onClick={handleLogout}>Cerrar Sesión</button>
                     </div>
                 </div>
             </div>
