@@ -1,6 +1,5 @@
-// src/componentes/administrativo/FAQsForm.js
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import 'bulma/css/bulma.min.css';
 import '../CSS/adminForms.css'; // Archivo CSS adicional para estilos específicos
 
@@ -8,23 +7,87 @@ const FAQsForm = () => {
   const [pregunta, setPregunta] = useState('');
   const [respuesta, setRespuesta] = useState('');
   const [faqs, setFaqs] = useState([]);
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const handleAgregarFAQ = () => {
+  useEffect(() => {
+    const fetchFaqs = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/faqs');
+        setFaqs(response.data);
+      } catch (error) {
+        console.error('Error al obtener las FAQs:', error);
+      }
+    };
+
+    fetchFaqs();
+  }, []);
+
+  const handleAgregarFAQ = async () => {
     if (pregunta && respuesta) {
-      setFaqs([...faqs, { pregunta, respuesta }]);
-      setPregunta('');
-      setRespuesta('');
+      try {
+        const response = await axios.post('http://localhost:3001/api/faqs', { pregunta, respuesta });
+        setFaqs([...faqs, response.data]);
+        setPregunta('');
+        setRespuesta('');
+        setSuccessMessage('FAQ agregada exitosamente.');
+        setErrorMessage('');
+        setTimeout(() => {
+          setSuccessMessage('');
+        }, 3000); // Ocultar alerta después de 3 segundos
+      } catch (error) {
+        setErrorMessage('Error al agregar la FAQ.');
+        setSuccessMessage('');
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 3000); // Ocultar alerta después de 3 segundos
+      }
+    } else {
+      setErrorMessage('Por favor, complete todos los campos.');
+      setSuccessMessage('');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000); // Ocultar alerta después de 3 segundos
     }
   };
 
-  const handleEliminarFAQ = (index) => {
-    setFaqs(faqs.filter((_, i) => i !== index));
+  const handleEliminarFAQ = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/faqs/${id}`);
+      setFaqs(faqs.filter(faq => faq._id !== id));
+      setSuccessMessage('FAQ eliminada exitosamente.');
+      setErrorMessage('');
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000); // Ocultar alerta después de 3 segundos
+    } catch (error) {
+      setErrorMessage('Error al eliminar la FAQ.');
+      setSuccessMessage('');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000); // Ocultar alerta después de 3 segundos
+    }
   };
 
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <div className="container">
         <h1 className="title has-text-centered has-text-white">Administrar Preguntas Frecuentes</h1>
+        
+        {successMessage && (
+          <div className="notification is-success">
+            <button className="delete" onClick={() => setSuccessMessage('')}></button>
+            {successMessage}
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="notification is-danger">
+            <button className="delete" onClick={() => setErrorMessage('')}></button>
+            {errorMessage}
+          </div>
+        )}
+
         <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
           <div className="columns is-multiline">
             <div className="column is-half">
@@ -72,12 +135,12 @@ const FAQsForm = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {faqs.map((faq, index) => (
-                    <tr key={index} style={{ backgroundColor: '#2C2F33' }}>
+                  {faqs.map((faq) => (
+                    <tr key={faq._id} style={{ backgroundColor: '#2C2F33' }}>
                       <td className="has-text-white">{faq.pregunta}</td>
                       <td className="has-text-white">{faq.respuesta}</td>
                       <td>
-                        <button className="button is-danger is-small" onClick={() => handleEliminarFAQ(index)}>
+                        <button className="button is-danger is-small" onClick={() => handleEliminarFAQ(faq._id)}>
                           Eliminar
                         </button>
                       </td>
