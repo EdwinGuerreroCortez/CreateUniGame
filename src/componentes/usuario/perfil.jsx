@@ -20,7 +20,7 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
   const [cargando, setCargando] = useState(false);
   const [imagenTemporal, setImagenTemporal] = useState('');
   const [imagenFile, setImagenFile] = useState(null);
-  const [mensajeExito, setMensajeExito] = useState(false);
+  const [mensajeExito, setMensajeExito] = useState('');
   const [mensajeError, setMensajeError] = useState('');
 
   useEffect(() => {
@@ -100,7 +100,30 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
     }
   };
 
+  const validateForm = () => {
+    if (
+      !usuario.nombreUsuario ||
+      !usuario.nombre ||
+      !usuario.apellidoPaterno ||
+      !usuario.apellidoMaterno ||
+      !usuario.edad ||
+      !usuario.telefono ||
+      !usuario.correo ||
+      (editando && usuario.contrasena && usuario.contrasena.length < 8) ||
+      usuario.telefono.length !== 10 ||
+      usuario.edad < 0 ||
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usuario.correo)
+    ) {
+      setMensajeError('Por favor, completa todos los campos correctamente.');
+      setTimeout(() => setMensajeError(''), 3000);
+      return false;
+    }
+    return true;
+  };
+
   const handleGuardar = async () => {
+    if (!validateForm()) return;
+
     setCargando(true);
     try {
       const userId = localStorage.getItem('userId');
@@ -216,34 +239,34 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
                   <div className="field">
                     <label className="label">Correo</label>
                     <div className="control">
-                  <input className="input inputperfil" type="email" name="correo" value={usuario.correo} onChange={handleChange} disabled={!editando} />
+                      <input className="input inputperfil" type="email" name="correo" value={usuario.correo} onChange={handleChange} disabled={!editando} />
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label className="label">Contraseña</label> 
+                    <div className="control">
+                      <input className="input inputperfil" type="password" name="contrasena" value={usuario.contrasena} onChange={handleChange} disabled={!editando} placeholder="••••••••" />
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="field">
-                <label className="label">Contraseña</label> 
+              <div className="field is-grouped is-grouped-right mt-4">
                 <div className="control">
-                  <input className="input inputperfil" type="password" name="contrasena" value={usuario.contrasena} onChange={handleChange} disabled={!editando} placeholder="••••••••" />
+                  <button className="button is-info" onClick={() => { if (editando) handleGuardar(); setEditando(!editando); }} disabled={cargando}>
+                    {editando ? 'Guardar' : 'Editar'}
+                  </button>
+                </div>
+                <div className="control">
+                  <button className="button is-danger" onClick={alCerrar}>Cerrar</button>
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="field is-grouped is-grouped-right mt-4">
-            <div className="control">
-              <button className="button is-info" onClick={() => { if (editando) handleGuardar(); setEditando(!editando); }} disabled={cargando}>
-                {editando ? 'Guardar' : 'Editar'}
-              </button>
-            </div>
-            <div className="control">
-              <button className="button is-danger" onClick={alCerrar}>Cerrar</button>
             </div>
           </div>
         </div>
       </div>
+      <button className="modal-close is-large" aria-label="close" onClick={alCerrar}></button>
     </div>
-  </div>
-  <button className="modal-close is-large" aria-label="close" onClick={alCerrar}></button>
-</div>
-);
+  );
 };
 
 export default Perfil;
