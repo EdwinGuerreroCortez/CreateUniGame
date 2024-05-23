@@ -55,8 +55,7 @@ const BarraNavAdmin = () => {
                         <a className="navbar-link has-text-success">Informacion</a>
                         <div className="navbar-dropdown">
                             <Link className="navbar-item" to="/admin/informacion/faqs">Preguntas Frecuentes</Link>
-                            <Link className="navbar-item" to="/admin/informacion/mision">Misión</Link>
-                            <Link className="navbar-item" to="/admin/informacion/vision">Visión</Link>
+                            <Link className="navbar-item" to="/admin/informacion/mv">Misión visión</Link>
                         </div>
                     </div>                
                 </div>

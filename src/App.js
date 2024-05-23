@@ -25,7 +25,6 @@ import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
 import BienvenidaAdmin from './componentes/administrativo/bienvenidaAdmin';
 import FAQform from './componentes/administrativo/fqsform';
 import Mision from './componentes/administrativo/mision';
-import Vision from './componentes/administrativo/vision';
 import TemasAdd from './componentes/administrativo/temas';
 import Usuarios from './componentes/administrativo/Usuarios'
 
@@ -58,8 +57,7 @@ const App = () => {
         <Route path="/admin/calificaciones/marzo" element={<LayoutEncabeAdmin><div>Calificaciones Marzo</div></LayoutEncabeAdmin>} />
         <Route path="/admin/cuestionarios" element={<LayoutEncabeAdmin><div>Cuestionarios</div></LayoutEncabeAdmin>} />
         <Route path="/admin/informacion/faqs" element={<LayoutEncabeAdmin><FAQform/></LayoutEncabeAdmin>} />
-        <Route path="/admin/informacion/mision" element={<LayoutEncabeAdmin><Mision/></LayoutEncabeAdmin>} />
-        <Route path="/admin/informacion/vision" element={<LayoutEncabeAdmin><Vision/></LayoutEncabeAdmin>} />
+        <Route path="/admin/informacion/mv" element={<LayoutEncabeAdmin><Mision/></LayoutEncabeAdmin>} />
         <Route path="/admin/settings" element={<LayoutEncabeAdmin><div>Configuraciones</div></LayoutEncabeAdmin>} />
       </Routes>
     </Router>

@@ -1,4 +1,3 @@
-// login.js
 import React, { useState, useEffect } from 'react';
 import 'bulma/css/bulma.min.css';
 import { useNavigate } from 'react-router-dom';
@@ -25,6 +24,11 @@ const FormRegistro = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    setEmail('');
+    setPassword('');
+  }, []);
+
+  useEffect(() => {
     setEmailValid(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email));
   }, [email]);
 
@@ -46,28 +50,25 @@ const FormRegistro = () => {
           },
           body: JSON.stringify({ email, password }),
         });
-  
+
         if (!response.ok) {
           throw new Error('Correo o contraseña incorrectos');
         }
-  
+
         const data = await response.json();
         console.log('Inicio de sesión exitoso:', data);
-  
-        // Verificar si el ID del usuario y el tipo están presentes en la respuesta
+
         const userId = data.userId;
         const userType = data.tipo;
-  
+
         if (userId && userType) {
-          // Almacenar el ID del usuario y el tipo en localStorage
           localStorage.setItem('userId', userId);
           localStorage.setItem('userType', userType);
-  
-          // Redirigir según el tipo de usuario
+
           if (userType === 'cliente') {
-            navigate('/bienvenida'); // Redirigir a la página de bienvenida
+            navigate('/bienvenida');
           } else if (userType === 'administrador') {
-            navigate('/administrativa'); // Redirigir a la página administrativa
+            navigate('/administrativa');
           } else {
             throw new Error('Tipo de usuario desconocido');
           }
@@ -81,7 +82,6 @@ const FormRegistro = () => {
       alert('Por favor ingresa un correo válido y una contraseña.');
     }
   };
-  
 
   const handleBack = () => {
     navigate('/');
