@@ -8,22 +8,17 @@ const MisionVisionForm = () => {
   const [vision, setVision] = useState('');
   const [visiones, setVisiones] = useState([]);
 
-  const handleAgregarMision = () => {
-    if (mision.trim()) {
+  const handleAgregar = () => {
+    if (mision.trim() && vision.trim()) {
       setMisiones([...misiones, mision]);
+      setVisiones([...visiones, vision]);
       setMision('');
+      setVision('');
     }
   };
 
   const handleEliminarMision = (index) => {
     setMisiones(misiones.filter((_, i) => i !== index));
-  };
-
-  const handleAgregarVision = () => {
-    if (vision.trim()) {
-      setVisiones([...visiones, vision]);
-      setVision('');
-    }
   };
 
   const handleEliminarVision = (index) => {
@@ -49,13 +44,33 @@ const MisionVisionForm = () => {
                   />
                 </div>
               </div>
-              <div className="field is-grouped">
+            </div>
+            <div className="column is-half">
+              <div className="field">
+                <label className="label has-text-white">Visión</label>
                 <div className="control">
-                  <button className="button is-success" onClick={handleAgregarMision}>
-                    Agregar Misión
+                  <textarea
+                    className="textarea"
+                    value={vision}
+                    onChange={(e) => setVision(e.target.value)}
+                    placeholder="Escribe la visión"
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+            <div className="column is-full">
+              <div className="field is-grouped is-grouped-centered">
+                <div className="control">
+                  <button className="button is-success" onClick={handleAgregar}>
+                    Agregar Misión y Visión
                   </button>
                 </div>
               </div>
+            </div>
+          </div>
+          <div className="columns is-multiline">
+            <div className="column is-half">
               <h2 className="title is-4 has-text-centered has-text-white">Lista de Misiones</h2>
               <table className="table is-fullwidth is-striped is-hoverable">
                 <thead>
@@ -79,25 +94,6 @@ const MisionVisionForm = () => {
               </table>
             </div>
             <div className="column is-half">
-              <div className="field">
-                <label className="label has-text-white">Visión</label>
-                <div className="control">
-                  <textarea
-                    className="textarea"
-                    value={vision}
-                    onChange={(e) => setVision(e.target.value)}
-                    placeholder="Escribe la visión"
-                    required
-                  />
-                </div>
-              </div>
-              <div className="field is-grouped">
-                <div className="control">
-                  <button className="button is-success" onClick={handleAgregarVision}>
-                    Agregar Visión
-                  </button>
-                </div>
-              </div>
               <h2 className="title is-4 has-text-centered has-text-white">Lista de Visiones</h2>
               <table className="table is-fullwidth is-striped is-hoverable">
                 <thead>
