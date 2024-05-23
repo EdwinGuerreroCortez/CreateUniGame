@@ -41,8 +41,27 @@ const GestionUsuariosForm = () => {
     });
   };
 
+  const validarFormulario = () => {
+    const { nombre, apellidoPaterno, apellidoMaterno, nomusuario, correo, contrasena } = usuario;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!nombre || !apellidoPaterno || !apellidoMaterno || !nomusuario || !correo || !contrasena) {
+      setNotification({ message: 'Todos los campos son obligatorios.', type: 'is-danger' });
+      return false;
+    }
+    if (!emailRegex.test(correo)) {
+      setNotification({ message: 'Correo electrónico no válido.', type: 'is-danger' });
+      return false;
+    }
+    if (contrasena.length < 8) {
+      setNotification({ message: 'La contraseña debe tener al menos 8 caracteres.', type: 'is-danger' });
+      return false;
+    }
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validarFormulario()) return;
     const endpoint = 'https://gamebackend-1.onrender.com/api/usuarios/admin';
     try {
       await axios.post(endpoint, { ...usuario });
