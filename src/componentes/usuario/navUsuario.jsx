@@ -35,7 +35,7 @@ const BarraNav = () => {
       <div className="navbar-brand">
         <img src={logo} alt="Logo" className="navbar-item" style={{ height: '5rem' }} />
         <Link className="navbar-item has-text-white animated-letters" to="/bienvenida">
-          {renderizarLetrasAnimadas("UniGame")}
+          {renderizarLetrasAnimadas("MasterGame")}
         </Link>
         <a role="button" className={`navbar-burger burger ${estaActivo ? 'is-active' : ''}`} aria-label="menu" aria-expanded={estaActivo ? 'true' : 'false'} onClick={alternarMenuBurger}>
           <span aria-hidden="true"></span>

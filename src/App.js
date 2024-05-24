@@ -27,7 +27,6 @@ import FAQform from './componentes/administrativo/fqsform';
 import Mision from './componentes/administrativo/mision';
 import TemasAdd from './componentes/administrativo/temas';
 import Usuarios from './componentes/administrativo/Usuarios'
-import Cuestionarios from './componentes/administrativo/cuestionario';
 
 const App = () => {
   return (
@@ -56,7 +55,7 @@ const App = () => {
         <Route path="/admin/calificaciones/enero" element={<LayoutEncabeAdmin><div>Calificaciones Enero</div></LayoutEncabeAdmin>} />
         <Route path="/admin/calificaciones/febrero" element={<LayoutEncabeAdmin><div>Calificaciones Febrero</div></LayoutEncabeAdmin>} />
         <Route path="/admin/calificaciones/marzo" element={<LayoutEncabeAdmin><div>Calificaciones Marzo</div></LayoutEncabeAdmin>} />
-        <Route path="/admin/cuestionarios" element={<LayoutEncabeAdmin><Cuestionarios/></LayoutEncabeAdmin>} />
+        <Route path="/admin/cuestionarios" element={<LayoutEncabeAdmin><div>Cuestionarios</div></LayoutEncabeAdmin>} />
         <Route path="/admin/informacion/faqs" element={<LayoutEncabeAdmin><FAQform/></LayoutEncabeAdmin>} />
         <Route path="/admin/informacion/mv" element={<LayoutEncabeAdmin><Mision/></LayoutEncabeAdmin>} />
         <Route path="/admin/settings" element={<LayoutEncabeAdmin><div>Configuraciones</div></LayoutEncabeAdmin>} />
