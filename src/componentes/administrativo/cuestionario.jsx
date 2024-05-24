@@ -98,32 +98,36 @@ const CuestionariosForm = () => {
         {cuestionarios.length > 0 && (
           <div>
             <h2 className="title is-4 has-text-centered has-text-white">Formularios Guardados</h2>
-            <ul>
+            <div className="columns is-multiline">
               {cuestionarios.map((cuestionario, index) => (
-                <li key={index} className="box">
-                  <h3 className="subtitle has-text-white">Formulario del Temma: {cuestionario.tema}</h3>
-                  <p className="has-text-white">
-                    URL del Formulario: <a href={cuestionario.url} target="_blank" rel="noopener noreferrer" className="has-text-info">{cuestionario.url}</a>
-                  </p>
-                  <p className="has-text-white">Descripción: {cuestionario.descripcion}</p>
-                  <p className="has-text-white">Ultima ACtualizacion: {cuestionario.fecha}</p>
-                  <div className="buttons">
-                    <button
-                      className="button is-primary is-small"
-                      onClick={() => handleEditarCuestionario(index)}
-                    >
-                      {editIndex === index ? 'Cancelar Edición' : 'Editar'}
-                    </button>
-                    <button
-                      className="button is-danger is-small"
-                      onClick={() => handleEliminarCuestionario(index)}
-                    >
-                      Eliminar
-                    </button>
+                <div key={index} className="column is-half">
+                  <div className="card" style={{ backgroundColor: '#2C2F33', borderRadius: '10px' }}>
+                    <div className="card-content">
+                      <h3 className="subtitle has-text-white">Formulario del Tema: {cuestionario.tema}</h3>
+                      <p className="has-text-white">
+                        URL del formulario: <a href={cuestionario.url} target="_blank" rel="noopener noreferrer" className="has-text-info">{cuestionario.url}</a>
+                      </p>
+                      <p className="has-text-white">Descripción: {cuestionario.descripcion}</p>
+                      <p className="has-text-white">Última Actualización: {cuestionario.fecha}</p>
+                      <div className="buttons">
+                        <button
+                          className="button is-primary is-small"
+                          onClick={() => handleEditarCuestionario(index)}
+                        >
+                          {editIndex === index ? 'Cancelar Edición' : 'Editar'}
+                        </button>
+                        <button
+                          className="button is-danger is-small"
+                          onClick={() => handleEliminarCuestionario(index)}
+                        >
+                          Eliminar
+                        </button>
+                      </div>
+                    </div>
                   </div>
-                </li>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         )}
       </div>
