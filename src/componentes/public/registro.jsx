@@ -120,23 +120,37 @@ const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
     </div>
 );
 
-const StepThree = ({ formData, setFormData, prevStep, nextStep }) => (
-    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center'  }}>
-        <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
-            <div className="card-content">
-                <h2 className="title has-text-centered has-text-white">Registro - Paso 3</h2>
-                <div className="field">
-                    <input className="input is-black" type="text" placeholder="Usuario" name="usuario" value={formData.usuario} onChange={handleChange(formData, setFormData)} style={inputStyle} />
-                    <input className="input is-black" type="password" placeholder="Contraseña" name="contrasena" value={formData.contrasena} onChange={handleChange(formData, setFormData)} style={inputStyle} />
-                    <input className="input is-black" type="password" placeholder="Confirmar Contraseña" name="confirmarContrasena" value={formData.confirmarContrasena} onChange={handleChange(formData, setFormData)} style={inputStyle} />
+const StepThree = ({ formData, setFormData, prevStep, nextStep }) => {
+    const [showPassword1, setShowPassword1] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
+
+    return (
+        <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+                <div className="card-content">
+                    <h2 className="title has-text-centered has-text-white">Registro - Paso 3</h2>
+                    <div className="field">
+                        <input className="input is-black" type="text" placeholder="Usuario" name="usuario" value={formData.usuario} onChange={handleChange(formData, setFormData)} style={inputStyle} />
+                        <div className="field has-addons" style={{ marginBottom: '15px', alignItems: 'center' }}>
+                            <input className="input is-black" type={showPassword1 ? "text" : "password"} placeholder="Contraseña" name="contrasena" value={formData.contrasena} onChange={handleChange(formData, setFormData)} style={{ marginBottom: '0', flex: '1' }} />
+                            <button className="button is-light" type="button" onClick={() => setShowPassword1(!showPassword1)} style={{ marginLeft: '10px'}}>
+                                {showPassword1 ? "Ocultar" : "Mostrar"}
+                            </button>
+                        </div>
+                        <div className="field has-addons" style={{ alignItems: 'center' }}>
+                            <input className="input is-black" type={showPassword2 ? "text" : "password"} placeholder="Confirmar Contraseña" name="confirmarContrasena" value={formData.confirmarContrasena} onChange={handleChange(formData, setFormData)} style={{ marginBottom: '0', flex: '1' }} />
+                            <button className="button is-light" type="button" onClick={() => setShowPassword2(!showPassword2)} style={{ marginLeft: '10px' }}>
+                                {showPassword2 ? "Ocultar" : "Mostrar"}
+                            </button>
+                        </div>
+                    </div>
+                    <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={prevStep}>Anterior</button>
+                    <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={() => validateStepThree(formData) && nextStep()}>Siguiente</button>
                 </div>
-                <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={prevStep}>Anterior</button>
-                <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={() => validateStepThree(formData) && nextStep()}>Siguiente</button>
             </div>
         </div>
-    </div>
-);
-
+    );
+};
 const handleChangeLenguajes = (formData, setFormData, value) => {
     const newLenguajes = formData.lenguajes.includes(value) 
       ? formData.lenguajes.filter(l => l !== value)
