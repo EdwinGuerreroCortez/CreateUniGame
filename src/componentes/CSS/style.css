@@ -9,6 +9,26 @@
   }
 }
 
+/* Estilos para pantalla grande */
+.has-text-white {
+  font-size: 1.5rem;
+}
+
+/* Estilos para pantalla mediana */
+@media screen and (max-width: 1024px) {
+  .has-text-white {
+    font-size: 1.3rem;
+  }
+}
+
+/* Estilos para pantalla pequeña */
+@media screen and (max-width: 768px) {
+  .has-text-white {
+    font-size: 1.1rem;
+  }
+}
+
+
 #imagenGrande {
   width: 500px;
   /* Ancho deseado */
