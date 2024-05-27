@@ -1,34 +1,78 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import 'bulma/css/bulma.min.css';
 import '../CSS/adminForms.css'; // Archivo CSS adicional para estilos específicos
 
 const MisionVisionForm = () => {
   const [mision, setMision] = useState('');
-  const [misiones, setMisiones] = useState([]);
   const [vision, setVision] = useState('');
-  const [visiones, setVisiones] = useState([]);
+  const [items, setItems] = useState([]);
+  const [alert, setAlert] = useState({ type: '', message: '' });
 
-  const handleAgregar = () => {
-    if (mision.trim() && vision.trim()) {
-      setMisiones([...misiones, mision]);
-      setVisiones([...visiones, vision]);
-      setMision('');
-      setVision('');
+  // Función para cargar los datos desde la API
+  const fetchMisionVision = async () => {
+    try {
+      const response = await axios.get('http://localhost:3001/api/misionVision');
+      setItems(response.data);
+    } catch (error) {
+      setAlert({ type: 'danger', message: 'Error al cargar los datos' });
+      hideAlert();
     }
   };
 
-  const handleEliminarMision = (index) => {
-    setMisiones(misiones.filter((_, i) => i !== index));
+  // Cargar los datos al montar el componente
+  useEffect(() => {
+    fetchMisionVision();
+  }, []);
+
+  const handleAgregar = async () => {
+    if (mision.trim() && vision.trim()) {
+      const newItem = { mision, vision };
+      try {
+        const response = await axios.post('http://localhost:3001/api/misionVision', newItem);
+        setItems([...items, response.data]);
+        setMision('');
+        setVision('');
+        setAlert({ type: 'success', message: 'Misión y Visión agregadas exitosamente' });
+        hideAlert();
+      } catch (error) {
+        setAlert({ type: 'danger', message: 'Error al agregar el item' });
+        hideAlert();
+      }
+    } else {
+      setAlert({ type: 'warning', message: 'Por favor completa todos los campos' });
+      hideAlert();
+    }
   };
 
-  const handleEliminarVision = (index) => {
-    setVisiones(visiones.filter((_, i) => i !== index));
+  const handleEliminar = async (index, id) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/misionVision/${id}`);
+      setItems(items.filter((_, i) => i !== index));
+      setAlert({ type: 'success', message: 'Misión y Visión eliminadas exitosamente' });
+      hideAlert();
+    } catch (error) {
+      setAlert({ type: 'danger', message: 'Error al eliminar el item' });
+      hideAlert();
+    }
+  };
+
+  const hideAlert = () => {
+    setTimeout(() => {
+      setAlert({ type: '', message: '' });
+    }, 3000); // Ocultar la alerta después de 3 segundos
   };
 
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <div className="container">
         <h1 className="title has-text-centered has-text-white">Administrar Misión y Visión</h1>
+        {alert.message && (
+          <div className={`notification is-${alert.type} fixed-alert`}>
+            <button className="delete" onClick={() => setAlert({ type: '', message: '' })}></button>
+            {alert.message}
+          </div>
+        )}
         <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
           <div className="columns is-multiline">
             <div className="column is-half">
@@ -69,53 +113,30 @@ const MisionVisionForm = () => {
               </div>
             </div>
           </div>
-          <div className="columns is-multiline">
-            <div className="column is-half">
-              <h2 className="title is-4 has-text-centered has-text-white">Lista de Misiones</h2>
-              <table className="table is-fullwidth is-striped is-hoverable">
-                <thead>
-                  <tr>
-                    <th className="has-text-white">Misión</th>
-                    <th className="has-text-white">Acciones</th>
+          <div className="column is-full">
+            <h2 className="title is-4 has-text-centered has-text-white">Lista de Misión y Visión</h2>
+            <table className="table is-fullwidth is-striped is-hoverable">
+              <thead>
+                <tr>
+                  <th className="has-text-white">Misión</th>
+                  <th className="has-text-white">Visión</th>
+                  <th className="has-text-white">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item, index) => (
+                  <tr key={item._id} style={{ backgroundColor: '#2C2F33' }}>
+                    <td className="has-text-white">{item.mision}</td>
+                    <td className="has-text-white">{item.vision}</td>
+                    <td>
+                      <button className="button is-danger is-small" onClick={() => handleEliminar(index, item._id)}>
+                        Eliminar
+                      </button>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {misiones.map((m, index) => (
-                    <tr key={index} style={{ backgroundColor: '#2C2F33' }}>
-                      <td className="has-text-white">{m}</td>
-                      <td>
-                        <button className="button is-danger is-small" onClick={() => handleEliminarMision(index)}>
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="column is-half">
-              <h2 className="title is-4 has-text-centered has-text-white">Lista de Visiones</h2>
-              <table className="table is-fullwidth is-striped is-hoverable">
-                <thead>
-                  <tr>
-                    <th className="has-text-white">Visión</th>
-                    <th className="has-text-white">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {visiones.map((v, index) => (
-                    <tr key={index} style={{ backgroundColor: '#2C2F33' }}>
-                      <td className="has-text-white">{v}</td>
-                      <td>
-                        <button className="button is-danger is-small" onClick={() => handleEliminarVision(index)}>
-                          Eliminar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
