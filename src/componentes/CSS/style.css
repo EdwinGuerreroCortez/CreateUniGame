@@ -9,11 +9,6 @@
   }
 }
 
-/* Estilos para pantalla grande */
-.has-text-white {
-  font-size: 1.5rem;
-}
-
 /* Estilos para pantalla mediana */
 @media screen and (max-width: 1024px) {
   .has-text-white {
