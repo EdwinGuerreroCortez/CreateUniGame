@@ -29,7 +29,7 @@ const BarraNavAdmin = () => {
             <div className="navbar-brand">
                 <img src={logo} alt="Logo" className="navbar-item" style={{ height: '5rem' }} />
                 <Link className="navbar-item has-text-white animated-letters" to="/administrativa">
-                    {renderAnimatedLetters("UniGame")}
+                    {renderAnimatedLetters("MasterGame")}
                 </Link>
                 <a role="button" className={`navbar-burger burger ${isActive ? 'is-active' : ''}`} aria-label="menu" aria-expanded={isActive ? 'true' : 'false'} onClick={toggleBurgerMenu}>
                     <span aria-hidden="true"></span>

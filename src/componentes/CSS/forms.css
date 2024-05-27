@@ -1,0 +1,39 @@
+body {
+    background-color: #000000; /* Negro */
+    color: #ffffff; /* Blanco */
+  }
+  
+  a {
+    color: #2980b9; /* Azul */
+  }
+  
+  .card, .box {
+    background-color: #242424; /* black-bis color */
+    color: #ffffff;
+  }
+  
+  .input, .textarea, .button {
+    background-color: #3c3c3c; /* Ligeramente más claro que la tarjeta */
+    color: #ffffff;
+    border: none;
+  }
+  
+  .input:focus, .textarea:focus {
+    border-color: #2980b9;
+    box-shadow: 0 0 0 0.125em rgba(41, 128, 185, 0.25);
+  }
+  
+  .button.is-link {
+    background-color: #2980b9;
+    border-color: #2980b9;
+  }
+  
+  .button.is-link:hover {
+    background-color: #1f6391;
+    border-color: #1f6391;
+  }
+  
+  .label {
+    color: #ffffff;
+  }
+  
