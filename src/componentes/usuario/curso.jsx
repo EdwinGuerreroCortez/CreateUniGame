@@ -180,6 +180,17 @@ const Curso = () => {
                   <source src={temaSeleccionado.video} type="video/mp4" />
                   Tu navegador no soporta el video.
                 </video>
+                {temaSeleccionado.id === 1 && (
+                  <div className="has-text-centered">
+                    <button
+                      className="button is-link"
+                      onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSeBvjz7Gij4gL7_VCPZcAd_9MBjyNkwub9HBGdMVBvuWRteBg/viewform?usp=sf_link', '_blank')}
+                      style={{ marginTop: '20px' }}
+                    >
+                      Responder Evaluación
+                    </button>
+                  </div>
+                )}
                 <form onSubmit={handleSubmit}>
                   <div className="field">
                     <label className="label has-text-white">Tipo de evidencia</label>
@@ -223,27 +234,28 @@ const Curso = () => {
               </div>
             ) : (
               <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-              <h2 className="title is-4 has-text-white" style={{ textAlign: 'center' }}>
-              Por favor, elige un tema para ver más información              </h2>
-              <div aria-label="Orange and tan hamster running in a metal wheel" role="img" className="wheel-and-hamster" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <div className="wheel"></div>
-                <div className="hamster">
-                  <div className="hamster__body">
-                    <div className="hamster__head">
-                      <div className="hamster__ear"></div>
-                      <div className="hamster__eye"></div>
-                      <div className="hamster__nose"></div>
+                <h2 className="title is-4 has-text-white" style={{ textAlign: 'center' }}>
+                  Por favor, elige un tema para ver más información
+                </h2>
+                <div aria-label="Orange and tan hamster running in a metal wheel" role="img" className="wheel-and-hamster" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <div className="wheel"></div>
+                  <div className="hamster">
+                    <div className="hamster__body">
+                      <div className="hamster__head">
+                        <div className="hamster__ear"></div>
+                        <div className="hamster__eye"></div>
+                        <div className="hamster__nose"></div>
+                      </div>
+                      <div className="hamster__limb hamster__limb--fr"></div>
+                      <div className="hamster__limb hamster__limb--fl"></div>
+                      <div className="hamster__limb hamster__limb--br"></div>
+                      <div className="hamster__limb hamster__limb--bl"></div>
+                      <div className="hamster__tail"></div>
                     </div>
-                    <div className="hamster__limb hamster__limb--fr"></div>
-                    <div className="hamster__limb hamster__limb--fl"></div>
-                    <div className="hamster__limb hamster__limb--br"></div>
-                    <div className="hamster__limb hamster__limb--bl"></div>
-                    <div className="hamster__tail"></div>
                   </div>
+                  <div className="spoke"></div>
                 </div>
-                <div className="spoke"></div>
               </div>
-            </div>
             )}
           </div>
         </div>

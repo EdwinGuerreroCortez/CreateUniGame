@@ -1,164 +1,170 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bulma/css/bulma.min.css';
 import '../CSS/adminForms2.css'; // Archivo CSS adicional para estilos específicos
 
 const TemaForm = () => {
-  const [step, setStep] = useState(1);
-  const [formData, setFormData] = useState({
-    titulo: '',
-    autor: '',
-    fecha: '',
-    descripcion: '',
-    pasos: '',
-    video: ''
-  });
-
+  const [file, setFile] = useState(null);
   const [temas, setTemas] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState({ type: '', message: '' });
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
+  useEffect(() => {
+    fetch('http://localhost:3001/api/temas') // Asegúrate de apuntar a la URL correcta
+      .then((response) => response.json())
+      .then((data) => setTemas(data))
+      .catch((error) => console.error('Error fetching temas:', error));
+  }, []);
 
-  const handleNextStep = () => {
-    setStep(step + 1);
-  };
+  useEffect(() => {
+    if (alert.message) {
+      const timer = setTimeout(() => {
+        setAlert({ type: '', message: '' });
+      }, 5000); // Desaparece después de 5 segundos
 
-  const handlePrevStep = () => {
-    setStep(step - 1);
+      return () => clearTimeout(timer);
+    }
+  }, [alert]);
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setTemas([...temas, formData]);
-    setFormData({
-      titulo: '',
-      autor: '',
-      fecha: '',
-      descripcion: '',
-      pasos: '',
-      video: ''
-    });
-    setStep(1);
-    console.log('Form data submitted:', formData);
+
+    if (file) {
+      setIsLoading(true);
+      setAlert({ type: '', message: '' });
+      const formData = new FormData();
+      formData.append('file', file);
+
+      fetch('http://localhost:3001/api/upload-excel', { // Asegúrate de apuntar a la URL correcta
+        method: 'POST',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log('File uploaded successfully:', data);
+          setTemas([...temas, data]); // Agrega el nuevo tema a la lista
+          setIsLoading(false);
+          setAlert({ type: 'success', message: 'Archivo subido y procesado con éxito.' });
+        })
+        .catch((error) => {
+          console.error('Error uploading file:', error);
+          setIsLoading(false);
+          setAlert({ type: 'error', message: 'Error subiendo el archivo. Inténtalo de nuevo.' });
+        });
+    }
   };
 
-  const handleEliminarTema = (index) => {
-    setTemas(temas.filter((_, i) => i !== index));
+  const handleEliminarTema = (id) => {
+    fetch(`http://localhost:3001/api/temas/${id}`, { // Asegúrate de apuntar a la URL correcta
+      method: 'DELETE',
+    })
+      .then(() => {
+        setTemas(temas.filter((tema) => tema._id !== id));
+        setAlert({ type: 'success', message: 'Tema eliminado con éxito.' });
+      })
+      .catch((error) => {
+        console.error('Error deleting tema:', error);
+        setAlert({ type: 'error', message: 'Error eliminando el tema. Inténtalo de nuevo.' });
+      });
+  };
+
+  const handleCloseAlert = () => {
+    setAlert({ type: '', message: '' });
   };
 
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
-    <div className="container" >
-      <h1 className="title has-text-centered has-text-white">Administrar Temas</h1>
-      <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
-        {step === 1 && (
-          <div>
-            <div className="field">
-              <label className="label has-text-white">Título</label>
-              <div className="control">
-                <input className="input" type="text" name="titulo" value={formData.titulo} onChange={handleChange} placeholder="Título" required />
-              </div>
-            </div>
-            <div className="field">
-              <label className="label has-text-white">Autor</label>
-              <div className="control">
-                <input className="input" type="text" name="autor" value={formData.autor} onChange={handleChange} placeholder="Autor" required />
-              </div>
-            </div>
-            <div className="field">
-              <label className="label has-text-white">Fecha</label>
-              <div className="control">
-                <input className="input" type="date" name="fecha" value={formData.fecha} onChange={handleChange} placeholder="Fecha" required />
-              </div>
-            </div>
-            <div className="field">
-              <label className="label has-text-white">Descripción</label>
-              <div className="control">
-                <textarea className="textarea" name="descripcion" value={formData.descripcion} onChange={handleChange} placeholder="Descripción" required></textarea>
-              </div>
-            </div>
-            <div className="field is-grouped is-grouped-right">
-              <div className="control">
-                <button className="button is-primary" onClick={handleNextStep}>Siguiente</button>
-              </div>
-            </div>
+      <div className="container">
+        <h1 className="title has-text-centered has-text-white">Administrar Temas</h1>
+        
+        {alert.message && (
+          <div className={`notification ${alert.type === 'success' ? 'is-success' : 'is-danger'}`}>
+            <button className="delete" onClick={handleCloseAlert}></button>
+            {alert.message}
           </div>
         )}
-        {step === 2 && (
-          <div>
-            <h1 className="title has-text-centered has-text-white">Pasos a seguir</h1>
-            <div className="field">
-              <label className="label has-text-white">Pasos</label>
-              <div className="control">
-                <textarea className="textarea" name="pasos" value={formData.pasos} onChange={handleChange} placeholder="Escribe los pasos" required></textarea>
-              </div>
-            </div>
-            <div className="field is-grouped is-grouped-right">
-              <div className="control">
-                <button className="button is-light" onClick={handlePrevStep}>Anterior</button>
-              </div>
-              <div className="control">
-                <button className="button is-primary" onClick={handleNextStep}>Siguiente</button>
-              </div>
-            </div>
-          </div>
-        )}
-        {step === 3 && (
-          <div>
-            <h1 className="title has-text-centered has-text-white">Video</h1>
-            <div className="field">
-              <label className="label has-text-white">URL del Video</label>
-              <div className="control">
-                <input className="input" type="url" name="video" value={formData.video} onChange={handleChange} placeholder="URL del video" required />
-              </div>
-            </div>
-            <div className="field is-grouped is-grouped-right">
-              <div className="control">
-                <button className="button is-light" onClick={handlePrevStep}>Anterior</button>
-              </div>
-              <div className="control">
-                <button className="button is-success" onClick={handleSubmit}>Insertar</button>
-              </div>
+
+        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
+          <div className="field">
+            <label className="label has-text-white">Subir Archivo Excel</label>
+            <div className="file is-primary has-name">
+              <label className="file-label">
+                <input className="file-input" type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
+                <span className="file-cta">
+                  <span className="file-icon">
+                    <i className="fas fa-upload"></i>
+                  </span>
+                  <span className="file-label">
+                    Elige un archivo...
+                  </span>
+                </span>
+                {file && (
+                  <span className="file-name">
+                    {file.name}
+                  </span>
+                )}
+              </label>
             </div>
           </div>
+          <div className="field is-grouped is-grouped-right">
+            <div className="control">
+              <button className="button is-success" onClick={handleSubmit} disabled={isLoading}>
+                {isLoading ? 'Cargando...' : 'Subir y Procesar'}
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        {isLoading && (
+          <div className="has-text-centered">
+            <button className="button is-loading is-large is-info">Cargando</button>
+          </div>
         )}
-      </div>
-      <div className="box" style={{ backgroundColor: '#090A0C' }}>
-        <h2 className="title is-4 has-text-centered has-text-white">Lista de Temas</h2>
-        <table className="table is-fullwidth is-striped is-hoverable">
-          <thead>
-            <tr>
-              <th className="has-text-white">Título</th>
-              <th className="has-text-white">Autor</th>
-              <th className="has-text-white">Fecha</th>
-              <th className="has-text-white">Descripción</th>
-              <th className="has-text-white">Pasos</th>
-              <th className="has-text-white">Video</th>
-              <th className="has-text-white">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {temas.map((tema, index) => (
-              <tr key={index}>
-                <td className="has-text-white">{tema.titulo}</td>
-                <td className="has-text-white">{tema.autor}</td>
-                <td className="has-text-white">{tema.fecha}</td>
-                <td className="has-text-white">{tema.descripcion}</td>
-                <td className="has-text-white">{tema.pasos}</td>
-                <td><a className="has-text-link" href={tema.video} target="_blank" rel="noopener noreferrer">Ver Video</a></td>
-                <td>
-                  <button className="button is-danger is-small" onClick={() => handleEliminarTema(index)}>Eliminar</button>
-                </td>
+        
+        <div className="box" style={{ backgroundColor: '#090A0C' }}>
+          <h2 className="title is-4 has-text-centered has-text-white">Lista de Temas</h2>
+          <table className="table is-fullwidth is-striped is-hoverable">
+            <thead>
+              <tr>
+                <th className="has-text-white">Título</th>
+                <th className="has-text-white">Autor</th>
+                <th className="has-text-white">Fecha</th>
+                <th className="has-text-white">Descripción</th>
+                <th className="has-text-white">Pasos</th>
+                <th className="has-text-white">Video</th>
+                <th className="has-text-white">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {temas.map((tema) => (
+                <tr key={tema._id}>
+                  <td className="has-text-white">{tema.titulo}</td>
+                  <td className="has-text-white">{tema.autor}</td>
+                  <td className="has-text-white">{new Date(tema.fecha_creacion).toLocaleDateString()}</td>
+                  <td className="has-text-white">{tema.descripcion}</td>
+                  <td className="has-text-white">{tema.pasos.map((paso, index) => (
+                    <div key={index}>{paso.Descripcion}</div>
+                  ))}</td>
+                  <td>
+                    {tema.video ? (
+                      <a className="has-text-link" href={tema.video} target="_blank" rel="noopener noreferrer">Ver Video</a>
+                    ) : (
+                      <span className="has-text-grey">No disponible</span>
+                    )}
+                  </td>
+                  <td>
+                    <button className="button is-danger is-small" onClick={() => handleEliminarTema(tema._id)}>Eliminar</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-     </div>
   );
 };
 
