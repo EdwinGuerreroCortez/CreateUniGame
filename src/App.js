@@ -50,7 +50,7 @@ const App = () => {
         <Route path="/curso" element={<LayoutEncabeUser><Curso /></LayoutEncabeUser>} />
         <Route path="/acerca-de" element={<LayoutEncabeUser><Acerca /></LayoutEncabeUser>} />
         <Route path="/contacto" element={<LayoutEncabeUser><Contactanos /></LayoutEncabeUser>} />
-        <Route path="/evalucion" element={<LayoutEncabeUser><Evalucaion /></LayoutEncabeUser>} />
+        <Route path="/evaluacion" element={<Evalucaion />} />
 
 
          {/* Rutas Administrativas */}

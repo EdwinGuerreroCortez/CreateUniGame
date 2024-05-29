@@ -1,5 +1,6 @@
 // src/components/Evaluacion.js
 import React, { useState } from 'react';
+import "bulma/css/bulma.min.css";
 
 const preguntas = [
   {
@@ -80,43 +81,52 @@ const Evaluacion = () => {
   };
 
   return (
-    <div className="section">
+    <div className="section" style={{minHeight: '100vh' }}>
       <div className="container">
-        <h1 className="title">Evaluación sobre Creación de Videojuegos</h1>
-        <form onSubmit={handleSubmit}>
-          {preguntas.map((pregunta, index) => (
-            <div key={index} className="box">
-              <h2 className="subtitle">{pregunta.pregunta}</h2>
-              {pregunta.opciones.map((opcion) => (
-                <div key={opcion} className="field">
-                  <div className="control">
-                    <label className="radio">
-                      <input
-                        type="radio"
-                        name={`pregunta-${index}`}
-                        value={opcion}
-                        onChange={() => handleOptionChange(index, opcion)}
-                        disabled={mostrarResultados}
-                      />
-                      {opcion}
-                    </label>
+        <div className="columns is-centered">
+          <div className="column is-half">
+            <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#333' }}>
+              <h1 className="title has-text-white has-text-centered">Evaluación sobre Creación de Videojuegos</h1>
+              <form onSubmit={handleSubmit}>
+                {preguntas.map((pregunta, index) => (
+                  <div key={index} className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#444', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                    <h2 className="subtitle has-text-white">{pregunta.pregunta}</h2>
+                    {pregunta.opciones.map((opcion) => (
+                      <div key={opcion} className="field">
+                        <div className="control">
+                          <label className="radio has-text-white">
+                            <input
+                              type="radio"
+                              name={`pregunta-${index}`}
+                              value={opcion}
+                              onChange={() => handleOptionChange(index, opcion)}
+                              disabled={mostrarResultados}
+                              style={{ marginRight: '0.5rem' }}
+                            />
+                            {opcion}
+                          </label>
+                        </div>
+                      </div>
+                    ))}
                   </div>
+                ))}
+                {!mostrarResultados && (
+                  <div className="has-text-centered">
+                    <button type="submit" className="button is-dark is-medium" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}>
+                      Enviar Respuestas
+                    </button>
+                  </div>
+                )}
+              </form>
+              {mostrarResultados && (
+                <div className="box" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                  <h2 className="subtitle has-text-white has-text-centered">Resultados</h2>
+                  <p className="has-text-white has-text-centered">Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
                 </div>
-              ))}
+              )}
             </div>
-          ))}
-          {!mostrarResultados && (
-            <button type="submit" className="button is-primary">
-              Enviar Respuestas
-            </button>
-          )}
-        </form>
-        {mostrarResultados && (
-          <div className="box">
-            <h2 className="subtitle">Resultados</h2>
-            <p>Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );
