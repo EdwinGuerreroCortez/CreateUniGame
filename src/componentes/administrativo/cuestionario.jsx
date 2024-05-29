@@ -7,8 +7,9 @@ const CuestionariosForm = () => {
   const [file, setFile] = useState(null);
   const [tema, setTema] = useState('');
   const [temas, setTemas] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState({ type: '', message: '' });
 
-  // Obtener la lista de temas desde el backend
   useEffect(() => {
     const fetchTemas = async () => {
       try {
@@ -22,9 +23,25 @@ const CuestionariosForm = () => {
     fetchTemas();
   }, []);
 
+  useEffect(() => {
+    if (alert.message) {
+      const timer = setTimeout(() => {
+        setAlert({ type: '', message: '' });
+      }, 5000); // Disappears after 5 seconds
+
+      return () => clearTimeout(timer);
+    }
+  }, [alert]);
+
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (file && tema.trim()) {
+      setIsLoading(true);
+      setAlert({ type: '', message: '' });
       const formData = new FormData();
       formData.append('file', file);
       formData.append('tema', tema);
@@ -35,31 +52,54 @@ const CuestionariosForm = () => {
             'Content-Type': 'multipart/form-data'
           }
         });
-        alert('Archivo subido exitosamente');
+        setAlert({ type: 'success', message: 'Archivo subido exitosamente' });
         setFile(null);
         setTema('');
       } catch (error) {
         console.error('Error al subir archivo:', error);
-        alert('Error al subir archivo');
+        setAlert({ type: 'error', message: 'Error al subir archivo' });
+      } finally {
+        setIsLoading(false);
       }
     }
   };
 
+  const handleCloseAlert = () => {
+    setAlert({ type: '', message: '' });
+  };
+
   return (
-    <div className="container" style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
-      <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
+    <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
+      <div className="container">
         <h1 className="title has-text-centered has-text-white">Subir Cuestionario</h1>
-        <form onSubmit={handleSubmit}>
+
+        {alert.message && (
+          <div className={`notification ${alert.type === 'success' ? 'is-success' : 'is-danger'}`}>
+            <button className="delete" onClick={handleCloseAlert}></button>
+            {alert.message}
+          </div>
+        )}
+
+        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
           <div className="field">
-            <label className="label has-text-white">Archivo Excel</label>
-            <div className="control">
-              <input
-                className="input"
-                type="file"
-                accept=".xlsx, .xls"
-                onChange={(e) => setFile(e.target.files[0])}
-                required
-              />
+            <label className="label has-text-white">Subir Archivo Excel</label>
+            <div className="file is-primary has-name">
+              <label className="file-label">
+                <input className="file-input" type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
+                <span className="file-cta">
+                  <span className="file-icon">
+                    <i className="fas fa-upload"></i>
+                  </span>
+                  <span className="file-label">
+                    Elige un archivo...
+                  </span>
+                </span>
+                {file && (
+                  <span className="file-name">
+                    {file.name}
+                  </span>
+                )}
+              </label>
             </div>
           </div>
           <div className="field">
@@ -75,14 +115,20 @@ const CuestionariosForm = () => {
               </div>
             </div>
           </div>
-          <div className="field is-grouped is-grouped-centered">
+          <div className="field is-grouped is-grouped-right">
             <div className="control">
-              <button type="submit" className="button is-success">
-                Subir Cuestionario
+              <button type="submit" className="button is-success" onClick={handleSubmit} disabled={isLoading}>
+                {isLoading ? 'Cargando...' : 'Subir Cuestionario'}
               </button>
             </div>
           </div>
-        </form>
+        </div>
+
+        {isLoading && (
+          <div className="has-text-centered">
+            <button className="button is-loading is-large is-info">Cargando</button>
+          </div>
+        )}
       </div>
     </div>
   );
