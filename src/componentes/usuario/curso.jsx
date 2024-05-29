@@ -1,88 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "bulma/css/bulma.min.css";
 import '../CSS/carga.css';
 
-const temas = [
-  {
-    id: 1,
-    titulo: "Introducción",
-    descripcion: `
-      En este tema, aprenderás sobre los conceptos básicos y la importancia de Unity y C# en el desarrollo de videojuegos. Además, te guiaremos a través del proceso de instalación de Unity y configuración de tu entorno de desarrollo para empezar a programar en C#.
-    `,
-    pasos: `
-      \n1. Visita el sitio web oficial de Unity: [Unity Download](https://unity.com/).
-      \n2. Descarga el Unity Hub, que es una herramienta que te permite instalar y gestionar diferentes versiones de Unity.
-      \n3. Una vez instalado el Unity Hub, abre la aplicación y haz clic en 'Instalar Unity Editor'.
-      \n4. Selecciona la versión de Unity que deseas instalar y sigue las instrucciones para completar la instalación.
-      \n5. Después de instalar Unity, abre el Unity Hub y crea un nuevo proyecto.
-      \n6. Unity incluye Visual Studio, un IDE que soporta C#. Si no está instalado, visita [Visual Studio](https://visualstudio.microsoft.com/) para descargar e instalar la versión gratuita.
-      \n7. Abre tu nuevo proyecto de Unity, y Visual Studio se abrirá automáticamente cuando edites scripts en C#.
-    `,
-    video: "video1.mp4",
-    autor: "Juan Pérez",
-    fecha: "2024-05-17",
-  },
-  {
-    id: 2,
-    titulo: "Tema 2",
-    descripcion: "Descripción del tema 2",
-    pasos: "",
-    video: "video2.mp4",
-    autor: "Ana Gómez",
-    fecha: "2024-05-18",
-  },
-  {
-    id: 3,
-    titulo: "Tema 3",
-    descripcion: "Descripción del tema 3",
-    pasos: "",
-    video: "video3.mp4",
-    autor: "Carlos Ruiz",
-    fecha: "2024-05-19",
-  },
-  {
-    id: 4,
-    titulo: "Tema 4",
-    descripcion: "Descripción del tema 4",
-    pasos: "",
-    video: "video4.mp4",
-    autor: "Laura Martínez",
-    fecha: "2024-05-20",
-  },
-  {
-    id: 5,
-    titulo: "Tema 5",
-    descripcion: "Descripción del tema 5",
-    pasos: "",
-    video: "video5.mp4",
-    autor: "Marta Sánchez",
-    fecha: "2024-05-21",
-  },
-  {
-    id: 6,
-    titulo: "Tema 6",
-    descripcion: "Descripción del tema 6",
-    pasos: "",
-    video: "video6.mp4",
-    autor: "Luis Torres",
-    fecha: "2024-05-22",
-  },
-  {
-    id: 7,
-    titulo: "Tema 7",
-    descripcion: "Descripción del tema 7",
-    pasos: "",
-    video: "video7.mp4",
-    autor: "Elena Díaz",
-    fecha: "2024-05-23",
-  },
-];
 const Curso = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [temaSeleccionado, setTemaSeleccionado] = useState(null);
-  const [evidencia, setEvidencia] = useState({ tipo: "", archivo: null });
   const [mostrarTemas, setMostrarTemas] = useState(false);
+  const [temas, setTemas] = useState([]);
+  const [pasoActual, setPasoActual] = useState(-1); // -1 para la introducción
+  const [cursoFinalizado, setCursoFinalizado] = useState(false);
   const temasPorPagina = 6;
+
+  useEffect(() => {
+    const fetchTemas = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/temas'); // Actualiza la URL según sea necesario
+        const data = await response.json();
+        setTemas(data);
+      } catch (error) {
+        console.error('Error al cargar los temas:', error);
+      }
+    };
+    
+    fetchTemas();
+  }, []);
 
   const indiceUltimoTema = paginaActual * temasPorPagina;
   const indicePrimerTema = indiceUltimoTema - temasPorPagina;
@@ -91,6 +32,8 @@ const Curso = () => {
 
   const seleccionarTema = (tema) => {
     setTemaSeleccionado(tema);
+    setPasoActual(-1);
+    setCursoFinalizado(false);
     setMostrarTemas(false); // Ocultar el panel de temas en móviles al seleccionar un tema
   };
 
@@ -99,25 +42,52 @@ const Curso = () => {
     setTemaSeleccionado(null); // Deseleccionar tema al cambiar de página
   };
 
-  const handleTypeChange = (e) => {
-    const { value } = e.target;
-    setEvidencia({ tipo: value, archivo: null });
+  const siguientePaso = () => {
+    if (pasoActual < temaSeleccionado.pasos.length - 1) {
+      setPasoActual(pasoActual + 1);
+    } else {
+      setCursoFinalizado(true);
+    }
   };
 
-  const handleFileChange = (e) => {
-    const { files } = e.target;
-    setEvidencia((prev) => ({ ...prev, archivo: files[0] }));
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Evidencia enviada:", evidencia);
+  const pasoAnterior = () => {
+    if (pasoActual > -1) {
+      setPasoActual(pasoActual - 1);
+    }
   };
 
   const handleEvaluationClick = () => {
     const userConfirmed = window.confirm("¿Desea responder la siguiente evaluación?");
     if (userConfirmed) {
       window.open('https://docs.google.com/forms/d/e/1FAIpQLSeBvjz7Gij4gL7_VCPZcAd_9MBjyNkwub9HBGdMVBvuWRteBg/viewform?usp=sf_link', '_blank');
+    }
+  };
+
+  const renderVideo = (videoUrl) => {
+    const youtubeRegex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    const match = videoUrl.match(youtubeRegex);
+
+    if (match && match[1]) {
+      const videoId = match[1];
+      return (
+        <iframe
+          width="100%"
+          height="400"
+          src={`https://www.youtube.com/embed/${videoId}`}
+          frameBorder="0"
+          allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title="Video"
+          style={{ marginBottom: '20px' }}
+        ></iframe>
+      );
+    } else {
+      return (
+        <video width="100%" controls style={{ marginBottom: '20px' }}>
+          <source src={videoUrl} type="video/mp4" />
+          Tu navegador no soporta el video.
+        </video>
+      );
     }
   };
 
@@ -136,7 +106,7 @@ const Curso = () => {
               <h2 className="title is-4 has-text-white">Temas</h2>
               {temasActuales.map((tema) => (
                 <div
-                  key={tema.id}
+                  key={tema._id}
                   className="card has-background-primary"
                   style={{ cursor: "pointer", marginBottom: "1rem", marginTop:'20px'}}
                   onClick={() => seleccionarTema(tema)}
@@ -173,76 +143,59 @@ const Curso = () => {
               <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)' , marginTop:'20px'}}>
                 <h2 className="title is-4 has-text-white">{temaSeleccionado.titulo}</h2>
                 <p className="is-size-6">Autor: {temaSeleccionado.autor}</p>
-                <p className="is-size-6">Fecha: {temaSeleccionado.fecha}</p>
+                <p className="is-size-6">Fecha: {new Date(temaSeleccionado.fecha_creacion).toLocaleDateString()}</p>
+                {renderVideo(temaSeleccionado.video)}
                 <h2 className="title is-3 has-text-centered has-text-white">Descripción</h2>
                 <p>{temaSeleccionado.descripcion}</p>
-                {temaSeleccionado.pasos && (
+                {pasoActual === -1 ? (
+                  <div className="has-text-centered" style={{ marginTop: '20px' }}>
+                    <button className="button is-primary" onClick={siguientePaso}>
+                      Empezar Curso
+                    </button>
+                  </div>
+                ) : cursoFinalizado ? (
+                  <div className="has-text-centered" style={{ marginTop: '20px' }}>
+                    <button
+                      className="button is-primary"
+                      onClick={() => {
+                        setCursoFinalizado(false);
+                        setPasoActual(0);
+                      }}
+                    >
+                      Finalizar Curso
+                    </button>
+                    <div className="notification is-link is-light" style={{ padding: '0.9rem 1rem', fontSize: '0.9rem', marginTop: '20px' }}>
+                      <strong>Importante:</strong> Una vez terminado el curso, deberás contestar la siguiente evaluación para seguir con los demás temas.
+                    </div>
+                    <div className="control" style={{ marginTop: '10px' }}>
+                      <button
+                        className="button is-link is-size-8 is-fullwidth"
+                        type="button"
+                        onClick={handleEvaluationClick}
+                      >
+                        Responder Evaluación
+                      </button>
+                    </div>
+                  </div>
+                ) : (
                   <>
                     <h2 className="title is-4 has-text-centered has-text-white">Pasos</h2>
-                    <p>{temaSeleccionado.pasos}</p>
+                    <div className="content">
+                      <h3 className="subtitle is-5 has-text-white">Paso {pasoActual + 1}: {temaSeleccionado.pasos[pasoActual].Titulo}</h3>
+                      <p>{temaSeleccionado.pasos[pasoActual].Descripcion}</p>
+                    </div>
+                    <div className="has-text-centered" style={{ marginTop: '20px', display: 'flex', justifyContent: 'space-between' }}>
+                      {pasoActual > 0 && (
+                        <button className="button is-light" onClick={pasoAnterior} style={{ marginRight: '10px' }}>
+                          Paso Anterior
+                        </button>
+                      )}
+                      <button className="button is-primary" onClick={siguientePaso}>
+                        {pasoActual < temaSeleccionado.pasos.length - 1 ? "Siguiente Paso" : "Finalizar Curso"}
+                      </button>
+                    </div>
                   </>
                 )}
-                <video width="100%" controls>
-                  <source src={temaSeleccionado.video} type="video/mp4" />
-                  Tu navegador no soporta el video.
-                </video>
-               
-                <form onSubmit={handleSubmit}>
-                  <div className="field">
-                    <label className="label has-text-white">Tipo de evidencia</label>
-                    <div className="control">
-                      <div className="select">
-                        <select
-                          onChange={handleTypeChange}
-                          value={evidencia.tipo}>
-                          <option value="" disabled>
-                            Selecciona tipo de evidencia
-                          </option>
-                          <option value="imagen">Imagen</option>
-                          <option value="video">Video</option>
-                          <option value="documento">Documento</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                  {evidencia.tipo && (
-                    <div className="field">
-                      <label className="label has-text-white">Subir {evidencia.tipo}</label>
-                      <div className="control">
-                        <input
-                          className="input"
-                          type="file"
-                          name={evidencia.tipo}
-                          accept={
-                            evidencia.tipo === "imagen" ? "image/*" :
-                            evidencia.tipo === "video" ? "video/*" : "application/pdf"
-                          }
-                          onChange={handleFileChange}/>
-                      </div>
-                    </div>
-                  )}
-                  <div className="control">
-                    <button className="button is-primary" type="submit">
-                      Enviar evidencia
-                    </button>
-                  </div>
-                </form>
-                <div className="has-text-centered has-text-white" style={{ marginTop: '20px' }}>
-                  <div className="notification is-link is-light" style={{ padding: '0.9rem 1rem', fontSize: '0.9rem' }}>
-                    <button className="delete"></button>
-                    <strong>Importante:</strong> Una vez terminado los videos o el tema, deberás contestar la siguiente evaluación para seguir con los demás temas.
-                  </div>
-                  <div className="control" style={{ marginTop: '10px' }}>
-                    <button
-                      className="button is-link is-size-8 is-fullwidth"
-                      type="button"
-                      onClick={handleEvaluationClick}
-
-                    >
-                      Responder Evaluación
-                    </button>
-                  </div>
-                </div>
               </div>
             ) : (
               <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
