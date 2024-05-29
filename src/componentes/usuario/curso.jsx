@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import "bulma/css/bulma.min.css";
 import '../CSS/carga.css';
-
 const temas = [
   {
     id: 1,
@@ -92,12 +91,12 @@ const Curso = () => {
 
   const seleccionarTema = (tema) => {
     setTemaSeleccionado(tema);
-    setMostrarTemas(false); // Ocultar el panel de temas en móviles al seleccionar un tema
+    setMostrarTemas(false);
   };
 
   const cambiarPagina = (numeroPagina) => {
     setPaginaActual(numeroPagina);
-    setTemaSeleccionado(null); // Deseleccionar tema al cambiar de página
+    setTemaSeleccionado(null);
   };
 
   const handleTypeChange = (e) => {
@@ -113,6 +112,12 @@ const Curso = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log("Evidencia enviada:", evidencia);
+  };
+
+  const handleEvaluationClick = () => {
+    if (window.confirm("¿Desea responder la siguiente evaluación?")) {
+      window.open('https://docs.google.com/forms/d/e/1FAIpQLSeBvjz7Gij4gL7_VCPZcAd_9MBjyNkwub9HBGdMVBvuWRteBg/viewform?usp=sf_link', '_blank');
+    }
   };
 
   return (
@@ -231,12 +236,21 @@ const Curso = () => {
                     </button>
                   </div>
                 </form>
+                <div className="has-text-white has-text-centered" style={{ marginTop: '20px' }}>
+                  Una vez terminado los videos o el tema, deberás contestar la siguiente evaluación para seguir con los demás temas.
+                  <div className="control">
+                    <button className="button is-link" type="button" onClick={handleEvaluationClick}>
+                      Responder Evaluación
+                    </button>
+                  </div>
+                </div>
               </div>
             ) : (
-              <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
-                <h2 className="title is-4 has-text-white" style={{ textAlign: 'center' }}>
-                  Por favor, elige un tema para ver más información
-                </h2>
+              <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' , marginTop:'20px'}}>
+                <h2 className="title has-text-white">Bienvenido al Curso</h2>
+                <p className="subtitle has-text-white">
+                  Selecciona un tema para comenzar.
+                </p>
                 <div aria-label="Orange and tan hamster running in a metal wheel" role="img" className="wheel-and-hamster" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <div className="wheel"></div>
                   <div className="hamster">
@@ -255,6 +269,7 @@ const Curso = () => {
                   </div>
                   <div className="spoke"></div>
                 </div>
+
               </div>
             )}
           </div>

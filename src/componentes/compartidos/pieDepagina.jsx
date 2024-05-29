@@ -95,13 +95,13 @@ const PieDePagina = () => {
         <h1 className="title has-text-white has-text-centered">Más Información</h1>
         <div className="columns">
           <div className="column">
-            <h2 className="subtitle has-text-white">Nuestra Visión</h2>
+            <h2 className="subtitle has-text-white"> Visión</h2>
             <p className="has-text-white">
               {vision || 'Ser la plataforma líder en educación de desarrollo de videojuegos, empoderando a millones de desarrolladores a nivel mundial para crear juegos innovadores y exitosos.'}
             </p>
           </div>
           <div className="column">
-            <h2 className="subtitle has-text-white">Nuestra Misión</h2>
+            <h2 className="subtitle has-text-white"> Misión</h2>
             <p className="has-text-white">
               {mision || 'Proporcionar una plataforma accesible y completa que brinde todas las herramientas y recursos necesarios para que cualquier persona, sin importar su nivel de experiencia, pueda aprender a desarrollar videojuegos.'}
             </p>
