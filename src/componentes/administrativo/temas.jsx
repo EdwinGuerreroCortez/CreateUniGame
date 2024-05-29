@@ -4,7 +4,6 @@ import '../CSS/adminForms2.css'; // Archivo CSS adicional para estilos específi
 
 const TemaForm = () => {
   const [file, setFile] = useState(null);
-  const [videoFile, setVideoFile] = useState(null);
   const [temas, setTemas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -30,38 +29,31 @@ const TemaForm = () => {
     setFile(e.target.files[0]);
   };
 
-  const handleVideoChange = (e) => {
-    setVideoFile(e.target.files[0]);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (file && videoFile) {
+    if (file) {
       setIsLoading(true);
       setAlert({ type: '', message: '' });
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('video', videoFile);
 
-      fetch('http://localhost:3001/api/upload-excel-video', { // Asegúrate de apuntar a la URL correcta
+      fetch('http://localhost:3001/api/upload-excel', { // Asegúrate de apuntar a la URL correcta
         method: 'POST',
         body: formData,
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log('Files uploaded successfully:', data);
+          console.log('File uploaded successfully:', data);
           setTemas([...temas, data]); // Agrega el nuevo tema a la lista
           setIsLoading(false);
-          setAlert({ type: 'success', message: 'Archivos subidos y procesados con éxito.' });
+          setAlert({ type: 'success', message: 'Archivo subido y procesado con éxito.' });
         })
         .catch((error) => {
-          console.error('Error uploading files:', error);
+          console.error('Error uploading file:', error);
           setIsLoading(false);
-          setAlert({ type: 'error', message: 'Error subiendo los archivos. Inténtalo de nuevo.' });
+          setAlert({ type: 'error', message: 'Error subiendo el archivo. Inténtalo de nuevo.' });
         });
-    } else {
-      setAlert({ type: 'error', message: 'Por favor selecciona un archivo Excel y un video.' });
     }
   };
 
@@ -117,29 +109,6 @@ const TemaForm = () => {
               </label>
             </div>
           </div>
-
-          <div className="field">
-            <label className="label has-text-white">Subir Video</label>
-            <div className="file is-primary has-name">
-              <label className="file-label">
-                <input className="file-input" type="file" accept="video/*" onChange={handleVideoChange} />
-                <span className="file-cta">
-                  <span className="file-icon">
-                    <i className="fas fa-upload"></i>
-                  </span>
-                  <span className="file-label">
-                    Elige un video...
-                  </span>
-                </span>
-                {videoFile && (
-                  <span className="file-name">
-                    {videoFile.name}
-                  </span>
-                )}
-              </label>
-            </div>
-          </div>
-
           <div className="field is-grouped is-grouped-right">
             <div className="control">
               <button className="button is-success" onClick={handleSubmit} disabled={isLoading}>
