@@ -4,6 +4,7 @@ import '../CSS/adminForms2.css'; // Archivo CSS adicional para estilos específi
 
 const TemaForm = () => {
   const [file, setFile] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
   const [temas, setTemas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState({ type: '', message: '' });
@@ -29,30 +30,36 @@ const TemaForm = () => {
     setFile(e.target.files[0]);
   };
 
+  const handleVideoFileChange = (e) => {
+    setVideoFile(e.target.files[0]);
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (file) {
+    if (file && videoFile) {
       setIsLoading(true);
       setAlert({ type: '', message: '' });
+
       const formData = new FormData();
       formData.append('file', file);
+      formData.append('video', videoFile);
 
-      fetch('http://localhost:3001/api/upload-excel', { // Asegúrate de apuntar a la URL correcta
+      fetch('http://localhost:3001/api/upload-excel-video', { // Asegúrate de apuntar a la URL correcta
         method: 'POST',
         body: formData,
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log('File uploaded successfully:', data);
+          console.log('Archivo y video subidos con éxito:', data);
           setTemas([...temas, data]); // Agrega el nuevo tema a la lista
           setIsLoading(false);
-          setAlert({ type: 'success', message: 'Archivo subido y procesado con éxito.' });
+          setAlert({ type: 'success', message: 'Archivo y video subidos y procesados con éxito.' });
         })
         .catch((error) => {
-          console.error('Error uploading file:', error);
+          console.error('Error subiendo el archivo y video:', error);
           setIsLoading(false);
-          setAlert({ type: 'error', message: 'Error subiendo el archivo. Inténtalo de nuevo.' });
+          setAlert({ type: 'error', message: 'Error subiendo el archivo y video. Inténtalo de nuevo.' });
         });
     }
   };
@@ -66,7 +73,7 @@ const TemaForm = () => {
         setAlert({ type: 'success', message: 'Tema eliminado con éxito.' });
       })
       .catch((error) => {
-        console.error('Error deleting tema:', error);
+        console.error('Error eliminando el tema:', error);
         setAlert({ type: 'error', message: 'Error eliminando el tema. Inténtalo de nuevo.' });
       });
   };
@@ -104,6 +111,27 @@ const TemaForm = () => {
                 {file && (
                   <span className="file-name">
                     {file.name}
+                  </span>
+                )}
+              </label>
+            </div>
+          </div>
+          <div className="field">
+            <label className="label has-text-white">Subir Video</label>
+            <div className="file is-primary has-name">
+              <label className="file-label">
+                <input className="file-input" type="file" accept="video/*" onChange={handleVideoFileChange} />
+                <span className="file-cta">
+                  <span className="file-icon">
+                    <i className="fas fa-upload"></i>
+                  </span>
+                  <span className="file-label">
+                    Elige un video...
+                  </span>
+                </span>
+                {videoFile && (
+                  <span className="file-name">
+                    {videoFile.name}
                   </span>
                 )}
               </label>
@@ -169,3 +197,4 @@ const TemaForm = () => {
 };
 
 export default TemaForm;
+
