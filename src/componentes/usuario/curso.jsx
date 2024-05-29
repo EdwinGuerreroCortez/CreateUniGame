@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "bulma/css/bulma.min.css";
 import '../CSS/carga.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const Curso = () => {
   const [paginaActual, setPaginaActual] = useState(1);
@@ -10,6 +12,8 @@ const Curso = () => {
   const [pasoActual, setPasoActual] = useState(-1); // -1 para la introducción
   const [cursoFinalizado, setCursoFinalizado] = useState(false);
   const temasPorPagina = 6;
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     const fetchTemas = async () => {
@@ -59,7 +63,7 @@ const Curso = () => {
   const handleEvaluationClick = () => {
     const userConfirmed = window.confirm("¿Desea responder la siguiente evaluación?");
     if (userConfirmed) {
-      window.open('https://docs.google.com/forms/d/e/1FAIpQLSeBvjz7Gij4gL7_VCPZcAd_9MBjyNkwub9HBGdMVBvuWRteBg/viewform?usp=sf_link', '_blank');
+      navigate('/evaluacion');
     }
   };
 

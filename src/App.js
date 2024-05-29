@@ -19,6 +19,7 @@ import LayoutEncabeUser from './componentes/usuario/layoutEncabeUser';
 import Bienvenida from './componentes/usuario/bienvenida';
 import Recursos from './componentes/usuario/recursos';
 import Curso from './componentes/usuario/curso';
+import Evalucaion from './componentes/usuario/evaluacion'
 
 // Componentes Administrativos
 import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
@@ -28,6 +29,7 @@ import Mision from './componentes/administrativo/mision';
 import TemasAdd from './componentes/administrativo/temas';
 import Usuarios from './componentes/administrativo/Usuarios'
 import CuestionariosForm from './componentes/administrativo/cuestionario';
+
 
 const App = () => {
   return (
@@ -48,6 +50,8 @@ const App = () => {
         <Route path="/curso" element={<LayoutEncabeUser><Curso /></LayoutEncabeUser>} />
         <Route path="/acerca-de" element={<LayoutEncabeUser><Acerca /></LayoutEncabeUser>} />
         <Route path="/contacto" element={<LayoutEncabeUser><Contactanos /></LayoutEncabeUser>} />
+        <Route path="/evalucion" element={<LayoutEncabeUser><Evalucaion /></LayoutEncabeUser>} />
+
 
          {/* Rutas Administrativas */}
          <Route path="/administrativa" element={<LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin>} />
