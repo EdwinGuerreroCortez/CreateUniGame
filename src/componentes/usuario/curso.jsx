@@ -14,7 +14,7 @@ const Curso = () => {
   useEffect(() => {
     const fetchTemas = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/temas'); // Actualiza la URL según sea necesario
+        const response = await fetch('https://gamebackend-1.onrender.com/api/temas'); // Actualiza la URL según sea necesario
         const data = await response.json();
         setTemas(data);
       } catch (error) {
