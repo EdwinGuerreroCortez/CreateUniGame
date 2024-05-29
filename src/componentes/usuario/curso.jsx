@@ -7,7 +7,7 @@ const Curso = () => {
   const [temaSeleccionado, setTemaSeleccionado] = useState(null);
   const [mostrarTemas, setMostrarTemas] = useState(false);
   const [temas, setTemas] = useState([]);
-  const [pasoActual, setPasoActual] = useState(-1); // -1 para la introducción
+  const [pasoActual, setPasoActual] = useState(-1); //-1 para la introducción
   const [cursoFinalizado, setCursoFinalizado] = useState(false);
   const temasPorPagina = 6;
 
