@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "bulma/css/bulma.min.css";
 import '../CSS/carga.css';
+
 const temas = [
   {
     id: 1,
@@ -76,7 +77,6 @@ const temas = [
     fecha: "2024-05-23",
   },
 ];
-
 const Curso = () => {
   const [paginaActual, setPaginaActual] = useState(1);
   const [temaSeleccionado, setTemaSeleccionado] = useState(null);
@@ -91,12 +91,12 @@ const Curso = () => {
 
   const seleccionarTema = (tema) => {
     setTemaSeleccionado(tema);
-    setMostrarTemas(false);
+    setMostrarTemas(false); // Ocultar el panel de temas en móviles al seleccionar un tema
   };
 
   const cambiarPagina = (numeroPagina) => {
     setPaginaActual(numeroPagina);
-    setTemaSeleccionado(null);
+    setTemaSeleccionado(null); // Deseleccionar tema al cambiar de página
   };
 
   const handleTypeChange = (e) => {
@@ -115,7 +115,8 @@ const Curso = () => {
   };
 
   const handleEvaluationClick = () => {
-    if (window.confirm("¿Desea responder la siguiente evaluación?")) {
+    const userConfirmed = window.confirm("¿Desea responder la siguiente evaluación?");
+    if (userConfirmed) {
       window.open('https://docs.google.com/forms/d/e/1FAIpQLSeBvjz7Gij4gL7_VCPZcAd_9MBjyNkwub9HBGdMVBvuWRteBg/viewform?usp=sf_link', '_blank');
     }
   };
@@ -185,17 +186,7 @@ const Curso = () => {
                   <source src={temaSeleccionado.video} type="video/mp4" />
                   Tu navegador no soporta el video.
                 </video>
-                {temaSeleccionado.id === 1 && (
-                  <div className="has-text-centered">
-                    <button
-                      className="button is-link"
-                      onClick={() => window.open('https://docs.google.com/forms/d/e/1FAIpQLSeBvjz7Gij4gL7_VCPZcAd_9MBjyNkwub9HBGdMVBvuWRteBg/viewform?usp=sf_link', '_blank')}
-                      style={{ marginTop: '20px' }}
-                    >
-                      Responder Evaluación
-                    </button>
-                  </div>
-                )}
+               
                 <form onSubmit={handleSubmit}>
                   <div className="field">
                     <label className="label has-text-white">Tipo de evidencia</label>
@@ -236,21 +227,28 @@ const Curso = () => {
                     </button>
                   </div>
                 </form>
-                <div className="has-text-white has-text-centered" style={{ marginTop: '20px' }}>
-                  Una vez terminado los videos o el tema, deberás contestar la siguiente evaluación para seguir con los demás temas.
-                  <div className="control">
-                    <button className="button is-link" type="button" onClick={handleEvaluationClick}>
+                <div className="has-text-centered has-text-white" style={{ marginTop: '20px' }}>
+                  <div className="notification is-link is-light" style={{ padding: '0.9rem 1rem', fontSize: '0.9rem' }}>
+                    <button className="delete"></button>
+                    <strong>Importante:</strong> Una vez terminado los videos o el tema, deberás contestar la siguiente evaluación para seguir con los demás temas.
+                  </div>
+                  <div className="control" style={{ marginTop: '10px' }}>
+                    <button
+                      className="button is-link is-size-8 is-fullwidth"
+                      type="button"
+                      onClick={handleEvaluationClick}
+
+                    >
                       Responder Evaluación
                     </button>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' , marginTop:'20px'}}>
-                <h2 className="title has-text-white">Bienvenido al Curso</h2>
-                <p className="subtitle has-text-white">
-                  Selecciona un tema para comenzar.
-                </p>
+              <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                <h2 className="title is-4 has-text-white" style={{ textAlign: 'center' }}>
+                  Por favor, elige un tema para ver más información
+                </h2>
                 <div aria-label="Orange and tan hamster running in a metal wheel" role="img" className="wheel-and-hamster" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <div className="wheel"></div>
                   <div className="hamster">
@@ -269,7 +267,6 @@ const Curso = () => {
                   </div>
                   <div className="spoke"></div>
                 </div>
-
               </div>
             )}
           </div>
