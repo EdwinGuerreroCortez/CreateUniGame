@@ -23,7 +23,7 @@ const GestionUsuariosForm = () => {
     }, 500);
     return () => clearInterval(interval);
   }, []);
-
+  
   const obtenerUsuarios = async () => {
     try {
       const response = await axios.get('https://gamebackend-1.onrender.com/api/usuarios');
@@ -154,7 +154,7 @@ const GestionUsuariosForm = () => {
       </div>
       <div className="box" style={{ backgroundColor: '#1F1F1F' }}>
         <h2 className="title is-4 has-text-centered has-text-white">Lista de Usuarios</h2>
-        <table className="table is-fullwidth is-striped is-hoverable">
+        <table className="table is-fullwidth is-striped is-hoverable" style={{ backgroundColor: '#090A0C' }}>
           <thead>
             <tr>
               <th className="has-text-white">Nombre</th>
@@ -168,7 +168,7 @@ const GestionUsuariosForm = () => {
           </thead>
           <tbody>
             {usuarios.map((u, index) => (
-              <tr key={index}>
+              <tr key={index} style={{ color: 'white' }}>
                 <td className="has-text-white">{u.datos_personales.nombre}</td>
                 <td className="has-text-white">{u.datos_personales.apellido_paterno}</td>
                 <td className="has-text-white">{u.datos_personales.apellido_materno}</td>
@@ -180,7 +180,7 @@ const GestionUsuariosForm = () => {
                 </td>
               </tr>
             ))}
-         </tbody>
+          </tbody>
         </table>
       </div>
     </div>

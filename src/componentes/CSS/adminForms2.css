@@ -1,77 +1,104 @@
 /* src/CSS/adminForms.css */
 
 .box {
-    background-color: #1F1F1F;
-    color: white;
-    border-radius: 10px;
-    padding: 2rem;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
+  background-color: #1F1F1F;
+  color: white;
+  border-radius: 10px;
+  padding: 2rem;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.field {
+  margin-bottom: 1.5rem;
+}
+
+.input,
+.textarea,
+.select select {
+  background-color: #2C2F33;
+  color: white;
+  border: none;
+  margin-bottom: 1rem;
+}
+
+.input:focus,
+.textarea:focus,
+.select select:focus {
+  border: 1px solid #48C78E;
+  box-shadow: 0 0 5px rgba(72, 199, 142, 0.5);
+}
+
+.button.is-success {
+  background-color: #48C78E;
+  border-color: #48C78E;
+}
+
+.button.is-success:hover {
+  background-color: #3AAE71;
+  border-color: #3AAE71;
+}
+
+.button.is-danger {
+  background-color: #FF3860;
+  border-color: #FF3860;
+}
+
+.button.is-danger:hover {
+  background-color: #e02d4f;
+  border-color: #e02d4f;
+}
+
+.table th {
+  background: #090A0C;
+}
+
+.table th,
+.table td {
+  border-color: #2C2F33;
+}
+
+.has-text-white {
+  color: white !important;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 1rem;
   }
-  
-  .field {
-    margin-bottom: 1.5rem;
+
+  .box {
+    padding: 1rem;
   }
-  
-  .input,
-  .textarea,
-  .select select {
-    background-color: #2C2F33;
-    color: white;
-    border: none;
-    margin-bottom: 1rem;
+
+  .columns.is-multiline {
+    display: block;
   }
-  
-  .input:focus,
-  .textarea:focus,
-  .select select:focus {
-    border: 1px solid #48C78E;
-    box-shadow: 0 0 5px rgba(72, 199, 142, 0.5);
+
+  .column.is-half {
+    width: 100%;
   }
-  
-  .button.is-success {
-    background-color: #48C78E;
-    border-color: #48C78E;
-  }
-  
-  .button.is-success:hover {
-    background-color: #3AAE71;
-    border-color: #3AAE71;
-  }
-  
-  .button.is-danger {
-    background-color: #FF3860;
-    border-color: #FF3860;
-  }
-  
-  .button.is-danger:hover {
-    background-color: #e02d4f;
-    border-color: #e02d4f;
-  }
-  .table th{
-    background: #090A0C;
-  }
-  .table th,
-  .table td {
-    border-color: #2C2F33;
-  }
-  
-  .has-text-white {
-    color: white !important;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .container {
-      padding: 1rem;
-    }
-    .box {
-      padding: 1rem;
-    }
-    .columns.is-multiline {
-      display: block;
-    }
-    .column.is-half {
-      width: 100%;
-    }
-  }
-  
+}
+
+/* adminForms2.css */
+.table {
+  background-color: #090A0C;
+}
+
+.table th,
+.table td {
+  color: white;
+  background-color: #090A0C;
+  /* Asegura que todas las celdas tengan fondo negro */
+}
+
+/* Desactivar las rayas alternas de Bulma */
+.table.is-striped tbody tr:nth-child(odd) {
+  background-color: #090A0C;
+  /* Fondo negro para filas impares */
+}
+
+.table.is-striped tbody tr:nth-child(even) {
+  background-color: #090A0C;
+  /* Fondo negro para filas pares */
+}

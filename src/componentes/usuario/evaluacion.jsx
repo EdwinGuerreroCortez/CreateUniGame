@@ -120,16 +120,16 @@ const Evaluacion = () => {
   };
 
   return (
-    <div className="section" style={{ minHeight: '100vh' }}>
+    <div className="section" style={{ minHeight: '100vh', backgroundColor: '#14161A' }}>
       <div className="container">
         <div className="columns is-centered">
           <div className="column is-full-mobile is-half-tablet is-one-third-desktop">
-            <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#333' }}>
+            <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#021929' }}>
               <h1 className="title has-text-white has-text-centered">Evaluación</h1>
               <h2 className="subtitle has-text-white has-text-centered">Pregunta {numeroPregunta + 1} de {preguntas.length + 1}</h2>
               {preguntaActual && !mostrarResultados && (
                 <form onSubmit={handleSubmit}>
-                  <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#444', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                  <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
                     <h2 className="subtitle has-text-white">{preguntaActual.pregunta}</h2>
                     {!preguntaActual.abierta ? (
                       preguntaActual.opciones.map((opcion) => (
@@ -158,7 +158,7 @@ const Evaluacion = () => {
                             onChange={handleInputChange}
                             maxLength={200}
                             placeholder="Escribe tu respuesta aquí (máximo 200 palabras)"
-                            style={{ backgroundColor: '#555', color: 'white', borderColor: 'green' }}
+                            style={{ backgroundColor: '#14161A', color: 'white', borderColor: 'green' }}
                           />
                         </div>
                         <p className="has-text-white has-text-right">{respuestaAbierta.split(' ').length} / 200 palabras</p>
@@ -169,21 +169,21 @@ const Evaluacion = () => {
                     <button
                       type="submit"
                       className="button is-dark is-medium"
-                      style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}
+                      style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}
                       disabled={!respuestaSeleccionada && !respuestaAbierta.trim()}
                     >
                       {preguntasRestantes.length > 0 ? 'Siguiente Pregunta' : 'Ver Resultados'}
                     </button>
-                  </div>
+                  </div>      
                 </form>
               )}
               {mostrarResultados && (
-                <div className="box" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                <div className="box" style={{ backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
                   <h2 className="subtitle has-text-white has-text-centered">Resultados</h2>
                   <p className="has-text-white has-text-centered">Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
                   <p className="has-text-white has-text-centered">Porcentaje de aciertos: {(calcularResultados() / preguntas.length * 100).toFixed(2)}%</p>
                   <div className="has-text-centered" style={{ marginTop: '1rem' }}>
-                    <button className="button is-dark is-medium" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => window.location.href = '/curso'}>
+                    <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => window.location.href = '/curso'}>
                       Volver al curso
                     </button>
                   </div>
