@@ -20,6 +20,7 @@ import Bienvenida from './componentes/usuario/bienvenida';
 import Recursos from './componentes/usuario/recursos';
 import Curso from './componentes/usuario/curso';
 import Evalucaion from './componentes/usuario/evaluacion'
+import Buzon from './componentes/usuario/buzon'
 
 // Componentes Administrativos
 import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
@@ -42,7 +43,7 @@ const App = () => {
         <Route path="/paginaPrincipal" element={<LayoutConEncab><PaginaPrincipal /></LayoutConEncab>} />
         <Route path="/acerca" element={<LayoutConEncab><Acerca /></LayoutConEncab>} />
         <Route path="/contactanos" element={<LayoutConEncab><Contactanos /></LayoutConEncab>} />
-
+        <Route path="/buzon" element={<LayoutConEncab><Buzon/></LayoutConEncab>} />
 
         {/* Rutas de Usuario */}
         <Route path="/bienvenida" element={<LayoutEncabeUser><Bienvenida /></LayoutEncabeUser>} />
