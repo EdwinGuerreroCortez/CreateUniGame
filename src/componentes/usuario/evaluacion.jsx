@@ -1,5 +1,4 @@
-// src/components/Evaluacion.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "bulma/css/bulma.min.css";
 
 const preguntas = [
@@ -56,24 +55,48 @@ const preguntas = [
 ];
 
 const Evaluacion = () => {
-  const [respuestas, setRespuestas] = useState(Array(preguntas.length).fill(null));
+  const [preguntasRestantes, setPreguntasRestantes] = useState([...preguntas]);
+  const [preguntaActual, setPreguntaActual] = useState(null);
+  const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(null);
   const [mostrarResultados, setMostrarResultados] = useState(false);
+  const [respuestas, setRespuestas] = useState([]);
+  const [numeroPregunta, setNumeroPregunta] = useState(0);
 
-  const handleOptionChange = (index, opcion) => {
-    const nuevasRespuestas = [...respuestas];
-    nuevasRespuestas[index] = opcion;
-    setRespuestas(nuevasRespuestas);
+  useEffect(() => {
+    seleccionarPreguntaAleatoria();
+  }, []);
+
+  const seleccionarPreguntaAleatoria = () => {
+    const indexAleatorio = Math.floor(Math.random() * preguntasRestantes.length);
+    const preguntaSeleccionada = preguntasRestantes[indexAleatorio];
+    setPreguntaActual(preguntaSeleccionada);
+    setPreguntasRestantes(preguntasRestantes.filter((_, index) => index !== indexAleatorio));
+  };
+
+  const handleOptionChange = (opcion) => {
+    setRespuestaSeleccionada(opcion);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setMostrarResultados(true);
+    const nuevasRespuestas = [...respuestas, {
+      correcta: respuestaSeleccionada === preguntaActual.respuestaCorrecta,
+    }];
+    setRespuestas(nuevasRespuestas);
+
+    if (preguntasRestantes.length > 0) {
+      seleccionarPreguntaAleatoria();
+      setRespuestaSeleccionada(null);
+      setNumeroPregunta(numeroPregunta + 1);
+    } else {
+      setMostrarResultados(true);
+    }
   };
 
   const calcularResultados = () => {
     let correctas = 0;
-    respuestas.forEach((respuesta, index) => {
-      if (respuesta === preguntas[index].respuestaCorrecta) {
+    respuestas.forEach(respuesta => {
+      if (respuesta.correcta) {
         correctas++;
       }
     });
@@ -81,25 +104,26 @@ const Evaluacion = () => {
   };
 
   return (
-    <div className="section" style={{minHeight: '100vh' }}>
+    <div className="section" style={{ minHeight: '100vh' }}>
       <div className="container">
         <div className="columns is-centered">
           <div className="column is-half">
             <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#333' }}>
               <h1 className="title has-text-white has-text-centered">Evaluación sobre Creación de Videojuegos</h1>
-              <form onSubmit={handleSubmit}>
-                {preguntas.map((pregunta, index) => (
-                  <div key={index} className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#444', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
-                    <h2 className="subtitle has-text-white">{pregunta.pregunta}</h2>
-                    {pregunta.opciones.map((opcion) => (
+              <h2 className="subtitle has-text-white has-text-centered">Pregunta {numeroPregunta + 1} de {preguntas.length}</h2>
+              {preguntaActual && !mostrarResultados && (
+                <form onSubmit={handleSubmit}>
+                  <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#444', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                    <h2 className="subtitle has-text-white">{preguntaActual.pregunta}</h2>
+                    {preguntaActual.opciones.map((opcion) => (
                       <div key={opcion} className="field">
                         <div className="control">
                           <label className="radio has-text-white">
                             <input
                               type="radio"
-                              name={`pregunta-${index}`}
+                              name={`pregunta`}
                               value={opcion}
-                              onChange={() => handleOptionChange(index, opcion)}
+                              onChange={() => handleOptionChange(opcion)}
                               disabled={mostrarResultados}
                               style={{ marginRight: '0.5rem' }}
                             />
@@ -109,19 +133,23 @@ const Evaluacion = () => {
                       </div>
                     ))}
                   </div>
-                ))}
-                {!mostrarResultados && (
                   <div className="has-text-centered">
                     <button type="submit" className="button is-dark is-medium" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}>
-                      Enviar Respuestas
+                      {preguntasRestantes.length > 0 ? 'Siguiente Pregunta' : 'Ver Resultados'}
                     </button>
                   </div>
-                )}
-              </form>
+                </form>
+              )}
               {mostrarResultados && (
                 <div className="box" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
                   <h2 className="subtitle has-text-white has-text-centered">Resultados</h2>
                   <p className="has-text-white has-text-centered">Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
+                  <p className="has-text-white has-text-centered">Porcentaje de aciertos: {(calcularResultados() / preguntas.length * 100).toFixed(2)}%</p>
+                  <div className="has-text-centered" style={{ marginTop: '1rem' }}>
+                    <button className="button is-dark is-medium" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => window.location.href = '/curso'}>
+                      Volver al curso
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
