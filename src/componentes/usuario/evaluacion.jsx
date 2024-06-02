@@ -55,12 +55,13 @@ const preguntas = [
 ];
 
 const Evaluacion = () => {
-  const [preguntasRestantes, setPreguntasRestantes] = useState([...preguntas]);
+  const [preguntasRestantes, setPreguntasRestantes] = useState([...preguntas, { pregunta: "Pregunta abierta: Describe tu experiencia con los videojuegos en 200 palabras o menos.", abierta: true }]);
   const [preguntaActual, setPreguntaActual] = useState(null);
   const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(null);
   const [mostrarResultados, setMostrarResultados] = useState(false);
   const [respuestas, setRespuestas] = useState([]);
   const [numeroPregunta, setNumeroPregunta] = useState(0);
+  const [respuestaAbierta, setRespuestaAbierta] = useState('');
 
   useEffect(() => {
     seleccionarPreguntaAleatoria();
@@ -77,16 +78,31 @@ const Evaluacion = () => {
     setRespuestaSeleccionada(opcion);
   };
 
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    if (value.split(' ').length <= 200) {
+      setRespuestaAbierta(value);
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    const nuevasRespuestas = [...respuestas, {
-      correcta: respuestaSeleccionada === preguntaActual.respuestaCorrecta,
-    }];
-    setRespuestas(nuevasRespuestas);
+    if (preguntaActual.abierta) {
+      const nuevasRespuestas = [...respuestas, {
+        correcta: respuestaAbierta.trim().length > 0,
+      }];
+      setRespuestas(nuevasRespuestas);
+      setRespuestaAbierta('');
+    } else {
+      const nuevasRespuestas = [...respuestas, {
+        correcta: respuestaSeleccionada === preguntaActual.respuestaCorrecta,
+      }];
+      setRespuestas(nuevasRespuestas);
+      setRespuestaSeleccionada(null);
+    }
 
     if (preguntasRestantes.length > 0) {
       seleccionarPreguntaAleatoria();
-      setRespuestaSeleccionada(null);
       setNumeroPregunta(numeroPregunta + 1);
     } else {
       setMostrarResultados(true);
@@ -107,34 +123,55 @@ const Evaluacion = () => {
     <div className="section" style={{ minHeight: '100vh' }}>
       <div className="container">
         <div className="columns is-centered">
-          <div className="column is-half">
+          <div className="column is-full-mobile is-half-tablet is-one-third-desktop">
             <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#333' }}>
-              <h1 className="title has-text-white has-text-centered">Evaluación sobre Creación de Videojuegos</h1>
-              <h2 className="subtitle has-text-white has-text-centered">Pregunta {numeroPregunta + 1} de {preguntas.length}</h2>
+              <h1 className="title has-text-white has-text-centered">Evaluación</h1>
+              <h2 className="subtitle has-text-white has-text-centered">Pregunta {numeroPregunta + 1} de {preguntas.length + 1}</h2>
               {preguntaActual && !mostrarResultados && (
                 <form onSubmit={handleSubmit}>
                   <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#444', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
                     <h2 className="subtitle has-text-white">{preguntaActual.pregunta}</h2>
-                    {preguntaActual.opciones.map((opcion) => (
-                      <div key={opcion} className="field">
-                        <div className="control">
-                          <label className="radio has-text-white">
-                            <input
-                              type="radio"
-                              name={`pregunta`}
-                              value={opcion}
-                              onChange={() => handleOptionChange(opcion)}
-                              disabled={mostrarResultados}
-                              style={{ marginRight: '0.5rem' }}
-                            />
-                            {opcion}
-                          </label>
+                    {!preguntaActual.abierta ? (
+                      preguntaActual.opciones.map((opcion) => (
+                        <div key={opcion} className="field">
+                          <div className="control">
+                            <label className="radio has-text-white">
+                              <input
+                                type="radio"
+                                name={`pregunta`}
+                                value={opcion}
+                                onChange={() => handleOptionChange(opcion)}
+                                disabled={mostrarResultados}
+                                style={{ marginRight: '0.5rem' }}
+                              />
+                              {opcion}
+                            </label>
+                          </div>
                         </div>
+                      ))
+                    ) : (
+                      <div className="field">
+                        <div className="control">
+                          <textarea
+                            className="textarea"
+                            value={respuestaAbierta}
+                            onChange={handleInputChange}
+                            maxLength={200}
+                            placeholder="Escribe tu respuesta aquí (máximo 200 palabras)"
+                            style={{ backgroundColor: '#555', color: 'white', borderColor: 'green' }}
+                          />
+                        </div>
+                        <p className="has-text-white has-text-right">{respuestaAbierta.split(' ').length} / 200 palabras</p>
                       </div>
-                    ))}
+                    )}
                   </div>
                   <div className="has-text-centered">
-                    <button type="submit" className="button is-dark is-medium" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}>
+                    <button
+                      type="submit"
+                      className="button is-dark is-medium"
+                      style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}
+                      disabled={!respuestaSeleccionada && !respuestaAbierta.trim()}
+                    >
                       {preguntasRestantes.length > 0 ? 'Siguiente Pregunta' : 'Ver Resultados'}
                     </button>
                   </div>
