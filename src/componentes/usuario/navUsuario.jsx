@@ -1,14 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import 'bulma/css/bulma.min.css'; // Importa Bulma CSS
-import '../CSS/style2.css'; // Si necesitas estilos adicionales
+import axios from 'axios';
+import 'bulma/css/bulma.min.css';
+import '../CSS/style2.css';
 import logo from '../img/logo_empresa.gif';
 import Perfil from '../usuario/perfil';
 
 const BarraNav = () => {
   const [estaActivo, setEstaActivo] = useState(false);
   const [estaPerfilAbierto, setEstaPerfilAbierto] = useState(false);
+  const [usuario, setUsuario] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userId = localStorage.getItem('userId');
+      if (userId) {
+        try {
+          const response = await axios.get(`https://gamebackend-1.onrender.com/api/usuarios/${userId}`);
+          const data = response.data;
+          setUsuario(data);
+        } catch (error) {
+          console.error('Error al obtener los datos del usuario', error);
+        }
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   const alternarMenuBurger = () => {
     setEstaActivo(!estaActivo);
@@ -60,8 +79,14 @@ const BarraNav = () => {
 
         <div className="navbar-end">
           <div className="navbar-item">
-            <button className="button is-success" onClick={alternarModalPerfil}>Perfil</button>
-            <button className="button is-primary" onClick={handleLogout}>Cerrar sesión</button>
+            <div className="buttons">
+              {usuario && (
+                <figure className="image is-48x48" style={{ cursor: 'pointer' }} onClick={alternarModalPerfil}>
+                  <img className="is-rounded imagen-perfil" src={usuario.imagenPerfil || 'https://via.placeholder.com/48'} alt="Perfil" />
+                </figure>
+              )}
+              <button className="button is-primary" onClick={handleLogout}>Cerrar sesión</button>
+            </div>
           </div>
         </div>
       </div>

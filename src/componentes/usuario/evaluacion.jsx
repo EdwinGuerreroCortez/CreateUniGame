@@ -1,140 +1,192 @@
 import React, { useState, useEffect } from 'react';
 import "bulma/css/bulma.min.css";
-import axios from 'axios';
+
+const preguntas = [
+  {
+    pregunta: "¿Cuál es el primer paso en el proceso de creación de un videojuego?",
+    opciones: ["Conceptualización", "Desarrollo", "Marketing", "Lanzamiento"],
+    respuestaCorrecta: "Conceptualización",
+  },
+  {
+    pregunta: "¿Qué lenguaje de programación es comúnmente utilizado para desarrollar videojuegos?",
+    opciones: ["Python", "JavaScript", "C++", "Ruby"],
+    respuestaCorrecta: "C++",
+  },
+  {
+    pregunta: "¿Qué motor de juego es conocido por su alta calidad gráfica y uso en AAA games?",
+    opciones: ["Unity", "Unreal Engine", "Godot", "GameMaker"],
+    respuestaCorrecta: "Unreal Engine",
+  },
+  {
+    pregunta: "¿Qué es un 'sprite' en el desarrollo de videojuegos?",
+    opciones: ["Un tipo de enemigo", "Un gráfico bidimensional", "Una herramienta de desarrollo", "Una técnica de sonido"],
+    respuestaCorrecta: "Un gráfico bidimensional",
+  },
+  {
+    pregunta: "¿Cuál es la función principal de un diseñador de niveles?",
+    opciones: ["Crear la música del juego", "Programar la lógica del juego", "Diseñar los escenarios y misiones", "Testear el juego"],
+    respuestaCorrecta: "Diseñar los escenarios y misiones",
+  },
+  {
+    pregunta: "¿Qué significa 'FPS' en el contexto de videojuegos?",
+    opciones: ["Frames Per Second", "First Person Shooter", "Fantasy Puzzle Simulation", "Fighting PlayStation"],
+    respuestaCorrecta: "First Person Shooter",
+  },
+  {
+    pregunta: "¿Qué herramienta se usa para la gestión de versiones en el desarrollo de software, incluidos los videojuegos?",
+    opciones: ["Git", "Docker", "Kubernetes", "Photoshop"],
+    respuestaCorrecta: "Git",
+  },
+  {
+    pregunta: "¿Qué técnica se usa para crear una animación suave y realista en videojuegos?",
+    opciones: ["Ray Tracing", "Motion Capture", "Sprite Animation", "Blending"],
+    respuestaCorrecta: "Motion Capture",
+  },
+  {
+    pregunta: "¿Qué es un 'patch' en el desarrollo de videojuegos?",
+    opciones: ["Una actualización del juego", "Un personaje jugable", "Un tipo de bug", "Un nivel secreto"],
+    respuestaCorrecta: "Una actualización del juego",
+  },
+  {
+    pregunta: "¿Cuál es la finalidad de un 'beta test' en el desarrollo de videojuegos?",
+    opciones: ["Probar el juego en desarrollo para encontrar errores", "Diseñar personajes", "Escribir el guion del juego", "Lanzar el juego oficialmente"],
+    respuestaCorrecta: "Probar el juego en desarrollo para encontrar errores",
+  },
+];
 
 const Evaluacion = () => {
-  const [preguntas, setPreguntas] = useState([]);
-  const [respuestas, setRespuestas] = useState([]);
+  const [preguntasRestantes, setPreguntasRestantes] = useState([...preguntas, { pregunta: "Pregunta abierta: Describe tu experiencia con los videojuegos en 200 palabras o menos.", abierta: true }]);
+  const [preguntaActual, setPreguntaActual] = useState(null);
+  const [respuestaSeleccionada, setRespuestaSeleccionada] = useState(null);
   const [mostrarResultados, setMostrarResultados] = useState(false);
-  const [evaluacionId, setEvaluacionId] = useState('');
-  const [calificacion, setCalificacion] = useState(null);
-  const [evaluacionRealizada, setEvaluacionRealizada] = useState(false);
-  const [incorrectas, setIncorrectas] = useState([]);
+  const [respuestas, setRespuestas] = useState([]);
+  const [numeroPregunta, setNumeroPregunta] = useState(0);
+  const [respuestaAbierta, setRespuestaAbierta] = useState('');
 
   useEffect(() => {
-    const obtenerEvaluaciones = async () => {
-      try {
-        const userId = localStorage.getItem('userId'); // Obtén el userId desde el localStorage
-        const response = await axios.get('http://localhost:3001/api/evaluaciones');
-        const evaluacionData = response.data[0]; // Asume que obtienes un arreglo y tomas el primer elemento
-        setEvaluacionId(evaluacionData._id);
-        
-        // Verificar si la evaluación ya ha sido realizada
-        const userResponse = await axios.get(`http://localhost:3001/api/usuarios/${userId}`);
-        const evaluacionRealizada = userResponse.data.evaluaciones_realizadas.find(evaluacion => evaluacion.tema_id === evaluacionData._id);
-
-        if (evaluacionRealizada) {
-          setCalificacion(evaluacionRealizada.calificacion);
-          setEvaluacionRealizada(true);
-          const respuestasGuardadas = evaluacionRealizada.preguntas_respondidas.map((pregunta) => pregunta.respuesta);
-          setRespuestas(respuestasGuardadas);
-          setPreguntas(evaluacionData.evaluacion);
-          setMostrarResultados(true); // Asegúrate de mostrar los resultados
-        } else {
-          setPreguntas(evaluacionData.evaluacion);
-          setRespuestas(Array(evaluacionData.evaluacion.length).fill(null));
-        }
-      } catch (error) {
-        console.error('Error al obtener las evaluaciones:', error);
-      }
-    };
-
-    obtenerEvaluaciones();
+    seleccionarPreguntaAleatoria();
   }, []);
 
-  const handleOptionChange = (index, opcion) => {
-    const nuevasRespuestas = [...respuestas];
-    nuevasRespuestas[index] = opcion;
-    setRespuestas(nuevasRespuestas);
+  const seleccionarPreguntaAleatoria = () => {
+    const indexAleatorio = Math.floor(Math.random() * preguntasRestantes.length);
+    const preguntaSeleccionada = preguntasRestantes[indexAleatorio];
+    setPreguntaActual(preguntaSeleccionada);
+    setPreguntasRestantes(preguntasRestantes.filter((_, index) => index !== indexAleatorio));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setMostrarResultados(true);
-    const [calificacion, incorrectas, respuestasConDetalle] = calcularResultados();
-    const userId = localStorage.getItem('userId'); // Obtén el userId desde el localStorage
+  const handleOptionChange = (opcion) => {
+    setRespuestaSeleccionada(opcion);
+  };
 
-    try {
-      await axios.post(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
-        evaluacionId,
-        calificacion,
-        respuestas: respuestasConDetalle
-      });
-      setIncorrectas(incorrectas);
-      setCalificacion(calificacion);
-      console.log('Calificación guardada exitosamente');
-    } catch (error) {
-      console.error('Error al guardar la calificación:', error);
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    if (value.split(' ').length <= 200) {
+      setRespuestaAbierta(value);
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (preguntaActual.abierta) {
+      const nuevasRespuestas = [...respuestas, {
+        correcta: respuestaAbierta.trim().length > 0,
+      }];
+      setRespuestas(nuevasRespuestas);
+      setRespuestaAbierta('');
+    } else {
+      const nuevasRespuestas = [...respuestas, {
+        correcta: respuestaSeleccionada === preguntaActual.respuestaCorrecta,
+      }];
+      setRespuestas(nuevasRespuestas);
+      setRespuestaSeleccionada(null);
+    }
+
+    if (preguntasRestantes.length > 0) {
+      seleccionarPreguntaAleatoria();
+      setNumeroPregunta(numeroPregunta + 1);
+    } else {
+      setMostrarResultados(true);
     }
   };
 
   const calcularResultados = () => {
     let correctas = 0;
-    let incorrectas = [];
-    const respuestasConDetalle = preguntas.map((pregunta, index) => {
-      const correcta = respuestas[index] === pregunta.respuesta_correcta;
-      if (correcta) {
+    respuestas.forEach(respuesta => {
+      if (respuesta.correcta) {
         correctas++;
-      } else {
-        incorrectas.push(index);
       }
-      return { pregunta: pregunta.pregunta, respuesta: respuestas[index], correcta };
     });
-    const calificacion = (correctas / preguntas.length) * 100;
-    return [calificacion, incorrectas, respuestasConDetalle];
-  };
-
-  const obtenerColorRespuesta = (index, opcion) => {
-    if (!mostrarResultados && !evaluacionRealizada) return '';
-    if (respuestas[index] === opcion) {
-      return opcion === preguntas[index].respuesta_correcta ? 'has-text-success' : 'has-text-danger';
-    }
-    return '';
+    return correctas;
   };
 
   return (
-    <div className="section" style={{ minHeight: '100vh' }}>
+    <div className="section" style={{ minHeight: '100vh', backgroundColor: '#14161A' }}>
       <div className="container">
         <div className="columns is-centered">
-          <div className="column is-half">
-            <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#333' }}>
-              <h1 className="title has-text-white has-text-centered">Evaluación sobre Creación de Videojuegos</h1>
-              <form onSubmit={handleSubmit}>
-                {preguntas.map((pregunta, index) => (
-                  <div key={index} className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#444', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
-                    <h2 className="subtitle has-text-white">{pregunta.pregunta}</h2>
-                    {pregunta.opciones.map((opcion) => (
-                      <div key={opcion} className="field">
-                        <div className="control">
-                          <label className={`radio ${obtenerColorRespuesta(index, opcion)}`}>
-                            <input
-                              type="radio"
-                              name={`pregunta-${index}`}
-                              value={opcion}
-                              onChange={() => handleOptionChange(index, opcion)}
-                              disabled={mostrarResultados || evaluacionRealizada}
-                              checked={respuestas[index] === opcion}
-                              style={{ marginRight: '0.5rem' }}
-                            />
-                            {opcion}
-                          </label>
+          <div className="column is-full-mobile is-half-tablet is-one-third-desktop">
+            <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#021929' }}>
+              <h1 className="title has-text-white has-text-centered">Evaluación</h1>
+              <h2 className="subtitle has-text-white has-text-centered">Pregunta {numeroPregunta + 1} de {preguntas.length + 1}</h2>
+              {preguntaActual && !mostrarResultados && (
+                <form onSubmit={handleSubmit}>
+                  <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                    <h2 className="subtitle has-text-white">{preguntaActual.pregunta}</h2>
+                    {!preguntaActual.abierta ? (
+                      preguntaActual.opciones.map((opcion) => (
+                        <div key={opcion} className="field">
+                          <div className="control">
+                            <label className="radio has-text-white">
+                              <input
+                                type="radio"
+                                name={`pregunta`}
+                                value={opcion}
+                                onChange={() => handleOptionChange(opcion)}
+                                disabled={mostrarResultados}
+                                style={{ marginRight: '0.5rem' }}
+                              />
+                              {opcion}
+                            </label>
+                          </div>
                         </div>
+                      ))
+                    ) : (
+                      <div className="field">
+                        <div className="control">
+                          <textarea
+                            className="textarea"
+                            value={respuestaAbierta}
+                            onChange={handleInputChange}
+                            maxLength={200}
+                            placeholder="Escribe tu respuesta aquí (máximo 200 palabras)"
+                            style={{ backgroundColor: '#14161A', color: 'white', borderColor: 'green' }}
+                          />
+                        </div>
+                        <p className="has-text-white has-text-right">{respuestaAbierta.split(' ').length} / 200 palabras</p>
                       </div>
-                    ))}
+                    )}
                   </div>
-                ))}
-                {!mostrarResultados && !evaluacionRealizada && (
                   <div className="has-text-centered">
-                    <button type="submit" className="button is-dark is-medium" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}>
-                      Enviar Respuestas
+                    <button
+                      type="submit"
+                      className="button is-dark is-medium"
+                      style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}
+                      disabled={!respuestaSeleccionada && !respuestaAbierta.trim()}
+                    >
+                      {preguntasRestantes.length > 0 ? 'Siguiente Pregunta' : 'Ver Resultados'}
+                    </button>
+                  </div>      
+                </form>
+              )}
+              {mostrarResultados && (
+                <div className="box" style={{ backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                  <h2 className="subtitle has-text-white has-text-centered">Resultados</h2>
+                  <p className="has-text-white has-text-centered">Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
+                  <p className="has-text-white has-text-centered">Porcentaje de aciertos: {(calcularResultados() / preguntas.length * 100).toFixed(2)}%</p>
+                  <div className="has-text-centered" style={{ marginTop: '1rem' }}>
+                    <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => window.location.href = '/curso'}>
+                      Volver al curso
                     </button>
                   </div>
-                )}
-              </form>
-              {mostrarResultados && (
-                <div className="box" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
-                  <h2 className="subtitle has-text-white has-text-centered">Resultados</h2>
-                  <p className="has-text-white has-text-centered">Has obtenido un {calificacion}%.</p>
                 </div>
               )}
             </div>

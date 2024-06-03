@@ -80,4 +80,10 @@
     background-color: #275fbd;
     border-color: #275fbd;
   }
+  .imagen-perfil {
+    width: 48px !important;
+    height: 48px !important;
+    max-height: none !important;
+  }
+  
   

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/style2.css'; // Importa el archivo CSS
 import logo from '../img/logo_empresa.gif';
+import '@fortawesome/fontawesome-free/css/all.css'; // Importa Font Awesome
 
 const BarraNav = () => {
   const [isActive, setIsActive] = useState(false);
@@ -38,7 +39,6 @@ const BarraNav = () => {
             <div className="navbar-dropdown">
               <Link className="navbar-item has-text-success" to="/acerca">Acerca de Unigame</Link>
               <Link className="navbar-item has-text-success" to="/contactanos">Contáctanos</Link>
-
             </div>
           </div>
           <Link className="navbar-item has-text-success" to="/">Inicio</Link>
@@ -46,8 +46,14 @@ const BarraNav = () => {
 
         <div className="navbar-end">
           <div className="navbar-item">
+          <Link className="button is-info" to="/buzon">
+              <span className="icon">
+                <i className="fas fa-envelope"></i>
+              </span>
+              <span>Buzón</span>
+            </Link>
             <Link className="button is-success" to="/login" style={{ marginRight: '0.5rem' }}>Iniciar Sesión</Link>
-            <Link className="button is-primary" to="/registro">Registraté</Link>
+            <Link className="button is-primary" to="/registro" style={{ marginRight: '0.5rem' }}>Registraté</Link>
           </div>
         </div>
       </div>
