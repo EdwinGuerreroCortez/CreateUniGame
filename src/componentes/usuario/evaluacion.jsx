@@ -1,63 +1,46 @@
-// src/components/Evaluacion.js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import "bulma/css/bulma.min.css";
-
-const preguntas = [
-  {
-    pregunta: "¿Cuál es el primer paso en el proceso de creación de un videojuego?",
-    opciones: ["Conceptualización", "Desarrollo", "Marketing", "Lanzamiento"],
-    respuestaCorrecta: "Conceptualización",
-  },
-  {
-    pregunta: "¿Qué lenguaje de programación es comúnmente utilizado para desarrollar videojuegos?",
-    opciones: ["Python", "JavaScript", "C++", "Ruby"],
-    respuestaCorrecta: "C++",
-  },
-  {
-    pregunta: "¿Qué motor de juego es conocido por su alta calidad gráfica y uso en AAA games?",
-    opciones: ["Unity", "Unreal Engine", "Godot", "GameMaker"],
-    respuestaCorrecta: "Unreal Engine",
-  },
-  {
-    pregunta: "¿Qué es un 'sprite' en el desarrollo de videojuegos?",
-    opciones: ["Un tipo de enemigo", "Un gráfico bidimensional", "Una herramienta de desarrollo", "Una técnica de sonido"],
-    respuestaCorrecta: "Un gráfico bidimensional",
-  },
-  {
-    pregunta: "¿Cuál es la función principal de un diseñador de niveles?",
-    opciones: ["Crear la música del juego", "Programar la lógica del juego", "Diseñar los escenarios y misiones", "Testear el juego"],
-    respuestaCorrecta: "Diseñar los escenarios y misiones",
-  },
-  {
-    pregunta: "¿Qué significa 'FPS' en el contexto de videojuegos?",
-    opciones: ["Frames Per Second", "First Person Shooter", "Fantasy Puzzle Simulation", "Fighting PlayStation"],
-    respuestaCorrecta: "First Person Shooter",
-  },
-  {
-    pregunta: "¿Qué herramienta se usa para la gestión de versiones en el desarrollo de software, incluidos los videojuegos?",
-    opciones: ["Git", "Docker", "Kubernetes", "Photoshop"],
-    respuestaCorrecta: "Git",
-  },
-  {
-    pregunta: "¿Qué técnica se usa para crear una animación suave y realista en videojuegos?",
-    opciones: ["Ray Tracing", "Motion Capture", "Sprite Animation", "Blending"],
-    respuestaCorrecta: "Motion Capture",
-  },
-  {
-    pregunta: "¿Qué es un 'patch' en el desarrollo de videojuegos?",
-    opciones: ["Una actualización del juego", "Un personaje jugable", "Un tipo de bug", "Un nivel secreto"],
-    respuestaCorrecta: "Una actualización del juego",
-  },
-  {
-    pregunta: "¿Cuál es la finalidad de un 'beta test' en el desarrollo de videojuegos?",
-    opciones: ["Probar el juego en desarrollo para encontrar errores", "Diseñar personajes", "Escribir el guion del juego", "Lanzar el juego oficialmente"],
-    respuestaCorrecta: "Probar el juego en desarrollo para encontrar errores",
-  },
-];
+import axios from 'axios';
 
 const Evaluacion = () => {
-  const [respuestas, setRespuestas] = useState(Array(preguntas.length).fill(null));
+  const [preguntas, setPreguntas] = useState([]);
+  const [respuestas, setRespuestas] = useState([]);
   const [mostrarResultados, setMostrarResultados] = useState(false);
+  const [evaluacionId, setEvaluacionId] = useState('');
+  const [calificacion, setCalificacion] = useState(null);
+  const [evaluacionRealizada, setEvaluacionRealizada] = useState(false);
+  const [incorrectas, setIncorrectas] = useState([]);
+
+  useEffect(() => {
+    const obtenerEvaluaciones = async () => {
+      try {
+        const userId = localStorage.getItem('userId'); // Obtén el userId desde el localStorage
+        const response = await axios.get('http://localhost:3001/api/evaluaciones');
+        const evaluacionData = response.data[0]; // Asume que obtienes un arreglo y tomas el primer elemento
+        setEvaluacionId(evaluacionData._id);
+        
+        // Verificar si la evaluación ya ha sido realizada
+        const userResponse = await axios.get(`http://localhost:3001/api/usuarios/${userId}`);
+        const evaluacionRealizada = userResponse.data.evaluaciones_realizadas.find(evaluacion => evaluacion.tema_id === evaluacionData._id);
+
+        if (evaluacionRealizada) {
+          setCalificacion(evaluacionRealizada.calificacion);
+          setEvaluacionRealizada(true);
+          const respuestasGuardadas = evaluacionRealizada.preguntas_respondidas.map((pregunta) => pregunta.respuesta);
+          setRespuestas(respuestasGuardadas);
+          setPreguntas(evaluacionData.evaluacion);
+          setMostrarResultados(true); // Asegúrate de mostrar los resultados
+        } else {
+          setPreguntas(evaluacionData.evaluacion);
+          setRespuestas(Array(evaluacionData.evaluacion.length).fill(null));
+        }
+      } catch (error) {
+        console.error('Error al obtener las evaluaciones:', error);
+      }
+    };
+
+    obtenerEvaluaciones();
+  }, []);
 
   const handleOptionChange = (index, opcion) => {
     const nuevasRespuestas = [...respuestas];
@@ -65,23 +48,52 @@ const Evaluacion = () => {
     setRespuestas(nuevasRespuestas);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setMostrarResultados(true);
+    const [calificacion, incorrectas, respuestasConDetalle] = calcularResultados();
+    const userId = localStorage.getItem('userId'); // Obtén el userId desde el localStorage
+
+    try {
+      await axios.post(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
+        evaluacionId,
+        calificacion,
+        respuestas: respuestasConDetalle
+      });
+      setIncorrectas(incorrectas);
+      setCalificacion(calificacion);
+      console.log('Calificación guardada exitosamente');
+    } catch (error) {
+      console.error('Error al guardar la calificación:', error);
+    }
   };
 
   const calcularResultados = () => {
     let correctas = 0;
-    respuestas.forEach((respuesta, index) => {
-      if (respuesta === preguntas[index].respuestaCorrecta) {
+    let incorrectas = [];
+    const respuestasConDetalle = preguntas.map((pregunta, index) => {
+      const correcta = respuestas[index] === pregunta.respuesta_correcta;
+      if (correcta) {
         correctas++;
+      } else {
+        incorrectas.push(index);
       }
+      return { pregunta: pregunta.pregunta, respuesta: respuestas[index], correcta };
     });
-    return correctas;
+    const calificacion = (correctas / preguntas.length) * 100;
+    return [calificacion, incorrectas, respuestasConDetalle];
+  };
+
+  const obtenerColorRespuesta = (index, opcion) => {
+    if (!mostrarResultados && !evaluacionRealizada) return '';
+    if (respuestas[index] === opcion) {
+      return opcion === preguntas[index].respuesta_correcta ? 'has-text-success' : 'has-text-danger';
+    }
+    return '';
   };
 
   return (
-    <div className="section" style={{minHeight: '100vh' }}>
+    <div className="section" style={{ minHeight: '100vh' }}>
       <div className="container">
         <div className="columns is-centered">
           <div className="column is-half">
@@ -94,13 +106,14 @@ const Evaluacion = () => {
                     {pregunta.opciones.map((opcion) => (
                       <div key={opcion} className="field">
                         <div className="control">
-                          <label className="radio has-text-white">
+                          <label className={`radio ${obtenerColorRespuesta(index, opcion)}`}>
                             <input
                               type="radio"
                               name={`pregunta-${index}`}
                               value={opcion}
                               onChange={() => handleOptionChange(index, opcion)}
-                              disabled={mostrarResultados}
+                              disabled={mostrarResultados || evaluacionRealizada}
+                              checked={respuestas[index] === opcion}
                               style={{ marginRight: '0.5rem' }}
                             />
                             {opcion}
@@ -110,7 +123,7 @@ const Evaluacion = () => {
                     ))}
                   </div>
                 ))}
-                {!mostrarResultados && (
+                {!mostrarResultados && !evaluacionRealizada && (
                   <div className="has-text-centered">
                     <button type="submit" className="button is-dark is-medium" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}>
                       Enviar Respuestas
@@ -121,7 +134,7 @@ const Evaluacion = () => {
               {mostrarResultados && (
                 <div className="box" style={{ backgroundColor: '#444', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
                   <h2 className="subtitle has-text-white has-text-centered">Resultados</h2>
-                  <p className="has-text-white has-text-centered">Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
+                  <p className="has-text-white has-text-centered">Has obtenido un {calificacion}%.</p>
                 </div>
               )}
             </div>

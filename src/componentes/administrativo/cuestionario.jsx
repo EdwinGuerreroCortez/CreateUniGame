@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bulma/css/bulma.min.css';
-import '../CSS/adminForms.css'; // Archivo CSS adicional para estilos específicos
+import '../CSS/adminForms.css';
 
 const CuestionariosForm = () => {
   const [file, setFile] = useState(null);
@@ -27,7 +27,7 @@ const CuestionariosForm = () => {
     if (alert.message) {
       const timer = setTimeout(() => {
         setAlert({ type: '', message: '' });
-      }, 5000); // Disappears after 5 seconds
+      }, 5000); // Desaparece después de 5 segundos
 
       return () => clearTimeout(timer);
     }
