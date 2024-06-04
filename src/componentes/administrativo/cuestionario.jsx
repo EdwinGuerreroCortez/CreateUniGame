@@ -7,6 +7,7 @@ const CuestionariosForm = () => {
   const [file, setFile] = useState(null);
   const [tema, setTema] = useState('');
   const [temas, setTemas] = useState([]);
+  const [evaluaciones, setEvaluaciones] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState({ type: '', message: '' });
 
@@ -20,7 +21,17 @@ const CuestionariosForm = () => {
       }
     };
 
+    const fetchEvaluaciones = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/evaluaciones');
+        setEvaluaciones(response.data);
+      } catch (error) {
+        console.error('Error al obtener las evaluaciones:', error);
+      }
+    };
+
     fetchTemas();
+    fetchEvaluaciones();
   }, []);
 
   useEffect(() => {
@@ -55,9 +66,13 @@ const CuestionariosForm = () => {
         setAlert({ type: 'success', message: 'Archivo subido exitosamente' });
         setFile(null);
         setTema('');
+        setEvaluaciones([...evaluaciones, response.data]); // Agrega la nueva evaluación a la lista
       } catch (error) {
         console.error('Error al subir archivo:', error);
-        setAlert({ type: 'error', message: 'Error al subir archivo' });
+        const errorMessage = error.response && error.response.data && error.response.data.details
+          ? error.response.data.details.join(', ')
+          : 'Error al subir archivo';
+        setAlert({ type: 'error', message: errorMessage });
       } finally {
         setIsLoading(false);
       }
@@ -129,6 +144,47 @@ const CuestionariosForm = () => {
             <button className="button is-loading is-large is-info">Cargando</button>
           </div>
         )}
+
+        <div className="box" style={{ backgroundColor: '#090A0C' }}>
+          <h2 className="title is-4 has-text-centered has-text-white">Lista de Evaluaciones</h2>
+          <table className="table is-fullwidth is-striped is-hoverable">
+            <thead>
+              <tr>
+                <th className="has-text-white">Tema</th>
+                <th className="has-text-white">Pregunta</th>
+                <th className="has-text-white">Opciones</th>
+                <th className="has-text-white">Respuesta Correcta</th>
+              </tr>
+            </thead>
+            <tbody>
+              {evaluaciones && evaluaciones.length > 0 ? (
+                evaluaciones.map((evaluacion) => {
+                  const { tema_id, evaluacion: preguntas } = evaluacion;
+                  return (
+                    <>
+                      <tr key={evaluacion._id} style={{ borderTop: '4px solid #555' }}>
+                        <td className="has-text-white" rowSpan={preguntas.length + 1} style={{ borderRight: '2px solid #555' }}>
+                          {tema_id.titulo}
+                        </td>
+                      </tr>
+                      {preguntas.map((pregunta, index) => (
+                        <tr key={`${evaluacion._id}-${index}`}>
+                          <td className="has-text-white">{pregunta.pregunta}</td>
+                          <td className="has-text-white">{pregunta.opciones.join(', ')}</td>
+                          <td className="has-text-white">{pregunta.respuesta_correcta}</td>
+                        </tr>
+                      ))}
+                    </>
+                  );
+                })
+              ) : (
+                <tr>
+                  <td className="has-text-white" colSpan="4">No hay evaluaciones disponibles.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
