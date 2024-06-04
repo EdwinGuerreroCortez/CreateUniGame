@@ -51,10 +51,15 @@ const TemaForm = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log('Archivo y video subidos con éxito:', data);
-          setTemas([...temas, data]); // Agrega el nuevo tema a la lista
-          setIsLoading(false);
-          setAlert({ type: 'success', message: 'Archivo y video subidos y procesados con éxito.' });
+          if (data.error) {
+            setAlert({ type: 'error', message: data.details.join(', ') });
+            setIsLoading(false);
+          } else {
+            console.log('Archivo y video subidos con éxito:', data);
+            setTemas([...temas, data]); // Agrega el nuevo tema a la lista
+            setIsLoading(false);
+            setAlert({ type: 'success', message: 'Archivo y video subidos y procesados con éxito.' });
+          }
         })
         .catch((error) => {
           console.error('Error subiendo el archivo y video:', error);
@@ -65,7 +70,7 @@ const TemaForm = () => {
   };
 
   const handleEliminarTema = (id) => {
-    fetch(`http://localhost:3001/api/temas/${id}`, { // Asegúrate de apuntar a la URL correcta
+    fetch(`http://localhost:3001/api/temas/${id}`, { 
       method: 'DELETE',
     })
       .then(() => {
@@ -80,6 +85,24 @@ const TemaForm = () => {
 
   const handleCloseAlert = () => {
     setAlert({ type: '', message: '' });
+  };
+
+  const handleDownloadTema = (id) => {
+    fetch(`http://localhost:3001/api/download-tema/${id}`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', `${id}.xlsx`);
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      })
+      .catch((error) => {
+        console.error('Error descargando el archivo Excel:', error);
+        setAlert({ type: 'error', message: 'Error descargando el archivo Excel. Inténtalo de nuevo.' });
+      });
   };
 
   return (
@@ -167,27 +190,40 @@ const TemaForm = () => {
               </tr>
             </thead>
             <tbody>
-              {temas.map((tema) => (
-                <tr key={tema._id}>
-                  <td className="has-text-white">{tema.titulo}</td>
-                  <td className="has-text-white">{tema.autor}</td>
-                  <td className="has-text-white">{new Date(tema.fecha_creacion).toLocaleDateString()}</td>
-                  <td className="has-text-white">{tema.descripcion}</td>
-                  <td className="has-text-white">{tema.pasos.map((paso, index) => (
-                    <div key={index}>{paso.Descripcion}</div>
-                  ))}</td>
-                  <td>
-                    {tema.video ? (
-                      <a className="has-text-link" href={tema.video} target="_blank" rel="noopener noreferrer">Ver Video</a>
+              {temas && temas.length > 0 ? (
+                temas.map((tema) => (
+                  <tr key={tema._id}>
+                    <td className="has-text-white">{tema.titulo}</td>
+                    <td className="has-text-white">{tema.autor}</td>
+                    <td className="has-text-white">{new Date(tema.fecha_creacion).toLocaleDateString()}</td>
+                    <td className="has-text-white">{tema.descripcion}</td>
+                    <td className="has-text-white">{tema.pasos && tema.pasos.length > 0 ? (
+                      tema.pasos.map((paso, index) => (
+                        <div key={index}>{paso.Descripcion}</div>
+                      ))
                     ) : (
-                      <span className="has-text-grey">No disponible</span>
-                    )}
-                  </td>
-                  <td>
-                    <button className="button is-danger is-small" onClick={() => handleEliminarTema(tema._id)}>Eliminar</button>
-                  </td>
+                      <span>No hay pasos definidos</span>
+                    )}</td>
+                    <td>
+                      {tema.video ? (
+                        <a className="has-text-link" href={tema.video} target="_blank" rel="noopener noreferrer">Ver Video</a>
+                      ) : (
+                        <span className="has-text-grey">No disponible</span>
+                      )}
+                    </td>
+                    <td>
+                    <div className="buttons are-small">
+                        <button className="button is-danger" onClick={() => handleEliminarTema(tema._id)}>Eliminar</button>
+                        <button className="button is-info" onClick={() => handleDownloadTema(tema._id)}>Descargar Excel</button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td className="has-text-white" colSpan="7">No hay temas disponibles.</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
