@@ -68,6 +68,7 @@ const Bienvenida = () => {
                     alt="Foto de perfil" 
                     style={{ borderRadius: '50%', width: '150px', height: '150px' }}
                   />
+                  <p>Correo Electrónico:</p>
                   <p>{userData.datos_personales.correo}</p>
                 </div>
               </div>
