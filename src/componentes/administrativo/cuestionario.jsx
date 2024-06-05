@@ -195,7 +195,24 @@ const CuestionariosForm = () => {
       })
       .catch((error) => {
         console.error('Error al descargar el archivo:', error);
-        setAlert({ type: 'error', message: 'Error al descargar el archivo Excel. Inténtalo de nuevo.' });
+        setAlert({ type: 'error', message: 'Error al descargar el archivo Excel. Inténtalo de nuevo.'});
+      });
+  };
+
+  const handleDownloadPlantilla = () => {
+    axios.get('http://localhost:3001/api/evaluaciones/plantilla', { responseType: 'blob' })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Plantilla_Cuestionario.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      })
+      .catch((error) => {
+        console.error('Error al descargar la plantilla:', error);
+        setAlert({ type: 'error', message: 'Error al descargar la plantilla. Inténtalo de nuevo.' });
       });
   };
 
@@ -250,6 +267,11 @@ const CuestionariosForm = () => {
             <div className="control">
               <button type="submit" className="button is-success" onClick={handleSubmit} disabled={isLoading}>
                 {isLoading ? 'Cargando...' : 'Subir Cuestionario'}
+              </button>
+            </div>
+            <div className="control">
+              <button className="button is-info" onClick={handleDownloadPlantilla} disabled={isLoading}>
+                {isLoading ? 'Descargando...' : 'Descargar Plantilla'}
               </button>
             </div>
           </div>
@@ -384,7 +406,7 @@ const CuestionariosForm = () => {
                     <input className="file-input" type="file" accept=".xlsx, .xls" onChange={handleEditFileChange} />
                     <span className="file-cta">
                       <span className="file-icon">
-                        <i className="fas fa-upload"></i>
+                      <i className="fas fa-upload"></i>
                       </span>
                       <span className="file-label">
                         Subir actualización...
@@ -407,3 +429,5 @@ const CuestionariosForm = () => {
 };
 
 export default CuestionariosForm;
+
+
