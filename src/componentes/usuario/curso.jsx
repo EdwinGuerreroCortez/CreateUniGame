@@ -59,11 +59,11 @@ const Curso = () => {
   };
 
   const handleEvaluationClick = () => {
-    const userConfirmed = window.confirm("¿Desea responder la siguiente evaluación?");
-    if (userConfirmed) {
-      navigate('/evaluacion');
-    }
-  };
+  const userConfirmed = window.confirm("¿Desea responder la siguiente evaluación?");
+  if (userConfirmed) {
+    navigate(`/evaluacion/${temaSeleccionado._id}`);
+  }
+};
 
   const renderVideo = (videoUrl) => {
     const youtubeRegex = /(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;

@@ -19,7 +19,8 @@ const CuestionariosForm = () => {
     const fetchTemas = async () => {
       try {
         const response = await axios.get('http://localhost:3001/api/temas');
-        setTemas(response.data);
+        const filteredTemas = response.data.filter(tema => !tema.evaluacion_id);
+        setTemas(filteredTemas);
       } catch (error) {
         console.error('Error al obtener los temas:', error);
       }
@@ -37,7 +38,6 @@ const CuestionariosForm = () => {
     fetchTemas();
     fetchEvaluaciones();
   }, []);
-
   useEffect(() => {
     if (alert.message) {
       const timer = setTimeout(() => {
