@@ -135,6 +135,7 @@ const CuestionariosForm = () => {
         formData.append('file', editFile);
       }
       formData.append('tema', tema);
+      formData.append('evaluacion', JSON.stringify(editEvaluacion.evaluacion));
 
       const response = await axios.put(`http://localhost:3001/api/evaluaciones/${editEvaluacion._id}`, formData, {
         headers: {
@@ -143,7 +144,7 @@ const CuestionariosForm = () => {
       });
 
       const updatedEvaluaciones = evaluaciones.map(evaluacion =>
-        evaluacion._id === editEvaluacion._id ? { ...evaluacion, tema_id: { ...evaluacion.tema_id, _id: tema } } : evaluacion
+        evaluacion._id === editEvaluacion._id ? { ...evaluacion, tema_id: { ...evaluacion.tema_id, _id: tema }, evaluacion: editEvaluacion.evaluacion } : evaluacion
       );
       setEvaluaciones(updatedEvaluaciones);
       setModalAlert({ type: 'success', message: 'Evaluación actualizada exitosamente' });
@@ -163,7 +164,6 @@ const CuestionariosForm = () => {
     setEditEvaluacion({ ...editEvaluacion, [field]: value });
   };
 
-
   const handlePreguntaChange = (index, field, value) => {
     if (field === 'opciones') {
       const opciones = Array.isArray(value) ? value : value.split(',').map(opcion => opcion.trim());
@@ -181,7 +181,6 @@ const CuestionariosForm = () => {
     );
     setEditEvaluacion({ ...editEvaluacion, evaluacion: newPreguntas });
   };
-
 
   const handleDownloadTema = (temaId) => {
     axios.get(`http://localhost:3001/api/temas/${temaId}/download`, { responseType: 'blob' })
@@ -408,4 +407,3 @@ const CuestionariosForm = () => {
 };
 
 export default CuestionariosForm;
-
