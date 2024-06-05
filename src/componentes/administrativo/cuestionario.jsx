@@ -163,21 +163,25 @@ const CuestionariosForm = () => {
     setEditEvaluacion({ ...editEvaluacion, [field]: value });
   };
 
+
   const handlePreguntaChange = (index, field, value) => {
+    if (field === 'opciones') {
+      const opciones = Array.isArray(value) ? value : value.split(',').map(opcion => opcion.trim());
+      if (opciones.length !== 4 || opciones.includes('')) {
+        setModalAlert({ type: 'error', message: `Debe haber exactamente 4 opciones y no deben estar vacías en la fila ${index + 1}.` });
+        return; // Si hay un error, no continuar con la actualización
+      } else {
+        setModalAlert({ type: '', message: '' });
+      }
+      value = opciones;
+    }
+
     const newPreguntas = editEvaluacion.evaluacion.map((pregunta, idx) =>
       idx === index ? { ...pregunta, [field]: value } : pregunta
     );
     setEditEvaluacion({ ...editEvaluacion, evaluacion: newPreguntas });
-
-    if (field === 'opciones') {
-      const opciones = value.split(',').map(opcion => opcion.trim());
-      if (opciones.length !== 4 || opciones.includes('')) {
-        setModalAlert({ type: 'error', message: `Debe haber exactamente 4 opciones y no deben estar vacías en la fila ${index + 1}.` });
-      } else {
-        setModalAlert({ type: '', message: '' });
-      }
-    }
   };
+
 
   const handleDownloadTema = (temaId) => {
     axios.get(`http://localhost:3001/api/temas/${temaId}/download`, { responseType: 'blob' })
@@ -354,13 +358,11 @@ const CuestionariosForm = () => {
                           className="input"
                           type="text"
                           value={pregunta.opciones.join(', ')}
-                          onChange={(e) => {
-                            const opciones = e.target.value.split(',').map(opcion => opcion.trim());
-                            handlePreguntaChange(index, 'opciones', opciones);
-                          }}
+                          onChange={(e) => handlePreguntaChange(index, 'opciones', e.target.value)}
                         />
                       </div>
                     </div>
+
                     <div className="field">
                       <label className="label">Respuesta Correcta</label>
                       <div className="control">
