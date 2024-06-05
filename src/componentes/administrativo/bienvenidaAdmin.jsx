@@ -34,7 +34,23 @@ const BienvenidaAdmin = () => {
   }, [navigate]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="section has-background-black-bis">
+        <div className="container">
+          <div className="columns is-centered">
+            <div className="column is-half-tablet is-one-third-desktop" style={{ marginBottom: '1.5rem' }}>
+              <div className="card profile-card" style={{ backgroundColor: '#001f3f', border: '2px solid #3273dc', borderRadius: '8px', boxShadow: '0 4px 8px rgba(50, 115, 220, 0.5)', color: '#ffffff', padding: '1.1rem', height: '100%' }}>
+                <div className="card-content has-text-centered">
+                  <div className="content">
+                    <h2 className="title has-text-white">Cargando...</h2>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -45,7 +61,7 @@ const BienvenidaAdmin = () => {
             <div className="card profile-card" style={{ backgroundColor: '#001f3f', border: '2px solid #3273dc', borderRadius: '8px', boxShadow: '0 4px 8px rgba(50, 115, 220, 0.5)', color: '#ffffff', padding: '1.1rem', height: '100%' }}>
               <div className="card-content has-text-centered">
                 <div className="content">
-                  <h2 className="title has-text-white">Administrador {userData.datos_personales.nombre}</h2>
+                  <h2 className="title has-text-white">Panel Administrativo</h2>
                   <img 
                     src={userData.imagenPerfil || 'https://via.placeholder.com/150'} 
                     alt={`Foto de perfil de ${userData.datos_personales.nombre}`} 
