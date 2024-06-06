@@ -1,3 +1,4 @@
+//curso.jsx
 import React, { useState, useEffect } from "react";
 import "bulma/css/bulma.min.css";
 import '../CSS/carga.css';
@@ -8,10 +9,13 @@ const Curso = () => {
   const [temaSeleccionado, setTemaSeleccionado] = useState(null);
   const [mostrarTemas, setMostrarTemas] = useState(false);
   const [temas, setTemas] = useState([]);
-  const [pasoActual, setPasoActual] = useState(-1); //-1 para la introducción
+  const [pasoActual, setPasoActual] = useState(-1); // -1 para la introducción
   const [cursoFinalizado, setCursoFinalizado] = useState(false);
   const temasPorPagina = 6;
   const navigate = useNavigate();
+
+  // Obtiene el userId desde localStorage
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     const fetchTemas = async () => {
@@ -23,7 +27,7 @@ const Curso = () => {
         console.error('Error al cargar los temas:', error);
       }
     };
-    
+
     fetchTemas();
   }, []);
 
@@ -58,10 +62,22 @@ const Curso = () => {
     }
   };
 
-  const handleEvaluationClick = () => {
-    const userConfirmed = window.confirm("¿Desea responder la siguiente evaluación?");
-    if (userConfirmed) {
-      navigate(`/evaluacion/${temaSeleccionado._id}`);
+  const handleEvaluationClick = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}`);
+      const userData = await response.json();
+      const evaluacionRealizada = userData.evaluaciones_realizadas.find(evaluacion => evaluacion.tema_id === temaSeleccionado._id);
+
+      if (evaluacionRealizada) {
+        navigate(`/evaluacion/${temaSeleccionado._id}`, { state: { mostrarResultados: true } });
+      } else {
+        const userConfirmed = window.confirm("¿Desea responder la siguiente evaluación?");
+        if (userConfirmed) {
+          navigate(`/evaluacion/${temaSeleccionado._id}`);
+        }
+      }
+    } catch (error) {
+      console.error('Error al verificar la evaluación realizada:', error);
     }
   };
 
@@ -73,6 +89,7 @@ const Curso = () => {
       const videoId = match[1];
       return (
         <iframe
+          key={videoId} // Añade una clave única basada en el ID del video
           width="100%"
           height="400"
           src={`https://www.youtube.com/embed/${videoId}`}
@@ -85,7 +102,7 @@ const Curso = () => {
       );
     } else {
       return (
-        <video width="100%" controls style={{ marginBottom: '20px' }}>
+        <video key={videoUrl} width="100%" controls style={{ marginBottom: '20px' }}>
           <source src={videoUrl} type="video/mp4" />
           Tu navegador no soporta el video.
         </video>
@@ -192,7 +209,7 @@ const Curso = () => {
                 ) : (
                   <>
                     <h2 className="title is-4 has-text-centered has-text-white">Pasos</h2>
-                    <div className="content">
+                                       <div className="content">
                       <h3 className="subtitle is-5 has-text-white">Paso {pasoActual + 1}: {temaSeleccionado.pasos[pasoActual].Titulo}</h3>
                       <p>{temaSeleccionado.pasos[pasoActual].Descripcion}</p>
                     </div>
@@ -242,3 +259,4 @@ const Curso = () => {
 };
 
 export default Curso;
+

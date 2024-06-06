@@ -1,3 +1,4 @@
+//evaluacion.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import "bulma/css/bulma.min.css";
@@ -11,24 +12,33 @@ const Evaluacion = () => {
   const [mostrarResultados, setMostrarResultados] = useState(false);
   const [respuestas, setRespuestas] = useState([]);
   const [numeroPregunta, setNumeroPregunta] = useState(0);
+  const [evaluacionRealizada, setEvaluacionRealizada] = useState(null);
 
   const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     const fetchEvaluacion = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/evaluaciones/${temaId}?limit=10`);
-        const data = await response.json();
-        if (data.evaluacion) {
-          setPreguntas(data.evaluacion);
-          setPreguntaActual(data.evaluacion[0]);
+        const userResponse = await fetch(`http://localhost:3001/api/usuarios/${userId}`);
+        const userData = await userResponse.json();
+        const evaluacion = userData.evaluaciones_realizadas.find(evaluacion => evaluacion.tema_id === temaId);
+
+        if (evaluacion) {
+          setEvaluacionRealizada(evaluacion);
+        } else {
+          const response = await fetch(`http://localhost:3001/api/evaluaciones/${temaId}?limit=10`);
+          const data = await response.json();
+          if (data.evaluacion) {
+            setPreguntas(data.evaluacion);
+            setPreguntaActual(data.evaluacion[0]);
+          }
         }
       } catch (error) {
         console.error('Error al cargar la evaluación:', error);
       }
     };
     fetchEvaluacion();
-  }, [temaId]);
+  }, [temaId, userId]);
 
   const handleOptionChange = (opcion) => {
     setRespuestaSeleccionada(opcion);
@@ -54,19 +64,22 @@ const Evaluacion = () => {
   };
 
   const guardarResultados = async (respuestas) => {
-    const calificacion = respuestas.filter(respuesta => respuesta.correcta).length;
+    const porcentaje = (respuestas.filter(respuesta => respuesta.correcta).length / preguntas.length) * 100;
+    console.log("Guardando resultados...", { temaId, porcentaje, preguntasRespondidas: respuestas });
     try {
-      await fetch(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
+      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           temaId,
-          calificacion,
+          porcentaje,
           preguntasRespondidas: respuestas,
         }),
       });
+      const data = await response.json();
+      console.log("Respuesta del servidor:", data);
     } catch (error) {
       console.error('Error al guardar los resultados:', error);
     }
@@ -89,52 +102,66 @@ const Evaluacion = () => {
           <div className="column is-full-mobile is-half-tablet is-one-third-desktop">
             <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#021929' }}>
               <h1 className="title has-text-white has-text-centered">Evaluación</h1>
-              <h2 className="subtitle has-text-white has-text-centered">Pregunta {numeroPregunta + 1} de {preguntas.length}</h2>
-              {preguntaActual && !mostrarResultados && (
-                <form onSubmit={handleSubmit}>
-                  <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
-                    <h2 className="subtitle has-text-white">{preguntaActual.pregunta}</h2>
-                    {preguntaActual.opciones.map((opcion, index) => (
-                      <div key={index} className="field">
-                        <div className="control">
-                          <label className="radio has-text-white">
-                            <input
-                              type="radio"
-                              name={`pregunta`}
-                              value={opcion}
-                              onChange={() => handleOptionChange(opcion)}
-                              disabled={mostrarResultados}
-                              style={{ marginRight: '0.5rem' }}
-                            />
-                            {opcion}
-                          </label>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="has-text-centered">
-                    <button
-                      type="submit"
-                      className="button is-dark is-medium"
-                      style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}
-                      disabled={!respuestaSeleccionada}
-                    >
-                      {numeroPregunta < preguntas.length - 1 ? 'Siguiente Pregunta' : 'Ver Resultados'}
-                    </button>
-                  </div>      
-                </form>
-              )}
-              {mostrarResultados && (
+              {evaluacionRealizada ? (
                 <div className="box" style={{ backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
-                  <h2 className="subtitle has-text-white has-text-centered">Resultados</h2>
-                  <p className="has-text-white has-text-centered">Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
-                  <p className="has-text-white has-text-centered">Porcentaje de aciertos: {(calcularResultados() / preguntas.length * 100).toFixed(2)}%</p>
+                  <h2 className="subtitle has-text-white has-text-centered">Resultados Previos</h2>
+                  <p className="has-text-white has-text-centered">Calificación: {evaluacionRealizada.porcentaje}%</p>
                   <div className="has-text-centered" style={{ marginTop: '1rem' }}>
                     <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => navigate('/curso')}>
                       Volver al curso
                     </button>
                   </div>
                 </div>
+              ) : (
+                <>
+                  <h2 className="subtitle has-text-white has-text-centered">Pregunta {numeroPregunta + 1} de {preguntas.length}</h2>
+                  {preguntaActual && !mostrarResultados && (
+                    <form onSubmit={handleSubmit}>
+                      <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                        <h2 className="subtitle has-text-white">{preguntaActual.pregunta}</h2>
+                        {preguntaActual.opciones.map((opcion, index) => (
+                          <div key={index} className="field">
+                            <div className="control">
+                              <label className="radio has-text-white">
+                                <input
+                                  type="radio"
+                                  name={`pregunta`}
+                                  value={opcion}
+                                  onChange={() => handleOptionChange(opcion)}
+                                  disabled={mostrarResultados}
+                                  style={{ marginRight: '0.5rem' }}
+                                />
+                                {opcion}
+                              </label>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="has-text-centered">
+                        <button
+                          type="submit"
+                          className="button is-dark is-medium"
+                          style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}
+                          disabled={!respuestaSeleccionada}
+                        >
+                          {numeroPregunta < preguntas.length - 1 ? 'Siguiente Pregunta' : 'Ver Resultados'}
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                  {mostrarResultados && (
+                    <div className="box" style={{ backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                      <h2 className="subtitle has-text-white has-text-centered">Resultados</h2>
+                      <p className="has-text-white has-text-centered">Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
+                      <p className="has-text-white has-text-centered">Porcentaje de aciertos: {(calcularResultados() / preguntas.length * 100).toFixed(2)}%</p>
+                      <div className="has-text-centered" style={{ marginTop: '1rem' }}>
+                        <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => navigate('/curso')}>
+                          Volver al curso
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
