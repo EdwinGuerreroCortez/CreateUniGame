@@ -31,14 +31,15 @@ const PieDePagina = () => {
   const [vision, setVision] = useState('');
 
   useEffect(() => {
-    // Aquí se puede agregar la lógica para llamar a la API y obtener la misión y visión
-    // Ejemplo:
-    // fetch('/api/mision-vision')
-    //   .then(response => response.json())
-    //   .then(data => {
-    //     setMision(data.mision);
-    //     setVision(data.vision);
-    //   });
+    fetch('http://localhost:3001/api/misionVision')
+      .then(response => response.json())
+      .then(data => {
+        if (data.length > 0) {
+          setMision(data[0].mision);
+          setVision(data[0].vision);
+        }
+      })
+      .catch(error => console.error('Error al obtener la misión y visión:', error));
   }, []);
 
   const openModal = () => setIsOpen(true);
@@ -95,13 +96,13 @@ const PieDePagina = () => {
         <h1 className="title has-text-white has-text-centered">Más Información</h1>
         <div className="columns">
           <div className="column">
-            <h2 className="subtitle has-text-white"> Visión</h2>
+            <h2 className="subtitle has-text-white">Visión</h2>
             <p className="has-text-white">
               {vision || 'Ser la plataforma líder en educación de desarrollo de videojuegos, empoderando a millones de desarrolladores a nivel mundial para crear juegos innovadores y exitosos.'}
             </p>
           </div>
           <div className="column">
-            <h2 className="subtitle has-text-white"> Misión</h2>
+            <h2 className="subtitle has-text-white">Misión</h2>
             <p className="has-text-white">
               {mision || 'Proporcionar una plataforma accesible y completa que brinde todas las herramientas y recursos necesarios para que cualquier persona, sin importar su nivel de experiencia, pueda aprender a desarrollar videojuegos.'}
             </p>
