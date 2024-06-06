@@ -14,6 +14,8 @@ const CuestionariosForm = () => {
   const [modalAlert, setModalAlert] = useState({ type: '', message: '' });
   const [editMode, setEditMode] = useState(false);
   const [editEvaluacion, setEditEvaluacion] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(5);
 
   useEffect(() => {
     const fetchTemas = async () => {
@@ -38,6 +40,7 @@ const CuestionariosForm = () => {
     fetchTemas();
     fetchEvaluaciones();
   }, []);
+
   useEffect(() => {
     if (alert.message) {
       const timer = setTimeout(() => {
@@ -123,6 +126,7 @@ const CuestionariosForm = () => {
     setEditEvaluacion(null);
     setEditFile(null);
     setModalAlert({ type: '', message: '' });
+    setCurrentPage(1);
   };
 
   const handleModalSave = async () => {
@@ -195,7 +199,7 @@ const CuestionariosForm = () => {
       })
       .catch((error) => {
         console.error('Error al descargar el archivo:', error);
-        setAlert({ type: 'error', message: 'Error al descargar el archivo Excel. Inténtalo de nuevo.'});
+        setAlert({ type: 'error', message: 'Error al descargar el archivo Excel. Inténtalo de nuevo.' });
       });
   };
 
@@ -215,6 +219,18 @@ const CuestionariosForm = () => {
         setAlert({ type: 'error', message: 'Error al descargar la plantilla. Inténtalo de nuevo.' });
       });
   };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const getCurrentPageItems = () => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return editEvaluacion.evaluacion.slice(startIndex, endIndex);
+  };
+
+  const totalPages = Math.ceil(editEvaluacion ? editEvaluacion.evaluacion.length / itemsPerPage : 1);
 
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
@@ -289,10 +305,8 @@ const CuestionariosForm = () => {
             <thead>
               <tr>
                 <th className="has-text-white">Tema</th>
-                <th className="has-text-white">Pregunta</th>
-                <th className="has-text-white">Opciones</th>
-                <th className="has-text-white">Respuesta Correcta</th>
-                <th className="has-text-white">Acciones</th>
+                <th className="has-text-white">Número de Preguntas</th>
+                <th className="has-text-centered has-text-white">Acciones</th>
               </tr>
             </thead>
             <tbody>
@@ -300,33 +314,22 @@ const CuestionariosForm = () => {
                 evaluaciones.map((evaluacion) => {
                   const { tema_id, evaluacion: preguntas } = evaluacion;
                   return (
-                    <React.Fragment key={evaluacion._id}>
-                      <tr style={{ borderTop: '4px solid #555' }}>
-                        <td className="has-text-white" rowSpan={preguntas.length + 1} style={{ borderRight: '2px solid #555' }}>
-                          {tema_id.titulo}
-                        </td>
-                        <td colSpan="3"></td>
-                        <td className="has-text-white" rowSpan={preguntas.length + 1} style={{ borderLeft: '2px solid #555', textAlign: 'center', verticalAlign: 'middle' }}>
-                          <div className="buttons is-centered">
-                            <button className="button is-small is-info" onClick={() => handleEdit(evaluacion)}>Editar</button>
-                            <button className="button is-small is-danger" onClick={() => handleDelete(evaluacion._id)}>Eliminar</button>
-                            <button className="button is-small is-warning" onClick={() => handleDownloadTema(tema_id._id)}>Descargar Tema</button>
-                          </div>
-                        </td>
-                      </tr>
-                      {preguntas.map((pregunta, index) => (
-                        <tr key={`${evaluacion._id}-${index}`}>
-                          <td className="has-text-white">{pregunta.pregunta}</td>
-                          <td className="has-text-white">{pregunta.opciones.join(', ')}</td>
-                          <td className="has-text-white">{pregunta.respuesta_correcta}</td>
-                        </tr>
-                      ))}
-                    </React.Fragment>
+                    <tr key={evaluacion._id}>
+                      <td className="has-text-white" style={{ verticalAlign: 'middle' }}>{tema_id.titulo}</td>
+                      <td className="has-text-white" style={{ verticalAlign: 'middle' }}>{preguntas.length} preguntas</td>
+                      <td className="has-text-centered has-text-white" style={{ verticalAlign: 'middle' }}>
+                        <div className="buttons is-centered">
+                          <button className="button is-small is-info" onClick={() => handleEdit(evaluacion)}>Editar</button>
+                          <button className="button is-small is-danger" onClick={() => handleDelete(evaluacion._id)}>Eliminar</button>
+                          <button className="button is-small is-warning" onClick={() => handleDownloadTema(tema_id._id)}>Descargar Tema</button>
+                        </div>
+                      </td>
+                    </tr>
                   );
                 })
               ) : (
                 <tr>
-                  <td className="has-text-white" colSpan="5">No hay evaluaciones disponibles.</td>
+                  <td className="has-text-white" colSpan="3">No hay evaluaciones disponibles.</td>
                 </tr>
               )}
             </tbody>
@@ -359,16 +362,16 @@ const CuestionariosForm = () => {
                     />
                   </div>
                 </div>
-                {editEvaluacion.evaluacion.map((pregunta, index) => (
+                {getCurrentPageItems().map((pregunta, index) => (
                   <div key={index} className="box" style={{ marginBottom: '1rem' }}>
                     <div className="field">
-                      <label className="label">Pregunta</label>
+                      <label className="label">Pregunta {index + 1 + (currentPage - 1) * itemsPerPage}</label>
                       <div className="control">
                         <input
                           className="input"
                           type="text"
                           value={pregunta.pregunta}
-                          onChange={(e) => handlePreguntaChange(index, 'pregunta', e.target.value)}
+                          onChange={(e) => handlePreguntaChange(index + (currentPage - 1) * itemsPerPage, 'pregunta', e.target.value)}
                         />
                       </div>
                     </div>
@@ -379,7 +382,7 @@ const CuestionariosForm = () => {
                           className="input"
                           type="text"
                           value={pregunta.opciones.join(', ')}
-                          onChange={(e) => handlePreguntaChange(index, 'opciones', e.target.value)}
+                          onChange={(e) => handlePreguntaChange(index + (currentPage - 1) * itemsPerPage, 'opciones', e.target.value)}
                         />
                       </div>
                     </div>
@@ -391,12 +394,40 @@ const CuestionariosForm = () => {
                           className="input"
                           type="text"
                           value={pregunta.respuesta_correcta}
-                          onChange={(e) => handlePreguntaChange(index, 'respuesta_correcta', e.target.value)}
+                          onChange={(e) => handlePreguntaChange(index + (currentPage - 1) * itemsPerPage, 'respuesta_correcta', e.target.value)}
                         />
                       </div>
                     </div>
                   </div>
                 ))}
+                <nav className="pagination is-centered" role="navigation" aria-label="pagination">
+                  <button
+                    className="pagination-previous"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    Anterior
+                  </button>
+                  <button
+                    className="pagination-next"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Siguiente
+                  </button>
+                  <ul className="pagination-list">
+                    {Array.from({ length: totalPages }, (_, i) => (
+                      <li key={i}>
+                        <button
+                          className={`pagination-link ${currentPage === i + 1 ? 'is-current' : ''}`}
+                          onClick={() => handlePageChange(i + 1)}
+                        >
+                          {i + 1}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
               </section>
               <footer className="modal-card-foot">
                 <button className="button is-success" onClick={handleModalSave}>Guardar</button>
@@ -406,7 +437,7 @@ const CuestionariosForm = () => {
                     <input className="file-input" type="file" accept=".xlsx, .xls" onChange={handleEditFileChange} />
                     <span className="file-cta">
                       <span className="file-icon">
-                      <i className="fas fa-upload"></i>
+                        <i className="fas fa-upload"></i>
                       </span>
                       <span className="file-label">
                         Subir actualización...
@@ -429,5 +460,3 @@ const CuestionariosForm = () => {
 };
 
 export default CuestionariosForm;
-
-
