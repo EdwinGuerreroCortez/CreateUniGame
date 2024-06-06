@@ -110,6 +110,24 @@ const TemaForm = () => {
       });
   };
 
+  const handleDownloadPlantilla = () => {
+    fetch(`http://localhost:3001/api/download-plantilla`)
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'Plantilla_tema.xlsx');
+        document.body.appendChild(link);
+        link.click();
+        link.parentNode.removeChild(link);
+      })
+      .catch((error) => {
+        console.error('Error descargando la plantilla:', error);
+        setAlert({ type: 'error', message: 'Error descargando la plantilla. Inténtalo de nuevo.' });
+      });
+  };
+
   const handleEdit = (tema) => {
     setEditMode(true);
     setEditTema(tema);
@@ -245,6 +263,9 @@ const TemaForm = () => {
             <div className="control">
               <button className="button is-success" onClick={handleSubmit} disabled={isLoading}>
                 {isLoading ? 'Cargando...' : 'Subir y Procesar'}
+              </button>
+              <button className="button is-info" onClick={handleDownloadPlantilla}>
+                Descargar Plantilla
               </button>
             </div>
           </div>
