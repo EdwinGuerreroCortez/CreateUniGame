@@ -1,4 +1,3 @@
-//evaluacion.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import "bulma/css/bulma.min.css";
@@ -52,11 +51,11 @@ const Evaluacion = () => {
       correcta: respuestaSeleccionada === preguntaActual.respuesta_correcta,
     }];
     setRespuestas(nuevasRespuestas);
-    setRespuestaSeleccionada(null);
 
     if (numeroPregunta < preguntas.length - 1) {
       setNumeroPregunta(numeroPregunta + 1);
       setPreguntaActual(preguntas[numeroPregunta + 1]);
+      setRespuestaSeleccionada(null); // Asegúrate de que se restablece aquí
     } else {
       setMostrarResultados(true);
       guardarResultados(nuevasRespuestas);
@@ -128,6 +127,7 @@ const Evaluacion = () => {
                                   name={`pregunta`}
                                   value={opcion}
                                   onChange={() => handleOptionChange(opcion)}
+                                  checked={respuestaSeleccionada === opcion}
                                   disabled={mostrarResultados}
                                   style={{ marginRight: '0.5rem' }}
                                 />
