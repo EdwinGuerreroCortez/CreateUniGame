@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import "bulma/css/bulma.min.css";
 
 const Evaluacion = () => {
-  const { temaId } = useParams();  // Obtiene el temaId de la URL
+  const { temaId } = useParams();
   const navigate = useNavigate();
   const [preguntas, setPreguntas] = useState([]);
   const [preguntaActual, setPreguntaActual] = useState(null);
@@ -11,6 +11,8 @@ const Evaluacion = () => {
   const [mostrarResultados, setMostrarResultados] = useState(false);
   const [respuestas, setRespuestas] = useState([]);
   const [numeroPregunta, setNumeroPregunta] = useState(0);
+
+  const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     const fetchEvaluacion = async () => {
@@ -35,6 +37,8 @@ const Evaluacion = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const nuevasRespuestas = [...respuestas, {
+      pregunta: preguntaActual.pregunta,
+      respuesta: respuestaSeleccionada,
       correcta: respuestaSeleccionada === preguntaActual.respuesta_correcta,
     }];
     setRespuestas(nuevasRespuestas);
@@ -45,6 +49,26 @@ const Evaluacion = () => {
       setPreguntaActual(preguntas[numeroPregunta + 1]);
     } else {
       setMostrarResultados(true);
+      guardarResultados(nuevasRespuestas);
+    }
+  };
+
+  const guardarResultados = async (respuestas) => {
+    const calificacion = respuestas.filter(respuesta => respuesta.correcta).length;
+    try {
+      await fetch(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          temaId,
+          calificacion,
+          preguntasRespondidas: respuestas,
+        }),
+      });
+    } catch (error) {
+      console.error('Error al guardar los resultados:', error);
     }
   };
 
