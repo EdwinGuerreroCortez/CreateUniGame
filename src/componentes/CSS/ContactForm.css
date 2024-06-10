@@ -94,3 +94,14 @@ textarea {
     padding: 20px;
   }
 }
+.message-box {
+  border: 2px solid #363636; /* Ajusta el color y el grosor del borde según sea necesario */
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.message-text {
+  max-width: 100%; /* Establece un ancho máximo para el texto del mensaje */
+  overflow-wrap: break-word; /* Permite que el texto haga saltos de línea automáticamente */
+}
+
