@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
+import contactImage from '../img/contactanos.webp'; // Suponiendo que tienes una imagen representativa
 import 'bulma/css/bulma.min.css';
 import '../CSS/ContactForm.css'; // Archivo CSS para los estilos adicionales
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    message: '',
-    type: 'sugerencia' // valor predeterminado
+    pregunta: '',
   });
-
-  const [messages, setMessages] = useState([]);
-  const username = 'Gerardo Domingo';
+  const [alert, setAlert] = useState(null);
 
   const handleChange = (e) => {
     setFormData({
@@ -21,114 +16,81 @@ const ContactForm = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newMessage = {
-      type: formData.type.toUpperCase(),
-      text: formData.message,
-      email: formData.email
-    };
-    setMessages([...messages, { username, ...newMessage }]);
-    setFormData({
-      email: '',
-      message: '',
-      type: 'sugerencia'
-    });
-  };
+    if (formData.pregunta.trim() === '') {
+      setAlert({ type: 'is-danger', message: 'La pregunta no puede estar vacía.' });
+      return;
+    }
 
-  const handleDeleteMessage = (index) => {
-    setMessages(messages.filter((_, i) => i !== index));
+    try {
+      const response = await fetch('http://localhost:3001/api/faqs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
+      if (response.ok) {
+        setAlert({ type: 'is-success', message: 'Pregunta enviada con éxito.' });
+        // Limpiar el formulario después del envío
+        setFormData({
+          pregunta: '',
+        });
+      } else {
+        setAlert({ type: 'is-danger', message: 'Error al enviar la pregunta.' });
+      }
+    } catch (error) {
+      setAlert({ type: 'is-danger', message: 'Error al enviar la pregunta.' });
+    }
   };
 
   return (
     <section className="section" style={styles.section}>
       <div className="container">
-        <div className="columns is-variable is-8">
+        <div className="columns is-vcentered is-variable is-8">
           <div className="column is-half">
-            <div className="box has-background-dark">
+            <figure className="image-container" style={styles.imageContainer}>
+              <img src={contactImage} alt="Contact Us" style={styles.image} />
+            </figure>
+          </div>
+          <div className="column is-half">
+            <div className="box has-background-dark" style={styles.box}>
               <h1 className="title has-text-white is-size-3">Contáctanos</h1>
               <p className="has-text-white">
-                Para cualquier sugerencia o queja, por favor completa el siguiente formulario.
+                Para cualquier duda que tengas, por favor completa el siguiente formulario.
               </p>
+              {alert && (
+                <div className={`notification ${alert.type}`}>
+                  {alert.message}
+                </div>
+              )}
               <form onSubmit={handleSubmit}>
                 <div className="field">
-                  <label className="label has-text-white">Tipo de Mensaje</label>
-                  <div className="control">
-                    <div className="select is-fullwidth">
-                      <select name="type" value={formData.type} onChange={handleChange}>
-                        <option value="sugerencia">Sugerencia</option>
-                        <option value="queja">Queja</option>
-                      </select>
-                    </div>
-                  </div>
-                </div>
-                <div className="field">
-                  <label className="label has-text-white">Correo Electrónico</label>
+                  <label className="label has-text-white">Mensaje</label>
                   <div className="control has-icons-left">
-                    <input 
-                      className="input has-background-dark has-text-white" 
-                      type="email" 
-                      name="email" 
-                      value={formData.email} 
+                    <textarea 
+                      className="textarea has-icons-left" 
+                      name="pregunta" 
+                      value={formData.pregunta} 
                       onChange={handleChange} 
                       required 
-                      placeholder="e.g. alex@example.com"
-                      style={styles.input}
+                      placeholder="Escribe tu mensaje aquí"
+                      style={styles.textarea} 
                     />
                     <span className="icon is-small is-left">
-                      <FontAwesomeIcon icon={faEnvelope} />
+                      <i className="fas fa-comment-dots"></i>
                     </span>
                   </div>
                 </div>
                 <div className="field">
-                  <label className="label has-text-white">Mensaje</label>
                   <div className="control">
-                    <textarea 
-                      className="textarea has-background-dark has-text-white" 
-                      name="message" 
-                      value={formData.message} 
-                      onChange={handleChange} 
-                      required 
-                      placeholder="Escribe tu mensaje aquí"
-                      style={styles.textarea}
-                    />
-                  </div>
-                </div>
-                <div className="field">
-                  <div className="control">
-                    <button className="button is-primary" type="submit" style={styles.btnenviar}>
+                    <button className="button is-primary" type="submit" style={styles.button}>
                       Enviar
                     </button>
                   </div>
                 </div>
               </form>
-            </div>
-          </div>
-          <div className="column is-half">
-            <div className="box has-background-dark">
-              <div className="has-text-centered">
-                <FontAwesomeIcon icon={faEnvelope} size="2x" color="white" />
-              </div>
-              <div className="messages" style={styles.messages}>
-              {messages.map((message, index) => (
-             <div key={index} className="message-box">
-             <p className="has-text-info">{message.username}</p>
-            <div className="box has-background-dark">
-           <p className="has-text-white">{message.type}</p>
-           <div className="message-content">
-           <p className="has-text-white message-text">{message.text}</p> {/* Aplica la clase message-text aquí */}
-           </div>
-      <p className="has-text-grey-light">{message.email}</p>
-    </div>
-    <button 
-      className="button is-danger is-small" 
-      onClick={() => handleDeleteMessage(index)}>
-      Eliminar
-    </button>
-  </div>
-))}
-
-              </div>
             </div>
           </div>
         </div>
@@ -144,23 +106,32 @@ const styles = {
     padding: '40px 20px',
     fontFamily: 'Poppins, sans-serif',
   },
-  messages: {
-    maxHeight: '400px',
-    overflowY: 'auto',
-    padding: '10px',
+  imageContainer: {
+    position: 'relative',
+    display: 'inline-block',
+    boxShadow: '0 0 15px 5px rgba(72, 199, 142, 0.5)', // Borde luminoso alrededor de la imagen
+    borderRadius: '10px',
   },
-  btnenviar:{
-    backgroundColor: ' #48C78E'
+  image: {
+    display: 'block',
+    borderRadius: '10px',
+    maxWidth: '100%',
+    height: 'auto',
   },
-  input: {
-    backgroundColor: '#2C2F33',
-    color: 'white',
-    border: '1px solid #48C78E',
+  box: {
+    backgroundColor: '#090A0C',
+    padding: '30px',
+    borderRadius: '10px',
   },
   textarea: {
     backgroundColor: '#2C2F33',
     color: 'white',
     border: '1px solid #48C78E',
+  },
+  button: {
+    backgroundColor: '#48C78E',
+    borderColor: '#48C78E',
+    color: 'white',
   },
 };
 
