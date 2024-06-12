@@ -56,7 +56,7 @@ const Buzon = () => {
     if (latestMessage) {
       const timer = setTimeout(() => {
         setLatestMessage(null);
-      }, 5000);
+      }, 10000);
 
       return () => clearTimeout(timer); // Cleanup the timer if the component unmounts or latestMessage changes
     }
@@ -64,8 +64,6 @@ const Buzon = () => {
   const handleRespondMessage = async () => {
     if (selectedMessage && response) {
       try {
-        console.log('ID del mensaje seleccionado:', selectedMessage); // Añadido para depuración
-        console.log('Respuesta:', response); // Añadido para depuración
         const res = await axios.put(`http://localhost:3001/api/contact/messages/questions/${selectedMessage}`, { respuesta: response });
         const updatedMessages = messages.map(message => message._id === selectedMessage ? res.data : message);
         setMessages(updatedMessages);

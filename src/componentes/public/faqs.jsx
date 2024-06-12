@@ -5,12 +5,15 @@ import 'bulma/css/bulma.min.css';
 const FAQ = () => {
   const [faqs, setFaqs] = useState([]);
   const [activeIndex, setActiveIndex] = useState(null);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
 
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
         const response = await axios.get('http://localhost:3001/api/contact/messages/questions');
-        setFaqs(response.data);
+        // Filtrar las FAQs para mostrar solo las que tienen respuesta
+        const faqsWithAnswer = response.data.filter(faq => faq.respuesta);
+        setFaqs(faqsWithAnswer);
       } catch (error) {
         console.error('Error al obtener las FAQs:', error);
       }
@@ -19,6 +22,16 @@ const FAQ = () => {
     fetchFaqs();
   }, []);
 
+  useEffect(() => {
+    let timer;
+    if (activeIndex !== null && hoveredIndex !== activeIndex) {
+      timer = setTimeout(() => {
+        setActiveIndex(null);
+      }, 3000);
+    }
+    return () => clearTimeout(timer);
+  }, [activeIndex, hoveredIndex]);
+
   const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
@@ -26,10 +39,17 @@ const FAQ = () => {
   return (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center' }}>
       <div style={styles.container}>
-        <h1 style={styles.header}>Preguntas Frecuentes</h1>
+        <h1 style={styles.header}>
+          <span style={styles.title}>Preguntas Frecuentes</span>
+        </h1>
         {faqs.map((faq, index) => (
           <div key={faq._id} style={styles.faqItem}>
-            <div style={styles.question} onClick={() => toggleFAQ(index)}>
+            <div
+              style={styles.question}
+              onClick={() => toggleFAQ(index)}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
+            >
               {activeIndex === index ? '▼' : '▶'} {faq.mensaje}
             </div>
             {activeIndex === index && (
@@ -58,7 +78,12 @@ const styles = {
     fontSize: '28px',
     color: 'white',
     textAlign: 'center',
-    margin: '20px 0'
+    margin: '20px 0',
+    position: 'relative'
+  },
+  title: {
+    textShadow: '0 0 10px white',
+    position: 'relative'
   },
   faqItem: {
     marginBottom: '10px',
@@ -67,7 +92,8 @@ const styles = {
   },
   question: {
     fontWeight: 'bold',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    transition: 'background-color 0.3s'
   },
   answer: {
     marginTop: '5px'

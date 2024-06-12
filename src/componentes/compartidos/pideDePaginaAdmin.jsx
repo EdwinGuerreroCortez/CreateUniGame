@@ -6,7 +6,7 @@ const PieDePaginaAdmin = () => {
       <div className="content has-text-centered" style={{ borderTop: '1px solid white', borderBottom: '1px solid white', padding: '2rem 0' }}>
         <div className="columns">
           <div className="column">
-            <p>Bienvenido al panel de administración de UniGame. Aquí puedes gestionar los recursos y cursos para nuestra comunidad.</p>
+            <p>Bienvenido al panel de administración de Master Game. Aquí puedes gestionar los recursos y cursos para nuestra comunidad.</p>
             <p>Si necesitas ayuda, no dudes en contactar con el equipo de soporte.</p>
           </div>
         </div>
@@ -27,7 +27,7 @@ const PieDePaginaAdmin = () => {
             </a>
           </div>
         </div>
-        <p>© 2024 UniGame. Todos los derechos reservados.</p>
+        <p>© 2024 Master Game. Todos los derechos reservados.</p>
       </div>
     </footer>
   );
