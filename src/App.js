@@ -9,21 +9,23 @@ import PaginaPrincipal from './componentes/public/paginaPrincipal';
 import Temas from './componentes/public/temas';
 import Extra from './componentes/public/extra';
 import Fqs from './componentes/public/faqs';
-import Acerca from './componentes/public/acerca';
-import Contactanos from './componentes/public/contactanos';
+import Acerca from './componentes/public/acerca'
+import Contactanos from'./componentes/public/contactanos';
 
 // Componentes de Usuario
 import LayoutEncabeUser from './componentes/usuario/layoutEncabeUser';
 import Bienvenida from './componentes/usuario/bienvenida';
 import Recursos from './componentes/usuario/recursos';
 import Curso from './componentes/usuario/curso';
+import Evalucaion from './componentes/usuario/evaluacion'
+
 // Componentes Administrativos
 import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
 import BienvenidaAdmin from './componentes/administrativo/bienvenidaAdmin';
-
+import Buzon from './componentes/administrativo/buzon';
 import Mision from './componentes/administrativo/mision';
 import TemasAdd from './componentes/administrativo/temas';
-import Usuarios from './componentes/administrativo/Usuarios';
+import Usuarios from './componentes/administrativo/Usuarios'
 import CuestionariosForm from './componentes/administrativo/cuestionario';
 
 const App = () => {
@@ -36,9 +38,10 @@ const App = () => {
         <Route path="/" element={<LayoutConEncab><PaginaPrincipal /><Temas /><Extra /><Fqs /></LayoutConEncab>} />
         <Route path="/login" element={<Formlogin setUserAuthenticated={setUserAuthenticated} />} />
         <Route path="/registro" element={<LayoutConEncab><FormRegistro setUserAuthenticated={setUserAuthenticated} /></LayoutConEncab>} />
+        <Route path="/paginaPrincipal" element={<LayoutConEncab><PaginaPrincipal /></LayoutConEncab>} />
         <Route path="/acerca" element={<LayoutConEncab><Acerca /></LayoutConEncab>} />
         <Route path="/contactanos" element={<LayoutConEncab><Contactanos /></LayoutConEncab>} />
-
+       
         {/* Rutas de Usuario */}
         <Route path="/bienvenida" element={
           userAuthenticated ? <LayoutEncabeUser><Bienvenida /></LayoutEncabeUser> : <Navigate to="/login" />
@@ -49,11 +52,14 @@ const App = () => {
           <Route path="/acerca-de" element={
           userAuthenticated ? <LayoutEncabeUser><Acerca/></LayoutEncabeUser> : <Navigate to="/login" />
         } />
-         <Route path="/contacto" element={
-          userAuthenticated ? <LayoutEncabeUser><Contactanos/></LayoutEncabeUser> : <Navigate to="/login" />
-        } />
         <Route path="/curso" element={
           userAuthenticated ? <LayoutEncabeUser><Curso /></LayoutEncabeUser> : <Navigate to="/login" />
+        } />
+          <Route path="/contacto" element={
+          userAuthenticated ? <LayoutEncabeUser><Contactanos/></LayoutEncabeUser> : <Navigate to="/login" />
+        } />
+        <Route path="/evaluacion/:temaId" element={
+          userAuthenticated ? <LayoutEncabeUser><Evalucaion /></LayoutEncabeUser> : <Navigate to="/login" />
         } />
 
         {/* Rutas Administrativas */}
@@ -80,6 +86,12 @@ const App = () => {
         } />
         <Route path="/admin/informacion/mv" element={
           userAuthenticated ? <LayoutEncabeAdmin><Mision/></LayoutEncabeAdmin> : <Navigate to="/login" />
+        } />
+          <Route path="/admin/informacion/buzon" element={
+          userAuthenticated ? <LayoutEncabeAdmin><Buzon/></LayoutEncabeAdmin> : <Navigate to="/login" />
+        } />
+        <Route path="/admin/settings" element={
+          userAuthenticated ? <LayoutEncabeAdmin><div>Configuraciones</div></LayoutEncabeAdmin> : <Navigate to="/login" />
         } />
       </Routes>
     </Router>
