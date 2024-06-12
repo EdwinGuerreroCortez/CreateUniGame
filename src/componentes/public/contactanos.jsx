@@ -1,272 +1,265 @@
-// src/components/ContactForm.js
-import React, { useState } from 'react';
-import contactImage from '../img/contactanos.webp';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import 'bulma/css/bulma.min.css';
-import '../CSS/ContactForm.css';
+import '../CSS/adminForms.css'; // Archivo CSS adicional para estilos específicos
 
-const ContactForm = () => {
-  const [formData, setFormData] = useState({
-    tipoMensaje: 'Pregunta',
-    correo: '',
-    mensaje: '',
-    preguntaEspecifica: '', // Nuevo campo para pregunta específica
-  });
-  const [alert, setAlert] = useState(null);
+const Buzon = () => {
+  const [messages, setMessages] = useState([]);
+  const [selectedMessage, setSelectedMessage] = useState('');
+  const [response, setResponse] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [tab, setTab] = useState('preguntas');
+  const [latestMessage, setLatestMessage] = useState(null);
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+  useEffect(() => {
+    const fetchMessages = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/contact/messages');
+        setMessages(response.data);
+      } catch (error) {
+        console.error('Error al obtener los mensajes:', error);
+      }
+    };
+
+    fetchMessages();
+  }, []);
+
+  useEffect(() => {
+    const fetchLatestMessage = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/contact/latest');
+        setLatestMessage(response.data);
+      } catch (error) {
+        console.error('Error al obtener el último mensaje:', error);
+      }
+    };
+
+    fetchLatestMessage();
+  }, []);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const sortedMessages = [...messages].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      setLatestMessage(sortedMessages[0]);
+    }
+  }, [messages]);
+
+  const handleSelectMessage = (messageId) => {
+    setSelectedMessage(messageId);
+    const message = messages.find(message => message._id === messageId);
+    if (message) {
+      setResponse(message.respuesta || '');
+    }
   };
+  useEffect(() => {
+    if (latestMessage) {
+      const timer = setTimeout(() => {
+        setLatestMessage(null);
+      }, 10000);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (formData.tipoMensaje === 'Pregunta') {
-      if (formData.preguntaEspecifica.trim() === '') {
-        setAlert({ type: 'is-danger', message: 'Debe especificar su pregunta.' });
+      return () => clearTimeout(timer); // Cleanup the timer if the component unmounts or latestMessage changes
+    }
+  }, [latestMessage]);
+  const handleRespondMessage = async () => {
+    if (selectedMessage && response) {
+      try {
+        const res = await axios.put(`http://localhost:3001/api/contact/messages/questions/${selectedMessage}`, { respuesta: response });
+        const updatedMessages = messages.map(message => message._id === selectedMessage ? res.data : message);
+        setMessages(updatedMessages);
+        setSelectedMessage('');
+        setResponse('');
+        setSuccessMessage('Respuesta enviada con éxito.');
+        setErrorMessage('');
         setTimeout(() => {
-          setAlert(null);
-        }, 3000); // Ocultar la alerta después de 5 segundos
-        return;
+          setSuccessMessage('');
+        }, 3000); // Ocultar alerta después de 3 segundos
+      } catch (error) {
+        console.error('Error al enviar la respuesta:', error); // Añadido para depuración
+        setErrorMessage('Error al enviar la respuesta.');
+        setSuccessMessage('');
+        setTimeout(() => {
+          setErrorMessage('');
+        }, 3000); // Ocultar alerta después de 3 segundos
       }
     } else {
-      if (formData.mensaje.trim() === '') {
-        setAlert({ type: 'is-danger', message: 'El mensaje no puede estar vacío.' });
-        setTimeout(() => {
-          setAlert(null);
-        }, 3000); // Ocultar la alerta después de 5 segundos
-        return;
-      }
-    }
-
-    let apiUrl = 'http://localhost:3001/api/contact/messages/faqs';
-    if (formData.tipoMensaje === 'Sugerencia') {
-      apiUrl = 'http://localhost:3001/api/contact/messages/suggestions';
-    } else if (formData.tipoMensaje === 'Queja') {
-      apiUrl = 'http://localhost:3001/api/contact/messages/complaints';
-    }
-
-    try {
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          tipoMensaje: formData.tipoMensaje,
-          correo: formData.correo,
-          mensaje: formData.tipoMensaje === 'Pregunta' ? formData.preguntaEspecifica : formData.mensaje
-        })
-      });
-      if (response.ok) {
-        let successMessage = 'Mensaje enviado con éxito.';
-        if (formData.tipoMensaje === 'Pregunta') {
-          successMessage = 'Gracias por su pregunta. La atenderemos pronto.';
-        } else if (formData.tipoMensaje === 'Sugerencia') {
-          successMessage = 'Gracias por su sugerencia. La tomaremos en cuenta.';
-        } else if (formData.tipoMensaje === 'Queja') {
-          successMessage = 'Gracias por su queja. La atenderemos a la brevedad.';
-        }
-
-        setAlert({ type: 'is-success', message: successMessage });
-        setFormData({
-          tipoMensaje: 'Pregunta',
-          correo: '',
-          mensaje: '',
-          preguntaEspecifica: '', // Reiniciar campo de pregunta específica
-        });
-        setTimeout(() => {
-          setAlert(null);
-        }, 3000); // Ocultar la alerta después de 5 segundos
-
-      } else {
-        setAlert({ type: 'is-danger', message: 'Error al enviar el mensaje.' });
-      }
-    } catch (error) {
-      setAlert({ type: 'is-danger', message: 'Error al enviar el mensaje.' });
+      setErrorMessage('Por favor, seleccione un mensaje y complete la respuesta.');
+      setSuccessMessage('');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000); // Ocultar alerta después de 3 segundos
     }
   };
 
+  const handleEliminarMessage = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3001/api/contact/messages/${id}`);
+      setMessages(messages.filter(message => message._id !== id));
+      setSuccessMessage('Mensaje eliminado exitosamente.');
+      setErrorMessage('');
+      setTimeout(() => {
+        setSuccessMessage('');
+      }, 3000); // Ocultar alerta después de 3 segundos
+    } catch (error) {
+      setErrorMessage('Error al eliminar el mensaje.');
+      setSuccessMessage('');
+      setTimeout(() => {
+        setErrorMessage('');
+      }, 3000); // Ocultar alerta después de 3 segundos
+    }
+  };
+
+  const filteredMessages = messages.filter(message => {
+    if (tab === 'preguntas') {
+      return message.tipoMensaje === 'Pregunta';
+    } else if (tab === 'quejas') {
+      return message.tipoMensaje === 'Queja';
+    } else if (tab === 'sugerencias') {
+      return message.tipoMensaje === 'Sugerencia';
+    }
+    return true;
+  });
+
   return (
-    <section className="section" style={styles.section}>
+    <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <div className="container">
-        <div className="columns is-vcentered is-variable is-8">
-          <div className="column is-half">
-            <figure className="image-container" style={styles.imageContainer}>
-              <img src={contactImage} alt="Contact Us" style={styles.image} />
-            </figure>
+        <h1 className="title has-text-centered has-text-white">Buzón de Contacto</h1>
+
+        {successMessage && (
+          <div className="notification is-success">
+            <button className="delete" onClick={() => setSuccessMessage('')}></button>
+            {successMessage}
           </div>
+        )}
+
+        {errorMessage && (
+          <div className="notification is-danger">
+            <button className="delete" onClick={() => setErrorMessage('')}></button>
+            {errorMessage}
+          </div>
+        )}
+
+        <div className="tabs is-boxed is-centered">
+          <ul>
+            <li className={tab === 'preguntas' ? 'is-active' : ''} onClick={() => setTab('preguntas')}>
+              <a>Preguntas</a>
+            </li>
+            <li className={tab === 'quejas' ? 'is-active' : ''} onClick={() => setTab('quejas')}>
+              <a>Quejas</a>
+            </li>
+            <li className={tab === 'sugerencias' ? 'is-active' : ''} onClick={() => setTab('sugerencias')}>
+              <a>Sugerencias</a>
+            </li>
+          </ul>
+        </div>
+        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '20px' }}>
+  {latestMessage && (
+    <div className="message is-info" style={{ display: 'flex', alignItems: 'center', fontSize: '1.1em', padding: '0.5em' }}>
+      <div className="message-header" style={{ borderTopLeftRadius: '20px', borderBottomLeftRadius: '20px', padding: '0.5em 1em' }}>
+        <p className="is-size-6">Último mensaje:</p>
+      </div>
+      <div className="message-body" style={{ flex: '1', borderTopRightRadius: '20px', borderBottomRightRadius: '20px', padding: '0.5em 1em' }}>
+        <p className="is-size-6">
+          <strong>{latestMessage.correo}</strong> - {latestMessage.tipoMensaje}: {latestMessage.mensaje}
+        </p>
+      </div>
+    </div>
+  )}
           <div className="column is-half">
-            <div className="box has-background-dark" style={styles.box}>
-              <h1 className="title has-text-white is-size-3">Contáctanos</h1>
-              <p className="has-text-white">
-                Para cualquier sugerencia, pregunta o queja, por favor completa el siguiente formulario.
-              </p>
-              {alert && (
-                <div className={`notification ${alert.type}`}>
-                  {alert.message}
-                </div>
-              )}
-              <form onSubmit={handleSubmit}>
-                <div className="field">
-                  <label className="label has-text-white">Tipo de Mensaje</label>
-                  <div className="control">
-                    <div className="select is-fullwidth" style={styles.select}>
-                      <select name="tipoMensaje" value={formData.tipoMensaje} onChange={handleChange}>
-                        <option>Pregunta</option>
-                        <option>Sugerencia</option>
-                        <option>Queja</option>
-                      </select>
+            {tab === 'preguntas' && (
+              <div className="columns">
+                <div className="column is-half is-full-mobile" style={{ width: '80%' }}>
+                  <h2 className="title is-4 has-text-centered has-text-white">Responder Mensajes de Contacto</h2>
+                  <div className="field">
+                    <label className="label has-text-white">Seleccionar Mensaje</label>
+                    <div className="control">
+                      <div className="select is-fullwidth">
+                        <select value={selectedMessage} onChange={(e) => handleSelectMessage(e.target.value)}>
+                          <option value="">Selecciona un mensaje</option>
+                          {filteredMessages.map(message => (
+                            <option key={message._id} value={message._id}>
+                              {message.correo} - {message.mensaje}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className="field">
-                  <label className="label has-text-white">Correo Electrónico</label>
-                  <div className="control has-icons-left">
-                    <input
-                      className="input"
-                      type="email"
-                      name="correo"
-                      value={formData.correo}
-                      onChange={handleChange}
-                      required
-                      placeholder="ej. alex@example.com"
-                      style={styles.input}
-                    />
-                    <span className="icon is-small is-left">
-                      <i className="fas fa-envelope"></i>
-                    </span>
-                  </div>
-                </div>
-                {formData.tipoMensaje === 'Pregunta' ? (
                   <div className="field">
-                    <label className="label has-text-white">¿Cuál es su pregunta específica?</label>
-                    <div className="control has-icons-left">
-                      <input
-                        className="input"
-                        type="text"
-                        name="preguntaEspecifica"
-                        value={formData.preguntaEspecifica}
-                        onChange={handleChange}
-                        placeholder="Escriba su pregunta aquí"
-                        style={styles.input}
-                      />
-                      <span className="icon is-small is-left">
-                        <i className="fas fa-question-circle"></i>
-                      </span>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="field">
-                    <label className="label has-text-white">Mensaje</label>
-                    <div className="control has-icons-left">
+                    <label className="label has-text-white">Respuesta</label>
+                    <div className="control">
                       <textarea
                         className="textarea"
-                        name="mensaje"
-                        value={formData.mensaje}
-                        onChange={handleChange}
+                        value={response}
+                        onChange={(e) => setResponse(e.target.value)}
+                        placeholder="Escribe la respuesta"
                         required
-                        placeholder="Escribe tu mensaje aquí"
-                        style={styles.textarea}
                       />
-                      <span className="icon is-small is-left">
-                        <i className="fas fa-comment-dots"></i>
-                      </span>
                     </div>
                   </div>
-                )}
-                <div className="field">
-                  <div className="control">
-                    <button className="button is-primary" type="submit" style={styles.button}>
-                      Enviar
-                    </button>
+                  <div className="field is-grouped">
+                    <div className="control">
+                      <button className="button is-success" onClick={handleRespondMessage}>
+                        Responder Mensaje
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </form>
-            </div>
-          </div>
-          <div className="column is-half">
-            <div className="box has-background-dark">
-              <div className="has-text-centered">
-                <FontAwesomeIcon icon={faEnvelope} size="2x" color="white" />
+                <div className="column is-half is-full-mobile" style={{ width: '120%' }}>
+                  <div className="table-container">
+                    <table className="table is-fullwidth is-striped is-hoverable" style={{ fontSize: '1.2em' }}>
+                      <thead>
+                        <tr>
+                          <th className="has-text-white">Correo</th>
+                          <th className="has-text-white">Mensaje</th>
+                          <th className="has-text-white">Respuesta</th>
+                          <th className="has-text-white">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {filteredMessages.map(message => (
+                          <tr key={message._id} style={{ backgroundColor: '#2C2F33' }}>
+                            <td>{message.correo}</td>
+                            <td>{message.mensaje}</td>
+                            <td>{message.respuesta || 'Sin respuesta'}</td>
+                            <td>
+                              <button className="button is-danger" onClick={() => handleEliminarMessage(message._id)}>Eliminar</button>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
-              <div className="messages" style={styles.messages}>
-              {messages.map((message, index) => (
-             <div key={index} className="message-box">
-             <p className="has-text-info">{message.username}</p>
-            <div className="box has-background-dark">
-           <p className="has-text-white">{message.type}</p>
-           <div className="message-content">
-           <p className="has-text-white message-text">{message.text}</p> {/* Aplica la clase message-text aquí */}
-           </div>
-      <p className="has-text-grey-light">{message.email}</p>
-    </div>
-    <button 
-      className="button is-danger is-small" 
-      onClick={() => handleDeleteMessage(index)}>
-      Eliminar
-    </button>
-        </div>
-              ))}
-              </div>
-            </div>
+            )}
           </div>
+          {(tab === 'quejas' || tab === 'sugerencias') && (
+            <table className="table is-fullwidth is-striped is-hoverable" style={{ fontSize: '1.2em', width: '100%' }}>
+              <thead>
+                <tr>
+                  <th className="has-text-white">Correo</th>
+                  <th className="has-text-white">Mensaje</th>
+                  <th className="has-text-white">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredMessages.map(message => (
+                  <tr key={message._id} style={{ backgroundColor: '#2C2F33' }}>
+                    <td>{message.correo}</td>
+                    <td>{message.mensaje}</td>
+                    <td>
+                      <button className="button is-danger" onClick={() => handleEliminarMessage(message._id)}>Eliminar</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
-    </section>
+    </div >
   );
-}
-
-const styles = {
-  section: {
-    backgroundColor: '#14161A',
-    color: 'white',
-    padding: '40px 20px',
-    fontFamily: 'Poppins, sans-serif',
-  },
-  imageContainer: {
-    position: 'relative',
-    display: 'inline-block',
-    boxShadow: '0 0 15px 5px rgba(72, 199, 142, 0.5)', // Borde luminoso alrededor de la imagen
-    borderRadius: '10px',
-  },
-  image: {
-    display: 'block',
-    borderRadius: '10px',
-    maxWidth: '100%',
-    height: 'auto',
-  },
-  box: {
-    backgroundColor: '#090A0C',
-    padding: '30px',
-    borderRadius: '10px',
-    border: '1px solid #48C78E',
-    boxShadow: '0 0 10px rgba(72, 199, 142, 0.5)',
-  },
-  input: {
-    backgroundColor: '#2C2F33',
-    color: 'white',
-    border: '1px solid #48C78E',
-  },
-  textarea: {
-    backgroundColor: '#2C2F33',
-    color: 'white',
-    border: '1px solid #48C78E',
-    paddingLeft: '40px'
-  },
-  button: {
-    backgroundColor: '#48C78E',
-    borderColor: '#48C78E',
-    color: 'white',
-  },
-  select: {
-    backgroundColor: '#2C2F33',
-    color: 'white',
-    border: '1px solid #48C78E',
-    height: '42px'
-  },
 };
 
-export default ContactForm;
+export default Buzon;

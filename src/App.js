@@ -17,14 +17,10 @@ import LayoutEncabeUser from './componentes/usuario/layoutEncabeUser';
 import Bienvenida from './componentes/usuario/bienvenida';
 import Recursos from './componentes/usuario/recursos';
 import Curso from './componentes/usuario/curso';
-import Evalucaion from './componentes/usuario/evaluacion'
-import Evalucaion from './componentes/usuario/evaluacion';
-import Buzon from './componentes/usuario/buzon';
-
 // Componentes Administrativos
 import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
 import BienvenidaAdmin from './componentes/administrativo/bienvenidaAdmin';
-import Buzon from './componentes/administrativo/buzon';
+
 import Mision from './componentes/administrativo/mision';
 import TemasAdd from './componentes/administrativo/temas';
 import Usuarios from './componentes/administrativo/Usuarios';
@@ -59,9 +55,6 @@ const App = () => {
         <Route path="/curso" element={
           userAuthenticated ? <LayoutEncabeUser><Curso /></LayoutEncabeUser> : <Navigate to="/login" />
         } />
-        <Route path="/evaluacion/:temaId" element={
-          userAuthenticated ? <Evalucaion /> : <Navigate to="/login" />
-        } />
 
         {/* Rutas Administrativas */}
         <Route path="/administrativa" element={
@@ -84,9 +77,6 @@ const App = () => {
         } />
         <Route path="/admin/cuestionarios" element={
           userAuthenticated ? <LayoutEncabeAdmin><CuestionariosForm/></LayoutEncabeAdmin> : <Navigate to="/login" />
-        } />
-        <Route path="/admin/informacion/faqs" element={
-          userAuthenticated ? <LayoutEncabeAdmin><FAQform/></LayoutEncabeAdmin> : <Navigate to="/login" />
         } />
         <Route path="/admin/informacion/mv" element={
           userAuthenticated ? <LayoutEncabeAdmin><Mision/></LayoutEncabeAdmin> : <Navigate to="/login" />
