@@ -83,7 +83,7 @@ const GestionUsuariosForm = () => {
 
   const handleEliminarUsuario = async (index, id) => {
     try {
-      await axios.delete(`https://gamebackend-1.onrender.com/api/usuarios/${id}`);
+      await axios.delete(`http://localhost:3001/api/usuarios/${id}`);
       setUsuarios(usuarios.filter((_, i) => i !== index));
       setNotification({ message: 'Usuario eliminado con éxito.', type: 'is-success' });
     } catch (error) {
