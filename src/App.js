@@ -42,6 +42,7 @@ const App = () => {
         <Route path="/acerca" element={<LayoutConEncab><Acerca /></LayoutConEncab>} />
         <Route path="/contactanos" element={<LayoutConEncab><Contactanos /></LayoutConEncab>} />
        
+       
         {/* Rutas de Usuario */}
         <Route path="/bienvenida" element={
           userAuthenticated ? <LayoutEncabeUser><Bienvenida /></LayoutEncabeUser> : <Navigate to="/login" />
