@@ -125,9 +125,8 @@ const ContactForm = () => {
       onClick={() => handleDeleteMessage(index)}>
       Eliminar
     </button>
-  </div>
-))}
-
+        </div>
+              ))}
               </div>
             </div>
           </div>

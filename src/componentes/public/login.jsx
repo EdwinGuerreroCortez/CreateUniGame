@@ -15,7 +15,7 @@ import '../CSS/style.css';
 
 const backgrounds = [img9, img1, img3, img6, img4, img8, img5, img2, img7];
 
-const FormRegistro = () => {
+const FormRegistro = ({ setUserAuthenticated }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailValid, setEmailValid] = useState(false);
@@ -64,6 +64,9 @@ const FormRegistro = () => {
         if (userId && userType) {
           localStorage.setItem('userId', userId);
           localStorage.setItem('userType', userType);
+
+          // Establecer el estado de autenticación como verdadero
+          setUserAuthenticated(true);
 
           if (userType === 'cliente') {
             navigate('/bienvenida');
@@ -131,8 +134,7 @@ const FormRegistro = () => {
                     {showPassword ? 'Ocultar' : 'Mostrar'}
                   </button>
                 </div>
-                <span className="icon is-small is-left has-text-white">
-                  <i className="fas fa-lock"></i>
+                <span className="icon is-small is-left has-text-white">                  <i className="fas fa-lock"></i>
                 </span>
               </div>
             </div>
@@ -153,3 +155,5 @@ const FormRegistro = () => {
 };
 
 export default FormRegistro;
+
+                 
