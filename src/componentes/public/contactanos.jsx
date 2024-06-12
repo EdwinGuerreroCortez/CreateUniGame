@@ -1,11 +1,15 @@
+// src/components/ContactForm.js
 import React, { useState } from 'react';
-import contactImage from '../img/contactanos.webp'; // Suponiendo que tienes una imagen representativa
+import contactImage from '../img/contactanos.webp';
 import 'bulma/css/bulma.min.css';
-import '../CSS/ContactForm.css'; // Archivo CSS para los estilos adicionales
+import '../CSS/ContactForm.css';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
-    pregunta: '',
+    tipoMensaje: 'Pregunta',
+    correo: '',
+    mensaje: '',
+    preguntaEspecifica: '', // Nuevo campo para pregunta específica
   });
   const [alert, setAlert] = useState(null);
 
@@ -18,30 +22,70 @@ const ContactForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.pregunta.trim() === '') {
-      setAlert({ type: 'is-danger', message: 'La pregunta no puede estar vacía.' });
-      return;
+
+    if (formData.tipoMensaje === 'Pregunta') {
+      if (formData.preguntaEspecifica.trim() === '') {
+        setAlert({ type: 'is-danger', message: 'Debe especificar su pregunta.' });
+        setTimeout(() => {
+          setAlert(null);
+        }, 3000); // Ocultar la alerta después de 5 segundos
+        return;
+      }
+    } else {
+      if (formData.mensaje.trim() === '') {
+        setAlert({ type: 'is-danger', message: 'El mensaje no puede estar vacío.' });
+        setTimeout(() => {
+          setAlert(null);
+        }, 3000); // Ocultar la alerta después de 5 segundos
+        return;
+      }
+    }
+
+    let apiUrl = 'http://localhost:3001/api/contact/messages/faqs';
+    if (formData.tipoMensaje === 'Sugerencia') {
+      apiUrl = 'http://localhost:3001/api/contact/messages/suggestions';
+    } else if (formData.tipoMensaje === 'Queja') {
+      apiUrl = 'http://localhost:3001/api/contact/messages/complaints';
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/faqs', {
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify({
+          tipoMensaje: formData.tipoMensaje,
+          correo: formData.correo,
+          mensaje: formData.tipoMensaje === 'Pregunta' ? formData.preguntaEspecifica : formData.mensaje
+        })
       });
       if (response.ok) {
-        setAlert({ type: 'is-success', message: 'Pregunta enviada con éxito.' });
-        // Limpiar el formulario después del envío
+        let successMessage = 'Mensaje enviado con éxito.';
+        if (formData.tipoMensaje === 'Pregunta') {
+          successMessage = 'Gracias por su pregunta. La atenderemos pronto.';
+        } else if (formData.tipoMensaje === 'Sugerencia') {
+          successMessage = 'Gracias por su sugerencia. La tomaremos en cuenta.';
+        } else if (formData.tipoMensaje === 'Queja') {
+          successMessage = 'Gracias por su queja. La atenderemos a la brevedad.';
+        }
+
+        setAlert({ type: 'is-success', message: successMessage });
         setFormData({
-          pregunta: '',
+          tipoMensaje: 'Pregunta',
+          correo: '',
+          mensaje: '',
+          preguntaEspecifica: '', // Reiniciar campo de pregunta específica
         });
+        setTimeout(() => {
+          setAlert(null);
+        }, 3000); // Ocultar la alerta después de 5 segundos
+
       } else {
-        setAlert({ type: 'is-danger', message: 'Error al enviar la pregunta.' });
+        setAlert({ type: 'is-danger', message: 'Error al enviar el mensaje.' });
       }
     } catch (error) {
-      setAlert({ type: 'is-danger', message: 'Error al enviar la pregunta.' });
+      setAlert({ type: 'is-danger', message: 'Error al enviar el mensaje.' });
     }
   };
 
@@ -58,7 +102,7 @@ const ContactForm = () => {
             <div className="box has-background-dark" style={styles.box}>
               <h1 className="title has-text-white is-size-3">Contáctanos</h1>
               <p className="has-text-white">
-                Para cualquier duda que tengas, por favor completa el siguiente formulario.
+                Para cualquier sugerencia, pregunta o queja, por favor completa el siguiente formulario.
               </p>
               {alert && (
                 <div className={`notification ${alert.type}`}>
@@ -67,22 +111,72 @@ const ContactForm = () => {
               )}
               <form onSubmit={handleSubmit}>
                 <div className="field">
-                  <label className="label has-text-white">Mensaje</label>
+                  <label className="label has-text-white">Tipo de Mensaje</label>
+                  <div className="control">
+                    <div className="select is-fullwidth" style={styles.select}>
+                      <select name="tipoMensaje" value={formData.tipoMensaje} onChange={handleChange}>
+                        <option>Pregunta</option>
+                        <option>Sugerencia</option>
+                        <option>Queja</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+                <div className="field">
+                  <label className="label has-text-white">Correo Electrónico</label>
                   <div className="control has-icons-left">
-                    <textarea 
-                      className="textarea has-icons-left" 
-                      name="pregunta" 
-                      value={formData.pregunta} 
-                      onChange={handleChange} 
-                      required 
-                      placeholder="Escribe tu mensaje aquí"
-                      style={styles.textarea} 
+                    <input
+                      className="input"
+                      type="email"
+                      name="correo"
+                      value={formData.correo}
+                      onChange={handleChange}
+                      required
+                      placeholder="ej. alex@example.com"
+                      style={styles.input}
                     />
                     <span className="icon is-small is-left">
-                      <i className="fas fa-comment-dots"></i>
+                      <i className="fas fa-envelope"></i>
                     </span>
                   </div>
                 </div>
+                {formData.tipoMensaje === 'Pregunta' ? (
+                  <div className="field">
+                    <label className="label has-text-white">¿Cuál es su pregunta específica?</label>
+                    <div className="control has-icons-left">
+                      <input
+                        className="input"
+                        type="text"
+                        name="preguntaEspecifica"
+                        value={formData.preguntaEspecifica}
+                        onChange={handleChange}
+                        placeholder="Escriba su pregunta aquí"
+                        style={styles.input}
+                      />
+                      <span className="icon is-small is-left">
+                        <i className="fas fa-question-circle"></i>
+                      </span>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="field">
+                    <label className="label has-text-white">Mensaje</label>
+                    <div className="control has-icons-left">
+                      <textarea
+                        className="textarea"
+                        name="mensaje"
+                        value={formData.mensaje}
+                        onChange={handleChange}
+                        required
+                        placeholder="Escribe tu mensaje aquí"
+                        style={styles.textarea}
+                      />
+                      <span className="icon is-small is-left">
+                        <i className="fas fa-comment-dots"></i>
+                      </span>
+                    </div>
+                  </div>
+                )}
                 <div className="field">
                   <div className="control">
                     <button className="button is-primary" type="submit" style={styles.button}>
@@ -122,16 +216,30 @@ const styles = {
     backgroundColor: '#090A0C',
     padding: '30px',
     borderRadius: '10px',
+    border: '1px solid #48C78E',
+    boxShadow: '0 0 10px rgba(72, 199, 142, 0.5)',
+  },
+  input: {
+    backgroundColor: '#2C2F33',
+    color: 'white',
+    border: '1px solid #48C78E',
   },
   textarea: {
     backgroundColor: '#2C2F33',
     color: 'white',
     border: '1px solid #48C78E',
+    paddingLeft: '40px'
   },
   button: {
     backgroundColor: '#48C78E',
     borderColor: '#48C78E',
     color: 'white',
+  },
+  select: {
+    backgroundColor: '#2C2F33',
+    color: 'white',
+    border: '1px solid #48C78E',
+    height: '42px'
   },
 };
 

@@ -2,17 +2,15 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bulma/css/bulma.min.css';
 
-// Componente FAQ
 const FAQ = () => {
   const [faqs, setFaqs] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(null); // Controla qué FAQ está expandido
+  const [activeIndex, setActiveIndex] = useState(null);
 
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/faqs');
-        const respondedFaqs = response.data.filter(faq => faq.respuesta);
-        setFaqs(respondedFaqs);
+        const response = await axios.get('http://localhost:3001/api/contact/messages/questions');
+        setFaqs(response.data);
       } catch (error) {
         console.error('Error al obtener las FAQs:', error);
       }
@@ -21,7 +19,7 @@ const FAQ = () => {
     fetchFaqs();
   }, []);
 
-  const toggleFAQ = index => {
+  const toggleFAQ = (index) => {
     setActiveIndex(activeIndex === index ? null : index);
   };
 
@@ -32,7 +30,7 @@ const FAQ = () => {
         {faqs.map((faq, index) => (
           <div key={faq._id} style={styles.faqItem}>
             <div style={styles.question} onClick={() => toggleFAQ(index)}>
-              {activeIndex === index ? '▼' : '▶'} {faq.pregunta}
+              {activeIndex === index ? '▼' : '▶'} {faq.mensaje}
             </div>
             {activeIndex === index && (
               <div style={styles.answer}>
@@ -46,16 +44,7 @@ const FAQ = () => {
   );
 };
 
-// Estilos para el componente
 const styles = {
-  outerContainer: {
-    backgroundColor: '#14161A',
-    minHeight: '100vh',
-    paddingBottom: '20px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
   container: {
     backgroundColor: '#14161A',
     padding: '20px',
@@ -63,11 +52,11 @@ const styles = {
     maxWidth: '800px',
     margin: '20px auto',
     color: 'white',
-    width: '90%' // Agregado para asegurarse de que el contenedor no se expanda fuera de la pantalla
+    width: '90%'
   },
   header: {
-    fontSize: '28px', // Tamaño de fuente aumentado
-    color: 'white', // Color de texto para mejorar la legibilidad sobre fondo oscuro
+    fontSize: '28px',
+    color: 'white',
     textAlign: 'center',
     margin: '20px 0'
   },
