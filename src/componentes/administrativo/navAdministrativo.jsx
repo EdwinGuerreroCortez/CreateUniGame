@@ -42,14 +42,6 @@ const BarraNavAdmin = () => {
                 <div className="navbar-start">
                     <Link className="navbar-item has-text-success" to="/admin/users">Gestión de Usuarios</Link>
                     <Link className="navbar-item has-text-success" to="/admin/temas">Temas</Link>
-                    <div className="navbar-item has-dropdown is-hoverable">
-                        <a className="navbar-link has-text-success">Calificaciones</a>
-                        <div className="navbar-dropdown">
-                            <Link className="navbar-item" to="/admin/calificaciones/enero">Enero</Link>
-                            <Link className="navbar-item" to="/admin/calificaciones/febrero">Febrero</Link>
-                            <Link className="navbar-item" to="/admin/calificaciones/marzo">Marzo</Link>
-                        </div>
-                    </div>
                     <Link className="navbar-item has-text-success" to="/admin/cuestionarios">Cuestionarios</Link>
                     <div className="navbar-item has-dropdown is-hoverable">
                         <a className="navbar-link has-text-success">Informacion</a>
@@ -62,7 +54,6 @@ const BarraNavAdmin = () => {
 
                 <div className="navbar-end">
                     <div className="navbar-item">
-                        <Link className="button is-success" style={{ marginRight: '10px' }} to="/admin/settings">Configuraciones</Link>
                         <button className="button is-primary" onClick={handleLogout}>Cerrar Sesión</button>
                     </div>
                 </div>
