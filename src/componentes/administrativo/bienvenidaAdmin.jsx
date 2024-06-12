@@ -13,7 +13,7 @@ const BienvenidaAdmin = () => {
       const userId = localStorage.getItem('userId');
       if (userId) {
         try {
-          const response = await axios.get(`https://gamebackend-1.onrender.com/api/usuarios/${userId}`);
+          const response = await axios.get(`http://localhost:3001/api/usuarios/${userId}`);
           const data = response.data;
           setUserData(data);
           localStorage.setItem('userData', JSON.stringify(data));

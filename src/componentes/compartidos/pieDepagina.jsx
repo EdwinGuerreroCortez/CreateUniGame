@@ -1,5 +1,3 @@
-// src/componentes/public/PieDePagina.js
-
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
@@ -34,9 +32,11 @@ const PieDePagina = () => {
     fetch('http://localhost:3001/api/misionVision')
       .then(response => response.json())
       .then(data => {
-        if (data.length > 0) {
+        if (data && data.length > 0) {
           setMision(data[0].mision);
           setVision(data[0].vision);
+        } else {
+          console.error('La respuesta de la API no contiene datos');
         }
       })
       .catch(error => console.error('Error al obtener la misión y visión:', error));
@@ -98,13 +98,13 @@ const PieDePagina = () => {
           <div className="column">
             <h2 className="subtitle has-text-white">Visión</h2>
             <p className="has-text-white">
-              {vision || 'Ser la plataforma líder en educación de desarrollo de videojuegos, empoderando a millones de desarrolladores a nivel mundial para crear juegos innovadores y exitosos.'}
+              {vision || 'Cargando...'}
             </p>
           </div>
           <div className="column">
             <h2 className="subtitle has-text-white">Misión</h2>
             <p className="has-text-white">
-              {mision || 'Proporcionar una plataforma accesible y completa que brinde todas las herramientas y recursos necesarios para que cualquier persona, sin importar su nivel de experiencia, pueda aprender a desarrollar videojuegos.'}
+              {mision || 'Cargando...'}
             </p>
           </div>
         </div>

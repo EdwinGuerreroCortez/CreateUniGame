@@ -17,13 +17,14 @@ import LayoutEncabeUser from './componentes/usuario/layoutEncabeUser';
 import Bienvenida from './componentes/usuario/bienvenida';
 import Recursos from './componentes/usuario/recursos';
 import Curso from './componentes/usuario/curso';
+import Evalucaion from './componentes/usuario/evaluacion'
 import Evalucaion from './componentes/usuario/evaluacion';
 import Buzon from './componentes/usuario/buzon';
 
 // Componentes Administrativos
 import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
 import BienvenidaAdmin from './componentes/administrativo/bienvenidaAdmin';
-import FAQform from './componentes/administrativo/fqsform';
+import Buzon from './componentes/administrativo/buzon';
 import Mision from './componentes/administrativo/mision';
 import TemasAdd from './componentes/administrativo/temas';
 import Usuarios from './componentes/administrativo/Usuarios';
@@ -41,7 +42,6 @@ const App = () => {
         <Route path="/registro" element={<LayoutConEncab><FormRegistro setUserAuthenticated={setUserAuthenticated} /></LayoutConEncab>} />
         <Route path="/acerca" element={<LayoutConEncab><Acerca /></LayoutConEncab>} />
         <Route path="/contactanos" element={<LayoutConEncab><Contactanos /></LayoutConEncab>} />
-        <Route path="/buzon" element={<LayoutConEncab><Buzon/></LayoutConEncab>} />
 
         {/* Rutas de Usuario */}
         <Route path="/bienvenida" element={

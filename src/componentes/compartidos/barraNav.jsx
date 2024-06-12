@@ -46,12 +46,7 @@ const BarraNav = () => {
 
         <div className="navbar-end">
           <div className="navbar-item">
-          <Link className="button is-info" to="/buzon">
-              <span className="icon">
-                <i className="fas fa-envelope"></i>
-              </span>
-              <span>Buzón</span>
-            </Link>
+        
             <Link className="button is-success" to="/login" style={{ marginRight: '0.5rem' }}>Iniciar Sesión</Link>
             <Link className="button is-primary" to="/registro" style={{ marginRight: '0.5rem' }}>Registraté</Link>
           </div>
