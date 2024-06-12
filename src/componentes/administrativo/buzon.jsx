@@ -10,6 +10,7 @@ const Buzon = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [tab, setTab] = useState('preguntas');
+  const [latestMessage, setLatestMessage] = useState(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
@@ -24,6 +25,26 @@ const Buzon = () => {
     fetchMessages();
   }, []);
 
+  useEffect(() => {
+    const fetchLatestMessage = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/contact/latest');
+        setLatestMessage(response.data);
+      } catch (error) {
+        console.error('Error al obtener el último mensaje:', error);
+      }
+    };
+
+    fetchLatestMessage();
+  }, []);
+
+  useEffect(() => {
+    if (messages.length > 0) {
+      const sortedMessages = [...messages].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      setLatestMessage(sortedMessages[0]);
+    }
+  }, [messages]);
+
   const handleSelectMessage = (messageId) => {
     setSelectedMessage(messageId);
     const message = messages.find(message => message._id === messageId);
@@ -31,7 +52,15 @@ const Buzon = () => {
       setResponse(message.respuesta || '');
     }
   };
+  useEffect(() => {
+    if (latestMessage) {
+      const timer = setTimeout(() => {
+        setLatestMessage(null);
+      }, 5000);
 
+      return () => clearTimeout(timer); // Cleanup the timer if the component unmounts or latestMessage changes
+    }
+  }, [latestMessage]);
   const handleRespondMessage = async () => {
     if (selectedMessage && response) {
       try {
@@ -93,8 +122,6 @@ const Buzon = () => {
     return true;
   });
 
-  const firstMessage = filteredMessages.length > 0 ? filteredMessages[0] : null;
-
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <div className="container">
@@ -127,13 +154,19 @@ const Buzon = () => {
             </li>
           </ul>
         </div>
-
-        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
-          {firstMessage && (
-            <div className="notification is-info">
-              <strong>{firstMessage.correo}</strong> - {firstMessage.tipoMensaje}: {firstMessage.mensaje}
-            </div>
-          )}
+        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '20px' }}>
+  {latestMessage && (
+    <div className="message is-info" style={{ display: 'flex', alignItems: 'center', fontSize: '1.1em', padding: '0.5em' }}>
+      <div className="message-header" style={{ borderTopLeftRadius: '20px', borderBottomLeftRadius: '20px', padding: '0.5em 1em' }}>
+        <p className="is-size-6">Último mensaje:</p>
+      </div>
+      <div className="message-body" style={{ flex: '1', borderTopRightRadius: '20px', borderBottomRightRadius: '20px', padding: '0.5em 1em' }}>
+        <p className="is-size-6">
+          <strong>{latestMessage.correo}</strong> - {latestMessage.tipoMensaje}: {latestMessage.mensaje}
+        </p>
+      </div>
+    </div>
+  )}
           <div className="column is-half">
             {tab === 'preguntas' && (
               <div className="columns">
@@ -203,7 +236,6 @@ const Buzon = () => {
               </div>
             )}
           </div>
-
           {(tab === 'quejas' || tab === 'sugerencias') && (
             <table className="table is-fullwidth is-striped is-hoverable" style={{ fontSize: '1.2em', width: '100%' }}>
               <thead>
@@ -228,7 +260,7 @@ const Buzon = () => {
           )}
         </div>
       </div>
-    </div>
+    </div >
   );
 };
 
