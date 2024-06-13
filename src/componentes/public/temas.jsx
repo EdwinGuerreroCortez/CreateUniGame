@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 const temasIniciales = [
   { id: 1, titulo: "Introducción a Unity", contenido: "Aprende a navegar por el entorno de desarrollo de Unity, configurar proyectos y entender la interfaz de usuario básica." },
   { id: 2, titulo: "Fundamentos de C# para Unity", contenido: "Explora los conceptos básicos de programación en C#, incluyendo sintaxis, control de flujo, y estructuras de datos esenciales para el desarrollo de juegos." },
@@ -17,7 +16,6 @@ const temasIniciales = [
   { id: 14, titulo: "Realidad Virtual y Aumentada", contenido: "Explora cómo desarrollar juegos en Realidad Virtual y Aumentada utilizando Unity y sus SDKs específicos." },
   { id: 15, titulo: "Trabajando con Redes y Multijugador", contenido: "Desarrolla juegos multijugador aprendiendo sobre la sincronización de estados entre varios jugadores y gestión de la red." }
 ];
-
 const Temas = () => {
   const [temaActivo, setTemaActivo] = useState(null);
 
@@ -34,12 +32,12 @@ const Temas = () => {
       <h1 style={styles.header}>Temas a Aprender</h1>
       <div style={styles.grid}>
         {temasIniciales.map((tema) => (
-          <div key={tema.id} style={styles.card}
-               onMouseEnter={() => mostrarModal(tema.id)}
-               onMouseLeave={ocultarModal}>
+          <div key={tema.id} style={{ ...styles.card, border: temaActivo === tema.id ? '2px solid #4CAF50' : '1px solid #333' }}
+            onMouseEnter={() => mostrarModal(tema.id)}
+            onMouseLeave={ocultarModal}>
             <h2 style={styles.title}>{tema.titulo}</h2>
             {temaActivo === tema.id && (
-              <div style={styles.modal}>
+              <div style={{ ...styles.modal, border: '2px solid #4CAF50' }}>
                 <div style={styles.modalContent}>
                   <p>{tema.contenido}</p>
                 </div>
@@ -72,12 +70,12 @@ const styles = {
   },
   card: {
     backgroundColor: '#1e2025',
-    border: '1px solid #333',
     borderRadius: '5px',
     padding: '10px',
     cursor: 'pointer',
     position: 'relative',
-    overflow: 'visible'
+    overflow: 'visible',
+    transition: 'border-color 0.3s',
   },
   title: {
     fontWeight: 'bold',
@@ -92,7 +90,8 @@ const styles = {
     borderRadius: '5px',
     boxShadow: '0 4px 8px rgba(0,0,0,0.5)',
     zIndex: 1000,
-    marginTop: '10px'
+    marginTop: '10px',
+    transition: 'opacity 0.3s',
   },
   modalContent: {
     color: 'white',

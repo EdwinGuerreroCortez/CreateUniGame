@@ -26,7 +26,7 @@ const GestionUsuariosForm = () => {
   
   const obtenerUsuarios = async () => {
     try {
-      const response = await axios.get('https://gamebackend-1.onrender.com/api/usuarios');
+      const response = await axios.get('http://localhost:3001/api/usuarios');
       setUsuarios(response.data);
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
@@ -62,7 +62,7 @@ const GestionUsuariosForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validarFormulario()) return;
-    const endpoint = 'https://gamebackend-1.onrender.com/api/usuarios/admin';
+    const endpoint = 'http://localhost:3001/api/usuarios/admin';
     try {
       await axios.post(endpoint, { ...usuario });
       obtenerUsuarios();

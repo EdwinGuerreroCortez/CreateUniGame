@@ -17,9 +17,9 @@ const AcercaDeUniGame = () => {
           </div>
           <div className="column is-half">
             <div className="content has-text-centered">
-              <h1 className="title has-text-white glowing-text animate-text">Acerca de UniGame</h1>
+              <h1 className="title has-text-white glowing-text animate-text">Acerca de MasterGame</h1>
               <p className="has-text-white glowing-text animate-text">
-                UniGame es la plataforma ideal para aquellos que desean adentrarse en el mundo del desarrollo de videojuegos. Ofrecemos una experiencia de aprendizaje integral, con contenidos interactivos, videos tutoriales, ejercicios prácticos y evaluaciones.
+                MasterGame es la plataforma ideal para aquellos que desean adentrarse en el mundo del desarrollo de videojuegos. Ofrecemos una experiencia de aprendizaje integral, con contenidos interactivos, videos tutoriales, ejercicios prácticos y evaluaciones.
               </p>
               <p className="has-text-white glowing-text animate-text">
                 Nuestra misión es democratizar el acceso a la educación en desarrollo de videojuegos, proporcionando herramientas y recursos de calidad que permitan a cualquier persona, sin importar su nivel de experiencia, crear sus propios juegos.

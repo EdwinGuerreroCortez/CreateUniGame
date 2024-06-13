@@ -85,7 +85,7 @@ const BarraNav = () => {
                   <img className="is-rounded imagen-perfil" src={usuario.imagenPerfil || 'https://via.placeholder.com/48'} alt="Perfil" />
                 </figure>
               )}
-              <button className="button is-primary" onClick={handleLogout}>Cerrar sesión</button>
+              <button className="button is-primary" onClick={handleLogout} style={{marginTop:'1px'}}>Cerrar sesión</button>
             </div>
           </div>
         </div>

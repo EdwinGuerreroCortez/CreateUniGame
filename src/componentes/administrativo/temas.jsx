@@ -260,8 +260,8 @@ const TemaForm = () => {
             </div>
           </div>
           <div className="field is-grouped is-grouped-right">
-            <div className="control">
-              <button className="button is-success" onClick={handleSubmit} disabled={isLoading}>
+            <div className="control" >
+              <button className="button is-success" onClick={handleSubmit} disabled={isLoading} style={{marginRight:'10px'}}>
                 {isLoading ? 'Cargando...' : 'Subir y Procesar'}
               </button>
               <button className="button is-info" onClick={handleDownloadPlantilla}>
