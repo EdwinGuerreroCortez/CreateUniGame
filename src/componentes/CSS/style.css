@@ -1,11 +1,11 @@
 /* Ajustes CSS para mejorar el espaciado en dispositivos móviles */
 @media (max-width: 768px) {
   .container > .columns {
-      padding-left: 10px; /* Añade un poco de padding a la izquierda */
-      padding-right: 10px; /* Añade un poco de padding a la derecha */
+    padding-left: 10px;
+    padding-right: 10px;
   }
   .column.is-half {
-      padding: 10px; /* Añade padding alrededor del contenido de las columnas para evitar que toquen los bordes */
+    padding: 10px;
   }
 }
 
@@ -25,9 +25,7 @@
 
 #imagenGrande {
   width: 500px;
-  /* Ancho deseado */
   height: 600px;
-  /* Alto deseado */
   padding: 40px;
 }
 
@@ -35,30 +33,77 @@
   width: 600px;
 }
 
-/* Agrega estilos personalizados al carrusel y a las imágenes */
+.carousel-background {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
 .slider-container {
-  max-width: 800px; /* Ajusta el ancho máximo del carrusel según tus necesidades */
-  margin: auto; /* Centra el carrusel horizontalmente */
-  padding: 20px; /* Añade padding alrededor del carrusel */
-  border-radius: 10px; /* Bordes redondeados para el carrusel */
-  background-color: #1a1a1a; /* Color de fondo del carrusel */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para el carrusel */
+  position: relative;
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+  padding: 25px;
+  border-radius: 10px;
+  background-color: #1a1a1a;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .slider-slide {
-  text-align: center; /* Centra las imágenes dentro del carrusel */
+  text-align: center;
 }
 
 .slider-slide img {
-  max-width: 100%; /* Hace que las imágenes ocupen el 100% del ancho del contenedor */
-  height: auto; /* Permite que la altura se ajuste automáticamente para mantener la proporción */
-  border-radius: 10px; /* Bordes redondeados para las imágenes */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para las imágenes */
-  transition: transform 0.5s ease; /* Transición suave para el hover */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.5s ease;
+  animation-duration: 1s; /* Duración de la animación en segundos */
 }
 
+.animate__fadeIn {
+  animation-name: fadeIn;
+}
+
+.animate__fadeOut {
+  animation-name: fadeOut;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+
 .slider-slide img:hover {
-  transform: scale(1.05); /* Efecto de zoom al pasar el cursor */
+  transform: scale(1.05);
+}
+
+
+.side-image {
+  width: 100%;
+  height: auto;
+  border: 1px solid black;
+  padding: 5px;
 }
 
 .has-background-light-black {
@@ -91,42 +136,40 @@
 }
 
 .navbar-item:hover, .button:hover, .navbar-link:hover {
-  color: #000000; /* Color negro al pasar el cursor */
+  color: #000000;
 }
 
-/* Estilo para los botones en la barra de navegación */
 .navbar-item .button {
-  margin-right: 1rem; /* Añade un margen derecho para separar los botones */
+  margin-right: 1rem;
 }
 
-/* Cambio de color al pasar el cursor sobre los botones */
 .navbar-item .button:hover {
-  background-color: #000000; /* Cambia el fondo a negro */
-  color: #ffffff; /* Cambia el texto a blanco */
+  background-color: #000000;
+  color: #ffffff;
 }
 
 .content {
-  margin-top: 2rem; /* Asegura un margen superior para el texto */
+  margin-top: 2rem;
 }
 
 .title, .subtitle, .has-text-white {
-  margin-bottom: .5rem; /* Espacio entre los textos */
+  margin-bottom: .5rem;
 }
 
 .animate__bounceInLeft {
-  animation-duration: 2s; /* Duración de la animación para el efecto */
+  animation-duration: 2s;
 }
 
 .slider-frame {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%; /* Asegura que el frame ocupe todo el espacio vertical disponible */
+  height: 100%;
 }
 
 .slider-image {
   width: auto;
-  max-height: 300px; /* Limita la altura de las imágenes para evitar desbordamientos */
+  max-height: 500px; /* Ajusta la altura máxima de las imágenes */
   object-fit: cover;
 }
 
@@ -138,10 +181,8 @@
 }
 
 .button-back:hover {
-  background-color: #00D1B2; /* Color aquamarina para el hover del botón */
+  background-color: #00D1B2;
 }
-
-/* perfil.css */
 
 .label {
   color: black;
@@ -150,5 +191,21 @@
 #inputperfil {
   background-color: white;
   color: black;
-  border: 1px solid black; /* Añade el borde negro */
+  border: 1px solid black;
+}
+
+.welcome-container {
+  position: relative;
+  z-index: 1;
+  padding-top: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.additional-text {
+  margin-top: 60px;
+  text-align: center;
 }
