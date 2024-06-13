@@ -67,11 +67,11 @@
   animation-duration: 1s; /* Duración de la animación en segundos */
 }
 
-.animate__fadeIn {
+.fadeIn {
   animation-name: fadeIn;
 }
 
-.animate__fadeOut {
+.fadeOut {
   animation-name: fadeOut;
 }
 
@@ -92,6 +92,7 @@
     opacity: 0;
   }
 }
+
 
 
 .slider-slide img:hover {
@@ -208,4 +209,34 @@
 .additional-text {
   margin-top: 60px;
   text-align: center;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slider-slide {
+  animation: slideInRight 1s forwards;
+}
+
+.slider-slide.fadeOut {
+  animation: slideInLeft 1s forwards;
 }

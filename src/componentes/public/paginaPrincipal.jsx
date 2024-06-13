@@ -7,7 +7,6 @@ import juego5 from '../img/juego5.jpg';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../CSS/style.css';
-import 'animate.css/animate.min.css';
 
 const PaginaPrincipal = () => {
   const settings = {
@@ -47,18 +46,18 @@ const PaginaPrincipal = () => {
     ],
     beforeChange: (current, next) => {
       const currentSlide = document.querySelector(`.slick-slide[data-index="${current}"]`);
-      currentSlide.classList.add('animate__animated', 'animate__fadeOut');
-  
+      currentSlide.classList.add('fadeOut');
+
       const nextSlide = document.querySelector(`.slick-slide[data-index="${next}"]`);
-      nextSlide.classList.add('animate__animated', 'animate__fadeIn');
+      nextSlide.classList.add('fadeIn');
     },
     afterChange: (current) => {
       const currentSlide = document.querySelector(`.slick-slide[data-index="${current}"]`);
-      currentSlide.classList.remove('animate__animated', 'animate__fadeOut');
-      currentSlide.classList.add('animate__animated', 'animate__fadeIn');
+      currentSlide.classList.remove('fadeOut');
+      currentSlide.classList.add('fadeIn');
     },
   };
-  
+
   return (
     <section className="section has-background-black-bis">
       <div className="container">
@@ -78,11 +77,11 @@ const PaginaPrincipal = () => {
             <div className="card tarjeta-larga has-background-black has-border-white has-shadow">
               <div className="card-content">
                 <div className="content has-text-centered">
-                  <h1 className="title has-text-white animate__animated animate__bounceIn">Explora el mundo de la creación de juegos</h1>
-                  <p className="has-text-white animate__animated animate__fadeIn">
+                  <h1 className="title has-text-white">Explora el mundo de la creación de juegos</h1>
+                  <p className="has-text-white">
                     Nuestra plataforma te ofrece todas las herramientas necesarias para comenzar a desarrollar tus propios videojuegos, abarcando desde conceptos fundamentales hasta técnicas de programación y diseño gráfico.
                   </p>
-                  <p className="is-size-4 has-text-white animate__animated animate__bounceInLeft">
+                  <p className="is-size-4 has-text-white">
                     ¡No esperes más y comienza tu aventura en el desarrollo de juegos hoy mismo!
                   </p>
                 </div>
@@ -90,7 +89,7 @@ const PaginaPrincipal = () => {
             </div>
           </div>
         </div>
-        <div className="has-text-white has-text-centered additional-text animate__animated animate__fadeIn animate__delay-1s" style={{ color: 'green' }}>
+        <div className="has-text-white has-text-centered additional-text" style={{ color: 'green' }}>
           <h2 className="is-size-4">
             Comienza a usar Unity. Da vida a todo lo que puedas imaginar con Unity.
           </h2>
