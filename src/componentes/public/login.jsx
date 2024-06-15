@@ -69,9 +69,9 @@ const FormRegistro = ({ setUserAuthenticated }) => {
           setUserAuthenticated(true);
 
           if (userType === 'cliente') {
-            navigate('/bienvenida');
+            navigate('/user/bienvenida');
           } else if (userType === 'administrador') {
-            navigate('/administrativa');
+            navigate('/admin/bienvenida');
           } else {
             throw new Error('Tipo de usuario desconocido');
           }
@@ -146,7 +146,7 @@ const FormRegistro = ({ setUserAuthenticated }) => {
             </div>
           </form>
           <div className="has-text-centered" style={{ marginTop: '10px' }}>
-            <p className="has-text-white" style={{ fontSize: '15px' }} >¿No tienes cuenta? <a href="/registro" className="has-text-link" style={{ fontSize: '15px' }}>Regístrate</a></p>
+            <p className="has-text-white" style={{ fontSize: '15px' }} >¿No tienes cuenta? <a href="/public/registro" className="has-text-link" style={{ fontSize: '15px' }}>Regístrate</a></p>
           </div>
         </div>
       </div>

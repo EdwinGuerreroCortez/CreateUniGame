@@ -315,7 +315,9 @@ const CuestionariosForm = () => {
                   const { tema_id, evaluacion: preguntas } = evaluacion;
                   return (
                     <tr key={evaluacion._id}>
-                      <td className="has-text-white" style={{ verticalAlign: 'middle' }}>{tema_id.titulo}</td>
+                      <td className="has-text-white" style={{ verticalAlign: 'middle' }}>
+                        {tema_id ? tema_id.titulo : 'Tema no disponible'}
+                      </td>
                       <td className="has-text-white" style={{ verticalAlign: 'middle' }}>{preguntas.length} preguntas</td>
                       <td className="has-text-centered has-text-white" style={{ verticalAlign: 'middle' }}>
                         <div className="buttons is-centered">
@@ -333,6 +335,7 @@ const CuestionariosForm = () => {
                 </tr>
               )}
             </tbody>
+
           </table>
         </div>
 
@@ -357,7 +360,7 @@ const CuestionariosForm = () => {
                     <input
                       className="input"
                       type="text"
-                      value={editEvaluacion.tema_id.titulo}
+                      value={editEvaluacion && editEvaluacion.tema_id ? editEvaluacion.tema_id.titulo : ''}
                       readOnly
                     />
                   </div>
@@ -386,7 +389,6 @@ const CuestionariosForm = () => {
                         />
                       </div>
                     </div>
-
                     <div className="field">
                       <label className="label">Respuesta Correcta</label>
                       <div className="control">
@@ -454,6 +456,7 @@ const CuestionariosForm = () => {
             </div>
           </div>
         )}
+
       </div>
     </div>
   );

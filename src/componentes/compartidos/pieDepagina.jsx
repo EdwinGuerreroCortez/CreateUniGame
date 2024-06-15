@@ -57,8 +57,8 @@ const PieDePagina = () => {
             <div className="column">
               <p>Únete a nuestra comunidad:</p>
               <div className="buttons is-centered">
-                <Link className="button is-link" to="/registro">Únete</Link>
-                <Link className="button is-info" to="/login">Conéctate</Link>
+                <Link className="button is-link" to="/public/registro">Únete</Link>
+                <Link className="button is-info" to="/public/login">Conéctate</Link>
               </div>
               <div className="buttons is-centered" style={{ marginTop: '1rem' }}>
                 <button className="button is-primary" onClick={openModal}>Más Información</button>

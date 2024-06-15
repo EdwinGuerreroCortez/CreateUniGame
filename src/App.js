@@ -17,7 +17,7 @@ import LayoutEncabeUser from './componentes/usuario/layoutEncabeUser';
 import Bienvenida from './componentes/usuario/bienvenida';
 import Recursos from './componentes/usuario/recursos';
 import Curso from './componentes/usuario/curso';
-import Evalucaion from './componentes/usuario/evaluacion'
+import Evaluacion from './componentes/usuario/evaluacion'
 
 // Componentes Administrativos
 import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
@@ -36,63 +36,53 @@ const App = () => {
       <Routes>
         {/* Rutas Principales */}
         <Route path="/" element={<LayoutConEncab><PaginaPrincipal /><Temas /><Extra /><Fqs /></LayoutConEncab>} />
-        <Route path="/login" element={<Formlogin setUserAuthenticated={setUserAuthenticated} />} />
-        <Route path="/registro" element={<LayoutConEncab><FormRegistro setUserAuthenticated={setUserAuthenticated} /></LayoutConEncab>} />
-        <Route path="/paginaPrincipal" element={<LayoutConEncab><PaginaPrincipal /></LayoutConEncab>} />
-        <Route path="/acerca" element={<LayoutConEncab><Acerca /></LayoutConEncab>} />
-        <Route path="/contactanos" element={<LayoutConEncab><Contactanos /></LayoutConEncab>} />
-       
+        <Route path="/public/login" element={<Formlogin setUserAuthenticated={setUserAuthenticated} />} />
+        <Route path="/public/registro" element={<LayoutConEncab><FormRegistro setUserAuthenticated={setUserAuthenticated} /></LayoutConEncab>} />
+        <Route path="/public/paginaPrincipal" element={<LayoutConEncab><PaginaPrincipal /></LayoutConEncab>} />
+        <Route path="/public/acerca" element={<LayoutConEncab><Acerca /></LayoutConEncab>} />
+        <Route path="/public/contactanos" element={<LayoutConEncab><Contactanos /></LayoutConEncab>} />
        
         {/* Rutas de Usuario */}
-        <Route path="/bienvenida" element={
-          userAuthenticated ? <LayoutEncabeUser><Bienvenida /></LayoutEncabeUser> : <Navigate to="/login" />
+        <Route path="/user/bienvenida" element={
+          userAuthenticated ? <LayoutEncabeUser><Bienvenida /></LayoutEncabeUser> : <Navigate to="/public/login" />
         } />
-        <Route path="/recursos" element={
-          userAuthenticated ? <LayoutEncabeUser><Recursos /></LayoutEncabeUser> : <Navigate to="/login" />
+        <Route path="/user/recursos" element={
+          userAuthenticated ? <LayoutEncabeUser><Recursos /></LayoutEncabeUser> : <Navigate to="/public/login" />
         } />
-          <Route path="/acerca-de" element={
-          userAuthenticated ? <LayoutEncabeUser><Acerca/></LayoutEncabeUser> : <Navigate to="/login" />
+        <Route path="/user/acerca" element={
+          userAuthenticated ? <LayoutEncabeUser><Acerca /></LayoutEncabeUser> : <Navigate to="/public/login" />
         } />
-        <Route path="/curso" element={
-          userAuthenticated ? <LayoutEncabeUser><Curso /></LayoutEncabeUser> : <Navigate to="/login" />
+        <Route path="/user/curso" element={
+          userAuthenticated ? <LayoutEncabeUser><Curso /></LayoutEncabeUser> : <Navigate to="/public/login" />
         } />
-          <Route path="/contacto" element={
-          userAuthenticated ? <LayoutEncabeUser><Contactanos/></LayoutEncabeUser> : <Navigate to="/login" />
+        <Route path="/user/contacto" element={
+          userAuthenticated ? <LayoutEncabeUser><Contactanos /></LayoutEncabeUser> : <Navigate to="/public/login" />
         } />
-        <Route path="/evaluacion/:temaId" element={
-          userAuthenticated ? <LayoutEncabeUser><Evalucaion /></LayoutEncabeUser> : <Navigate to="/login" />
+        <Route path="/user/evaluacion/:temaId" element={
+          userAuthenticated ? <LayoutEncabeUser><Evaluacion /></LayoutEncabeUser> : <Navigate to="/public/login" />
         } />
 
         {/* Rutas Administrativas */}
-        <Route path="/administrativa" element={
-          userAuthenticated ? <LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin> : <Navigate to="/login" />
+        <Route path="/admin/bienvenida" element={
+          userAuthenticated ? <LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin> : <Navigate to="/public/login" />
         } />
-        <Route path="/admin/users" element={
-          userAuthenticated ? <LayoutEncabeAdmin><Usuarios/></LayoutEncabeAdmin> : <Navigate to="/login" />
+        <Route path="/admin/usuarios" element={
+          userAuthenticated ? <LayoutEncabeAdmin><Usuarios /></LayoutEncabeAdmin> : <Navigate to="/public/login" />
         } />
         <Route path="/admin/temas" element={
-          userAuthenticated ? <LayoutEncabeAdmin><TemasAdd/></LayoutEncabeAdmin> : <Navigate to="/login" />
-        } />
-        <Route path="/admin/calificaciones/enero" element={
-          userAuthenticated ? <LayoutEncabeAdmin><div>Calificaciones Enero</div></LayoutEncabeAdmin> : <Navigate to="/login" />
-        } />
-        <Route path="/admin/calificaciones/febrero" element={
-          userAuthenticated ? <LayoutEncabeAdmin><div>Calificaciones Febrero</div></LayoutEncabeAdmin> : <Navigate to="/login" />
-        } />
-        <Route path="/admin/calificaciones/marzo" element={
-          userAuthenticated ? <LayoutEncabeAdmin><div>Calificaciones Marzo</div></LayoutEncabeAdmin> : <Navigate to="/login" />
+          userAuthenticated ? <LayoutEncabeAdmin><TemasAdd /></LayoutEncabeAdmin> : <Navigate to="/public/login" />
         } />
         <Route path="/admin/cuestionarios" element={
-          userAuthenticated ? <LayoutEncabeAdmin><CuestionariosForm/></LayoutEncabeAdmin> : <Navigate to="/login" />
+          userAuthenticated ? <LayoutEncabeAdmin><CuestionariosForm /></LayoutEncabeAdmin> : <Navigate to="/public/login" />
         } />
         <Route path="/admin/informacion/mv" element={
-          userAuthenticated ? <LayoutEncabeAdmin><Mision/></LayoutEncabeAdmin> : <Navigate to="/login" />
+          userAuthenticated ? <LayoutEncabeAdmin><Mision /></LayoutEncabeAdmin> : <Navigate to="/public/login" />
         } />
-          <Route path="/admin/informacion/buzon" element={
-          userAuthenticated ? <LayoutEncabeAdmin><Buzon/></LayoutEncabeAdmin> : <Navigate to="/login" />
+        <Route path="/admin/informacion/buzon" element={
+          userAuthenticated ? <LayoutEncabeAdmin><Buzon /></LayoutEncabeAdmin> : <Navigate to="/public/login" />
         } />
-        <Route path="/admin/settings" element={
-          userAuthenticated ? <LayoutEncabeAdmin><div>Configuraciones</div></LayoutEncabeAdmin> : <Navigate to="/login" />
+        <Route path="/admin/configuraciones" element={
+          userAuthenticated ? <LayoutEncabeAdmin><div>Configuraciones</div></LayoutEncabeAdmin> : <Navigate to="/public/login" />
         } />
       </Routes>
     </Router>

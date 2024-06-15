@@ -37,8 +37,8 @@ const BarraNav = () => {
           <div className="navbar-item has-dropdown is-hoverable">
             <a className="navbar-link has-text-success">Explorar</a>
             <div className="navbar-dropdown">
-              <Link className="navbar-item has-text-success" to="/acerca">Acerca de MasterGame</Link>
-              <Link className="navbar-item has-text-success" to="/contactanos">Contáctanos</Link>
+              <Link className="navbar-item has-text-success" to="/public/acerca">Acerca de MasterGame</Link>
+              <Link className="navbar-item has-text-success" to="/public/contactanos">Contáctanos</Link>
             </div>
           </div>
           <Link className="navbar-item has-text-success" to="/">Inicio</Link>
@@ -47,8 +47,8 @@ const BarraNav = () => {
         <div className="navbar-end">
           <div className="navbar-item">
         
-            <Link className="button is-success" to="/login" style={{ marginRight: '0.5rem' }}>Iniciar Sesión</Link>
-            <Link className="button is-primary" to="/registro" style={{ marginRight: '0.5rem' }}>Registraté</Link>
+            <Link className="button is-success" to="/public/login" style={{ marginRight: '0.5rem' }}>Iniciar Sesión</Link>
+            <Link className="button is-primary" to="/public/registro" style={{ marginRight: '0.5rem' }}>Registraté</Link>
           </div>
         </div>
       </div>

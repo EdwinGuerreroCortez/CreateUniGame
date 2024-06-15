@@ -53,7 +53,7 @@ const BarraNav = () => {
     <nav className="navbar has-background-black" role="navigation" aria-label="main navigation" style={{ height: '5rem' }}>
       <div className="navbar-brand">
         <img src={logo} alt="Logo" className="navbar-item" style={{ height: '5rem' }} />
-        <Link className="navbar-item has-text-white animated-letters" to="/bienvenida">
+        <Link className="navbar-item has-text-white animated-letters" to="/user/bienvenida">
           {renderizarLetrasAnimadas("MasterGame")}
         </Link>
         <a role="button" className={`navbar-burger burger ${estaActivo ? 'is-active' : ''}`} aria-label="menu" aria-expanded={estaActivo ? 'true' : 'false'} onClick={alternarMenuBurger}>
@@ -68,13 +68,13 @@ const BarraNav = () => {
           <div className="navbar-item has-dropdown is-hoverable">
             <a className="navbar-link has-text-success">Explorar</a>
             <div className="navbar-dropdown">
-              <Link className="navbar-item has-text-success" to="/acerca-de">Acerca de</Link>
-              <Link className="navbar-item has-text-success" to="/contacto">Contáctanos</Link>
+              <Link className="navbar-item has-text-success" to="/user/acerca">Acerca de</Link>
+              <Link className="navbar-item has-text-success" to="/user/contacto">Contáctanos</Link>
             </div>
           </div>
-          <Link className="navbar-item has-text-success" to="/bienvenida">Inicio</Link>
-          <Link className="navbar-item has-text-success" to="/curso">Curso</Link>
-          <Link className="navbar-item has-text-success" to="/recursos">Recursos</Link>
+          <Link className="navbar-item has-text-success" to="/user/bienvenida">Inicio</Link>
+          <Link className="navbar-item has-text-success" to="/user/curso">Curso</Link>
+          <Link className="navbar-item has-text-success" to="/user/recursos">Recursos</Link>
         </div>
 
         <div className="navbar-end">

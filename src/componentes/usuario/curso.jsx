@@ -69,11 +69,11 @@ const Curso = () => {
       const evaluacionRealizada = userData.evaluaciones_realizadas.find(evaluacion => evaluacion.tema_id === temaSeleccionado._id);
 
       if (evaluacionRealizada) {
-        navigate(`/evaluacion/${temaSeleccionado._id}`, { state: { mostrarResultados: true } });
+        navigate(`/user/evaluacion/${temaSeleccionado._id}`, { state: { mostrarResultados: true } });
       } else {
         const userConfirmed = window.confirm("¿Desea responder la siguiente evaluación?");
         if (userConfirmed) {
-          navigate(`/evaluacion/${temaSeleccionado._id}`);
+          navigate(`/user/evaluacion/${temaSeleccionado._id}`);
         }
       }
     } catch (error) {

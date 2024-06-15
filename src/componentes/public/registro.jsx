@@ -133,13 +133,13 @@ const StepThree = ({ formData, setFormData, prevStep, nextStep }) => {
                         <input className="input is-black" type="text" placeholder="Usuario" name="usuario" value={formData.usuario} onChange={handleChange(formData, setFormData)} style={inputStyle} />
                         <div className="field has-addons" style={{ marginBottom: '15px', alignItems: 'center' }}>
                             <input className="input is-black" type={showPassword1 ? "text" : "password"} placeholder="Contraseña" name="contrasena" value={formData.contrasena} onChange={handleChange(formData, setFormData)} style={{ marginBottom: '0', flex: '1' }} />
-                            <button className="button is-light" type="button" onClick={() => setShowPassword1(!showPassword1)} style={{ marginLeft: '10px'}}>
+                            <button className="button is-light" type="button" onClick={() => setShowPassword1(!showPassword1)} style={{ marginLeft: '10px', width: '90px'}}>
                                 {showPassword1 ? "Ocultar" : "Mostrar"}
                             </button>
                         </div>
                         <div className="field has-addons" style={{ alignItems: 'center' }}>
                             <input className="input is-black" type={showPassword2 ? "text" : "password"} placeholder="Confirmar Contraseña" name="confirmarContrasena" value={formData.confirmarContrasena} onChange={handleChange(formData, setFormData)} style={{ marginBottom: '0', flex: '1' }} />
-                            <button className="button is-light" type="button" onClick={() => setShowPassword2(!showPassword2)} style={{ marginLeft: '10px' }}>
+                            <button className="button is-light" type="button" onClick={() => setShowPassword2(!showPassword2)} style={{ marginLeft: '10px' ,width: '90px'}}>
                                 {showPassword2 ? "Ocultar" : "Mostrar"}
                             </button>
                         </div>
@@ -258,7 +258,7 @@ const FormRegistro = () => {
             }
 
             alert('Registro completado!');
-            window.location.href = '/login';
+            window.location.href = '/public/login';
         } catch (error) {
             alert('Hubo un problema al registrar el usuario: ' + error.message);
         }
