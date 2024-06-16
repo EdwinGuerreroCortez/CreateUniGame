@@ -243,7 +243,6 @@ const TemaForm = () => {
         setAlert({ type: 'error', message: 'Error actualizando el tema. Inténtalo de nuevo.' });
       });
   };
-
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <div className="container">
@@ -256,11 +255,12 @@ const TemaForm = () => {
           </div>
         )}
   
-        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px', marginBottom: '20px', maxWidth: '600px', margin: '0 auto' }}>
+        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px', marginBottom: '20px', maxWidth: '800px', margin: '0 auto' }}>
           <div className="field is-grouped is-grouped-centered">
-            <div className="control" style={{ marginBottom: '10px' }}>
+            <div className="control">
               <button className="button is-primary" onClick={handleOpenModal}>Subir Tema</button>
-              {modalOpen && (
+            </div>
+            {modalOpen && (
                 <div className="modal is-active">
                   <div className="modal-background" onClick={handleModalClose}></div>
                   <div className="modal-content">
@@ -403,30 +403,29 @@ const TemaForm = () => {
               </div>
             )}
 
-            <button className="button is-info" onClick={handleDownloadPlantilla} style={{ marginLeft: '10px' }}>
-              Descargar Plantilla
-            </button>
-          </div>
-          <div className="control" style={{ marginBottom: '10px' }}>
-            <button className="button is-primary" onClick={() => fileInputRef.current.click()}>Subir Temas en Formato Excel</button>
-            <input
-              type="file"
-              ref={fileInputRef}
-              style={{ display: 'none' }}
-              onChange={handleFileChange}
-              accept=".xlsx,.xls"
-            />
-          </div>
-          <div className="control" style={{ marginBottom: '10px' }}>
-            <Link to="/admin/temas/contenidos" className="button is-primary">Ver Temas</Link>
+            <div className="control">
+              <button className="button is-info" onClick={handleDownloadPlantilla}>Descargar Plantilla</button>
+            </div>
+            <div className="control">
+              <button className="button is-primary" onClick={() => fileInputRef.current.click()}>Subir Temas en Formato Excel</button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+                accept=".xlsx,.xls"
+              />
+            </div>
+            <div className="control">
+              <Link to="/admin/temas/contenidos" className="button is-primary">Ver Temas</Link>
+            </div>
           </div>
         </div>
         <hr className="hr" style={{ backgroundColor: '#fff' }} />
       </div>
     </div>
-  </div>
-);
-
+  );
+  
 
 
 
