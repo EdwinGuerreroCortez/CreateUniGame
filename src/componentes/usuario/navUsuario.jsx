@@ -46,8 +46,10 @@ const BarraNav = () => {
   const handleLogout = () => {
     localStorage.removeItem('userId');
     localStorage.removeItem('userData');
+    localStorage.removeItem('usuario');
     navigate('/');
   };
+  
 
   return (
     <nav className="navbar has-background-black" role="navigation" aria-label="main navigation" style={{ height: '5rem' }}>
