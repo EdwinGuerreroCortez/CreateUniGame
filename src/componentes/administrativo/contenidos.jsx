@@ -153,7 +153,6 @@ const Contenidos = () => {
         )}
 
         <div className="box" style={{ backgroundColor: '#090A0C' }}>
-          <h2 className="title is-4 has-text-centered has-text-white">Lista de Temas</h2>
           <table className="table is-fullwidth is-striped is-hoverable">
             <thead>
               <tr>
