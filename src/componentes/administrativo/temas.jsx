@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom'; // Importar Link desde React Router
 import 'bulma/css/bulma.min.css';
 import '../CSS/adminForms2.css'; // Archivo CSS adicional para estilos específicos
 
@@ -232,7 +233,7 @@ const TemaForm = () => {
           setAlert({ type: 'error', message: data.details.join(', ') });
         } else {
           setTemas(temas.map(t => (t._id === data._id ? data : t)));
-          setAlert({ type: 'success', message: 'Tema actualizado con éxito.' });
+          setAlert({ type: 'error', message: 'Tema actualizado con éxito.' });
           setValidationErrors([]);
           // No cerrar el modal de edición
         }
@@ -247,19 +248,18 @@ const TemaForm = () => {
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <div className="container">
         <h1 className="title has-text-centered has-text-white">Administrar Temas</h1>
-
+  
         {alert.message && (
           <div className={`notification ${alert.type === 'success' ? 'is-success' : 'is-danger'}`}>
             <button className="delete" onClick={handleCloseAlert}></button>
             {alert.message}
           </div>
         )}
-
-        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px', marginBottom: '20px' }}>
-          <div className="field is-grouped is-grouped-right">
+  
+        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px', marginBottom: '20px', maxWidth: '600px', margin: '0 auto' }}>
+          <div className="field is-grouped is-grouped-centered">
             <div className="control" style={{ marginBottom: '10px' }}>
               <button className="button is-primary" onClick={handleOpenModal}>Subir Tema</button>
-
               {modalOpen && (
                 <div className="modal is-active">
                   <div className="modal-background" onClick={handleModalClose}></div>
@@ -386,7 +386,7 @@ const TemaForm = () => {
                             />
                           </div>
                         </div>
-                        <div className="field is-grouped is-grouped-right">
+                        <div className="field is-grouped is-grouped-centered">
                           <div className="control">
                             <button type="submit" className={`button is-primary ${isLoading ? 'is-loading' : ''}`}>
                               Subir Tema
@@ -394,118 +394,43 @@ const TemaForm = () => {
                             <button type="button" className="button" onClick={handleModalClose} style={{ marginLeft: '10px' }}>
                               Cancelar
                             </button>
-
                           </div>
                         </div>
                       </form>
-                    </div>
-                  </div>
-                  <button className="modal-close is-large" aria-label="close" onClick={handleModalClose}></button>
-                </div>
-              )}
-
-              <button className="button is-info" onClick={handleDownloadPlantilla} style={{ marginLeft: '10px' }}>
-                Descargar Plantilla
-              </button>
-            </div>
-            <div className="control" style={{ marginBottom: '10px' }}>
-              <button className="button is-primary" onClick={() => fileInputRef.current.click()}>Subir Temas en Formato Excel</button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: 'none' }}
-                onChange={handleFileChange}
-                accept=".xlsx,.xls"
-              />
-            </div>
-          </div>
-          <hr className="hr" style={{ backgroundColor: '#fff' }} />
-
-          {editMode ? (
-            <div className="content">
-              <h2 className="subtitle has-text-white">Subir Nuevo Tema</h2>
-              <form onSubmit={handleSubmit}>
-                <div className="field">
-                  <label className="label has-text-white">Archivo Excel:</label>
-                  <div className="control">
-                    <input type="file" className="input" onChange={handleFileChange} accept=".xlsx,.xls" required />
                   </div>
                 </div>
-                <div className="field">
-                  <label className="label has-text-white">Archivo de Video:</label>
-                  <div className="control">
-                    <input type="file" className="input" onChange={handleVideoFileChange} accept=".mp4,.webm,.ogg" required />
-                  </div>
-                </div>
-                <div className="field">
-                  <div className="control">
-                    <button type="submit" className={`button is-primary ${isLoading ? 'is-loading' : ''}`}>
-                      Subir Tema
-                    </button>
-                    <button type="button" className="button" onClick={() => setEditMode(false)} style={{ marginLeft: '10px' }}>
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          ) : (
-            <div className="content">
-              <h2 className="subtitle has-text-white">Temas Actuales:</h2>
-              <div className="columns is-multiline">
-                {temas.length > 0 ? (
-                  temas.map((tema, index) => (
-                    <div key={tema._id} className="column is-half" style={{ marginBottom: '10px' }}>
-                      <div className="box" style={{ backgroundColor: '#2F2F2F', padding: '10px', borderRadius: '5px', minHeight: '150px' }}>
-                        <p className="is-size-5 has-text-white">{tema.titulo}</p>
-                        <p className="has-text-white">{tema.descripcion}</p>
-                        <div className="field is-grouped is-grouped-right">
-                          <div className="control">
-                            <button className="button is-primary is-small" onClick={() => handleEdit(tema)}>Cambiar</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <p className="has-text-white">No hay temas disponibles.</p>
-                )}
+                <button className="modal-close is-large" aria-label="close" onClick={handleModalClose}></button>
               </div>
-            </div>
-          )}
+            )}
 
-          <nav className="pagination is-centered" role="navigation" aria-label="pagination">
-            <button
-              className="pagination-previous"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Anterior
+            <button className="button is-info" onClick={handleDownloadPlantilla} style={{ marginLeft: '10px' }}>
+              Descargar Plantilla
             </button>
-            <button
-              className="pagination-next"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Siguiente
-            </button>
-            <ul className="pagination-list">
-              {Array.from({ length: totalPages }, (_, i) => (
-                <li key={i}>
-                  <button
-                    className={`pagination-link ${currentPage === i + 1 ? 'is-current' : ''}`}
-                    onClick={() => handlePageChange(i + 1)}
-                  >
-                    {i + 1}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          </div>
+          <div className="control" style={{ marginBottom: '10px' }}>
+            <button className="button is-primary" onClick={() => fileInputRef.current.click()}>Subir Temas en Formato Excel</button>
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+              accept=".xlsx,.xls"
+            />
+          </div>
+          <div className="control" style={{ marginBottom: '10px' }}>
+            <Link to="/admin/temas/contenidos" className="button is-primary">Ver Temas</Link>
+          </div>
         </div>
+        <hr className="hr" style={{ backgroundColor: '#fff' }} />
       </div>
     </div>
-  );
-};
+  </div>
+);
 
+
+
+
+};
 export default TemaForm;
+
+
