@@ -71,6 +71,17 @@ const TemaForm = () => {
     nuevosPasos.splice(index, 1);
     setPasosTema(nuevosPasos);
   };
+  const handleModalClose = () => {
+    if (tituloTema.trim() || descripcionTema.trim() || pasosTema.some(paso => paso.Titulo.trim() || paso.Descripcion.trim())) {
+      if (window.confirm('¿Estás seguro de que quieres salir? Los cambios no se guardarán.')) {
+        setModalOpen(false);
+        setValidationErrors([]);
+      }
+    } else {
+      setModalOpen(false);
+      setValidationErrors([]);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -165,12 +176,6 @@ const TemaForm = () => {
     setEditMode(true);
     setEditTema(tema);
     setCurrentPage(1); // Reset page to 1 when editing a new tema
-  };
-
-  const handleModalClose = () => {
-    setEditMode(false);
-    setEditTema(null);
-    setValidationErrors([]);
   };
 
   const handlePageChange = (pageNumber) => {
@@ -364,6 +369,7 @@ const TemaForm = () => {
                             <button type="button" className="button" onClick={handleModalClose} style={{ marginLeft: '10px' }}>
                               Cancelar
                             </button>
+
                           </div>
                         </div>
                       </form>
