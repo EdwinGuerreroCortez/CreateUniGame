@@ -41,10 +41,16 @@ const BarraNavAdmin = () => {
             <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
                 <div className="navbar-start">
                     <Link className="navbar-item has-text-success" to="/admin/usuarios">Gestión de Usuarios</Link>
-                    <Link className="navbar-item has-text-success" to="/admin/temas">Temas</Link>
+                    <div className="navbar-item has-dropdown is-hoverable">
+                        <a className="navbar-link has-text-success">Temas</a>
+                        <div className="navbar-dropdown">
+                            <Link className="navbar-item" to="/admin/temas">Agregar Temas</Link>
+                            <Link className="navbar-item" to="/admin/temas/contenidos">Aministrar Contenidos</Link>
+                        </div>
+                    </div>
                     <Link className="navbar-item has-text-success" to="/admin/cuestionarios">Cuestionarios</Link>
                     <div className="navbar-item has-dropdown is-hoverable">
-                        <a className="navbar-link has-text-success">Informacion</a>
+                        <a className="navbar-link has-text-success">Administración</a>
                         <div className="navbar-dropdown">
                             <Link className="navbar-item" to="/admin/informacion/buzon">Bandeja de Entrada</Link>
                             <Link className="navbar-item" to="/admin/informacion/mv">Misión visión</Link>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import 'bulma/css/bulma.min.css';
 import '../CSS/adminForms2.css'; // Archivo CSS adicional para estilos específicos
 
@@ -12,7 +12,20 @@ const TemaForm = () => {
   const [editTema, setEditTema] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
+
   const [validationErrors, setValidationErrors] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [nuevoPaso, setNuevoPaso] = useState({ Titulo: '', Descripcion: '' });
+  const [descripcionTema, setDescripcionTema] = useState('');
+  const [autorTema, setAutorTema] = useState('');
+  const [pasosTema, setPasosTema] = useState([]);
+
+  const [tituloTema, setTituloTema] = useState('');
+  const fileInputRef = useRef(null);
+
+  if (pasosTema.length === 0) {
+    setPasosTema([{ Titulo: '', Descripcion: '' }]);
+  }
 
   useEffect(() => {
     fetch('http://localhost:3001/api/temas') // Asegúrate de apuntar a la URL correcta
@@ -30,6 +43,10 @@ const TemaForm = () => {
       return () => clearTimeout(timer);
     }
   }, [alert]);
+//abrir y cerrar del modal
+  const handleOpenModal = () => {
+    setModalOpen(true);
+  };
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -39,6 +56,22 @@ const TemaForm = () => {
     setVideoFile(e.target.files[0]);
   };
 
+ //agregar pasos
+  const handleAgregarPaso = () => {
+    setPasosTema([...pasosTema, { Titulo: '', Descripcion: '' }]);
+  };
+
+  const handlePasoChange = (e, index, field) => {
+    const newPasos = [...pasosTema];
+    newPasos[index][field] = e.target.value;
+    setPasosTema(newPasos);
+  };
+  const handleEliminarPaso = (index) => {
+    const nuevosPasos = [...pasosTema];
+    nuevosPasos.splice(index, 1);
+    setPasosTema(nuevosPasos);
+  };
+  
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -75,7 +108,7 @@ const TemaForm = () => {
   };
 
   const handleEliminarTema = (id) => {
-    fetch(`http://localhost:3001/api/temas/${id}`, { 
+    fetch(`http://localhost:3001/api/temas/${id}`, {
       method: 'DELETE',
     })
       .then(() => {
@@ -208,7 +241,7 @@ const TemaForm = () => {
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <div className="container">
         <h1 className="title has-text-centered has-text-white">Administrar Temas</h1>
-        
+
         {alert.message && (
           <div className={`notification ${alert.type === 'success' ? 'is-success' : 'is-danger'}`}>
             <button className="delete" onClick={handleCloseAlert}></button>
@@ -216,241 +249,229 @@ const TemaForm = () => {
           </div>
         )}
 
-        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px' }}>
+        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px', marginBottom: '20px' }}>
+          <div className="field is-grouped is-grouped-right">
+            <div className="control" style={{ marginBottom: '10px' }}>
+              <button className="button is-primary" onClick={handleOpenModal}>Subir Tema</button>
+
+              {modalOpen && (
+  <div className="modal is-active">
+    <div className="modal-background" onClick={handleModalClose}></div>
+    <div className="modal-content">
+      <div className="box" style={{ backgroundColor: '#2F2F2F', borderRadius: '10px', padding: '20px' }}>
+        <h1 className="title has-text-centered has-text-white">Nuevo Tema</h1>
+        <form onSubmit={handleSubmit}>
           <div className="field">
-            <label className="label has-text-white">Subir Archivo Excel</label>
-            <div className="file is-primary has-name">
-              <label className="file-label">
-                <input className="file-input" type="file" accept=".xlsx, .xls" onChange={handleFileChange} />
-                <span className="file-cta">
-                  <span className="file-icon">
-                    <i className="fas fa-upload"></i>
-                  </span>
-                  <span className="file-label">
-                    Elige un archivo...
-                  </span>
-                </span>
-                {file && (
-                  <span className="file-name">
-                    {file.name}
-                  </span>
-                )}
-              </label>
+            <label className="label has-text-white">Título del Tema:</label>
+            <div className="control">
+              <input
+                type="text"
+                className="input"
+                placeholder="Ingresa el título del tema"
+                value={tituloTema}
+                onChange={(e) => setTituloTema(e.target.value)}
+                required
+              />
             </div>
           </div>
           <div className="field">
-            <label className="label has-text-white">Subir Video</label>
-            <div className="file is-primary has-name">
-              <label className="file-label">
-                <input className="file-input" type="file" accept="video/*" onChange={handleVideoFileChange} />
-                <span className="file-cta">
-                  <span className="file-icon">
-                    <i className="fas fa-upload"></i>
-                  </span>
-                  <span className="file-label">
-                    Elige un video...
-                  </span>
-                </span>
-                {videoFile && (
-                  <span className="file-name">
-                    {videoFile.name}
-                  </span>
-                )}
-              </label>
+            <label className="label has-text-white">Descripción del Tema:</label>
+            <div className="control">
+              <textarea
+                className="textarea"
+                placeholder="Ingresa la descripción del tema"
+                value={descripcionTema}
+                onChange={(e) => setDescripcionTema(e.target.value)}
+                required
+              ></textarea>
+            </div>
+          </div>
+          <div className="field">
+            <label className="label has-text-white">Pasos:</label>
+            {pasosTema.map((paso, index) => (
+  <div key={index} className="field" style={{ marginBottom: '5px' }}>
+    <div className="control is-expanded">
+      <label>Titulo del paso:</label>
+      <input
+        type="text"
+        className="input"
+        placeholder={`Paso ${index + 1}`}
+        value={paso.Titulo}
+        onChange={(e) => handlePasoChange(e, index, 'Titulo')}
+        required
+      />
+    </div>
+    <div className="control is-expanded">
+      <label>Descripcion del paso:</label>
+      <textarea
+        className="textarea"
+        placeholder={`Descripción del Paso ${index + 1}`}
+        value={paso.Descripcion}
+        onChange={(e) => handlePasoChange(e, index, 'Descripcion')}
+        required
+      />
+    </div>
+    {index === pasosTema.length - 1 && (
+      <div className="control">
+        <label>Agregar nuevo paso: </label>
+        <button
+          type="button"
+          className={`button is-info is-small ${pasosTema[index].Titulo === '' || pasosTema[index].Descripcion === '' ? 'is-disabled' : ''}`}
+          onClick={handleAgregarPaso}
+          disabled={pasosTema[index].Titulo === '' || pasosTema[index].Descripcion === ''}
+        >
+          +
+        </button>
+      </div>
+    )}
+    {index !== pasosTema.length  && (
+      <div className="control">
+        <label>Eliminar paso: </label> 
+        <button
+          type="button"
+          className="button is-danger is-small"
+          onClick={() => {
+            if (window.confirm('¿Estás seguro de que quieres eliminar este paso?')) {
+              handleEliminarPaso(index);
+            }
+          }}
+        >
+          -
+        </button>
+      </div>
+    )}
+  </div>
+))}
+
+          </div>
+          <div className="field">
+            <label className="label has-text-white">Archivo de Video:</label>
+            <div className="control">
+              <input
+                type="file"
+                className="input"
+                onChange={handleVideoFileChange}
+                accept=".mp4,.webm,.ogg"
+                required
+              />
             </div>
           </div>
           <div className="field is-grouped is-grouped-right">
-            <div className="control" >
-              <button className="button is-success" onClick={handleSubmit} disabled={isLoading} style={{marginRight:'10px'}}>
-                {isLoading ? 'Cargando...' : 'Subir y Procesar'}
+            <div className="control">
+              <button type="submit" className={`button is-primary ${isLoading ? 'is-loading' : ''}`}>
+                Subir Tema
               </button>
-              <button className="button is-info" onClick={handleDownloadPlantilla}>
+              <button type="button" className="button" onClick={handleModalClose} style={{ marginLeft: '10px' }}>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <button className="modal-close is-large" aria-label="close" onClick={handleModalClose}></button>
+  </div>
+)}
+
+              <button className="button is-info" onClick={handleDownloadPlantilla} style={{ marginLeft: '10px' }}>
                 Descargar Plantilla
               </button>
             </div>
-          </div>
-        </div>
-        
-        {isLoading && (
-          <div className="has-text-centered">
-            <button className="button is-loading is-large is-info">Cargando</button>
-          </div>
-        )}
-        
-        <div className="box" style={{ backgroundColor: '#090A0C' }}>
-          <h2 className="title is-4 has-text-centered has-text-white">Lista de Temas</h2>
-          <table className="table is-fullwidth is-striped is-hoverable">
-            <thead>
-              <tr>
-                <th className="has-text-white">Título</th>
-                <th className="has-text-white">Autor</th>
-                <th className="has-text-white">Fecha</th>
-                <th className="has-text-white">Descripción</th>
-                <th className="has-text-white">Número de Pasos</th>
-                <th className="has-text-white">Video</th>
-                <th className="has-text-centered has-text-white">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {temas && temas.length > 0 ? (
-                temas.map((tema) => (
-                  <tr key={tema._id}>
-                    <td className="has-text-white">{tema.titulo}</td>
-                    <td className="has-text-white">{tema.autor}</td>
-                    <td className="has-text-white">{new Date(tema.fecha_creacion).toLocaleDateString()}</td>
-                    <td className="has-text-white">{tema.descripcion}</td>
-                    <td className="has-text-white">{tema.pasos ? tema.pasos.length : 0} pasos</td>
-                    <td>
-                      {tema.video ? (
-                        <a className="has-text-link" href={tema.video} target="_blank" rel="noopener noreferrer">Ver Video</a>
-                      ) : (
-                        <span className="has-text-grey">No disponible</span>
-                      )}
-                    </td>
-                    <td className="has-text-centered has-text-white">
-                      <div className="buttons is-centered">
-                        <button className="button is-small is-info" onClick={() => handleEdit(tema)}>Editar</button>
-                        <button className="button is-small is-danger" onClick={() => handleEliminarTema(tema._id)}>Eliminar</button>
-                        <button className="button is-small is-warning" onClick={() => handleDownloadTema(tema._id)}>Descargar Excel</button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              ) : (
-                <tr>
-                  <td className="has-text-white" colSpan="7">No hay temas disponibles.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-
-        {editMode && editTema && (
-          <div className={`modal ${editMode ? 'is-active' : ''}`}>
-            <div className="modal-background"></div>
-            <div className="modal-card">
-              <header className="modal-card-head">
-                <p className="modal-card-title">Editar Tema</p>
-                <button className="delete" aria-label="close" onClick={handleModalClose}></button>
-              </header>
-              <section className="modal-card-body">
-                {alert.message && (
-                  <div className={`notification ${alert.type === 'success' ? 'is-success' : 'is-danger'}`}>
-                    <button className="delete" onClick={() => setAlert({ type: '', message: '' })}></button>
-                    {alert.message}
-                  </div>
-                )}
-                {validationErrors.length > 0 && (
-                  <div className="notification is-danger">
-                    <button className="delete" onClick={() => setValidationErrors([])}></button>
-                    {validationErrors.map((error, index) => (
-                      <p key={index}>{error}</p>
-                    ))}
-                  </div>
-                )}
-                <div className="field">
-                  <label className="label">Título</label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="text"
-                      value={editTema.titulo}
-                      onChange={(e) => setEditTema({ ...editTema, titulo: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <div className="field">
-                  <label className="label">Descripción</label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="text"
-                      value={editTema.descripcion}
-                      onChange={(e) => setEditTema({ ...editTema, descripcion: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <div className="field">
-                  <label className="label">Autor</label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="text"
-                      value={editTema.autor}
-                      onChange={(e) => setEditTema({ ...editTema, autor: e.target.value })}
-                    />
-                  </div>
-                </div>
-                {getCurrentPageItems().map((paso, index) => (
-                  <div key={index} className="box" style={{ marginBottom: '1rem' }}>
-                    <div className="field">
-                      <label className="label">Paso {index + 1 + (currentPage - 1) * itemsPerPage}</label>
-                      <div className="control">
-                        <input
-                          className="input"
-                          type="text"
-                          value={paso.Titulo}
-                          onChange={(e) => {
-                            const newPasos = [...editTema.pasos];
-                            newPasos[index + (currentPage - 1) * itemsPerPage].Titulo = e.target.value;
-                            setEditTema({ ...editTema, pasos: newPasos });
-                          }}
-                        />
-                      </div>
-                    </div>
-                    <div className="field">
-                      <label className="label">Descripción</label>
-                      <div className="control">
-                        <input
-                          className="input"
-                          type="text"
-                          value={paso.Descripcion}
-                          onChange={(e) => {
-                            const newPasos = [...editTema.pasos];
-                            newPasos[index + (currentPage - 1) * itemsPerPage].Descripcion = e.target.value;
-                            setEditTema({ ...editTema, pasos: newPasos });
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                ))}
-                <nav className="pagination is-centered" role="navigation" aria-label="pagination">
-                  <button
-                    className="pagination-previous"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    Anterior
-                  </button>
-                  <button
-                    className="pagination-next"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    Siguiente
-                  </button>
-                  <ul className="pagination-list">
-                    {Array.from({ length: totalPages }, (_, i) => (
-                      <li key={i}>
-                        <button
-                          className={`pagination-link ${currentPage === i + 1 ? 'is-current' : ''}`}
-                          onClick={() => handlePageChange(i + 1)}
-                        >
-                          {i + 1}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </section>
-              <footer className="modal-card-foot">
-                <button className="button is-success" onClick={handleSaveEdit}>Guardar</button>
-                <button className="button" onClick={handleModalClose}>Cancelar</button>
-              </footer>
+            <div className="control" style={{ marginBottom: '10px' }}>
+              <button className="button is-primary" onClick={() => fileInputRef.current.click()}>Subir Temas en Formato Excel</button>
+              <input
+                type="file"
+                ref={fileInputRef}
+                style={{ display: 'none' }}
+                onChange={handleFileChange}
+                accept=".xlsx,.xls"
+              />
             </div>
           </div>
-        )}
+          <hr className="hr" style={{ backgroundColor: '#fff' }} />
+
+          {editMode ? (
+            <div className="content">
+              <h2 className="subtitle has-text-white">Subir Nuevo Tema</h2>
+              <form onSubmit={handleSubmit}>
+                <div className="field">
+                  <label className="label has-text-white">Archivo Excel:</label>
+                  <div className="control">
+                    <input type="file" className="input" onChange={handleFileChange} accept=".xlsx,.xls" required />
+                  </div>
+                </div>
+                <div className="field">
+                  <label className="label has-text-white">Archivo de Video:</label>
+                  <div className="control">
+                    <input type="file" className="input" onChange={handleVideoFileChange} accept=".mp4,.webm,.ogg" required />
+                  </div>
+                </div>
+                <div className="field">
+                  <div className="control">
+                    <button type="submit" className={`button is-primary ${isLoading ? 'is-loading' : ''}`}>
+                      Subir Tema
+                    </button>
+                    <button type="button" className="button" onClick={() => setEditMode(false)} style={{ marginLeft: '10px' }}>
+                      Cancelar
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          ) : (
+            <div className="content">
+              <h2 className="subtitle has-text-white">Temas Actuales:</h2>
+              <div className="columns is-multiline">
+                {temas.length > 0 ? (
+                  temas.map((tema, index) => (
+                    <div key={tema._id} className="column is-half" style={{ marginBottom: '10px' }}>
+                      <div className="box" style={{ backgroundColor: '#2F2F2F', padding: '10px', borderRadius: '5px', minHeight: '150px' }}>
+                        <p className="is-size-5 has-text-white">{tema.titulo}</p>
+                        <p className="has-text-white">{tema.descripcion}</p>
+                        <div className="field is-grouped is-grouped-right">
+                          <div className="control">
+                            <button className="button is-primary is-small" onClick={() => handleEdit(tema)}>Cambiar</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="has-text-white">No hay temas disponibles.</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          <nav className="pagination is-centered" role="navigation" aria-label="pagination">
+            <button
+              className="pagination-previous"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              Anterior
+            </button>
+            <button
+              className="pagination-next"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              Siguiente
+            </button>
+            <ul className="pagination-list">
+              {Array.from({ length: totalPages }, (_, i) => (
+                <li key={i}>
+                  <button
+                    className={`pagination-link ${currentPage === i + 1 ? 'is-current' : ''}`}
+                    onClick={() => handlePageChange(i + 1)}
+                  >
+                    {i + 1}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
       </div>
     </div>
   );

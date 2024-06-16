@@ -25,8 +25,10 @@ import BienvenidaAdmin from './componentes/administrativo/bienvenidaAdmin';
 import Buzon from './componentes/administrativo/buzon';
 import Mision from './componentes/administrativo/mision';
 import TemasAdd from './componentes/administrativo/temas';
+import Contenidos from './componentes/administrativo/contenidos'
 import Usuarios from './componentes/administrativo/Usuarios'
 import CuestionariosForm from './componentes/administrativo/cuestionario';
+
 
 const App = () => {
   const [userAuthenticated, setUserAuthenticated] = useState(false);
@@ -72,6 +74,11 @@ const App = () => {
         <Route path="/admin/temas" element={
           userAuthenticated ? <LayoutEncabeAdmin><TemasAdd /></LayoutEncabeAdmin> : <Navigate to="/public/login" />
         } />
+
+        <Route path="/admin/temas/contenidos" element={
+          userAuthenticated ? <LayoutEncabeAdmin><Contenidos /></LayoutEncabeAdmin> : <Navigate to="/public/login" />
+        } />
+
         <Route path="/admin/cuestionarios" element={
           userAuthenticated ? <LayoutEncabeAdmin><CuestionariosForm /></LayoutEncabeAdmin> : <Navigate to="/public/login" />
         } />
@@ -81,9 +88,7 @@ const App = () => {
         <Route path="/admin/informacion/buzon" element={
           userAuthenticated ? <LayoutEncabeAdmin><Buzon /></LayoutEncabeAdmin> : <Navigate to="/public/login" />
         } />
-        <Route path="/admin/configuraciones" element={
-          userAuthenticated ? <LayoutEncabeAdmin><div>Configuraciones</div></LayoutEncabeAdmin> : <Navigate to="/public/login" />
-        } />
+
       </Routes>
     </Router>
   );
