@@ -13,9 +13,8 @@ const TemaForm = () => {
   const [editTema, setEditTema] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
-
   const [validationErrors, setValidationErrors] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(null); // Cambiado a null para cerrar cualquier modal abierto
   const [nuevoPaso, setNuevoPaso] = useState({ Titulo: '', Descripcion: '' });
   const [descripcionTema, setDescripcionTema] = useState('');
   const [autorTema, setAutorTema] = useState('');
@@ -45,9 +44,13 @@ const TemaForm = () => {
       return () => clearTimeout(timer);
     }
   }, [alert]);
-  //abrir y cerrar del modal
-  const handleOpenModal = () => {
-    setModalOpen(true);
+
+  const handleOpenModal = (modalType) => {
+    if (modalType === 'upload') {
+      fileInputRef.current.click(); // Abre el explorador de archivos al seleccionar un archivo
+    } else if (modalType === 'temus') {
+      setModalOpen('temus'); // Abre el modal de nuevo tema
+    }
   };
 
   const handleFileChange = (e) => {
@@ -73,6 +76,7 @@ const TemaForm = () => {
     nuevosPasos.splice(index, 1);
     setPasosTema(nuevosPasos);
   };
+
   const handleModalClose = () => {
     if (tituloTema.trim() || descripcionTema.trim() || pasosTema.some(paso => paso.Titulo.trim() || paso.Descripcion.trim())) {
       if (window.confirm('¿Estás seguro de que quieres salir? Los cambios no se guardarán.')) {
@@ -84,6 +88,19 @@ const TemaForm = () => {
       setValidationErrors([]);
     }
   };
+
+  const handleUploadButtonClicked = () => {
+    fileInputRef.current.click(); // Abre el gestor de archivos al presionar el botón
+  };
+
+  const handleFileSelect = (e) => {
+    const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      setModalOpen('upload'); // Abre el modal al seleccionar un archivo
+    }
+  };
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -247,189 +264,200 @@ const TemaForm = () => {
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <div className="container">
         <h1 className="title has-text-centered has-text-white">Administrar Temas</h1>
-  
         {alert.message && (
           <div className={`notification ${alert.type === 'success' ? 'is-success' : 'is-danger'}`}>
             <button className="delete" onClick={handleCloseAlert}></button>
             {alert.message}
           </div>
         )}
-  
         <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px', marginBottom: '20px', maxWidth: '800px', margin: '0 auto' }}>
           <div className="field is-grouped is-grouped-centered">
             <div className="control">
-              <button className="button is-primary" onClick={handleOpenModal}>Subir Tema</button>
+              <button className="button is-primary" onClick={() => handleOpenModal('temus')}>Subir Tema</button>
             </div>
-            {modalOpen && (
-                <div className="modal is-active">
-                  <div className="modal-background" onClick={handleModalClose}></div>
-                  <div className="modal-content">
-                    <div className="box" style={{ backgroundColor: '#2F2F2F', borderRadius: '10px', padding: '20px' }}>
-                      <h1 className="title has-text-centered has-text-white">Nuevo Tema</h1>
-                      <form onSubmit={handleSubmit}>
-                        <div className="field">
-                          <label className="label has-text-white">Título del Tema:</label>
-                          <div className="control">
-                            <input
-                              type="text"
-                              className="input"
-                              placeholder="Ingresa el título del tema"
-                              value={tituloTema}
-                              onChange={(e) => setTituloTema(e.target.value)}
-                              required
-                            />
-                          </div>
+            {modalOpen === 'temus' && (
+              <div className="modal is-active">
+                <div className="modal-background" onClick={handleModalClose}></div>
+                <div className="modal-content">
+                  <div className="box" style={{ backgroundColor: '#2F2F2F', borderRadius: '10px', padding: '20px' }}>
+                    <h1 className="title has-text-centered has-text-white">Nuevo Tema</h1>
+                    <form onSubmit={handleSubmit}>
+                      <div className="field">
+                        <label className="label has-text-white">Título del Tema:</label>
+                        <div className="control">
+                          <input
+                            type="text"
+                            className="input"
+                            placeholder="Ingresa el título del tema"
+                            value={tituloTema}
+                            onChange={(e) => setTituloTema(e.target.value)}
+                            required
+                          />
                         </div>
-                        <div className="field">
-                          <label className="label has-text-white">Responsable:</label>
-                          <div className="control">
-                            <input
-                              type="text"
-                              className="input"
-                              placeholder="Ingresa el responsable del tema"
-                              value={responsableTema}
-                              onChange={(e) => setResponsableTema(e.target.value)}
-                              required
-                            />
-                          </div>
+                      </div>
+                      <div className="field">
+                        <label className="label has-text-white">Responsable:</label>
+                        <div className="control">
+                          <input
+                            type="text"
+                            className="input"
+                            placeholder="Ingresa el responsable del tema"
+                            value={responsableTema}
+                            onChange={(e) => setResponsableTema(e.target.value)}
+                            required
+                          />
                         </div>
+                      </div>
+                      <div className="field">
+                        <label className="label has-text-white">Descripción del Tema:</label>
+                        <div className="control">
+                          <textarea
+                            className="textarea"
+                            placeholder="Ingresa la descripción del tema"
+                            value={descripcionTema}
+                            onChange={(e) => setDescripcionTema(e.target.value)}
+                            required
+                          ></textarea>
+                        </div>
+                      </div>
+                      <div className="field">
+                        <label className="label has-text-white">Pasos:</label>
+                        {pasosTema.map((paso, index) => (
+                          <div key={index} className="field" style={{ marginBottom: '5px' }}>
+                            <div className="control is-expanded">
+                              <label>Titulo del paso:</label>
+                              <input
+                                type="text"
+                                className="input"
+                                placeholder={`Paso ${index + 1}`}
+                                value={paso.Titulo}
+                                onChange={(e) => handlePasoChange(e, index, 'Titulo')}
+                                required
+                              />
+                            </div>
+                            <div className="control is-expanded">
+                              <label>Descripcion del paso:</label>
+                              <textarea
+                                className="textarea"
+                                placeholder={`Descripción del Paso ${index + 1}`}
+                                value={paso.Descripcion}
+                                onChange={(e) => handlePasoChange(e, index, 'Descripcion')}
+                                required
+                              />
+                            </div>
+                            {index === pasosTema.length - 1 && (
+                              <div className="control">
+                                <label>Agregar nuevo paso: </label>
+                                <button
+                                  type="button"
+                                  className={`button is-info is-small ${pasosTema[index].Titulo === '' || pasosTema[index].Descripcion === '' ? 'is-disabled' : ''}`}
+                                  onClick={handleAgregarPaso}
+                                  disabled={pasosTema[index].Titulo === '' || pasosTema[index].Descripcion === ''}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            )}
+                            {index !== pasosTema.length && (
+                              <div className="control">
+                                <label>Eliminar paso: </label>
+                                <button
+                                  type="button"
+                                  className="button is-danger is-small"
+                                  onClick={() => {
+                                    if (window.confirm('¿Estás seguro de que quieres eliminar este paso?')) {
+                                      handleEliminarPaso(index);
+                                    }
+                                  }}
+                                >
+                                  -
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        ))}
                         <div className="field">
-                          <label className="label has-text-white">Descripción del Tema:</label>
+                          <label className="label has-text-white">Bibliografía:</label>
                           <div className="control">
                             <textarea
                               className="textarea"
-                              placeholder="Ingresa la descripción del tema"
-                              value={descripcionTema}
-                              onChange={(e) => setDescripcionTema(e.target.value)}
+                              placeholder="Ingresa la bibliografía del tema"
+                              value={bibliografiaTema}
+                              onChange={(e) => setBibliografiaTema(e.target.value)}
                               required
                             ></textarea>
                           </div>
                         </div>
-                        <div className="field">
-                          <label className="label has-text-white">Pasos:</label>
-                          {pasosTema.map((paso, index) => (
-                            <div key={index} className="field" style={{ marginBottom: '5px' }}>
-                              <div className="control is-expanded">
-                                <label>Titulo del paso:</label>
-                                <input
-                                  type="text"
-                                  className="input"
-                                  placeholder={`Paso ${index + 1}`}
-                                  value={paso.Titulo}
-                                  onChange={(e) => handlePasoChange(e, index, 'Titulo')}
-                                  required
-                                />
-                              </div>
-                              <div className="control is-expanded">
-                                <label>Descripcion del paso:</label>
-                                <textarea
-                                  className="textarea"
-                                  placeholder={`Descripción del Paso ${index + 1}`}
-                                  value={paso.Descripcion}
-                                  onChange={(e) => handlePasoChange(e, index, 'Descripcion')}
-                                  required
-                                />
-                              </div>
-                              {index === pasosTema.length - 1 && (
-                                <div className="control">
-                                  <label>Agregar nuevo paso: </label>
-                                  <button
-                                    type="button"
-                                    className={`button is-info is-small ${pasosTema[index].Titulo === '' || pasosTema[index].Descripcion === '' ? 'is-disabled' : ''}`}
-                                    onClick={handleAgregarPaso}
-                                    disabled={pasosTema[index].Titulo === '' || pasosTema[index].Descripcion === ''}
-                                  >
-                                    +
-                                  </button>
-                                </div>
-                              )}
-                              {index !== pasosTema.length && (
-                                <div className="control">
-                                  <label>Eliminar paso: </label>
-                                  <button
-                                    type="button"
-                                    className="button is-danger is-small"
-                                    onClick={() => {
-                                      if (window.confirm('¿Estás seguro de que quieres eliminar este paso?')) {
-                                        handleEliminarPaso(index);
-                                      }
-                                    }}
-                                  >
-                                    -
-                                  </button>
-                                </div>
-                              )}
-                            </div>
-                          ))}
-                          <div className="field">
-                            <label className="label has-text-white">Bibliografía:</label>
-                            <div className="control">
-                              <textarea
-                                className="textarea"
-                                placeholder="Ingresa la bibliografía del tema"
-                                value={bibliografiaTema}
-                                onChange={(e) => setBibliografiaTema(e.target.value)}
-                                required
-                              ></textarea>
-                            </div>
-                          </div>
+                      </div>
+                      <div className="field">
+                        <label className="label has-text-white">Archivo de Video:</label>
+                        <div className="control">
+                          <input
+                            type="file"
+                            className="input"
+                            onChange={handleVideoFileChange}
+                            accept=".mp4,.webm,.ogg"
+                            required
+                          />
                         </div>
-                        <div className="field">
-                          <label className="label has-text-white">Archivo de Video:</label>
-                          <div className="control">
-                            <input
-                              type="file"
-                              className="input"
-                              onChange={handleVideoFileChange}
-                              accept=".mp4,.webm,.ogg"
-                              required
-                            />
-                          </div>
+                      </div>
+                      <div className="field is-grouped is-grouped-centered">
+                        <div className="control">
+                          <button type="submit" className={`button is-primary ${isLoading ? 'is-loading' : ''}`}>
+                            Subir Tema
+                          </button>
+                          <button type="button" className="button" onClick={handleModalClose} style={{ marginLeft: '10px' }}>
+                            Cancelar
+                          </button>
                         </div>
-                        <div className="field is-grouped is-grouped-centered">
-                          <div className="control">
-                            <button type="submit" className={`button is-primary ${isLoading ? 'is-loading' : ''}`}>
-                              Subir Tema
-                            </button>
-                            <button type="button" className="button" onClick={handleModalClose} style={{ marginLeft: '10px' }}>
-                              Cancelar
-                            </button>
-                          </div>
-                        </div>
-                      </form>
+                      </div>
+                    </form>
                   </div>
                 </div>
                 <button className="modal-close is-large" aria-label="close" onClick={handleModalClose}></button>
               </div>
             )}
-
             <div className="control">
               <button className="button is-info" onClick={handleDownloadPlantilla}>Descargar Plantilla</button>
             </div>
-            <div className="control">
-              <button className="button is-primary" onClick={() => fileInputRef.current.click()}>Subir Temas en Formato Excel</button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                style={{ display: 'none' }}
-                onChange={handleFileChange}
-                accept=".xlsx,.xls"
-              />
-            </div>
-            <div className="control">
-              <Link to="/admin/temas/contenidos" className="button is-primary">Ver Temas</Link>
+              <div className="control">
+                <button className="button is-primary" onClick={() => handleOpenModal('upload')}>Subir Temas en Formato Excel</button>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  style={{ display: 'none' }}
+                  onChange={handleFileSelect}
+                  accept=".xlsx,.xls"
+                />
+              </div>
+              {modalOpen === 'upload' && (
+                <div className="modal is-active">
+                  <div className="modal-background" onClick={() => setModalOpen(null)}></div>
+                  <div className="modal-content">
+                    <div className="box" style={{ backgroundColor: '#2F2F2F', borderRadius: '10px', padding: '20px' }}>
+                      <h1 className="title has-text-centered has-text-white">Archivo Seleccionado</h1>
+                      <p className="has-text-centered has-text-white">{file ? file.name : ''}</p>
+                      <div className="field is-grouped is-grouped-centered">
+                        <div className="control">
+                          <button className="button is-primary" onClick={handleSubmit}>Subir</button>
+                        </div>
+                        <div className="control">
+                          <button className="button" onClick={() => setModalOpen(null)}>Cancelar</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <button className="modal-close is-large" aria-label="close" onClick={() => setModalOpen(null)}></button>
+                </div>
+              )}
+              <div className="control">
+                <Link to="/admin/temas/contenidos" className="button is-primary">Ver Temas</Link>
+              </div>
             </div>
           </div>
+          <hr className="hr" style={{ backgroundColor: '#fff' }} />
         </div>
-        <hr className="hr" style={{ backgroundColor: '#fff' }} />
       </div>
-    </div>
-  );
-  
-
-
-
+      );
 };
-export default TemaForm;
-
-
+      export default TemaForm;
