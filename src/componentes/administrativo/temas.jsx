@@ -19,8 +19,9 @@ const TemaForm = () => {
   const [descripcionTema, setDescripcionTema] = useState('');
   const [autorTema, setAutorTema] = useState('');
   const [pasosTema, setPasosTema] = useState([]);
-
   const [tituloTema, setTituloTema] = useState('');
+  const [responsableTema, setResponsableTema] = useState('');
+  const [bibliografiaTema, setBibliografiaTema] = useState('');
   const fileInputRef = useRef(null);
 
   if (pasosTema.length === 0) {
@@ -280,6 +281,19 @@ const TemaForm = () => {
                           </div>
                         </div>
                         <div className="field">
+                          <label className="label has-text-white">Responsable:</label>
+                          <div className="control">
+                            <input
+                              type="text"
+                              className="input"
+                              placeholder="Ingresa el responsable del tema"
+                              value={responsableTema}
+                              onChange={(e) => setResponsableTema(e.target.value)}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="field">
                           <label className="label has-text-white">Descripción del Tema:</label>
                           <div className="control">
                             <textarea
@@ -347,7 +361,18 @@ const TemaForm = () => {
                               )}
                             </div>
                           ))}
-
+                          <div className="field">
+                            <label className="label has-text-white">Bibliografía:</label>
+                            <div className="control">
+                              <textarea
+                                className="textarea"
+                                placeholder="Ingresa la bibliografía del tema"
+                                value={bibliografiaTema}
+                                onChange={(e) => setBibliografiaTema(e.target.value)}
+                                required
+                              ></textarea>
+                            </div>
+                          </div>
                         </div>
                         <div className="field">
                           <label className="label has-text-white">Archivo de Video:</label>
