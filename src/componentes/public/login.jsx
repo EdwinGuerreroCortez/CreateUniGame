@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import 'bulma/css/bulma.min.css';
 import { useNavigate } from 'react-router-dom';
 import img1 from '../img/login1.jpg';
 import img2 from '../img/login2.webp';
@@ -11,11 +10,12 @@ import img7 from '../img/img11.jpg';
 import img8 from '../img/img9.jpg';
 import img9 from '../img/img8.jpg';
 
+import 'bulma/css/bulma.min.css';
 import '../CSS/style.css';
 
 const backgrounds = [img9, img1, img3, img6, img4, img8, img5, img2, img7];
 
-const FormRegistro = ({ setUserAuthenticated }) => {
+const FormRegistro = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailValid, setEmailValid] = useState(false);
@@ -50,24 +50,22 @@ const FormRegistro = ({ setUserAuthenticated }) => {
           },
           body: JSON.stringify({ email, password }),
         });
-
+  
         if (!response.ok) {
           throw new Error('Correo o contraseña incorrectos');
         }
-
+  
         const data = await response.json();
         console.log('Inicio de sesión exitoso:', data);
-
+  
         const userId = data.userId;
         const userType = data.tipo;
-
+  
         if (userId && userType) {
           localStorage.setItem('userId', userId);
           localStorage.setItem('userType', userType);
-
-          // Establecer el estado de autenticación como verdadero
-          setUserAuthenticated(true);
-
+          localStorage.setItem('usuario', JSON.stringify(data)); // Asegúrate de almacenar los datos completos
+  
           if (userType === 'cliente') {
             navigate('/user/bienvenida');
           } else if (userType === 'administrador') {
@@ -85,7 +83,8 @@ const FormRegistro = ({ setUserAuthenticated }) => {
       alert('Por favor ingresa un correo válido y una contraseña.');
     }
   };
-
+  
+  
   const handleBack = () => {
     navigate('/');
   };
@@ -134,7 +133,8 @@ const FormRegistro = ({ setUserAuthenticated }) => {
                     {showPassword ? 'Ocultar' : 'Mostrar'}
                   </button>
                 </div>
-                <span className="icon is-small is-left has-text-white">                  <i className="fas fa-lock"></i>
+                <span className="icon is-small is-left has-text-white">
+                  <i className="fas fa-lock"></i>
                 </span>
               </div>
             </div>
@@ -146,7 +146,7 @@ const FormRegistro = ({ setUserAuthenticated }) => {
             </div>
           </form>
           <div className="has-text-centered" style={{ marginTop: '10px' }}>
-            <p className="has-text-white" style={{ fontSize: '15px' }} >¿No tienes cuenta? <a href="/public/registro" className="has-text-link" style={{ fontSize: '15px' }}>Regístrate</a></p>
+            <p className="has-text-white" style={{ fontSize: '15px' }}>¿No tienes cuenta? <a href="/public/registro" className="has-text-link" style={{ fontSize: '15px' }}>Regístrate</a></p>
           </div>
         </div>
       </div>
@@ -155,5 +155,3 @@ const FormRegistro = ({ setUserAuthenticated }) => {
 };
 
 export default FormRegistro;
-
-                 
