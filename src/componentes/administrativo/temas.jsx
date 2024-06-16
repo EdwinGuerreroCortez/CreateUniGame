@@ -43,7 +43,7 @@ const TemaForm = () => {
       return () => clearTimeout(timer);
     }
   }, [alert]);
-//abrir y cerrar del modal
+  //abrir y cerrar del modal
   const handleOpenModal = () => {
     setModalOpen(true);
   };
@@ -56,7 +56,7 @@ const TemaForm = () => {
     setVideoFile(e.target.files[0]);
   };
 
- //agregar pasos
+  //agregar pasos
   const handleAgregarPaso = () => {
     setPasosTema([...pasosTema, { Titulo: '', Descripcion: '' }]);
   };
@@ -71,7 +71,7 @@ const TemaForm = () => {
     nuevosPasos.splice(index, 1);
     setPasosTema(nuevosPasos);
   };
-  
+
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -255,123 +255,123 @@ const TemaForm = () => {
               <button className="button is-primary" onClick={handleOpenModal}>Subir Tema</button>
 
               {modalOpen && (
-  <div className="modal is-active">
-    <div className="modal-background" onClick={handleModalClose}></div>
-    <div className="modal-content">
-      <div className="box" style={{ backgroundColor: '#2F2F2F', borderRadius: '10px', padding: '20px' }}>
-        <h1 className="title has-text-centered has-text-white">Nuevo Tema</h1>
-        <form onSubmit={handleSubmit}>
-          <div className="field">
-            <label className="label has-text-white">Título del Tema:</label>
-            <div className="control">
-              <input
-                type="text"
-                className="input"
-                placeholder="Ingresa el título del tema"
-                value={tituloTema}
-                onChange={(e) => setTituloTema(e.target.value)}
-                required
-              />
-            </div>
-          </div>
-          <div className="field">
-            <label className="label has-text-white">Descripción del Tema:</label>
-            <div className="control">
-              <textarea
-                className="textarea"
-                placeholder="Ingresa la descripción del tema"
-                value={descripcionTema}
-                onChange={(e) => setDescripcionTema(e.target.value)}
-                required
-              ></textarea>
-            </div>
-          </div>
-          <div className="field">
-            <label className="label has-text-white">Pasos:</label>
-            {pasosTema.map((paso, index) => (
-  <div key={index} className="field" style={{ marginBottom: '5px' }}>
-    <div className="control is-expanded">
-      <label>Titulo del paso:</label>
-      <input
-        type="text"
-        className="input"
-        placeholder={`Paso ${index + 1}`}
-        value={paso.Titulo}
-        onChange={(e) => handlePasoChange(e, index, 'Titulo')}
-        required
-      />
-    </div>
-    <div className="control is-expanded">
-      <label>Descripcion del paso:</label>
-      <textarea
-        className="textarea"
-        placeholder={`Descripción del Paso ${index + 1}`}
-        value={paso.Descripcion}
-        onChange={(e) => handlePasoChange(e, index, 'Descripcion')}
-        required
-      />
-    </div>
-    {index === pasosTema.length - 1 && (
-      <div className="control">
-        <label>Agregar nuevo paso: </label>
-        <button
-          type="button"
-          className={`button is-info is-small ${pasosTema[index].Titulo === '' || pasosTema[index].Descripcion === '' ? 'is-disabled' : ''}`}
-          onClick={handleAgregarPaso}
-          disabled={pasosTema[index].Titulo === '' || pasosTema[index].Descripcion === ''}
-        >
-          +
-        </button>
-      </div>
-    )}
-    {index !== pasosTema.length  && (
-      <div className="control">
-        <label>Eliminar paso: </label> 
-        <button
-          type="button"
-          className="button is-danger is-small"
-          onClick={() => {
-            if (window.confirm('¿Estás seguro de que quieres eliminar este paso?')) {
-              handleEliminarPaso(index);
-            }
-          }}
-        >
-          -
-        </button>
-      </div>
-    )}
-  </div>
-))}
+                <div className="modal is-active">
+                  <div className="modal-background" onClick={handleModalClose}></div>
+                  <div className="modal-content">
+                    <div className="box" style={{ backgroundColor: '#2F2F2F', borderRadius: '10px', padding: '20px' }}>
+                      <h1 className="title has-text-centered has-text-white">Nuevo Tema</h1>
+                      <form onSubmit={handleSubmit}>
+                        <div className="field">
+                          <label className="label has-text-white">Título del Tema:</label>
+                          <div className="control">
+                            <input
+                              type="text"
+                              className="input"
+                              placeholder="Ingresa el título del tema"
+                              value={tituloTema}
+                              onChange={(e) => setTituloTema(e.target.value)}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="field">
+                          <label className="label has-text-white">Descripción del Tema:</label>
+                          <div className="control">
+                            <textarea
+                              className="textarea"
+                              placeholder="Ingresa la descripción del tema"
+                              value={descripcionTema}
+                              onChange={(e) => setDescripcionTema(e.target.value)}
+                              required
+                            ></textarea>
+                          </div>
+                        </div>
+                        <div className="field">
+                          <label className="label has-text-white">Pasos:</label>
+                          {pasosTema.map((paso, index) => (
+                            <div key={index} className="field" style={{ marginBottom: '5px' }}>
+                              <div className="control is-expanded">
+                                <label>Titulo del paso:</label>
+                                <input
+                                  type="text"
+                                  className="input"
+                                  placeholder={`Paso ${index + 1}`}
+                                  value={paso.Titulo}
+                                  onChange={(e) => handlePasoChange(e, index, 'Titulo')}
+                                  required
+                                />
+                              </div>
+                              <div className="control is-expanded">
+                                <label>Descripcion del paso:</label>
+                                <textarea
+                                  className="textarea"
+                                  placeholder={`Descripción del Paso ${index + 1}`}
+                                  value={paso.Descripcion}
+                                  onChange={(e) => handlePasoChange(e, index, 'Descripcion')}
+                                  required
+                                />
+                              </div>
+                              {index === pasosTema.length - 1 && (
+                                <div className="control">
+                                  <label>Agregar nuevo paso: </label>
+                                  <button
+                                    type="button"
+                                    className={`button is-info is-small ${pasosTema[index].Titulo === '' || pasosTema[index].Descripcion === '' ? 'is-disabled' : ''}`}
+                                    onClick={handleAgregarPaso}
+                                    disabled={pasosTema[index].Titulo === '' || pasosTema[index].Descripcion === ''}
+                                  >
+                                    +
+                                  </button>
+                                </div>
+                              )}
+                              {index !== pasosTema.length && (
+                                <div className="control">
+                                  <label>Eliminar paso: </label>
+                                  <button
+                                    type="button"
+                                    className="button is-danger is-small"
+                                    onClick={() => {
+                                      if (window.confirm('¿Estás seguro de que quieres eliminar este paso?')) {
+                                        handleEliminarPaso(index);
+                                      }
+                                    }}
+                                  >
+                                    -
+                                  </button>
+                                </div>
+                              )}
+                            </div>
+                          ))}
 
-          </div>
-          <div className="field">
-            <label className="label has-text-white">Archivo de Video:</label>
-            <div className="control">
-              <input
-                type="file"
-                className="input"
-                onChange={handleVideoFileChange}
-                accept=".mp4,.webm,.ogg"
-                required
-              />
-            </div>
-          </div>
-          <div className="field is-grouped is-grouped-right">
-            <div className="control">
-              <button type="submit" className={`button is-primary ${isLoading ? 'is-loading' : ''}`}>
-                Subir Tema
-              </button>
-              <button type="button" className="button" onClick={handleModalClose} style={{ marginLeft: '10px' }}>
-                Cancelar
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-    <button className="modal-close is-large" aria-label="close" onClick={handleModalClose}></button>
-  </div>
-)}
+                        </div>
+                        <div className="field">
+                          <label className="label has-text-white">Archivo de Video:</label>
+                          <div className="control">
+                            <input
+                              type="file"
+                              className="input"
+                              onChange={handleVideoFileChange}
+                              accept=".mp4,.webm,.ogg"
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="field is-grouped is-grouped-right">
+                          <div className="control">
+                            <button type="submit" className={`button is-primary ${isLoading ? 'is-loading' : ''}`}>
+                              Subir Tema
+                            </button>
+                            <button type="button" className="button" onClick={handleModalClose} style={{ marginLeft: '10px' }}>
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <button className="modal-close is-large" aria-label="close" onClick={handleModalClose}></button>
+                </div>
+              )}
 
               <button className="button is-info" onClick={handleDownloadPlantilla} style={{ marginLeft: '10px' }}>
                 Descargar Plantilla
