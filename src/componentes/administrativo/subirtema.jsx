@@ -8,9 +8,10 @@ const SubirTema = () => {
   const [responsable, setResponsable] = useState('');
   const [bibliografia, setBibliografia] = useState('');
   const [pasos, setPasos] = useState([{ Titulo: '', Descripcion: '' }]);
-  const [video, setVideo] = useState('');
+  const [videoFile, setVideoFile] = useState(null);
   const [evaluacionId, setEvaluacionId] = useState(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
+  const [isLoading, setIsLoading] = useState(false);  // Estado para manejar el círculo de carga
 
   const [paginaActual, setPaginaActual] = useState(0);
   const pasosPorPagina = 2; 
@@ -31,48 +32,49 @@ const SubirTema = () => {
     setPasos(newPasos);
   };
 
+  const handleFileChange = (e) => {
+    setVideoFile(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const tema = { 
-      titulo, 
-      descripcion, 
-      responsable, 
-      bibliografia, 
-      pasos,
-      video: video || null,
-      evaluacion_id: evaluacionId || null,
-    };
+    setIsLoading(true);  // Comienza el estado de carga
+    const formData = new FormData();
+    formData.append('titulo', titulo);
+    formData.append('descripcion', descripcion);
+    formData.append('responsable', responsable);
+    formData.append('bibliografia', bibliografia);
+    formData.append('video', videoFile);
+    formData.append('pasos', JSON.stringify(pasos));
   
     try {
-      const response = await fetch('http://localhost:3001/api/subirTemaManual', {
+      const response = await fetch('http://localhost:3001/api/subirTema', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(tema),
+        body: formData,
       });
   
       if (!response.ok) {
-        throw new Error('Error al crear el tema manualmente. Código de estado: ' + response.status);
+        throw new Error('Error al crear el tema. Código de estado: ' + response.status);
       }
   
       const data = await response.json();
-  
       if (data.error) {
         setAlert({ type: 'error', message: data.error });
       } else {
         setAlert({ type: 'success', message: 'Tema creado con éxito.' });
+        // Restablecer el formulario
         setTitulo('');
         setDescripcion('');
         setResponsable('');
         setBibliografia('');
         setPasos([{ Titulo: '', Descripcion: '' }]);
-        setVideo('');
-        setEvaluacionId(null);
+        setVideoFile(null);
       }
     } catch (error) {
-      console.error('Error creando el tema manualmente:', error);
-      setAlert({ type: 'error', message: 'Error creando el tema manualmente. Inténtalo de nuevo.' });
+      console.error('Error creando el tema:', error);
+      setAlert({ type: 'error', message: 'Error creando el tema. Inténtalo de nuevo.' });
+    } finally {
+      setIsLoading(false);  // Termina el estado de carga
     }
   };
 
@@ -81,6 +83,11 @@ const SubirTema = () => {
 
   return (
     <div className="full-screen-container">
+      {isLoading && (
+        <div className="loading-overlay">
+          <div className="loading-circle"></div>
+        </div>
+      )}
       <div className="container">
         <div className="box">
           <h1 className="title has-text-centered has-text-white">Subir Tema</h1>
@@ -145,14 +152,30 @@ const SubirTema = () => {
             </div>
 
             <div className="field">
-              <label className="label has-text-white">Link del Video</label>
-              <div className="control">
-                <input
-                  className="input"
-                  type="text"
-                  value={video}
-                  onChange={(e) => setVideo(e.target.value)}
-                />
+              <label className="label has-text-white">Cargar Video</label>
+              <div className="file has-name is-fullwidth">
+                <label className="file-label">
+                  <input
+                    className="file-input"
+                    type="file"
+                    accept="video/*"
+                    onChange={handleFileChange}
+                    required
+                  />
+                  <span className="file-cta">
+                    <span className="file-icon">
+                      <i className="fas fa-upload"></i>
+                    </span>
+                    <span className="file-label">
+                      Escoge un archivo…
+                    </span>
+                  </span>
+                  {videoFile && (
+                    <span className="file-name">
+                      {videoFile.name}
+                    </span>
+                  )}
+                </label>
               </div>
             </div>
 
