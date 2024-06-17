@@ -203,6 +203,7 @@ const SubirTema = () => {
                 Agregar Paso
               </button>
             </div>
+            <br />
 
             <div className="pagination is-centered">
               <button
