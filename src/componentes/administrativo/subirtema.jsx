@@ -39,7 +39,7 @@ const SubirTema = () => {
 
     // Validaciones
     if (!titulo || !descripcion || !responsable || !bibliografia || !videoFile || pasos.some(p => !p.Titulo || !p.Descripcion)) {
-      setAlert({ type: 'error', message: 'Por favor, completa todos los campos y sube un video.' });
+      setAlert({ type: 'warning', message: 'Por favor, completa todos los campos y sube un video.' });
       return;
     }
 
@@ -66,7 +66,7 @@ const SubirTema = () => {
       if (data.error) {
         setAlert({ type: 'error', message: data.error });
       } else {
-        setAlert({ type: 'success', message: 'Tema creado con éxito.' });
+        setAlert({ type: 'success', message: 'Tema agregado con éxito.' });
         // Restablecer el formulario
         setTitulo('');
         setDescripcion('');
@@ -113,7 +113,7 @@ const SubirTema = () => {
                   type="text"
                   value={titulo}
                   onChange={(e) => setTitulo(e.target.value)}
-                  required
+                  
                 />
               </div>
             </div>
@@ -124,8 +124,7 @@ const SubirTema = () => {
                 <textarea
                   className="textarea"
                   value={descripcion}
-                  onChange={(e) => setDescripcion(e.target.value)}
-                  required
+                  onChange={(e) => setDescripcion(e.target.value)} 
                 />
               </div>
             </div>
@@ -138,7 +137,6 @@ const SubirTema = () => {
                   type="text"
                   value={responsable}
                   onChange={(e) => setResponsable(e.target.value)}
-                  required
                 />
               </div>
             </div>
@@ -151,7 +149,7 @@ const SubirTema = () => {
                   type="text"
                   value={bibliografia}
                   onChange={(e) => setBibliografia(e.target.value)}
-                  required
+                  
                 />
               </div>
             </div>
@@ -165,7 +163,7 @@ const SubirTema = () => {
                     type="file"
                     accept="video/*"
                     onChange={handleFileChange}
-                    required
+                    
                   />
                   <span className="file-cta">
                     <span className="file-icon">
@@ -196,7 +194,6 @@ const SubirTema = () => {
                         type="text"
                         value={paso.Titulo}
                         onChange={(e) => handleInputChange(startIndex + index, 'Titulo', e.target.value)}
-                        required
                       />
                     </div>
                   </div>
@@ -208,7 +205,6 @@ const SubirTema = () => {
                         className="textarea"
                         value={paso.Descripcion}
                         onChange={(e) => handleInputChange(startIndex + index, 'Descripcion', e.target.value)}
-                        required
                       />
                     </div>
                   </div>
@@ -225,7 +221,6 @@ const SubirTema = () => {
                 </div>
               ))}
             </div>
-
             <div className="control">
               <button type="button" className="button is-link" onClick={handleAgregarPaso}>
                 Agregar Paso
