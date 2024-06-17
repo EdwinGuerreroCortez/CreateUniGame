@@ -1,0 +1,6 @@
+.full-screen-container {
+    height: 100vh; /* Cubre toda la altura de la pantalla */
+    width: 100%; /* Cubre todo el ancho de la pantalla */
+    background-color: #000000; /* Color de fondo negro */
+    overflow: auto; /* Añade scroll si el contenido excede*/
+}  
