@@ -9,12 +9,10 @@ const SubirTema = () => {
   const [bibliografia, setBibliografia] = useState('');
   const [pasos, setPasos] = useState([{ Titulo: '', Descripcion: '' }]);
   const [videoFile, setVideoFile] = useState(null);
-  const [evaluacionId, setEvaluacionId] = useState(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [isLoading, setIsLoading] = useState(false);  // Estado para manejar el círculo de carga
-
   const [paginaActual, setPaginaActual] = useState(0);
-  const pasosPorPagina = 2; 
+  const pasosPorPagina = 2;
 
   const handleInputChange = (index, field, value) => {
     const newPasos = [...pasos];
@@ -38,6 +36,13 @@ const SubirTema = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validaciones
+    if (!titulo || !descripcion || !responsable || !bibliografia || !videoFile || pasos.some(p => !p.Titulo || !p.Descripcion)) {
+      setAlert({ type: 'error', message: 'Por favor, completa todos los campos y sube un video.' });
+      return;
+    }
+
     setIsLoading(true);  // Comienza el estado de carga
     const formData = new FormData();
     formData.append('titulo', titulo);
@@ -46,17 +51,17 @@ const SubirTema = () => {
     formData.append('bibliografia', bibliografia);
     formData.append('video', videoFile);
     formData.append('pasos', JSON.stringify(pasos));
-  
+
     try {
       const response = await fetch('http://localhost:3001/api/subirTema', {
         method: 'POST',
         body: formData,
       });
-  
+
       if (!response.ok) {
         throw new Error('Error al crear el tema. Código de estado: ' + response.status);
       }
-  
+
       const data = await response.json();
       if (data.error) {
         setAlert({ type: 'error', message: data.error });
