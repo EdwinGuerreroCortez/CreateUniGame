@@ -13,7 +13,7 @@ const SubirTema = () => {
   const [alert, setAlert] = useState({ type: '', message: '' });
 
   const [paginaActual, setPaginaActual] = useState(0);
-  const pasosPorPagina = 2; // Número de pasos por página
+  const pasosPorPagina = 2; 
 
   const handleInputChange = (index, field, value) => {
     const newPasos = [...pasos];
@@ -59,7 +59,7 @@ const SubirTema = () => {
       const data = await response.json();
   
       if (data.error) {
-        setAlert({ type: 'error', message: data.details.join(', ') });
+        setAlert({ type: 'error', message: data.error });
       } else {
         setAlert({ type: 'success', message: 'Tema creado con éxito.' });
         setTitulo('');
@@ -74,9 +74,8 @@ const SubirTema = () => {
       console.error('Error creando el tema manualmente:', error);
       setAlert({ type: 'error', message: 'Error creando el tema manualmente. Inténtalo de nuevo.' });
     }
-  };  
+  };
 
-  // Calcular los índices de inicio y fin de los pasos en la página actual
   const startIndex = paginaActual * pasosPorPagina;
   const endIndex = startIndex + pasosPorPagina;
 
@@ -157,7 +156,6 @@ const SubirTema = () => {
               </div>
             </div>
 
-
             <div className="field">
               <label className="label has-text-white">Pasos</label>
               {pasos.slice(startIndex, endIndex).map((paso, index) => (
@@ -187,57 +185,44 @@ const SubirTema = () => {
                     </div>
                   </div>
 
-                  <div className="field is-grouped is-grouped-right">
-                    <div className="control">
-                      <button
-                        type="button"
-                        className="button is-danger is-light"
-                        onClick={() => handleEliminarPaso(startIndex + index)}
-                        disabled={pasos.length === 1}
-                      >
-                        Eliminar Paso
-                      </button>
-                    </div>
+                  <div className="control">
+                    <button
+                      type="button"
+                      className="button is-danger"
+                      onClick={() => handleEliminarPaso(startIndex + index)}
+                    >
+                      Eliminar Paso
+                    </button>
                   </div>
                 </div>
               ))}
-
-              {pasos.length > pasosPorPagina && (
-                <nav className="pagination is-centered" role="navigation" aria-label="pagination">
-                  <button
-                    className="pagination-previous button is-info"
-                    onClick={() => setPaginaActual(paginaActual - 1)}
-                    disabled={paginaActual === 0}
-                  >
-                    Anterior
-                  </button>
-                  <button
-                    className="pagination-next button is-info"
-                    onClick={() => setPaginaActual(paginaActual + 1)}
-                    disabled={endIndex >= pasos.length}
-                  >
-                    Siguiente
-                  </button>
-                </nav>
-              )}
-
-              <div className="field">
-                <div className="control">
-                  <button
-                    type="button"
-                    className="button is-success is-light"
-                    onClick={handleAgregarPaso}
-                  >
-                    Agregar Paso
-                  </button>
-                </div>
-              </div>
             </div>
 
-            <div className="field is-grouped">
-              <div className="control">
-                <button type="submit" className="button is-primary">Guardar Tema</button>
-              </div>
+            <div className="control">
+              <button type="button" className="button is-link" onClick={handleAgregarPaso}>
+                Agregar Paso
+              </button>
+            </div>
+
+            <div className="pagination is-centered">
+              <button
+                className="pagination-previous button is-link"
+                onClick={() => setPaginaActual(paginaActual - 1)}
+                disabled={paginaActual === 0}
+              >
+                Anterior
+              </button>
+              <button
+                className="pagination-next button is-link"
+                onClick={() => setPaginaActual(paginaActual + 1)}
+                disabled={endIndex >= pasos.length}
+              >
+                Siguiente
+              </button>
+            </div>
+
+            <div className="control">
+              <button type="submit" className="button is-primary">Subir Tema</button>
             </div>
           </form>
         </div>
