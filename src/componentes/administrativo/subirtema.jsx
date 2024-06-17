@@ -44,7 +44,7 @@ const SubirTema = () => {
     };
   
     try {
-      const response = await fetch('http://localhost:3001/api/subir-tema-manualmente', {
+      const response = await fetch('http://localhost:3001/api/subirTemaManual', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
