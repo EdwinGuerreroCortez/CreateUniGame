@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom'; // Importar Link desde React Router
-
+import { Link } from 'react-router-dom';
 import 'bulma/css/bulma.min.css';
-import '../CSS/adminForms2.css'; // Archivo CSS adicional para estilos específicos
+import '../CSS/adminForms2.css';
 
 const Contenidos = () => {
     const [temas, setTemas] = useState([]);
@@ -14,7 +13,7 @@ const Contenidos = () => {
     const [validationErrors, setValidationErrors] = useState([]);
 
     useEffect(() => {
-        fetch('http://localhost:3001/api/temas') // Asegúrate de apuntar a la URL correcta
+        fetch('http://localhost:3001/api/temas')
             .then((response) => response.json())
             .then((data) => setTemas(data))
             .catch((error) => console.error('Error fetching temas:', error));
@@ -24,8 +23,7 @@ const Contenidos = () => {
         if (alert.message) {
             const timer = setTimeout(() => {
                 setAlert({ type: '', message: '' });
-            }, 5000); // Desaparece después de 5 segundos
-
+            }, 5000);
             return () => clearTimeout(timer);
         }
     }, [alert]);
@@ -91,8 +89,8 @@ const Contenidos = () => {
     const totalPages = Math.ceil(editTema ? editTema.pasos.length / itemsPerPage : 1);
 
     const handleSaveEdit = () => {
-        const { titulo, descripcion, autor, pasos } = editTema;
-
+        const { titulo, descripcion, responsable, bibliografia, pasos } = editTema;
+    
         const errors = [];
         pasos.forEach((paso, index) => {
             if (!paso.Titulo.trim()) {
@@ -102,22 +100,23 @@ const Contenidos = () => {
                 errors.push(`La descripción del paso ${index + 1} está vacía.`);
             }
         });
-
+    
         if (errors.length > 0) {
             setValidationErrors(errors);
             return;
         }
-
+    
         const updatedTema = {
             titulo: titulo.trim(),
             descripcion: descripcion.trim(),
-            autor: autor.trim(),
+            responsable: responsable.trim(),
+            bibliografia: bibliografia.trim(),
             pasos: JSON.stringify(pasos.map(p => ({
                 Titulo: p.Titulo.trim(),
                 Descripcion: p.Descripcion.trim()
             })))
         };
-
+    
         fetch(`http://localhost:3001/api/temas/${editTema._id}`, {
             method: 'PUT',
             headers: {
@@ -141,6 +140,7 @@ const Contenidos = () => {
                 setAlert({ type: 'error', message: 'Error actualizando el tema. Inténtalo de nuevo.' });
             });
     };
+    
 
     return (
         <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
@@ -175,7 +175,7 @@ const Contenidos = () => {
                                 temas.map((tema) => (
                                     <tr key={tema._id}>
                                         <td className="has-text-white">{tema.titulo}</td>
-                                        <td className="has-text-white">{tema.autor}</td>
+                                        <td className="has-text-white">{tema.responsable}</td>
                                         <td className="has-text-white">{new Date(tema.fecha_creacion).toLocaleDateString()}</td>
                                         <td className="has-text-white">{tema.descripcion}</td>
                                         <td className="has-text-white">{tema.pasos ? tema.pasos.length : 0} pasos</td>
@@ -250,13 +250,24 @@ const Contenidos = () => {
                                     </div>
                                 </div>
                                 <div className="field">
-                                    <label className="label">Autor</label>
+                                    <label className="label">Responsable</label>
                                     <div className="control">
                                         <input
                                             className="input"
                                             type="text"
-                                            value={editTema.autor}
-                                            onChange={(e) => setEditTema({ ...editTema, autor: e.target.value })}
+                                            value={editTema.responsable}
+                                            onChange={(e) => setEditTema({ ...editTema, responsable: e.target.value })}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="field">
+                                    <label className="label">Bibliografía</label>
+                                    <div className="control">
+                                        <input
+                                            className="input"
+                                            type="text"
+                                            value={editTema.bibliografia}
+                                            onChange={(e) => setEditTema({ ...editTema, bibliografia: e.target.value })}
                                         />
                                     </div>
                                 </div>
@@ -336,4 +347,3 @@ const Contenidos = () => {
 };
 
 export default Contenidos;
-
