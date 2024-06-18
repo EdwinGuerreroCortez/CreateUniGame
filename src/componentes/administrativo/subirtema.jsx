@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../CSS/subirtemaForm.css';
 import 'bulma/css/bulma.min.css';
 
@@ -13,6 +13,15 @@ const SubirTema = () => {
   const [isLoading, setIsLoading] = useState(false);  // Estado para manejar el círculo de carga
   const [paginaActual, setPaginaActual] = useState(0);
   const pasosPorPagina = 2;
+
+  useEffect(() => {
+    if (alert.message) {
+      const timer = setTimeout(() => {
+        setAlert({ type: '', message: '' });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [alert]);
 
   const handleInputChange = (index, field, value) => {
     const newPasos = [...pasos];
@@ -39,7 +48,7 @@ const SubirTema = () => {
 
     // Validaciones
     if (!titulo || !descripcion || !responsable || !bibliografia || !videoFile || pasos.some(p => !p.Titulo || !p.Descripcion)) {
-      setAlert({ type: 'warning', message: 'Por favor, completa todos los campos y sube un video.' });
+      setAlert({ type: 'warning', message: 'Por favor completa todos los campos' });
       return;
     }
 
@@ -98,7 +107,7 @@ const SubirTema = () => {
           <h1 className="title has-text-centered has-text-white">Subir Tema</h1>
 
           {alert.message && (
-            <div className={`notification ${alert.type === 'success' ? 'is-success' : 'is-danger'}`}>
+            <div className={`notification ${alert.type === 'success' ? 'is-success' : alert.type === 'warning' ? 'is-warning' : 'is-danger'}`}>
               <button className="delete" onClick={() => setAlert({ type: '', message: '' })}></button>
               {alert.message}
             </div>

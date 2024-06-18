@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import 'bulma/css/bulma.min.css';
 import '../CSS/adminForms2.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const Contenidos = () => {
     const [temas, setTemas] = useState([]);
@@ -11,6 +12,8 @@ const Contenidos = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage] = useState(5);
     const [validationErrors, setValidationErrors] = useState([]);
+    const [temaToDelete, setTemaToDelete] = useState(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         fetch('http://localhost:3001/api/temas')
@@ -29,6 +32,7 @@ const Contenidos = () => {
     }, [alert]);
 
     const handleEliminarTema = (id) => {
+        setIsDeleting(true);
         fetch(`http://localhost:3001/api/temas/${id}`, {
             method: 'DELETE',
         })
@@ -39,6 +43,10 @@ const Contenidos = () => {
             .catch((error) => {
                 console.error('Error eliminando el tema:', error);
                 setAlert({ type: 'error', message: 'Error eliminando el tema. Inténtalo de nuevo.' });
+            })
+            .finally(() => {
+                setIsDeleting(false);
+                setTemaToDelete(null);
             });
     };
 
@@ -90,7 +98,7 @@ const Contenidos = () => {
 
     const handleSaveEdit = () => {
         const { titulo, descripcion, responsable, bibliografia, pasos } = editTema;
-    
+
         const errors = [];
         pasos.forEach((paso, index) => {
             if (!paso.Titulo.trim()) {
@@ -100,12 +108,12 @@ const Contenidos = () => {
                 errors.push(`La descripción del paso ${index + 1} está vacía.`);
             }
         });
-    
+
         if (errors.length > 0) {
             setValidationErrors(errors);
             return;
         }
-    
+
         const updatedTema = {
             titulo: titulo.trim(),
             descripcion: descripcion.trim(),
@@ -116,7 +124,7 @@ const Contenidos = () => {
                 Descripcion: p.Descripcion.trim()
             })))
         };
-    
+
         fetch(`http://localhost:3001/api/temas/${editTema._id}`, {
             method: 'PUT',
             headers: {
@@ -140,7 +148,14 @@ const Contenidos = () => {
                 setAlert({ type: 'error', message: 'Error actualizando el tema. Inténtalo de nuevo.' });
             });
     };
-    
+
+    const confirmDelete = (id) => {
+        setTemaToDelete(id);
+    };
+
+    const cancelDelete = () => {
+        setTemaToDelete(null);
+    };
 
     return (
         <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
@@ -154,7 +169,11 @@ const Contenidos = () => {
                     </div>
                 )}
                 <div className="control is-pulled-right" style={{ margin: '10px' }}>
-                    <Link to="/admin/temas" className="button is-primary">Agregar</Link>
+                    <Link to="/admin/temas" className="button is-primary">
+                        <span className="icon">
+                            <i className="fas fa-plus"></i>
+                        </span>
+                    </Link>
                 </div>
 
                 <div className="box" style={{ backgroundColor: '#090A0C' }}>
@@ -187,10 +206,22 @@ const Contenidos = () => {
                                             )}
                                         </td>
                                         <td className="has-text-centered has-text-white">
-                                            <div className="buttons is-centered">
-                                                <button className="button is-small is-info" onClick={() => handleEdit(tema)}>Editar</button>
-                                                <button className="button is-small is-danger" onClick={() => handleEliminarTema(tema._id)}>Eliminar</button>
-                                                <button className="button is-small is-warning" onClick={() => handleDownloadTema(tema._id)}>Descargar Excel</button>
+                                            <div className="buttons is-centered is-grouped">
+                                                <button className="button is-small is-info" onClick={() => handleEdit(tema)}>
+                                                    <span className="icon">
+                                                        <i className="fas fa-edit"></i>
+                                                    </span>
+                                                </button>
+                                                <button className="button is-small is-danger" onClick={() => confirmDelete(tema._id)}>
+                                                    <span className="icon">
+                                                        <i className="fas fa-trash"></i>
+                                                    </span>
+                                                </button>
+                                                <button className="button is-small is-warning" onClick={() => handleDownloadTema(tema._id)}>
+                                                    <span className="icon">
+                                                        <i className="fas fa-file-download"></i>
+                                                    </span>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -203,6 +234,25 @@ const Contenidos = () => {
                         </tbody>
                     </table>
                 </div>
+
+                {temaToDelete && (
+                    <div className={`modal ${temaToDelete ? 'is-active' : ''}`}>
+                        <div className="modal-background"></div>
+                        <div className="modal-card has-background-white" >
+                            <header className="modal-card-head has-background-white" style={{ justifyContent: 'center' }}>
+                                <p className="modal-card-title has-text-centered has-text-black ">Confirmar Eliminación</p>
+                                <button className="delete" aria-label="close" onClick={cancelDelete}></button>
+                            </header>
+                            <section className="modal-card-body has-background-white">
+                                <p className="has-text-centered has-text-black">¿Estás seguro de que deseas eliminar este tema?</p>
+                            </section>
+                            <footer className="modal-card-foot has-background-white" style={{ justifyContent: 'center' }}>
+                                <button className="button is-danger" style={{ marginRight: '10px' }} onClick={() => handleEliminarTema(temaToDelete)}>Eliminar</button>
+                                <button className="button is-info" onClick={cancelDelete}>Cancelar</button>
+                            </footer>
+                        </div>
+                    </div>
+                )}
 
                 {editMode && editTema && (
                     <div className={`modal ${editMode ? 'is-active' : ''}`}>
