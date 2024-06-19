@@ -330,27 +330,27 @@ const Contenidos = () => {
                         {tema.pasos ? tema.pasos.length : 0} pasos
                       </td>
                       <td className="has-text-white">
-  {tema.video ? (
-    <a
-      className="has-text-link"
-      href={tema.video}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Ver Video
-    </a>
-  ) : (
-    <div>
-      <span
-        className="icon has-text-link is-large"
-        onClick={() => handleUploadVideo(tema._id)}
-        data-tooltip="Subir video"
-      >
-        <i className="fas fa-upload fa-lg"></i>
-      </span>
-    </div>
-  )}
-</td>
+                        {tema.video ? (
+                          <a
+                            className="has-text-link"
+                            href={tema.video}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Ver Video
+                          </a>
+                        ) : (
+                          <div>
+                            <span
+                              className="icon has-text-link is-large"
+                              onClick={() => handleUploadVideo(tema._id)}
+                              data-tooltip="Subir video"
+                            >
+                              <i className="fas fa-upload fa-lg"></i>
+                            </span>
+                          </div>
+                        )}
+                      </td>
 
                       <td className="has-text-centered has-text-white">
                         <div className="buttons is-centered is-grouped">
