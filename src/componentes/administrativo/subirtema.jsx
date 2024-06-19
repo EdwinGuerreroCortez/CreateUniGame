@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../CSS/subirtemaForm.css';
 import 'bulma/css/bulma.min.css';
+import { FaTrash, FaPlus, FaArrowLeft, FaArrowRight } from 'react-icons/fa'; // Importamos los iconos de react-icons
 
 const SubirTema = () => {
   const [titulo, setTitulo] = useState('');
@@ -10,9 +11,9 @@ const SubirTema = () => {
   const [pasos, setPasos] = useState([{ Titulo: '', Descripcion: '' }]);
   const [videoFile, setVideoFile] = useState(null);
   const [alert, setAlert] = useState({ type: '', message: '' });
-  const [isLoading, setIsLoading] = useState(false);  // Estado para manejar el círculo de carga
+  const [isLoading, setIsLoading] = useState(false);
   const [paginaActual, setPaginaActual] = useState(0);
-  const pasosPorPagina = 2;
+  const pasosPorPagina = 1;
 
   useEffect(() => {
     if (alert.message) {
@@ -31,12 +32,18 @@ const SubirTema = () => {
 
   const handleAgregarPaso = () => {
     setPasos([...pasos, { Titulo: '', Descripcion: '' }]);
+    setPaginaActual(paginaActual + 1); // Pasar automáticamente a la siguiente página
   };
 
   const handleEliminarPaso = (index) => {
-    const newPasos = [...pasos];
-    newPasos.splice(index, 1);
-    setPasos(newPasos);
+    if (pasos.length > 1) {
+      const newPasos = [...pasos];
+      newPasos.splice(index, 1);
+      setPasos(newPasos);
+      if (paginaActual > 0 && index <= startIndex) {
+        setPaginaActual(paginaActual - 1); // Retrocede una página si se elimina el único paso en la página actual
+      }
+    }
   };
 
   const handleFileChange = (e) => {
@@ -46,13 +53,12 @@ const SubirTema = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validaciones
     if (!titulo || !descripcion || !responsable || !bibliografia || !videoFile || pasos.some(p => !p.Titulo || !p.Descripcion)) {
       setAlert({ type: 'warning', message: 'Por favor completa todos los campos' });
       return;
     }
 
-    setIsLoading(true);  // Comienza el estado de carga
+    setIsLoading(true);
     const formData = new FormData();
     formData.append('titulo', titulo);
     formData.append('descripcion', descripcion);
@@ -76,19 +82,19 @@ const SubirTema = () => {
         setAlert({ type: 'error', message: data.error });
       } else {
         setAlert({ type: 'success', message: 'Tema agregado con éxito.' });
-        // Restablecer el formulario
         setTitulo('');
         setDescripcion('');
         setResponsable('');
         setBibliografia('');
         setPasos([{ Titulo: '', Descripcion: '' }]);
         setVideoFile(null);
+        setPaginaActual(0); // Reiniciar paginación al enviar el formulario
       }
     } catch (error) {
       console.error('Error creando el tema:', error);
       setAlert({ type: 'error', message: 'Error creando el tema. Inténtalo de nuevo.' });
     } finally {
-      setIsLoading(false);  // Termina el estado de carga
+      setIsLoading(false);
     }
   };
 
@@ -122,7 +128,6 @@ const SubirTema = () => {
                   type="text"
                   value={titulo}
                   onChange={(e) => setTitulo(e.target.value)}
-                  
                 />
               </div>
             </div>
@@ -133,7 +138,7 @@ const SubirTema = () => {
                 <textarea
                   className="textarea"
                   value={descripcion}
-                  onChange={(e) => setDescripcion(e.target.value)} 
+                  onChange={(e) => setDescripcion(e.target.value)}
                 />
               </div>
             </div>
@@ -158,7 +163,6 @@ const SubirTema = () => {
                   type="text"
                   value={bibliografia}
                   onChange={(e) => setBibliografia(e.target.value)}
-                  
                 />
               </div>
             </div>
@@ -172,7 +176,6 @@ const SubirTema = () => {
                     type="file"
                     accept="video/*"
                     onChange={handleFileChange}
-                    
                   />
                   <span className="file-cta">
                     <span className="file-icon">
@@ -194,7 +197,16 @@ const SubirTema = () => {
             <div className="field">
               <label className="label has-text-white">Pasos</label>
               {pasos.slice(startIndex, endIndex).map((paso, index) => (
-                <div key={index} className="box" style={{ backgroundColor: '#272727', marginBottom: '10px', padding: '10px' }}>
+                <div key={index} className="box step-box" style={{ backgroundColor: '#272727', marginBottom: '10px', padding: '10px', position: 'relative' }}>
+                  {pasos.length > 1 && (
+                    <div
+                      className="delete-icon"
+                      title="Eliminar paso"
+                      onClick={() => handleEliminarPaso(startIndex + index)}
+                    >
+                      <FaTrash />
+                    </div>
+                  )}
                   <div className="field">
                     <label className="label has-text-white">Título del Paso {startIndex + index + 1}</label>
                     <div className="control">
@@ -217,44 +229,37 @@ const SubirTema = () => {
                       />
                     </div>
                   </div>
-
-                  <div className="control">
-                    <button
-                      type="button"
-                      className="button is-danger"
-                      onClick={() => handleEliminarPaso(startIndex + index)}
-                    >
-                      Eliminar Paso
-                    </button>
-                  </div>
                 </div>
               ))}
             </div>
-            <div className="control">
-              <button type="button" className="button is-link" onClick={handleAgregarPaso}>
-                Agregar Paso
+            <div className="control is-flex is-justify-content-flex-end">
+              <button type="button" className="button is-link add-button" style={{ marginRight: '0.4cm' }} onClick={handleAgregarPaso}>
+                <FaPlus />
               </button>
+              <button
+  type="button"
+  className="button is-link tooltip"
+  data-tooltip="Anterior"
+  onClick={() => setPaginaActual(paginaActual - 1)}
+  disabled={paginaActual === 0}
+  style={{ marginRight: '0.4cm' }}
+>
+  <FaArrowLeft />
+</button>
+<button
+  type="button"
+  className="button is-link tooltip"
+  data-tooltip="Siguiente"
+  onClick={() => setPaginaActual(paginaActual + 1)}
+  disabled={endIndex >= pasos.length}
+>
+  <FaArrowRight />
+</button>
+
+
             </div>
             <br />
-
-            <div className="pagination is-centered">
-              <button
-                className="pagination-previous button is-link"
-                onClick={() => setPaginaActual(paginaActual - 1)}
-                disabled={paginaActual === 0}
-              >
-                Anterior
-              </button>
-              <button
-                className="pagination-next button is-link"
-                onClick={() => setPaginaActual(paginaActual + 1)}
-                disabled={endIndex >= pasos.length}
-              >
-                Siguiente
-              </button>
-            </div>
-
-            <div className="control">
+            <div className="control has-text-centered">
               <button type="submit" className="button is-primary">Subir Tema</button>
             </div>
           </form>
