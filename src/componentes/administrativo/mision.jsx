@@ -128,11 +128,20 @@ const MisionVisionForm = () => {
                   <tr key={item._id} style={{ backgroundColor: '#2C2F33' }}>
                     <td className="has-text-white">{item.mision}</td>
                     <td className="has-text-white">{item.vision}</td>
-                    <td>
-                      <button className="button is-danger is-small" onClick={() => handleEliminar(index, item._id)}>
-                        Eliminar
+                    <td className="has-text-centered">
+                      <button
+                        className="button is-danger is-small"
+                        onClick={() => handleEliminar(index, item._id)}
+                        data-tooltip="Eliminar"
+                        style={{ padding: '0.75rem', minWidth: '2.5rem' }}
+                      >
+                        <span className="icon is-large">
+                          <i className="fas fa-trash-alt"></i>
+                        </span>
                       </button>
                     </td>
+
+
                   </tr>
                 ))}
               </tbody>
