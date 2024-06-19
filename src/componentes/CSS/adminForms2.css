@@ -102,3 +102,27 @@
   background-color: #090A0C;
   /* Fondo negro para filas pares */
 }
+.button-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.button-tooltip::after {
+  content: attr(data-tooltip); /* Utiliza el atributo data-tooltip para el contenido del tooltip */
+  position: absolute;
+  bottom: calc(100% + 5px); /* Coloca el tooltip encima del botón */
+  left: 50%; /* Centra horizontalmente */
+  transform: translateX(-50%); /* Centra exactamente sobre el botón */
+  background-color: rgba(0, 0, 0, 0.8); /* Fondo del tooltip */
+  color: white; /* Color del texto */
+  padding: 5px 10px; /* Espaciado interno */
+  font-size: 0.8rem; /* Tamaño de la fuente */
+  border-radius: 4px; /* Bordes redondeados */
+  opacity: 0; /* Inicialmente oculto */
+  pointer-events: none; /* Evita interacciones con el tooltip */
+  transition: opacity 0.3s ease; /* Transición suave */
+}
+
+.button-tooltip:hover::after {
+  opacity: 1; /* Muestra el tooltip al pasar el mouse sobre el botón */
+}
