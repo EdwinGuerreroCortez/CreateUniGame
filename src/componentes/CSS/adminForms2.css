@@ -1,7 +1,7 @@
-/* src/CSS/adminForms.css */
+/* adminForms.css */
 
 .box {
-  background-color: #1F1F1F;
+  background-color: #1f1f1f;
   color: white;
   border-radius: 10px;
   padding: 2rem;
@@ -16,7 +16,7 @@
 .input,
 .textarea,
 .select select {
-  background-color: #2C2F33;
+  background-color: #2c2f33;
   color: white;
   border: none;
   margin-bottom: 1rem;
@@ -25,23 +25,23 @@
 .input:focus,
 .textarea:focus,
 .select select:focus {
-  border: 1px solid #48C78E;
+  border: 1px solid #48c78e;
   box-shadow: 0 0 5px rgba(72, 199, 142, 0.5);
 }
 
 .button.is-success {
-  background-color: #48C78E;
-  border-color: #48C78E;
+  background-color: #48c78e;
+  border-color: #48c78e;
 }
 
 .button.is-success:hover {
-  background-color: #3AAE71;
-  border-color: #3AAE71;
+  background-color: #3aae71;
+  border-color: #3aae71;
 }
 
 .button.is-danger {
-  background-color: #FF3860;
-  border-color: #FF3860;
+  background-color: #ff3860;
+  border-color: #ff3860;
 }
 
 .button.is-danger:hover {
@@ -50,12 +50,12 @@
 }
 
 .table th {
-  background: #090A0C;
+  background: #090a0c;
 }
 
 .table th,
 .table td {
-  border-color: #2C2F33;
+  border-color: #2c2f33;
 }
 
 .has-text-white {
@@ -82,47 +82,63 @@
 
 /* adminForms2.css */
 .table {
-  background-color: #090A0C;
+  background-color: #090a0c;
 }
 
 .table th,
 .table td {
   color: white;
-  background-color: #090A0C;
-  /* Asegura que todas las celdas tengan fondo negro */
+  background-color: #090a0c;
 }
 
 /* Desactivar las rayas alternas de Bulma */
 .table.is-striped tbody tr:nth-child(odd) {
-  background-color: #090A0C;
-  /* Fondo negro para filas impares */
+  background-color: #090a0c;
 }
 
 .table.is-striped tbody tr:nth-child(even) {
-  background-color: #090A0C;
-  /* Fondo negro para filas pares */
+  background-color: #090a0c;
 }
+
+/* Tooltips */
 .button-tooltip {
   position: relative;
   display: inline-block;
-}
-
-.button-tooltip::after {
-  content: attr(data-tooltip); /* Utiliza el atributo data-tooltip para el contenido del tooltip */
-  position: absolute;
-  bottom: calc(100% + 5px); /* Coloca el tooltip encima del botón */
-  left: 50%; /* Centra horizontalmente */
-  transform: translateX(-50%); /* Centra exactamente sobre el botón */
-  background-color: rgba(0, 0, 0, 0.8); /* Fondo del tooltip */
-  color: white; /* Color del texto */
-  padding: 5px 10px; /* Espaciado interno */
-  font-size: 0.8rem; /* Tamaño de la fuente */
-  border-radius: 4px; /* Bordes redondeados */
-  opacity: 0; /* Inicialmente oculto */
-  pointer-events: none; /* Evita interacciones con el tooltip */
-  transition: opacity 0.3s ease; /* Transición suave */
+  
 }
 
 .button-tooltip:hover::after {
-  opacity: 1; /* Muestra el tooltip al pasar el mouse sobre el botón */
+  opacity: 1;
+  
+}
+
+/* Botones y Iconos */
+.buttons.is-grouped {
+  text-align: center; /* Alinea los botones horizontalmente en el centro */
+}
+
+.buttons.is-grouped .button {
+  margin: 0; /* Elimina cualquier margen entre los botones */
+  vertical-align: middle; /* Alinea verticalmente los botones */
+  display: inline-block; /* Asegura que los botones estén en línea */
+}
+
+.buttons.is-grouped .button .icon {
+  display: flex; /* Usa flexbox para alinear los iconos */
+  align-items: center; /* Alinea verticalmente los iconos */
+  justify-content: center; /* Alinea horizontalmente los iconos */
+}
+
+.buttons.is-grouped .button .icon i {
+  display: inline-block; /* Asegura que el icono sea inline-block */
+}
+
+.button.is-small {
+  padding: 3px 7px; /* Ajusta el padding para hacer los botones más pequeños */
+  font-size: 12px; /* Ajusta el tamaño de la fuente */
+}
+.is-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
