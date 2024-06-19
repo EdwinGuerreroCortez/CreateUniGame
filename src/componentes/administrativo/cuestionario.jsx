@@ -289,8 +289,7 @@ const CuestionariosForm = () => {
                 onClick={handleSubmit}
                 disabled={isLoading}
                 data-tooltip="Subir Cuestionario"
-                                style={{paddingRight:'5px'}}
-
+                style={{paddingRight:'5px'}}
               >
                 <span className="icon">
                   <i className={`fas ${isLoading ? 'fa-spinner fa-spin' : 'fa-upload'}`}></i>
