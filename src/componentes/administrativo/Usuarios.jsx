@@ -23,7 +23,7 @@ const GestionUsuariosForm = () => {
     }, 500);
     return () => clearInterval(interval);
   }, []);
-  
+
   const obtenerUsuarios = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/usuarios');
@@ -176,7 +176,15 @@ const GestionUsuariosForm = () => {
                 <td className="has-text-white">{u.datos_personales.correo}</td>
                 <td className="has-text-white">{u.tipo}</td>
                 <td>
-                  <button className="button is-danger is-small" onClick={() => handleEliminarUsuario(index, u._id)}>Eliminar</button>
+                  <button
+                    className="button is-danger is-small"
+                    onClick={() => handleEliminarUsuario(index, u._id)}
+                    data-tooltip="Eliminar Usuario"
+                  >
+                    <span className="icon">
+                      <i className="fas fa-trash-alt"></i>
+                    </span>
+                  </button>
                 </td>
               </tr>
             ))}

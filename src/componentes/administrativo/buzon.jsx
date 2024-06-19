@@ -226,7 +226,15 @@ const Buzon = () => {
                             <td>{message.mensaje}</td>
                             <td>{message.respuesta || 'Sin respuesta'}</td>
                             <td>
-                              <button className="button is-danger" onClick={() => handleEliminarMessage(message._id)}>Eliminar</button>
+                              <button
+                                className="button is-danger"
+                                onClick={() => handleEliminarMessage(message._id)}
+                                data-tooltip="Eliminar Mensaje"
+                              >
+                                <span className="icon">
+                                  <i className="fas fa-trash-alt"></i>
+                                </span>
+                              </button>
                             </td>
                           </tr>
                         ))}
@@ -252,7 +260,15 @@ const Buzon = () => {
                     <td>{message.correo}</td>
                     <td>{message.mensaje}</td>
                     <td>
-                      <button className="button is-danger" onClick={() => handleEliminarMessage(message._id)}>Eliminar</button>
+                      <button
+                        className="button is-danger"
+                        onClick={() => handleEliminarMessage(message._id)}
+                        data-tooltip="Eliminar"
+                      >
+                        <span className="icon">
+                          <i className="fas fa-trash-alt"></i>
+                        </span>
+                      </button>
                     </td>
                   </tr>
                 ))}
