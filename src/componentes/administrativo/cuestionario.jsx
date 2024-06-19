@@ -349,7 +349,7 @@ const CuestionariosForm = () => {
                               <i className="fas fa-edit"></i>
                             </span>
                           </button>
-                          <button className="button is-small is-danger" onClick={() => handleDelete(evaluacion._id)} style={{ marginRight: '5px' }} data-tooltip="Eliminar">
+                          <button className="button is-small is-danger" onClick={() => handleDelete(evaluacion._id)} style={{ marginRight: '7px' }} data-tooltip="Eliminar">
                             <span className="icon">
                               <i className="fas fa-trash-alt"></i>
                             </span>
