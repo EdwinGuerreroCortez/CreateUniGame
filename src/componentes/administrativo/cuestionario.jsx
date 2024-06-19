@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bulma/css/bulma.min.css';
 import '../CSS/adminForms.css';
+import "@fortawesome/fontawesome-free/css/all.min.css";
+
 
 const CuestionariosForm = () => {
   const [newFile, setNewFile] = useState(null);
@@ -281,16 +283,37 @@ const CuestionariosForm = () => {
           </div>
           <div className="field is-grouped is-grouped-right">
             <div className="control">
-              <button type="submit" className="button is-success" onClick={handleSubmit} disabled={isLoading}>
-                {isLoading ? 'Cargando...' : 'Subir Cuestionario'}
+              <button
+                type="submit"
+                className="button is-success"
+                onClick={handleSubmit}
+                disabled={isLoading}
+                data-tooltip="Subir Cuestionario"
+                style={{paddingRight:'5px'}}
+              >
+                <span className="icon">
+                  <i className={`fas ${isLoading ? 'fa-spinner fa-spin' : 'fa-upload'}`}></i>
+                </span>
+                <span>{isLoading ? 'Cargando...' : ''}</span>
               </button>
             </div>
             <div className="control">
-              <button className="button is-info" onClick={handleDownloadPlantilla} disabled={isLoading}>
-                {isLoading ? 'Descargando...' : 'Descargar Plantilla'}
+              <button
+                className="button is-info"
+                onClick={handleDownloadPlantilla}
+                disabled={isLoading}
+                data-tooltip="Descargar Plantilla"
+                style={{paddingRight:'5px'}}
+              >
+                <span className="icon">
+                  <i className={`fas ${isLoading ? 'fa-spinner fa-spin' : 'fa-download'}`}></i>
+                </span>
+                <span>{isLoading ? 'Descargando...' : ''}</span>
               </button>
             </div>
           </div>
+
+
         </div>
 
         {isLoading && (
@@ -321,9 +344,21 @@ const CuestionariosForm = () => {
                       <td className="has-text-white" style={{ verticalAlign: 'middle' }}>{preguntas.length} preguntas</td>
                       <td className="has-text-centered has-text-white" style={{ verticalAlign: 'middle' }}>
                         <div className="buttons is-centered">
-                          <button className="button is-small is-info" onClick={() => handleEdit(evaluacion)}>Editar</button>
-                          <button className="button is-small is-danger" onClick={() => handleDelete(evaluacion._id)}>Eliminar</button>
-                          <button className="button is-small is-warning" onClick={() => handleDownloadTema(tema_id._id)}>Descargar Tema</button>
+                          <button className="button is-small is-info" onClick={() => handleEdit(evaluacion)} data-tooltip="Editar">
+                            <span className="icon">
+                              <i className="fas fa-edit"></i>
+                            </span>
+                          </button>
+                          <button className="button is-small is-danger" onClick={() => handleDelete(evaluacion._id)} style={{ marginRight: '8px' }} data-tooltip="Eliminar">
+                            <span className="icon">
+                              <i className="fas fa-trash-alt"></i>
+                            </span>
+                          </button>
+                          <button className="button is-small is-warning" onClick={() => handleDownloadTema(tema_id._id)} data-tooltip="Descargar Tema">
+                            <span className="icon">
+                              <i className="fas fa-download"></i>
+                            </span>
+                          </button>
                         </div>
                       </td>
                     </tr>
