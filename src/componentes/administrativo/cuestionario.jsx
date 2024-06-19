@@ -4,7 +4,6 @@ import 'bulma/css/bulma.min.css';
 import '../CSS/adminForms.css';
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-
 const CuestionariosForm = () => {
   const [newFile, setNewFile] = useState(null);
   const [editFile, setEditFile] = useState(null);
@@ -79,7 +78,7 @@ const CuestionariosForm = () => {
       const formData = new FormData();
       formData.append('file', newFile);
       formData.append('tema', tema);
-  
+
       try {
         const response = await axios.post('http://localhost:3001/api/evaluaciones/upload', formData, {
           headers: {
@@ -101,9 +100,6 @@ const CuestionariosForm = () => {
       }
     }
   };
-  
-  
-  
 
   const handleEdit = (evaluacion) => {
     setEditMode(true);
@@ -134,7 +130,45 @@ const CuestionariosForm = () => {
     setCurrentPage(1);
   };
 
+  const validateEvaluacion = () => {
+    const errors = [];
+    editEvaluacion.evaluacion.forEach((pregunta, index) => {
+      if (!pregunta.pregunta || pregunta.pregunta.trim() === '') {
+        errors.push(`La pregunta ${index + 1} está vacía`);
+      }
+
+      if (!pregunta.respuesta_correcta || pregunta.respuesta_correcta.trim() === '') {
+        errors.push(`La respuesta correcta de la pregunta ${index + 1} está vacía`);
+      }
+
+      const opciones = pregunta.opciones;
+      if (!opciones || opciones.length !== 4) {
+        errors.push(`Número incorrecto de opciones en la pregunta ${index + 1} (debe haber 4 opciones)`);
+      } else {
+        opciones.forEach((opcion, oIdx) => {
+          if (!opcion || opcion.trim() === '') {
+            errors.push(`La opción ${String.fromCharCode(65 + oIdx)} de la pregunta ${index + 1} está vacía`);
+          }
+        });
+        const opcionesSet = new Set(opciones.map(op => op.trim()));
+        if (opcionesSet.size !== 4) {
+          errors.push(`Opciones duplicadas en la pregunta ${index + 1}`);
+        }
+        if (!opcionesSet.has(pregunta.respuesta_correcta.trim())) {
+          errors.push(`La respuesta correcta en la pregunta ${index + 1} no coincide con ninguna opción`);
+        }
+      }
+    });
+    return errors;
+  };
+
   const handleModalSave = async () => {
+    const validationErrors = validateEvaluacion();
+    if (validationErrors.length > 0) {
+      setModalAlert({ type: 'error', message: validationErrors.join(', ') });
+      return;
+    }
+
     setIsLoading(true);
     setModalAlert({ type: '', message: '' });
 
@@ -169,25 +203,23 @@ const CuestionariosForm = () => {
     }
   };
 
-  const handleEvaluacionChange = (field, value) => {
-    setEditEvaluacion({ ...editEvaluacion, [field]: value });
-  };
-
   const handlePreguntaChange = (index, field, value) => {
-    if (field === 'opciones') {
-      const opciones = Array.isArray(value) ? value : value.split(',').map(opcion => opcion.trim());
-      if (opciones.length !== 4 || opciones.includes('')) {
-        setModalAlert({ type: 'error', message: `Debe haber exactamente 4 opciones y no deben estar vacías en la fila ${index + 1}.` });
-        return; // Si hay un error, no continuar con la actualización
-      } else {
-        setModalAlert({ type: '', message: '' });
-      }
-      value = opciones;
-    }
-
     const newPreguntas = editEvaluacion.evaluacion.map((pregunta, idx) =>
       idx === index ? { ...pregunta, [field]: value } : pregunta
     );
+    setEditEvaluacion({ ...editEvaluacion, evaluacion: newPreguntas });
+  };
+
+  const handleOptionChange = (index, optionIndex, value) => {
+    const newPreguntas = editEvaluacion.evaluacion.map((pregunta, idx) => {
+      if (idx === index) {
+        const newOpciones = pregunta.opciones.map((opcion, oIdx) => {
+          return oIdx === optionIndex ? value : opcion;
+        });
+        return { ...pregunta, opciones: newOpciones };
+      }
+      return pregunta;
+    });
     setEditEvaluacion({ ...editEvaluacion, evaluacion: newPreguntas });
   };
 
@@ -315,8 +347,6 @@ const CuestionariosForm = () => {
               </button>
             </div>
           </div>
-
-
         </div>
 
         {isLoading && (
@@ -373,7 +403,6 @@ const CuestionariosForm = () => {
                 </tr>
               )}
             </tbody>
-
           </table>
         </div>
 
@@ -417,13 +446,46 @@ const CuestionariosForm = () => {
                       </div>
                     </div>
                     <div className="field">
-                      <label className="label">Opciones (separadas por comas, 4 opciones)</label>
+                      <label className="label">Opción A</label>
                       <div className="control">
                         <input
                           className="input"
                           type="text"
-                          value={pregunta.opciones.join(', ')}
-                          onChange={(e) => handlePreguntaChange(index + (currentPage - 1) * itemsPerPage, 'opciones', e.target.value)}
+                          value={pregunta.opciones[0]}
+                          onChange={(e) => handleOptionChange(index + (currentPage - 1) * itemsPerPage, 0, e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="field">
+                      <label className="label">Opción B</label>
+                      <div className="control">
+                        <input
+                          className="input"
+                          type="text"
+                          value={pregunta.opciones[1]}
+                          onChange={(e) => handleOptionChange(index + (currentPage - 1) * itemsPerPage, 1, e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="field">
+                      <label className="label">Opción C</label>
+                      <div className="control">
+                        <input
+                          className="input"
+                          type="text"
+                          value={pregunta.opciones[2]}
+                          onChange={(e) => handleOptionChange(index + (currentPage - 1) * itemsPerPage, 2, e.target.value)}
+                        />
+                      </div>
+                    </div>
+                    <div className="field">
+                      <label className="label">Opción D</label>
+                      <div className="control">
+                        <input
+                          className="input"
+                          type="text"
+                          value={pregunta.opciones[3]}
+                          onChange={(e) => handleOptionChange(index + (currentPage - 1) * itemsPerPage, 3, e.target.value)}
                         />
                       </div>
                     </div>
@@ -470,52 +532,47 @@ const CuestionariosForm = () => {
                 </nav>
               </section>
               <footer className="modal-card-foot">
-  <div className="footer-left">
-    <button className="button is-success" onClick={handleModalSave}>
-      <span className="icon">
-        <i className="fas fa-save"></i>
-      </span>
-      <span>Guardar</span>
-    </button>
-    <button className="button" onClick={handleModalClose}>
-      <span className="icon">
-        <i className="fas fa-times"></i>
-      </span>
-      <span>Cancelar</span>
-    </button>
-  </div>
-  <div className="footer-right" style={{marginLeft: '150px'}}>
-    <div className="file is-primary has-name">
-      <label className="file-label">
-        <input className="file-input" type="file" accept=".xlsx, .xls" onChange={handleEditFileChange} />
-        <span className="file-cta">
-          <span className="file-icon">
-            <i className="fas fa-upload"></i>
-          </span>
-          <span className="file-label">
-            Subir actualización...
-          </span>
-        </span>
-        {editFile && (
-          <span className="file-name">
-            {editFile.name}
-          </span>
-        )}
-      </label>
-    </div>
-  </div>
-</footer>
-
+                <div className="footer-left">
+                  <button className="button is-success" onClick={handleModalSave}>
+                    <span className="icon">
+                      <i className="fas fa-save"></i>
+                    </span>
+                    <span>Guardar</span>
+                  </button>
+                  <button className="button" onClick={handleModalClose}>
+                    <span className="icon">
+                      <i className="fas fa-times"></i>
+                    </span>
+                    <span>Cancelar</span>
+                  </button>
+                </div>
+                <div className="footer-right" style={{ marginLeft: '150px' }}>
+                  <div className="file is-primary has-name">
+                    <label className="file-label">
+                      <input className="file-input" type="file" accept=".xlsx, .xls" onChange={handleEditFileChange} />
+                      <span className="file-cta">
+                        <span className="file-icon">
+                          <i className="fas fa-upload"></i>
+                        </span>
+                        <span className="file-label">
+                          Subir actualización...
+                        </span>
+                      </span>
+                      {editFile && (
+                        <span className="file-name">
+                          {editFile.name}
+                        </span>
+                      )}
+                    </label>
+                  </div>
+                </div>
+              </footer>
             </div>
           </div>
-        )
-        }
-
-      </div >
-    </div >
+        )}
+      </div>
+    </div>
   );
 };
 
 export default CuestionariosForm;
-
-
