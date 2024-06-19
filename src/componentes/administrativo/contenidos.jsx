@@ -185,7 +185,10 @@ const Contenidos = () => {
 
   const handleConfirmUpload = () => {
     if (!videoFile) {
-      setAlert({ type: "error", message: "Por favor, selecciona un archivo de video." });
+      setAlert({
+        type: "error",
+        message: "Por favor, selecciona un archivo de video.",
+      });
       return;
     }
 
@@ -203,7 +206,11 @@ const Contenidos = () => {
         if (data.error) {
           setAlert({ type: "error", message: data.error });
         } else {
-          setTemas(temas.map((t) => (t._id === currentTemaId ? { ...t, video: data.videoUrl } : t)));
+          setTemas(
+            temas.map((t) =>
+              t._id === currentTemaId ? { ...t, video: data.videoUrl } : t
+            )
+          );
           setAlert({ type: "success", message: "Video subido con éxito." });
         }
       })
@@ -251,10 +258,14 @@ const Contenidos = () => {
         });
       })
       .catch((error) => {
-        console.error("Error al cambiar el estado de habilitación del tema:", error);
+        console.error(
+          "Error al cambiar el estado de habilitación del tema:",
+          error
+        );
         setAlert({
           type: "error",
-          message: "Error cambiando el estado de habilitación del tema. Inténtalo de nuevo.",
+          message:
+            "Error cambiando el estado de habilitación del tema. Inténtalo de nuevo.",
         });
       });
   };
@@ -319,23 +330,28 @@ const Contenidos = () => {
                         {tema.pasos ? tema.pasos.length : 0} pasos
                       </td>
                       <td className="has-text-white">
-                        {tema.video ? (
-                          <a
-                            className="has-text-link"
-                            href={tema.video}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Ver Video
-                          </a>
-                        ) : (
-                          <div className="has-text-centered">
-                            <span className="icon has-text-link is-large" onClick={() => handleUploadVideo(tema._id)}>
-                              <i className="fas fa-upload fa-2x"></i>
-                            </span>
-                          </div>
-                        )}
-                      </td>
+  {tema.video ? (
+    <a
+      className="has-text-link"
+      href={tema.video}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      Ver Video
+    </a>
+  ) : (
+    <div>
+      <span
+        className="icon has-text-link is-large"
+        onClick={() => handleUploadVideo(tema._id)}
+        data-tooltip="Subir video"
+      >
+        <i className="fas fa-upload fa-lg"></i>
+      </span>
+    </div>
+  )}
+</td>
+
                       <td className="has-text-centered has-text-white">
                         <div className="buttons is-centered is-grouped">
                           <button
@@ -373,7 +389,9 @@ const Contenidos = () => {
                             }`}
                             onClick={() => handleToggleHabilitar(tema._id)}
                             data-tooltip={
-                              tema.habilitado ? "Deshabilitar" : "Habilitar"
+                              tema.habilitado
+                                ? "Deshabilitar tema"
+                                : "Habilitar tema"
                             }
                             disabled={!allFieldsFilled}
                           >
@@ -645,7 +663,9 @@ const Contenidos = () => {
               </header>
               <section className="modal-card-body">
                 <div className="field">
-                  <label className="label">Selecciona un archivo de video</label>
+                  <label className="label">
+                    Selecciona un archivo de video
+                  </label>
                   <div className="control">
                     <input
                       className="input"
