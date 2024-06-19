@@ -197,22 +197,22 @@ const TemaForm = () => {
     setEditTema(tema);
     setCurrentPage(1); // Reset page to 1 when editing a new tema
   };
-  
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-  
+
   const getCurrentPageItems = () => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     return editTema.pasos.slice(startIndex, endIndex);
   };
-  
+
   const totalPages = Math.ceil(editTema ? editTema.pasos.length / itemsPerPage : 1);
-  
+
   const handleSaveEdit = () => {
     const { titulo, descripcion, responsable, bibliografia, pasos } = editTema;
-  
+
     const errors = [];
     pasos.forEach((paso, index) => {
       if (!paso.Titulo.trim()) {
@@ -222,12 +222,12 @@ const TemaForm = () => {
         errors.push(`La descripción del paso ${index + 1} está vacía.`);
       }
     });
-  
+
     if (errors.length > 0) {
       setValidationErrors(errors);
       return;
     }
-  
+
     const updatedTema = {
       titulo: titulo.trim(),
       descripcion: descripcion.trim(),
@@ -238,7 +238,7 @@ const TemaForm = () => {
         Descripcion: p.Descripcion.trim()
       })))
     };
-  
+
     fetch(`http://localhost:3001/api/temas/${editTema._id}`, {
       method: 'PUT',
       headers: {
@@ -328,9 +328,13 @@ const TemaForm = () => {
                       <button
                         className="button is-danger is-small"
                         onClick={() => handleEliminarTema(index)}
+                        data-tooltip="Eliminar Tema"
                       >
-                        Eliminar
+                        <span className="icon">
+                          <i className="fas fa-trash-alt"></i>
+                        </span>
                       </button>
+
                     </td>
                   </tr>
                 ))}
