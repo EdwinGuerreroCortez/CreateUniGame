@@ -487,7 +487,7 @@ const Contenidos = () => {
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                   >
-                    Siguiente
+                    Siguiente 
                   </button>
                   <ul className="pagination-list">
                     {Array.from({ length: totalPages }, (_, i) => (
