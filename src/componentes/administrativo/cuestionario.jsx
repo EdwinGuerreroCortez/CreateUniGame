@@ -79,7 +79,7 @@ const CuestionariosForm = () => {
       const formData = new FormData();
       formData.append('file', newFile);
       formData.append('tema', tema);
-
+  
       try {
         const response = await axios.post('http://localhost:3001/api/evaluaciones/upload', formData, {
           headers: {
@@ -92,7 +92,7 @@ const CuestionariosForm = () => {
         setEvaluaciones([...evaluaciones, response.data.evaluacion]);
       } catch (error) {
         console.error('Error al subir archivo:', error);
-        const errorMessage = error.response && error.response.data && error.response.data.details
+        const errorMessage = error.response && error.response.data && Array.isArray(error.response.data.details)
           ? error.response.data.details.join(', ')
           : 'Error al subir archivo';
         setAlert({ type: 'error', message: errorMessage });
@@ -101,6 +101,9 @@ const CuestionariosForm = () => {
       }
     }
   };
+  
+  
+  
 
   const handleEdit = (evaluacion) => {
     setEditMode(true);
@@ -498,3 +501,5 @@ const CuestionariosForm = () => {
 };
 
 export default CuestionariosForm;
+
+
