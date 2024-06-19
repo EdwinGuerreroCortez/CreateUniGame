@@ -16,6 +16,8 @@ const Contenidos = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [uploadingVideo, setUploadingVideo] = useState(false);
   const [videoFile, setVideoFile] = useState(null);
+  const [videoModalOpen, setVideoModalOpen] = useState(false);
+  const [currentTemaId, setCurrentTemaId] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:3001/api/temas")
@@ -177,6 +179,11 @@ const Contenidos = () => {
   };
 
   const handleUploadVideo = (id) => {
+    setCurrentTemaId(id);
+    setVideoModalOpen(true);
+  };
+
+  const handleConfirmUpload = () => {
     if (!videoFile) {
       setAlert({ type: "error", message: "Por favor, selecciona un archivo de video." });
       return;
@@ -187,7 +194,7 @@ const Contenidos = () => {
     const formData = new FormData();
     formData.append("video", videoFile);
 
-    fetch(`http://localhost:3001/api/upload-video/${id}`, {
+    fetch(`http://localhost:3001/api/upload-video/${currentTemaId}`, {
       method: "POST",
       body: formData,
     })
@@ -196,7 +203,7 @@ const Contenidos = () => {
         if (data.error) {
           setAlert({ type: "error", message: data.error });
         } else {
-          setTemas(temas.map((t) => (t._id === id ? { ...t, video: data.videoUrl } : t)));
+          setTemas(temas.map((t) => (t._id === currentTemaId ? { ...t, video: data.videoUrl } : t)));
           setAlert({ type: "success", message: "Video subido con éxito." });
         }
       })
@@ -210,7 +217,13 @@ const Contenidos = () => {
       .finally(() => {
         setUploadingVideo(false);
         setVideoFile(null);
+        setVideoModalOpen(false);
       });
+  };
+
+  const handleCancelUpload = () => {
+    setVideoFile(null);
+    setVideoModalOpen(false);
   };
 
   const validateTemaFields = (tema) => {
@@ -305,7 +318,7 @@ const Contenidos = () => {
                       <td className="has-text-white">
                         {tema.pasos ? tema.pasos.length : 0} pasos
                       </td>
-                      <td>
+                      <td className="has-text-white">
                         {tema.video ? (
                           <a
                             className="has-text-link"
@@ -316,20 +329,10 @@ const Contenidos = () => {
                             Ver Video
                           </a>
                         ) : (
-                          <div style={{ display: "flex", alignItems: "center" }}>
-                            <input
-                              type="file"
-                              accept="video/*"
-                              onChange={handleVideoChange}
-                              style={{ marginRight: "5px" }}
-                            />
-                            <button
-                              className="button is-small is-info"
-                              onClick={() => handleUploadVideo(tema._id)}
-                              disabled={uploadingVideo}
-                            >
-                              {uploadingVideo ? "Subiendo..." : "Cargar Video"}
-                            </button>
+                          <div className="has-text-centered">
+                            <span className="icon has-text-link is-large" onClick={() => handleUploadVideo(tema._id)}>
+                              <i className="fas fa-upload fa-2x"></i>
+                            </span>
                           </div>
                         )}
                       </td>
@@ -621,6 +624,47 @@ const Contenidos = () => {
                   Guardar
                 </button>
                 <button className="button" onClick={handleModalClose}>
+                  Cancelar
+                </button>
+              </footer>
+            </div>
+          </div>
+        )}
+
+        {videoModalOpen && (
+          <div className={`modal ${videoModalOpen ? "is-active" : ""}`}>
+            <div className="modal-background"></div>
+            <div className="modal-card">
+              <header className="modal-card-head">
+                <p className="modal-card-title">Subir Video</p>
+                <button
+                  className="delete"
+                  aria-label="close"
+                  onClick={handleCancelUpload}
+                ></button>
+              </header>
+              <section className="modal-card-body">
+                <div className="field">
+                  <label className="label">Selecciona un archivo de video</label>
+                  <div className="control">
+                    <input
+                      className="input"
+                      type="file"
+                      accept="video/*"
+                      onChange={handleVideoChange}
+                    />
+                  </div>
+                </div>
+              </section>
+              <footer className="modal-card-foot">
+                <button
+                  className="button is-success"
+                  onClick={handleConfirmUpload}
+                  disabled={!videoFile || uploadingVideo}
+                >
+                  {uploadingVideo ? "Subiendo..." : "Subir Video"}
+                </button>
+                <button className="button" onClick={handleCancelUpload}>
                   Cancelar
                 </button>
               </footer>
