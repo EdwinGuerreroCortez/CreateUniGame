@@ -1,4 +1,3 @@
-//curso.jsx
 import React, { useState, useEffect } from "react";
 import "bulma/css/bulma.min.css";
 import '../CSS/carga.css';
@@ -22,7 +21,8 @@ const Curso = () => {
       try {
         const response = await fetch('http://localhost:3001/api/temas'); // Actualiza la URL según sea necesario
         const data = await response.json();
-        setTemas(data);
+        const temasHabilitados = data.filter(tema => tema.habilitado);
+        setTemas(temasHabilitados);
       } catch (error) {
         console.error('Error al cargar los temas:', error);
       }
@@ -171,7 +171,7 @@ const Curso = () => {
             {temaSeleccionado ? (
               <div className="box has-text-white" style={{ background: 'rgb(2, 25, 41)' , boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)',  marginTop:'20px'}}>
                 <h2 className="title is-4 has-text-white">{temaSeleccionado.titulo}</h2>
-                <p className="is-size-6">Autor: {temaSeleccionado.autor}</p>
+                <p className="is-size-6">Autor: {temaSeleccionado.responsable}</p>
                 <p className="is-size-6">Fecha: {new Date(temaSeleccionado.fecha_creacion).toLocaleDateString()}</p>
                 {renderVideo(temaSeleccionado.video)}
                 <h2 className="title is-3 has-text-centered has-text-white">Descripción</h2>
@@ -209,7 +209,7 @@ const Curso = () => {
                 ) : (
                   <>
                     <h2 className="title is-4 has-text-centered has-text-white">Pasos</h2>
-                                       <div className="content">
+                    <div className="content">
                       <h3 className="subtitle is-5 has-text-white">Paso {pasoActual + 1}: {temaSeleccionado.pasos[pasoActual].Titulo}</h3>
                       <p>{temaSeleccionado.pasos[pasoActual].Descripcion}</p>
                     </div>
@@ -259,4 +259,3 @@ const Curso = () => {
 };
 
 export default Curso;
-

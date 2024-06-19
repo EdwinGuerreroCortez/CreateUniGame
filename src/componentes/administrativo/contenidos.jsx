@@ -14,6 +14,8 @@ const Contenidos = () => {
   const [validationErrors, setValidationErrors] = useState([]);
   const [temaToDelete, setTemaToDelete] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+  const [videoFile, setVideoFile] = useState(null);
 
   useEffect(() => {
     fetch("http://localhost:3001/api/temas")
@@ -170,6 +172,80 @@ const Contenidos = () => {
     setTemaToDelete(null);
   };
 
+  const handleVideoChange = (e) => {
+    setVideoFile(e.target.files[0]);
+  };
+
+  const handleUploadVideo = (id) => {
+    if (!videoFile) {
+      setAlert({ type: "error", message: "Por favor, selecciona un archivo de video." });
+      return;
+    }
+
+    setUploadingVideo(true);
+
+    const formData = new FormData();
+    formData.append("video", videoFile);
+
+    fetch(`http://localhost:3001/api/upload-video/${id}`, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          setAlert({ type: "error", message: data.error });
+        } else {
+          setTemas(temas.map((t) => (t._id === id ? { ...t, video: data.videoUrl } : t)));
+          setAlert({ type: "success", message: "Video subido con éxito." });
+        }
+      })
+      .catch((error) => {
+        console.error("Error subiendo el video:", error);
+        setAlert({
+          type: "error",
+          message: "Error subiendo el video. Inténtalo de nuevo.",
+        });
+      })
+      .finally(() => {
+        setUploadingVideo(false);
+        setVideoFile(null);
+      });
+  };
+
+  const validateTemaFields = (tema) => {
+    return (
+      tema.titulo &&
+      tema.responsable &&
+      tema.fecha_creacion &&
+      tema.descripcion &&
+      tema.pasos &&
+      tema.pasos.length > 0 &&
+      tema.video
+    );
+  };
+
+  const handleToggleHabilitar = (id) => {
+    fetch(`http://localhost:3001/api/temas/${id}/habilitar`, {
+      method: "PUT",
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setTemas(temas.map((t) => (t._id === data._id ? data : t)));
+        setAlert({
+          type: "success",
+          message: data.habilitado ? "Tema habilitado." : "Tema deshabilitado.",
+        });
+      })
+      .catch((error) => {
+        console.error("Error al cambiar el estado de habilitación del tema:", error);
+        setAlert({
+          type: "error",
+          message: "Error cambiando el estado de habilitación del tema. Inténtalo de nuevo.",
+        });
+      });
+  };
+
   return (
     <div
       style={{
@@ -216,66 +292,101 @@ const Contenidos = () => {
             </thead>
             <tbody>
               {temas && temas.length > 0 ? (
-                temas.map((tema) => (
-                  <tr key={tema._id}>
-                    <td className="has-text-white">{tema.titulo}</td>
-                    <td className="has-text-white">{tema.responsable}</td>
-                    <td className="has-text-white">
-                      {new Date(tema.fecha_creacion).toLocaleDateString()}
-                    </td>
-                    <td className="has-text-white">{tema.descripcion}</td>
-                    <td className="has-text-white">
-                      {tema.pasos ? tema.pasos.length : 0} pasos
-                    </td>
-                    <td>
-                      {tema.video ? (
-                        <a
-                          className="has-text-link"
-                          href={tema.video}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Ver Video
-                        </a>
-                      ) : (
-                        <span className="has-text-grey">No disponible</span>
-                      )}
-                    </td>
-                    <td className="has-text-centered has-text-white">
-                      <div className="buttons is-centered is-grouped">
-                        <button
-                          className="button is-small is-info button-tooltip"
-                          onClick={() => handleEdit(tema)}
-                          data-tooltip="Editar"
-                        >
-                          <span className="icon">
-                            <i className="fas fa-edit"></i>
-                          </span>
-                        </button>
+                temas.map((tema) => {
+                  const allFieldsFilled = validateTemaFields(tema);
+                  return (
+                    <tr key={tema._id}>
+                      <td className="has-text-white">{tema.titulo}</td>
+                      <td className="has-text-white">{tema.responsable}</td>
+                      <td className="has-text-white">
+                        {new Date(tema.fecha_creacion).toLocaleDateString()}
+                      </td>
+                      <td className="has-text-white">{tema.descripcion}</td>
+                      <td className="has-text-white">
+                        {tema.pasos ? tema.pasos.length : 0} pasos
+                      </td>
+                      <td>
+                        {tema.video ? (
+                          <a
+                            className="has-text-link"
+                            href={tema.video}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Ver Video
+                          </a>
+                        ) : (
+                          <div style={{ display: "flex", alignItems: "center" }}>
+                            <input
+                              type="file"
+                              accept="video/*"
+                              onChange={handleVideoChange}
+                              style={{ marginRight: "5px" }}
+                            />
+                            <button
+                              className="button is-small is-info"
+                              onClick={() => handleUploadVideo(tema._id)}
+                              disabled={uploadingVideo}
+                            >
+                              {uploadingVideo ? "Subiendo..." : "Cargar Video"}
+                            </button>
+                          </div>
+                        )}
+                      </td>
+                      <td className="has-text-centered has-text-white">
+                        <div className="buttons is-centered is-grouped">
+                          <button
+                            className="button is-small is-info button-tooltip"
+                            onClick={() => handleEdit(tema)}
+                            data-tooltip="Editar"
+                          >
+                            <span className="icon">
+                              <i className="fas fa-edit"></i>
+                            </span>
+                          </button>
 
-                        <button
-                          className="button is-small is-danger button-tooltip"
-                          onClick={() => confirmDelete(tema._id)}
-                          data-tooltip="Eliminar"
-                        >
-                          <span className="icon">
-                            <i className="fas fa-trash"></i>
-                          </span>
-                        </button>
+                          <button
+                            className="button is-small is-danger button-tooltip"
+                            onClick={() => confirmDelete(tema._id)}
+                            data-tooltip="Eliminar"
+                          >
+                            <span className="icon">
+                              <i className="fas fa-trash"></i>
+                            </span>
+                          </button>
 
-                        <button
-                          className="button is-small is-warning button-tooltip"
-                          onClick={() => handleDownloadTema(tema._id)}
-                          data-tooltip="Descargar Excel"
-                        >
-                          <span className="icon">
-                            <i className="fas fa-file-download"></i>
-                          </span>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
+                          <button
+                            className="button is-small is-warning button-tooltip"
+                            onClick={() => handleDownloadTema(tema._id)}
+                            data-tooltip="Descargar Excel"
+                          >
+                            <span className="icon">
+                              <i className="fas fa-file-download"></i>
+                            </span>
+                          </button>
+                          <button
+                            className={`button is-small ${
+                              tema.habilitado ? "is-success" : "is-light"
+                            }`}
+                            onClick={() => handleToggleHabilitar(tema._id)}
+                            data-tooltip={
+                              tema.habilitado ? "Deshabilitar" : "Habilitar"
+                            }
+                            disabled={!allFieldsFilled}
+                          >
+                            <span className="icon">
+                              <i
+                                className={`fas ${
+                                  tema.habilitado ? "fa-eye-slash" : "fa-eye"
+                                }`}
+                              ></i>
+                            </span>
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
               ) : (
                 <tr>
                   <td className="has-text-white" colSpan="7">
@@ -487,7 +598,7 @@ const Contenidos = () => {
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                   >
-                    Siguiente 
+                    Siguiente
                   </button>
                   <ul className="pagination-list">
                     {Array.from({ length: totalPages }, (_, i) => (
