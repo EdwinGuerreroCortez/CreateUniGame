@@ -282,7 +282,7 @@ const Contenidos = () => {
         <h1 className="title has-text-centered has-text-white">
           Lista de Temas
         </h1>
-
+    
         {alert.message && (
           <div
             className={`notification ${
