@@ -56,7 +56,8 @@ const BarraNavAdmin = () => {
                             <Link className="navbar-item" to="/admin/informacion/buzon">Bandeja de Entrada</Link>
                             <Link className="navbar-item" to="/admin/informacion/mv">Misión visión</Link>
                         </div>
-                    </div>                
+                    </div>
+                    <Link className="navbar-item has-text-success" to="/admin/imagenes">Imagenes</Link>
                 </div>
 
                 <div className="navbar-end">
