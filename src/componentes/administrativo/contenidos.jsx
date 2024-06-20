@@ -282,7 +282,7 @@ const Contenidos = () => {
         <h1 className="title has-text-centered has-text-white">
           Lista de Temas
         </h1>
-
+    
         {alert.message && (
           <div
             className={`notification ${
@@ -295,7 +295,7 @@ const Contenidos = () => {
         )}
         <div className="control is-pulled-right" style={{ margin: "10px" }}>
           <Link to="/admin/temas" className="button is-primary">
-            <span className="icon">
+            <span className="icon " data-tooltip="Agregar tema">
               <i className="fas fa-plus"></i>
             </span>
           </Link>
@@ -342,7 +342,7 @@ const Contenidos = () => {
                         ) : (
                           <div>
                             <span
-                              className="icon has-text-link is-large"
+                              className="icon has-text-link is-large button-tooltip "
                               onClick={() => handleUploadVideo(tema._id)}
                               data-tooltip="Subir video"
                             >
@@ -463,16 +463,16 @@ const Contenidos = () => {
         {editMode && editTema && (
           <div className={`modal ${editMode ? "is-active" : ""}`}>
             <div className="modal-background"></div>
-            <div className="modal-card">
-              <header className="modal-card-head">
-                <p className="modal-card-title">Editar Tema</p>
+            <div className="modal-card ">
+              <header className="modal-card-head has-background-black-bis">
+                <p className="modal-card-title has-text-white">Editar Tema</p>
                 <button
                   className="delete"
                   aria-label="close"
                   onClick={handleModalClose}
                 ></button>
               </header>
-              <section className="modal-card-body">
+              <section className="modal-card-body has-background-black-bis">
                 {alert.message && (
                   <div
                     className={`notification ${
@@ -603,7 +603,7 @@ const Contenidos = () => {
                   </div>
                 ))}
                 <nav
-                  className="pagination is-centered"
+                  className="pagination is-centered "
                   role="navigation"
                   aria-label="pagination"
                 >
@@ -637,7 +637,7 @@ const Contenidos = () => {
                   </ul>
                 </nav>
               </section>
-              <footer className="modal-card-foot">
+              <footer className="modal-card-foot has-background-black-bis ">
                 <button className="button is-success" onClick={handleSaveEdit}>
                   Guardar
                 </button>
@@ -648,46 +648,61 @@ const Contenidos = () => {
             </div>
           </div>
         )}
-
         {videoModalOpen && (
           <div className={`modal ${videoModalOpen ? "is-active" : ""}`}>
             <div className="modal-background"></div>
-            <div className="modal-card">
-              <header className="modal-card-head">
-                <p className="modal-card-title">Subir Video</p>
-                <button
-                  className="delete"
-                  aria-label="close"
-                  onClick={handleCancelUpload}
-                ></button>
-              </header>
-              <section className="modal-card-body">
-                <div className="field">
-                  <label className="label">
-                    Selecciona un archivo de video
-                  </label>
-                  <div className="control">
-                    <input
-                      className="input"
-                      type="file"
-                      accept="video/*"
-                      onChange={handleVideoChange}
-                    />
+            <div className="modal-content">
+              <div className="modal-card">
+                <header className="modal-card-head">
+                  <p className="modal-card-title has-text-centered">
+                    Subir Video
+                  </p>
+                  <button
+                    className="delete"
+                    aria-label="close"
+                    onClick={handleCancelUpload}
+                  ></button>
+                </header>
+                <section className="modal-card-body has-text-centered">
+                  <div className="file has-name is-boxed is-centered">
+                    <label className="file-label">
+                      <input
+                        className="file-input"
+                        type="file"
+                        accept="video/*"
+                        onChange={handleVideoChange}
+                      />
+                      <span className="file-cta">
+                        <span className="file-icon">
+                          <i className="fas fa-upload"></i>
+                        </span>
+                        <span className="file-label">Subir video</span>
+                      </span>
+                      <span className="file-name">
+                        {videoFile
+                          ? videoFile.name
+                          : "Ningún archivo seleccionado"}
+                      </span>
+                    </label>
                   </div>
-                </div>
-              </section>
-              <footer className="modal-card-foot">
-                <button
-                  className="button is-success"
-                  onClick={handleConfirmUpload}
-                  disabled={!videoFile || uploadingVideo}
-                >
-                  {uploadingVideo ? "Subiendo..." : "Subir Video"}
-                </button>
-                <button className="button" onClick={handleCancelUpload}>
-                  Cancelar
-                </button>
-              </footer>
+                </section>
+                <footer className="modal-card-foot is-centered">
+                  <div className="buttons">
+                    <button
+                      className={`button is-success mr-4 ${
+                        uploadingVideo ? "is-loading" : ""
+                      }`}
+                      onClick={handleConfirmUpload}
+                      disabled={!videoFile || uploadingVideo}
+                    >
+                      {uploadingVideo ? "Subiendo..." : "Subir Video"}
+                    </button>
+                    <button className="button" onClick={handleCancelUpload}>
+                      Cancelar
+                    </button>
+                  </div>
+                </footer>
+              </div>
             </div>
           </div>
         )}
