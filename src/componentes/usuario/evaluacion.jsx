@@ -55,7 +55,7 @@ const Evaluacion = () => {
     if (numeroPregunta < preguntas.length - 1) {
       setNumeroPregunta(numeroPregunta + 1);
       setPreguntaActual(preguntas[numeroPregunta + 1]);
-      setRespuestaSeleccionada(null); // Asegúrate de que se restablece aquí
+      setRespuestaSeleccionada(null);
     } else {
       setMostrarResultados(true);
       guardarResultados(nuevasRespuestas);
@@ -94,6 +94,10 @@ const Evaluacion = () => {
     return correctas;
   };
 
+  const getImagenPath = (imagen) => {
+    return `${process.env.PUBLIC_URL}/imagenes/${imagen}`;
+  };
+
   return (
     <div className="section" style={{ minHeight: '100vh', backgroundColor: '#14161A' }}>
       <div className="container">
@@ -106,7 +110,7 @@ const Evaluacion = () => {
                   <h2 className="subtitle has-text-white has-text-centered">Resultados Previos</h2>
                   <p className="has-text-white has-text-centered">Calificación: {evaluacionRealizada.porcentaje}%</p>
                   <div className="has-text-centered" style={{ marginTop: '1rem' }}>
-                    <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => navigate('/curso')}>
+                    <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => navigate('/user/curso')}>
                       Volver al curso
                     </button>
                   </div>
@@ -118,6 +122,11 @@ const Evaluacion = () => {
                     <form onSubmit={handleSubmit}>
                       <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
                         <h2 className="subtitle has-text-white">{preguntaActual.pregunta}</h2>
+                        {preguntaActual.imagen && (
+                          <figure className="image is-4by3">
+                            <img src={getImagenPath(preguntaActual.imagen)} alt="Imagen de la pregunta" />
+                          </figure>
+                        )}
                         {preguntaActual.opciones.map((opcion, index) => (
                           <div key={index} className="field">
                             <div className="control">
@@ -155,7 +164,7 @@ const Evaluacion = () => {
                       <p className="has-text-white has-text-centered">Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
                       <p className="has-text-white has-text-centered">Porcentaje de aciertos: {(calcularResultados() / preguntas.length * 100).toFixed(2)}%</p>
                       <div className="has-text-centered" style={{ marginTop: '1rem' }}>
-                        <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => navigate('/curso')}>
+                        <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => navigate('/user/curso')}>
                           Volver al curso
                         </button>
                       </div>

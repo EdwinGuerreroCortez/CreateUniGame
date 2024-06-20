@@ -29,6 +29,7 @@ import Contenidos from './componentes/administrativo/contenidos';
 import Usuarios from './componentes/administrativo/Usuarios';
 import CuestionariosForm from './componentes/administrativo/cuestionario';
 import Subirtema from './componentes/administrativo/subirtema';
+import SubirImagenes from './componentes/administrativo/imagenes';
 
 import RutaPrivada from './componentes/contextos/ContextoAutenticacion';
 
@@ -61,6 +62,8 @@ const App = () => {
         <Route path="/admin/informacion/mv" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Mision /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/informacion/buzon" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Buzon /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/subirtema" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Subirtema /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/imagenes" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><SubirImagenes /></LayoutEncabeAdmin></RutaPrivada>} />
+
       </Routes>
     </Router>
   );

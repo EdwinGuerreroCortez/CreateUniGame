@@ -223,13 +223,13 @@ const CuestionariosForm = () => {
     setEditEvaluacion({ ...editEvaluacion, evaluacion: newPreguntas });
   };
 
-  const handleDownloadTema = (temaId) => {
-    axios.get(`http://localhost:3001/api/temas/${temaId}/download`, { responseType: 'blob' })
+  const handleDownloadEvaluacion = (evaluacionId) => {
+    axios.get(`http://localhost:3001/api/evaluaciones/${evaluacionId}/download`, { responseType: 'blob' })
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', `${temaId}.xlsx`);
+        link.setAttribute('download', `Evaluacion_${evaluacionId}.xlsx`);
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
@@ -307,7 +307,7 @@ const CuestionariosForm = () => {
             <label className="label has-text-white">Tema</label>
             <div className="control">
               <div className="select">
-                <select value={tema} onChange={(e) => setTema(e.target.value)} required>
+              <select value={tema} onChange={(e) => setTema(e.target.value)} required>
                   <option value="" disabled>Selecciona un tema</option>
                   {temas.map((tema) => (
                     <option key={tema._id} value={tema._id}>{tema.titulo}</option>
@@ -387,7 +387,7 @@ const CuestionariosForm = () => {
                               <i className="fas fa-trash-alt"></i>
                             </span>
                           </button>
-                          <button className="button is-small is-warning" onClick={() => handleDownloadTema(tema_id._id)} data-tooltip="Descargar Tema">
+                          <button className="button is-small is-warning" onClick={() => handleDownloadEvaluacion(evaluacion._id)} data-tooltip="Descargar Evaluación">
                             <span className="icon">
                               <i className="fas fa-download"></i>
                             </span>
@@ -500,6 +500,17 @@ const CuestionariosForm = () => {
                         />
                       </div>
                     </div>
+                    <div className="field">
+                      <label className="label">Imagen</label>
+                      <div className="control">
+                        <input
+                          className="input"
+                          type="text"
+                          value={pregunta.imagen}
+                          onChange={(e) => handlePreguntaChange(index + (currentPage - 1) * itemsPerPage, 'imagen', e.target.value)}
+                        />
+                      </div>
+                    </div>
                   </div>
                 ))}
                 <nav className="pagination is-centered" role="navigation" aria-label="pagination">
@@ -520,59 +531,59 @@ const CuestionariosForm = () => {
                   <ul className="pagination-list">
                     {Array.from({ length: totalPages }, (_, i) => (
                       <li key={i}>
-                        <button
-                          className={`pagination-link ${currentPage === i + 1 ? 'is-current' : ''}`}
-                          onClick={() => handlePageChange(i + 1)}
-                        >
-                          {i + 1}
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </section>
-              <footer className="modal-card-foot">
-                <div className="footer-left">
-                  <button className="button is-success" onClick={handleModalSave}>
-                    <span className="icon">
-                      <i className="fas fa-save"></i>
-                    </span>
-                    <span>Guardar</span>
-                  </button>
-                  <button className="button" onClick={handleModalClose}>
-                    <span className="icon">
-                      <i className="fas fa-times"></i>
-                    </span>
-                    <span>Cancelar</span>
-                  </button>
-                </div>
-                <div className="footer-right" style={{ marginLeft: '150px' }}>
-                  <div className="file is-primary has-name">
-                    <label className="file-label">
-                      <input className="file-input" type="file" accept=".xlsx, .xls" onChange={handleEditFileChange} />
-                      <span className="file-cta">
-                        <span className="file-icon">
-                          <i className="fas fa-upload"></i>
-                        </span>
-                        <span className="file-label">
-                          Subir actualización...
-                        </span>
+                      <button
+                        className={`pagination-link ${currentPage === i + 1 ? 'is-current' : ''}`}
+                        onClick={() => handlePageChange(i + 1)}
+                      >
+                        {i + 1}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </section>
+            <footer className="modal-card-foot">
+              <div className="footer-left">
+                <button className="button is-success" onClick={handleModalSave}>
+                  <span className="icon">
+                    <i className="fas fa-save"></i>
+                  </span>
+                  <span>Guardar</span>
+                </button>
+                <button className="button" onClick={handleModalClose}>
+                  <span className="icon">
+                    <i className="fas fa-times"></i>
+                  </span>
+                  <span>Cancelar</span>
+                </button>
+              </div>
+              <div className="footer-right" style={{ marginLeft: '150px' }}>
+                <div className="file is-primary has-name">
+                  <label className="file-label">
+                    <input className="file-input" type="file" accept=".xlsx, .xls" onChange={handleEditFileChange} />
+                    <span className="file-cta">
+                      <span className="file-icon">
+                        <i className="fas fa-upload"></i>
                       </span>
-                      {editFile && (
-                        <span className="file-name">
-                          {editFile.name}
-                        </span>
-                      )}
-                    </label>
-                  </div>
+                      <span className="file-label">
+                        Subir actualización...
+                      </span>
+                    </span>
+                    {editFile && (
+                      <span className="file-name">
+                        {editFile.name}
+                      </span>
+                    )}
+                  </label>
                 </div>
-              </footer>
-            </div>
+              </div>
+            </footer>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
-  );
+  </div>
+);
 };
 
 export default CuestionariosForm;
