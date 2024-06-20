@@ -94,14 +94,8 @@ const Evaluacion = () => {
     return correctas;
   };
 
-  const loadImagen = async (imagen) => {
-    try {
-      const img = await import(`../imagenes/${imagen}`);
-      return img.default;
-    } catch (error) {
-      console.error("Error al cargar la imagen:", error);
-      return null;
-    }
+  const getImagenPath = (imagen) => {
+    return `${process.env.PUBLIC_URL}/imagenes/${imagen}`;
   };
 
   return (
@@ -130,7 +124,7 @@ const Evaluacion = () => {
                         <h2 className="subtitle has-text-white">{preguntaActual.pregunta}</h2>
                         {preguntaActual.imagen && (
                           <figure className="image is-4by3">
-                            <img src={loadImagen(preguntaActual.imagen)} alt="Imagen de la pregunta" />
+                            <img src={getImagenPath(preguntaActual.imagen)} alt="Imagen de la pregunta" />
                           </figure>
                         )}
                         {preguntaActual.opciones.map((opcion, index) => (
