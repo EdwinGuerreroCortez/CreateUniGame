@@ -117,204 +117,206 @@ const SubirTema = () => {
   const endIndex = startIndex + pasosPorPagina;
 
   return (
-    <div className="full-screen-container">
+    <div className="has-background-black" style={{ minHeight: "100vh" }}>
       {isLoading && (
         <div className="loading-overlay">
           <div className="loading-circle"></div>
         </div>
       )}
-      <div className="container">
-        <div className="box">
-          <h1 className="title has-text-centered has-text-white">Subir Tema</h1>
+      <div className="columns is-centered">
+        <div className="column is-three-quarters">
+          <div className="box">
+            <h1 className="title has-text-centered has-text-white">Subir Tema</h1>
 
-          {alert.message && (
-            <div
-              className={`notification ${
-                alert.type === "success"
-                  ? "is-success"
-                  : alert.type === "warning"
-                  ? "is-warning"
-                  : "is-danger"
-              }`}
-            >
-              <button
-                className="delete"
-                onClick={() => setAlert({ type: "", message: "" })}
-              ></button>
-              {alert.message}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
-            <div className="field">
-              <label className="label has-text-white">Título</label>
-              <div className="control">
-                <input
-                  className="input"
-                  type="text"
-                  value={titulo}
-                  onChange={(e) => setTitulo(e.target.value)}
-                />
+            {alert.message && (
+              <div
+                className={`notification ${
+                  alert.type === "success"
+                    ? "is-success"
+                    : alert.type === "warning"
+                    ? "is-warning"
+                    : "is-danger"
+                }`}
+              >
+                <button
+                  className="delete"
+                  onClick={() => setAlert({ type: "", message: "" })}
+                ></button>
+                {alert.message}
               </div>
-            </div>
+            )}
 
-            <div className="field">
-              <label className="label has-text-white">Descripción</label>
-              <div className="control">
-                <textarea
-                  className="textarea"
-                  value={descripcion}
-                  onChange={(e) => setDescripcion(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="field">
-              <label className="label has-text-white">Responsable</label>
-              <div className="control">
-                <input
-                  className="input"
-                  type="text"
-                  value={responsable}
-                  onChange={(e) => setResponsable(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="field">
-              <label className="label has-text-white">Bibliografía</label>
-              <div className="control">
-                <input
-                  className="input"
-                  type="text"
-                  value={bibliografia}
-                  onChange={(e) => setBibliografia(e.target.value)}
-                />
-              </div>
-            </div>
-
-            <div className="field">
-              <label className="label has-text-white">Cargar Video</label>
-              <div className="file has-name is-fullwidth">
-                <label className="file-label">
+            <form onSubmit={handleSubmit}>
+              <div className="field">
+                <label className="label has-text-white">Título</label>
+                <div className="control">
                   <input
-                    className="file-input"
-                    type="file"
-                    accept="video/*"
-                    onChange={handleFileChange}
+                    className="input"
+                    type="text"
+                    value={titulo}
+                    onChange={(e) => setTitulo(e.target.value)}
                   />
-                  <span className="file-cta">
-                    <span className="file-icon">
-                      <i className="fas fa-upload"></i>
-                    </span>
-                    <span className="file-label">Escoge un archivo…</span>
-                  </span>
-                  {videoFile && (
-                    <span className="file-name">{videoFile.name}</span>
-                  )}
-                </label>
-              </div>
-            </div>
-
-            <div className="field">
-              <label className="label has-text-white">Pasos</label>
-              {pasos.slice(startIndex, endIndex).map((paso, index) => (
-                <div
-                  key={index}
-                  className="box step-box"
-                  style={{
-                    backgroundColor: "#272727",
-                    marginBottom: "10px",
-                    padding: "10px",
-                    position: "relative",
-                  }}
-                >
-                  {pasos.length > 1 && (
-                    <div
-                      className="delete-icon"
-                      title="Eliminar paso"
-                      onClick={() => handleEliminarPaso(startIndex + index)}
-                    >
-                      <FaTrash />
-                    </div>
-                  )}
-                  <div className="field">
-                    <label className="label has-text-white">
-                      Título del Paso {startIndex + index + 1}
-                    </label>
-                    <div className="control">
-                      <input
-                        className="input"
-                        type="text"
-                        value={paso.Titulo}
-                        onChange={(e) =>
-                          handleInputChange(
-                            startIndex + index,
-                            "Titulo",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-                  </div>
-
-                  <div className="field">
-                    <label className="label has-text-white">
-                      Descripción del Paso {startIndex + index + 1}
-                    </label>
-                    <div className="control">
-                      <textarea
-                        className="textarea"
-                        value={paso.Descripcion}
-                        onChange={(e) =>
-                          handleInputChange(
-                            startIndex + index,
-                            "Descripcion",
-                            e.target.value
-                          )
-                        }
-                      />
-                    </div>
-                  </div>
                 </div>
-              ))}
-            </div>
-            <div className="control is-flex is-justify-content-flex-end">
-              <button
-                type="button"
-                className="button is-link add-button"
-                style={{ marginRight: "0.4cm" }}
-                onClick={handleAgregarPaso}
-              >
-                <FaPlus />
-              </button>
-              <button
-                type="button"
-                className="button is-link tooltip"
-                data-tooltip="Anterior"
-                onClick={() => setPaginaActual(paginaActual - 1)}
-                disabled={paginaActual === 0}
-                style={{ marginRight: "0.4cm" }}
-              >
-                <FaArrowLeft />
-              </button>
-              <button
-                type="button"
-                className="button is-link tooltip"
-                data-tooltip="Siguiente"
-                onClick={() => setPaginaActual(paginaActual + 1)}
-                disabled={endIndex >= pasos.length}
-              >
-                <FaArrowRight />
-              </button>
-            </div>
-            <br />
-            <div className="control has-text-centered">
-              <button type="submit" className="button is-primary">
-                Subir Tema
-              </button>
-            </div>
-          </form>
+              </div>
+
+              <div className="field">
+                <label className="label has-text-white">Descripción</label>
+                <div className="control">
+                  <textarea
+                    className="textarea"
+                    value={descripcion}
+                    onChange={(e) => setDescripcion(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="field">
+                <label className="label has-text-white">Responsable</label>
+                <div className="control">
+                  <input
+                    className="input"
+                    type="text"
+                    value={responsable}
+                    onChange={(e) => setResponsable(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="field">
+                <label className="label has-text-white">Bibliografía</label>
+                <div className="control">
+                  <input
+                    className="input"
+                    type="text"
+                    value={bibliografia}
+                    onChange={(e) => setBibliografia(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="field">
+                <label className="label has-text-white">Cargar Video</label>
+                <div className="file has-name is-fullwidth">
+                  <label className="file-label">
+                    <input
+                      className="file-input"
+                      type="file"
+                      accept="video/*"
+                      onChange={handleFileChange}
+                    />
+                    <span className="file-cta">
+                      <span className="file-icon">
+                        <i className="fas fa-upload"></i>
+                      </span>
+                      <span className="file-label">Escoge un archivo…</span>
+                    </span>
+                    {videoFile && (
+                      <span className="file-name">{videoFile.name}</span>
+                    )}
+                  </label>
+                </div>
+              </div>
+
+              <div className="field">
+                <label className="label has-text-white">Pasos</label>
+                {pasos.slice(startIndex, endIndex).map((paso, index) => (
+                  <div
+                    key={index}
+                    className="box step-box"
+                    style={{
+                      backgroundColor: "#272727",
+                      marginBottom: "10px",
+                      padding: "10px",
+                      position: "relative",
+                    }}
+                  >
+                    {pasos.length > 1 && (
+                      <div
+                        className="delete-icon"
+                        title="Eliminar paso"
+                        onClick={() => handleEliminarPaso(startIndex + index)}
+                      >
+                        <FaTrash />
+                      </div>
+                    )}
+                    <div className="field">
+                      <label className="label has-text-white">
+                        Título del Paso {startIndex + index + 1}
+                      </label>
+                      <div className="control">
+                        <input
+                          className="input"
+                          type="text"
+                          value={paso.Titulo}
+                          onChange={(e) =>
+                            handleInputChange(
+                              startIndex + index,
+                              "Titulo",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+
+                    <div className="field">
+                      <label className="label has-text-white">
+                        Descripción del Paso {startIndex + index + 1}
+                      </label>
+                      <div className="control">
+                        <textarea
+                          className="textarea"
+                          value={paso.Descripcion}
+                          onChange={(e) =>
+                            handleInputChange(
+                              startIndex + index,
+                              "Descripcion",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="control is-flex is-justify-content-flex-end">
+                <button
+                  type="button"
+                  className="button is-link add-button"
+                  style={{ marginRight: "0.4cm" }}
+                  onClick={handleAgregarPaso}
+                >
+                  <FaPlus />
+                </button>
+                <button
+                  type="button"
+                  className="button is-link tooltip"
+                  data-tooltip="Anterior"
+                  onClick={() => setPaginaActual(paginaActual - 1)}
+                  disabled={paginaActual === 0}
+                  style={{ marginRight: "0.4cm" }}
+                >
+                  <FaArrowLeft />
+                </button>
+                <button
+                  type="button"
+                  className="button is-link tooltip"
+                  data-tooltip="Siguiente"
+                  onClick={() => setPaginaActual(paginaActual + 1)}
+                  disabled={endIndex >= pasos.length}
+                >
+                  <FaArrowRight />
+                </button>
+              </div>
+              <br />
+              <div className="control has-text-centered">
+                <button type="submit" className="button is-primary">
+                  Subir Tema
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     </div>

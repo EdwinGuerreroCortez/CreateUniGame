@@ -282,7 +282,7 @@ const Contenidos = () => {
         <h1 className="title has-text-centered has-text-white">
           Lista de Temas
         </h1>
-    
+
         {alert.message && (
           <div
             className={`notification ${
@@ -294,10 +294,11 @@ const Contenidos = () => {
           </div>
         )}
         <div className="control is-pulled-right" style={{ margin: "10px" }}>
-          <Link to="/admin/temas" className="button is-primary">
-            <span className="icon " data-tooltip="Agregar tema">
-              <i className="fas fa-plus"></i>
+          <Link to="/admin/temas" className="button is-primary"  data-tooltip="Agregar tema">
+            <span className="icon " >
+              <i className="fas fa-plus " ></i>
             </span>
+            
           </Link>
         </div>
 
