@@ -282,7 +282,7 @@ const Contenidos = () => {
         <h1 className="title has-text-centered has-text-white">
           Lista de Temas
         </h1>
-    
+
         {alert.message && (
           <div
             className={`notification ${
@@ -353,56 +353,68 @@ const Contenidos = () => {
                       </td>
 
                       <td className="has-text-centered has-text-white">
-                        <div className="buttons is-centered is-grouped">
-                          <button
-                            className="button is-small is-info button-tooltip"
-                            onClick={() => handleEdit(tema)}
-                            data-tooltip="Editar"
-                          >
-                            <span className="icon">
-                              <i className="fas fa-edit"></i>
-                            </span>
-                          </button>
+                        <div className="buttons is-centered">
+                          {/* Grupo de botones arriba */}
+                          <div className="is-flex is-align-items-center">
+                            <button
+                              className="button is-small is-info button-tooltip"
+                              onClick={() => handleEdit(tema)}
+                              data-tooltip="Editar"
+                              style={{ marginRight: "0.3cm" }}
+                            >
+                              <span className="icon">
+                                <i className="fas fa-edit"></i>
+                              </span>
+                            </button>
+                            <button
+                              className="button is-small is-danger button-tooltip"
+                              onClick={() => confirmDelete(tema._id)}
+                              data-tooltip="Eliminar"
+                              style={{ marginLeft: "0.3cm" }}
+                            >
+                              <span className="icon">
+                                <i className="fas fa-trash"></i>
+                              </span>
+                            </button>
+                          </div>
 
-                          <button
-                            className="button is-small is-danger button-tooltip"
-                            onClick={() => confirmDelete(tema._id)}
-                            data-tooltip="Eliminar"
+                          {/* Grupo de botones abajo */}
+                          <div
+                            className="is-flex is-align-items-center"
+                            style={{ marginTop: "0.3cm" }}
                           >
-                            <span className="icon">
-                              <i className="fas fa-trash"></i>
-                            </span>
-                          </button>
-
-                          <button
-                            className="button is-small is-warning button-tooltip"
-                            onClick={() => handleDownloadTema(tema._id)}
-                            data-tooltip="Descargar Excel"
-                          >
-                            <span className="icon">
-                              <i className="fas fa-file-download"></i>
-                            </span>
-                          </button>
-                          <button
-                            className={`button is-small ${
-                              tema.habilitado ? "is-success" : "is-light"
-                            }`}
-                            onClick={() => handleToggleHabilitar(tema._id)}
-                            data-tooltip={
-                              tema.habilitado
-                                ? "Deshabilitar tema"
-                                : "Habilitar tema"
-                            }
-                            disabled={!allFieldsFilled}
-                          >
-                            <span className="icon">
-                              <i
-                                className={`fas ${
-                                  tema.habilitado ? "fa-eye-slash" : "fa-eye"
-                                }`}
-                              ></i>
-                            </span>
-                          </button>
+                            <button
+                              className="button is-small is-warning button-tooltip"
+                              onClick={() => handleDownloadTema(tema._id)}
+                              data-tooltip="Descargar Excel"
+                              style={{ marginRight: "0.3cm" }}
+                            >
+                              <span className="icon">
+                                <i className="fas fa-file-download"></i>
+                              </span>
+                            </button>
+                            <button
+                              className={`button is-small ${
+                                tema.habilitado ? "is-success" : "is-light"
+                              }`}
+                              onClick={() => handleToggleHabilitar(tema._id)}
+                              data-tooltip={
+                                tema.habilitado
+                                  ? "Deshabilitar tema"
+                                  : "Habilitar tema"
+                              }
+                              disabled={!allFieldsFilled}
+                              style={{ marginLeft: "0.3cm" }}
+                            >
+                              <span className="icon">
+                                <i
+                                  className={`fas ${
+                                    tema.habilitado ? "fa-eye-slash" : "fa-eye"
+                                  }`}
+                                ></i>
+                              </span>
+                            </button>
+                          </div>
                         </div>
                       </td>
                     </tr>
