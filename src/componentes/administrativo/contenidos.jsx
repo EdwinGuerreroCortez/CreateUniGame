@@ -295,7 +295,7 @@ const Contenidos = () => {
         )}
         <div className="control is-pulled-right" style={{ margin: "10px" }}>
           <Link to="/admin/temas" className="button is-primary">
-            <span className="icon " data-tooltip="Agregar tema">
+            <span className="icon">
               <i className="fas fa-plus"></i>
             </span>
           </Link>
@@ -353,68 +353,56 @@ const Contenidos = () => {
                       </td>
 
                       <td className="has-text-centered has-text-white">
-                        <div className="buttons is-centered">
-                          {/* Grupo de botones arriba */}
-                          <div className="is-flex is-align-items-center">
-                            <button
-                              className="button is-small is-info button-tooltip"
-                              onClick={() => handleEdit(tema)}
-                              data-tooltip="Editar"
-                              style={{ marginRight: "0.3cm" }}
-                            >
-                              <span className="icon">
-                                <i className="fas fa-edit"></i>
-                              </span>
-                            </button>
-                            <button
-                              className="button is-small is-danger button-tooltip"
-                              onClick={() => confirmDelete(tema._id)}
-                              data-tooltip="Eliminar"
-                              style={{ marginLeft: "0.3cm" }}
-                            >
-                              <span className="icon">
-                                <i className="fas fa-trash"></i>
-                              </span>
-                            </button>
-                          </div>
-
-                          {/* Grupo de botones abajo */}
-                          <div
-                            className="is-flex is-align-items-center"
-                            style={{ marginTop: "0.3cm" }}
+                        <div className="buttons is-centered is-grouped">
+                          <button
+                            className="button is-small is-info button-tooltip"
+                            onClick={() => handleEdit(tema)}
+                            data-tooltip="Editar"
                           >
-                            <button
-                              className="button is-small is-warning button-tooltip"
-                              onClick={() => handleDownloadTema(tema._id)}
-                              data-tooltip="Descargar Excel"
-                              style={{ marginRight: "0.3cm" }}
-                            >
-                              <span className="icon">
-                                <i className="fas fa-file-download"></i>
-                              </span>
-                            </button>
-                            <button
-                              className={`button is-small ${
-                                tema.habilitado ? "is-success" : "is-light"
-                              }`}
-                              onClick={() => handleToggleHabilitar(tema._id)}
-                              data-tooltip={
-                                tema.habilitado
-                                  ? "Deshabilitar tema"
-                                  : "Habilitar tema"
-                              }
-                              disabled={!allFieldsFilled}
-                              style={{ marginLeft: "0.3cm" }}
-                            >
-                              <span className="icon">
-                                <i
-                                  className={`fas ${
-                                    tema.habilitado ? "fa-eye-slash" : "fa-eye"
-                                  }`}
-                                ></i>
-                              </span>
-                            </button>
-                          </div>
+                            <span className="icon">
+                              <i className="fas fa-edit"></i>
+                            </span>
+                          </button>
+
+                          <button
+                            className="button is-small is-danger button-tooltip"
+                            onClick={() => confirmDelete(tema._id)}
+                            data-tooltip="Eliminar"
+                          >
+                            <span className="icon">
+                              <i className="fas fa-trash"></i>
+                            </span>
+                          </button>
+
+                          <button
+                            className="button is-small is-warning button-tooltip"
+                            onClick={() => handleDownloadTema(tema._id)}
+                            data-tooltip="Descargar Excel"
+                          >
+                            <span className="icon">
+                              <i className="fas fa-file-download"></i>
+                            </span>
+                          </button>
+                          <button
+                            className={`button is-small ${
+                              tema.habilitado ? "is-success" : "is-light"
+                            }`}
+                            onClick={() => handleToggleHabilitar(tema._id)}
+                            data-tooltip={
+                              tema.habilitado
+                                ? "Deshabilitar tema"
+                                : "Habilitar tema"
+                            }
+                            disabled={!allFieldsFilled}
+                          >
+                            <span className="icon">
+                              <i
+                                className={`fas ${
+                                  tema.habilitado ? "fa-eye-slash" : "fa-eye"
+                                }`}
+                              ></i>
+                            </span>
+                          </button>
                         </div>
                       </td>
                     </tr>
