@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bulma/css/bulma.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import '../CSS/evaluaciones.css'
+import '../CSS/evaluaciones.css';
 
 const Evaluaciones = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [evaluaciones, setEvaluaciones] = useState([
-    { matricula: '12345', examen: 'Math', datosExamen: 'Algebra', intentos: 2, calificacion: 85 },
-    { matricula: '67890', examen: 'Science', datosExamen: 'Biology', intentos: 1, calificacion: 90 },
-    // Agrega más datos según sea necesario
-  ]);
+  const [evaluaciones, setEvaluaciones] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [currentExamen, setCurrentExamen] = useState(null);
+
+  useEffect(() => {
+    const fetchEvaluaciones = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/examenes');
+        const data = await response.json();
+        setEvaluaciones(data);
+      } catch (error) {
+        console.error('Error al obtener las evaluaciones:', error);
+      }
+    };
+
+    fetchEvaluaciones();
+  }, []);
 
   const handleSearch = () => {
     // Implementa la lógica de búsqueda aquí si es necesario
@@ -19,6 +31,16 @@ const Evaluaciones = () => {
     const newEvaluaciones = [...evaluaciones];
     newEvaluaciones[index].intentos += 1;
     setEvaluaciones(newEvaluaciones);
+  };
+
+  const handleViewDetails = (examen) => {
+    setCurrentExamen(examen);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setCurrentExamen(null);
   };
 
   return (
@@ -38,8 +60,7 @@ const Evaluaciones = () => {
                 />
               </div>
               <div className="control">
-                <button className="button is-info" onClick={handleSearch}
-                  >
+                <button className="button is-info" onClick={handleSearch}>
                   <span className="icon">
                     <i className="fas fa-search"></i>
                   </span>
@@ -47,7 +68,7 @@ const Evaluaciones = () => {
               </div>
             </div>
             <div className="table-container">
-            <h2 className="title is-4 has-text-centered has-text-white">Calificaciones</h2>
+              <h2 className="title is-4 has-text-centered has-text-white">Calificaciones</h2>
               <table className="table is-fullwidth is-striped is-hoverable">
                 <thead>
                   <tr>
@@ -61,21 +82,28 @@ const Evaluaciones = () => {
                 </thead>
                 <tbody>
                   {evaluaciones
-                    .filter(item => item.matricula.includes(searchTerm))
+                    .filter(item => item.usuarioId && item.usuarioId.matricula.includes(searchTerm))
                     .map((item, index) => (
                       <tr key={index}>
-                        <td className="has-text-white">{item.matricula}</td>
-                        <td className="has-text-white">{item.examen}</td>
-                        <td className="has-text-white">{item.datosExamen}</td>
+                        <td className="has-text-white">{item.usuarioId.matricula}</td>
+                        <td className="has-text-white">{item.temaId.titulo}</td>
+                        <td className="has-text-white">
+                          <button
+                            className="button is-small is-info"
+                            onClick={() => handleViewDetails(item)}
+                          >
+                            Ver
+                          </button>
+                        </td>
                         <td className="has-text-white">{item.intentos}</td>
-                        <td className="has-text-white">{item.calificacion}</td>
+                        <td className="has-text-white">{item.porcentaje}%</td>
                         <td>
-                        <button
+                          <button
                             className="button is-small is-info"
                             onClick={() => handleAddAttempt(index)}
                           >
                             <span className="icon " data-tooltip="Añadir otro intento">
-                              <i className="fas fa-plus" ></i>
+                              <i className="fas fa-plus"></i>
                             </span>
                           </button>
                         </td>
@@ -87,6 +115,35 @@ const Evaluaciones = () => {
           </div>
         </div>
       </section>
+
+      {showModal && currentExamen && (
+        <div className="modal is-active">
+          <div className="modal-background" onClick={handleCloseModal}></div>
+          <div className="modal-content">
+            <div className="box has-background-black" style={{ border: '2px solid #48C78E' }}>
+              <h2 className="title has-text-white">Detalles del Examen</h2>
+              <div className="content">
+                {currentExamen.preguntasRespondidas.map((pregunta, index) => (
+                  <div
+                    key={index}
+                    className="box"
+                    style={{
+                      backgroundColor: '#14161A',
+                      border: pregunta.correcta ? '2px solid green' : '2px solid red',
+                      marginBottom: '1rem'
+                    }}
+                  >
+                    <p className="has-text-white"><strong>Pregunta:</strong> {pregunta.pregunta}</p>
+                    <p className="has-text-white"><strong>Respuesta:</strong> {pregunta.respuesta}</p>
+                    <p className="has-text-white"><strong>Correcta:</strong> {pregunta.correcta ? 'Sí' : 'No'}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          <button className="modal-close is-large" aria-label="close" onClick={handleCloseModal}></button>
+        </div>
+      )}
     </div>
   );
 };

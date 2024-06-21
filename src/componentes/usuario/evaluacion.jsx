@@ -65,8 +65,10 @@ const Evaluacion = () => {
   const guardarResultados = async (respuestas) => {
     const porcentaje = (respuestas.filter(respuesta => respuesta.correcta).length / preguntas.length) * 100;
     console.log("Guardando resultados...", { temaId, porcentaje, preguntasRespondidas: respuestas });
+  
     try {
-      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
+      // Guardar en la colección de usuarios
+      await fetch(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,12 +79,29 @@ const Evaluacion = () => {
           preguntasRespondidas: respuestas,
         }),
       });
-      const data = await response.json();
-      console.log("Respuesta del servidor:", data);
+  
+      // Guardar en la colección de exámenes
+      await fetch(`http://localhost:3001/api/examenes`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          usuarioId: userId,
+          temaId,
+          porcentaje,
+          preguntasRespondidas: respuestas,
+          fecha: new Date() // Enviar la fecha actual
+        }),
+      });
+  
+      console.log("Resultados guardados exitosamente.");
     } catch (error) {
       console.error('Error al guardar los resultados:', error);
     }
   };
+  
+  
 
   const calcularResultados = () => {
     let correctas = 0;
