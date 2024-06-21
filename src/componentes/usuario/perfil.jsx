@@ -12,6 +12,7 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
     edad: '',
     telefono: '',
     correo: '',
+    matricula: '',
     contrasena: '',
     imagen: ''
   });
@@ -28,7 +29,7 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
       const userId = localStorage.getItem('userId');
       if (userId) {
         try {
-          const response = await axios.get(`https://gamebackend-1.onrender.com/api/usuarios/${userId}`);
+          const response = await axios.get(`http://localhost:3001/api/usuarios/${userId}`);
           const data = response.data;
           setUsuario({
             nombreUsuario: data.username,
@@ -38,6 +39,7 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
             edad: data.datos_personales.edad,
             telefono: data.datos_personales.telefono,
             correo: data.datos_personales.correo,
+            matricula: data.datos_personales.matricula,
             contrasena: '',
             imagen: data.imagenPerfil
           });
@@ -243,7 +245,13 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
                     </div>
                   </div>
                   <div className="field">
-                    <label className="label">Contraseña</label> 
+                    <label className="label">Matrícula</label>
+                    <div className="control">
+                      <input className="input inputperfil" type="text" value={usuario.matricula} disabled />
+                    </div>
+                  </div>
+                  <div className="field">
+                    <label className="label">Contraseña</label>
                     <div className="control">
                       <input className="input inputperfil" type="password" name="contrasena" value={usuario.contrasena} onChange={handleChange} disabled={!editando} placeholder="••••••••" />
                     </div>
