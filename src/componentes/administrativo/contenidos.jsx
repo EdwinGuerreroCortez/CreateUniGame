@@ -301,8 +301,9 @@ const Contenidos = () => {
             
           </Link>
         </div>
-
+       
         <div className="box" style={{ backgroundColor: "#090A0C" }}>
+          <div className="table-container">
           <table className="table is-fullwidth is-striped is-hoverable">
             <thead>
               <tr>
@@ -418,6 +419,7 @@ const Contenidos = () => {
               )}
             </tbody>
           </table>
+          </div>
         </div>
 
         {temaToDelete && (
