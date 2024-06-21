@@ -1,0 +1,14 @@
+.button.is-small.is-info {
+    position: relative;
+  }
+  
+  .button.is-small.is-info .icon {
+    position: relative;
+    display: inline-block;
+  }
+  
+
+  .button.is-small.is-info .icon:hover::after {
+    opacity: 1;
+  }
+  
