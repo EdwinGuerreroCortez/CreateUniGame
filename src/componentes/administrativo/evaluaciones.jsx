@@ -46,9 +46,8 @@ const Evaluaciones = () => {
                 </button>
               </div>
             </div>
-          
-            <h2 className="title is-4 has-text-centered has-text-white">Calificaciones</h2>
             <div className="table-container">
+            <h2 className="title is-4 has-text-centered has-text-white">Calificaciones</h2>
               <table className="table is-fullwidth is-striped is-hoverable">
                 <thead>
                   <tr>
