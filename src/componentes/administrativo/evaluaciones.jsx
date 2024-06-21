@@ -82,10 +82,10 @@ const Evaluaciones = () => {
                 </thead>
                 <tbody>
                   {evaluaciones
-                    .filter(item => item.usuarioId && item.usuarioId.matricula.includes(searchTerm))
+                    .filter(item => item.usuarioId && item.usuarioId.datos_personales && item.usuarioId.datos_personales.matricula.includes(searchTerm))
                     .map((item, index) => (
                       <tr key={index}>
-                        <td className="has-text-white">{item.usuarioId.matricula}</td>
+                        <td className="has-text-white">{item.usuarioId.datos_personales.matricula}</td>
                         <td className="has-text-white">{item.temaId.titulo}</td>
                         <td className="has-text-white">
                           <button
@@ -102,7 +102,7 @@ const Evaluaciones = () => {
                             className="button is-small is-info"
                             onClick={() => handleAddAttempt(index)}
                           >
-                            <span className="icon " data-tooltip="Añadir otro intento">
+                            <span className="icon" data-tooltip="Añadir otro intento">
                               <i className="fas fa-plus"></i>
                             </span>
                           </button>

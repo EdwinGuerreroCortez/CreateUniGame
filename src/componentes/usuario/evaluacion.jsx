@@ -100,8 +100,6 @@ const Evaluacion = () => {
       console.error('Error al guardar los resultados:', error);
     }
   };
-  
-  
 
   const calcularResultados = () => {
     let correctas = 0;
@@ -146,7 +144,7 @@ const Evaluacion = () => {
                             <img src={getImagenPath(preguntaActual.imagen)} alt="Imagen de la pregunta" />
                           </figure>
                         )}
-                        {preguntaActual.opciones.map((opcion, index) => (
+                        {preguntaActual.opciones && preguntaActual.opciones.map((opcion, index) => (
                           <div key={index} className="field">
                             <div className="control">
                               <label className="radio has-text-white">
