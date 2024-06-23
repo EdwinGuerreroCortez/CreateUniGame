@@ -42,25 +42,18 @@ const CuestionariosForm = () => {
     fetchEvaluaciones();
   }, []);
 
-  useEffect(() => {
-    if (alert.message) {
-      const timer = setTimeout(() => {
-        setAlert({ type: '', message: '' });
-      }, 5000);
-
-      return () => clearTimeout(timer);
+  const handleToggleHabilitado = async (evaluacionId, habilitado) => {
+    try {
+      const response = await axios.put(`http://localhost:3001/api/evaluaciones/${evaluacionId}/habilitar`, { habilitado });
+      setEvaluaciones(evaluaciones.map(evaluacion => 
+        evaluacion._id === evaluacionId ? { ...evaluacion, habilitado: response.data.evaluacion.habilitado } : evaluacion
+      ));
+      setAlert({ type: 'success', message: `Evaluación ${habilitado ? 'habilitada' : 'deshabilitada'} exitosamente` });
+    } catch (error) {
+      console.error('Error al actualizar evaluación:', error);
+      setAlert({ type: 'error', message: 'Error al actualizar evaluación' });
     }
-  }, [alert]);
-
-  useEffect(() => {
-    if (modalAlert.message) {
-      const timer = setTimeout(() => {
-        setModalAlert({ type: '', message: '' });
-      }, 5000);
-
-      return () => clearTimeout(timer);
-    }
-  }, [modalAlert]);
+  };
 
   const handleNewFileChange = (e) => {
     setNewFile(e.target.files[0]);
@@ -368,7 +361,7 @@ const CuestionariosForm = () => {
             <tbody>
               {evaluaciones && evaluaciones.length > 0 ? (
                 evaluaciones.map((evaluacion) => {
-                  const { tema_id, evaluacion: preguntas } = evaluacion;
+                  const { tema_id, evaluacion: preguntas, habilitado } = evaluacion;
                   return (
                     <tr key={evaluacion._id}>
                       <td className="has-text-white" style={{ verticalAlign: 'middle' }}>
@@ -390,6 +383,15 @@ const CuestionariosForm = () => {
                           <button className="button is-small is-warning" onClick={() => handleDownloadEvaluacion(evaluacion._id)} data-tooltip="Descargar Evaluación">
                             <span className="icon">
                               <i className="fas fa-download"></i>
+                            </span>
+                          </button>
+                          <button
+                            className={`button is-small ${habilitado ? 'is-success' : 'is-light'}`}
+                            onClick={() => handleToggleHabilitado(evaluacion._id, !habilitado)}
+                            data-tooltip={habilitado ? 'Deshabilitar' : 'Habilitar'}
+                          >
+                            <span className="icon">
+                              <i className={`fas ${habilitado ? 'fa-check' : 'fa-times'}`}></i>
                             </span>
                           </button>
                         </div>
