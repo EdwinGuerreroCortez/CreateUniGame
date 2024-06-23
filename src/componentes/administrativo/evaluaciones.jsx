@@ -69,7 +69,7 @@ const Evaluaciones = () => {
                     <th className="has-text-white">Matrícula</th>
                     <th className="has-text-white">Examen</th>
                     <th className="has-text-white">Datos del Examen</th>
-                    <th className="has-text-white">Número de Intento</th>
+                    <th className="has-text-white">Número de Intentos</th>
                     <th className="has-text-white">Calificación</th>
                   </tr>
                 </thead>
@@ -89,7 +89,7 @@ const Evaluaciones = () => {
                           </button>
                         </td>
                         <td className="has-text-white">{item.intentos}</td>
-                        <td className="has-text-white">{item.porcentaje}%</td>
+                        <td className="has-text-white">{item.preguntasRespondidas[item.preguntasRespondidas.length - 1].porcentaje}%</td>
                       </tr>
                     ))}
                 </tbody>
@@ -106,19 +106,26 @@ const Evaluaciones = () => {
             <div className="box has-background-black" style={{ border: '2px solid #48C78E' }}>
               <h2 className="title has-text-white">Detalles del Examen</h2>
               <div className="content">
-                {currentExamen.preguntasRespondidas.map((pregunta, index) => (
-                  <div
-                    key={index}
-                    className="box"
-                    style={{
-                      backgroundColor: '#14161A',
-                      border: pregunta.correcta ? '2px solid green' : '2px solid red',
-                      marginBottom: '1rem'
-                    }}
-                  >
-                    <p className="has-text-white"><strong>Pregunta:</strong> {pregunta.pregunta}</p>
-                    <p className="has-text-white"><strong>Respuesta:</strong> {pregunta.respuesta}</p>
-                    <p className="has-text-white"><strong>Correcta:</strong> {pregunta.correcta ? 'Sí' : 'No'}</p>
+                {currentExamen.preguntasRespondidas.map((intento, index) => (
+                  <div key={index} className="box" style={{ backgroundColor: '#14161A', border: '2px solid #48C78E', marginBottom: '1rem' }}>
+                    <h3 className="subtitle has-text-white">Intento {intento.intento}</h3>
+                    <p className="has-text-white"><strong>Fecha:</strong> {new Date(intento.fecha).toLocaleString()}</p>
+                    <p className="has-text-white"><strong>Calificación:</strong> {intento.porcentaje}%</p>
+                    {intento.respuestas.map((respuesta, i) => (
+                      <div
+                        key={i}
+                        className="box"
+                        style={{
+                          backgroundColor: '#14161A',
+                          border: respuesta.correcta ? '2px solid green' : '2px solid red',
+                          marginBottom: '1rem'
+                        }}
+                      >
+                        <p className="has-text-white"><strong>Pregunta:</strong> {respuesta.pregunta}</p>
+                        <p className="has-text-white"><strong>Respuesta:</strong> {respuesta.respuesta}</p>
+                        <p className="has-text-white"><strong>Correcta:</strong> {respuesta.correcta ? 'Sí' : 'No'}</p>
+                      </div>
+                    ))}
                   </div>
                 ))}
               </div>

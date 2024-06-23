@@ -11,20 +11,30 @@ const Evaluacion = () => {
   const [mostrarResultados, setMostrarResultados] = useState(false);
   const [respuestas, setRespuestas] = useState([]);
   const [numeroPregunta, setNumeroPregunta] = useState(0);
-  const [evaluacionRealizada, setEvaluacionRealizada] = useState(null);
+  const [examenPermitido, setExamenPermitido] = useState(false);
 
   const userId = localStorage.getItem('userId');
 
   useEffect(() => {
     const fetchEvaluacion = async () => {
       try {
-        const userResponse = await fetch(`http://localhost:3001/api/usuarios/${userId}`);
-        const userData = await userResponse.json();
-        const evaluacion = userData.evaluaciones_realizadas.find(evaluacion => evaluacion.tema_id === temaId);
+        // Verificar si el usuario ya ha realizado el examen
+        const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${temaId}`);
+        if (examenResponse.status === 200) {
+          const examenData = await examenResponse.json();
 
-        if (evaluacion) {
-          setEvaluacionRealizada(evaluacion);
-        } else {
+          if (examenData.examenPermitido) {
+            setExamenPermitido(true);
+          } else {
+            setExamenPermitido(false);
+          }
+        } else if (examenResponse.status === 404) {
+          // Si no hay examen previo, permitir realizar el examen
+          setExamenPermitido(true);
+        }
+
+        if (examenPermitido) {
+          // Cargar las preguntas del examen
           const response = await fetch(`http://localhost:3001/api/evaluaciones/${temaId}?limit=10`);
           const data = await response.json();
           if (data.evaluacion) {
@@ -37,7 +47,7 @@ const Evaluacion = () => {
       }
     };
     fetchEvaluacion();
-  }, [temaId, userId]);
+  }, [temaId, userId, examenPermitido]);
 
   const handleOptionChange = (opcion) => {
     setRespuestaSeleccionada(opcion);
@@ -65,7 +75,7 @@ const Evaluacion = () => {
   const guardarResultados = async (respuestas) => {
     const porcentaje = (respuestas.filter(respuesta => respuesta.correcta).length / preguntas.length) * 100;
     console.log("Guardando resultados...", { temaId, porcentaje, preguntasRespondidas: respuestas });
-  
+
     try {
       // Guardar en la colección de usuarios
       await fetch(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
@@ -79,7 +89,7 @@ const Evaluacion = () => {
           preguntasRespondidas: respuestas,
         }),
       });
-  
+
       // Guardar en la colección de exámenes
       await fetch(`http://localhost:3001/api/examenes`, {
         method: 'POST',
@@ -94,7 +104,7 @@ const Evaluacion = () => {
           fecha: new Date() // Enviar la fecha actual
         }),
       });
-  
+
       console.log("Resultados guardados exitosamente.");
     } catch (error) {
       console.error('Error al guardar los resultados:', error);
@@ -122,17 +132,7 @@ const Evaluacion = () => {
           <div className="column is-full-mobile is-half-tablet is-one-third-desktop">
             <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#021929' }}>
               <h1 className="title has-text-white has-text-centered">Evaluación</h1>
-              {evaluacionRealizada ? (
-                <div className="box" style={{ backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
-                  <h2 className="subtitle has-text-white has-text-centered">Resultados Previos</h2>
-                  <p className="has-text-white has-text-centered">Calificación: {evaluacionRealizada.porcentaje}%</p>
-                  <div className="has-text-centered" style={{ marginTop: '1rem' }}>
-                    <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => navigate('/user/curso')}>
-                      Volver al curso
-                    </button>
-                  </div>
-                </div>
-              ) : (
+              {examenPermitido ? (
                 <>
                   <h2 className="subtitle has-text-white has-text-centered">Pregunta {numeroPregunta + 1} de {preguntas.length}</h2>
                   {preguntaActual && !mostrarResultados && (
@@ -188,6 +188,15 @@ const Evaluacion = () => {
                     </div>
                   )}
                 </>
+              ) : (
+                <div className="box" style={{ backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                  <h2 className="subtitle has-text-white has-text-centered">No puedes realizar esta evaluación</h2>
+                  <div className="has-text-centered" style={{ marginTop: '1rem' }}>
+                    <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => navigate('/user/curso')}>
+                      Volver al curso
+                    </button>
+                  </div>
+                </div>
               )}
             </div>
           </div>
