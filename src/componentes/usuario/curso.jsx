@@ -10,6 +10,7 @@ const Curso = () => {
   const [temas, setTemas] = useState([]);
   const [pasoActual, setPasoActual] = useState(-1); // -1 para la introducción
   const [cursoFinalizado, setCursoFinalizado] = useState(false);
+  const [evaluacionHabilitada, setEvaluacionHabilitada] = useState(false); // Estado para la habilitación de la evaluación
   const temasPorPagina = 6;
   const navigate = useNavigate();
 
@@ -30,6 +31,24 @@ const Curso = () => {
 
     fetchTemas();
   }, []);
+
+  useEffect(() => {
+    const verificarEvaluacion = async () => {
+      if (temaSeleccionado && temaSeleccionado._id) {
+        try {
+          const evaluacionResponse = await fetch(`http://localhost:3001/api/tema-evaluacion/${temaSeleccionado._id}`);
+          const evaluacionData = await evaluacionResponse.json();
+          console.log('Evaluación habilitada:', evaluacionData.evaluacion_habilitada); // Log para verificar el estado de habilitación
+          setEvaluacionHabilitada(evaluacionData.evaluacion_habilitada);
+          setTemaSeleccionado(evaluacionData);
+        } catch (error) {
+          console.error('Error al verificar la evaluación:', error);
+        }
+      }
+    };
+
+    verificarEvaluacion();
+  }, [temaSeleccionado]);
 
   const indiceUltimoTema = paginaActual * temasPorPagina;
   const indicePrimerTema = indiceUltimoTema - temasPorPagina;
@@ -201,6 +220,7 @@ const Curso = () => {
                         className="button is-link is-size-8 is-fullwidth"
                         type="button"
                         onClick={handleEvaluationClick}
+                        disabled={!evaluacionHabilitada} // Deshabilita el botón si la evaluación no está habilitada
                       >
                         Responder Evaluación
                       </button>
