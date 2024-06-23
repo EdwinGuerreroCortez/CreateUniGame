@@ -27,12 +27,6 @@ const Evaluaciones = () => {
     // Implementa la lógica de búsqueda aquí si es necesario
   };
 
-  const handleAddAttempt = (index) => {
-    const newEvaluaciones = [...evaluaciones];
-    newEvaluaciones[index].intentos += 1;
-    setEvaluaciones(newEvaluaciones);
-  };
-
   const handleViewDetails = (examen) => {
     setCurrentExamen(examen);
     setShowModal(true);
@@ -75,9 +69,8 @@ const Evaluaciones = () => {
                     <th className="has-text-white">Matrícula</th>
                     <th className="has-text-white">Examen</th>
                     <th className="has-text-white">Datos del Examen</th>
-                    <th className="has-text-white">Número de Intentos</th>
+                    <th className="has-text-white">Número de Intento</th>
                     <th className="has-text-white">Calificación</th>
-                    <th className="has-text-white">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -97,16 +90,6 @@ const Evaluaciones = () => {
                         </td>
                         <td className="has-text-white">{item.intentos}</td>
                         <td className="has-text-white">{item.porcentaje}%</td>
-                        <td>
-                          <button
-                            className="button is-small is-info"
-                            onClick={() => handleAddAttempt(index)}
-                          >
-                            <span className="icon" data-tooltip="Añadir otro intento">
-                              <i className="fas fa-plus"></i>
-                            </span>
-                          </button>
-                        </td>
                       </tr>
                     ))}
                 </tbody>
