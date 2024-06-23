@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import 'bulma/css/bulma.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import '../CSS/evaluaciones.css';
 
 const Evaluaciones = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [evaluaciones, setEvaluaciones] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [currentExamen, setCurrentExamen] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [examenesPerPage] = useState(1);
 
   useEffect(() => {
     const fetchEvaluaciones = async () => {
@@ -35,7 +36,32 @@ const Evaluaciones = () => {
   const handleCloseModal = () => {
     setShowModal(false);
     setCurrentExamen(null);
+    setCurrentPage(1); // Reset pagination when closing modal
   };
+
+  const toggleExamenPermitido = async (examen) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/examenes/${examen._id}/toggle`, {
+        method: 'PUT',
+      });
+      if (response.ok) {
+        setEvaluaciones(evaluaciones.map(e =>
+          e._id === examen._id ? { ...e, examenPermitido: !e.examenPermitido } : e
+        ));
+      } else {
+        console.error('Error al actualizar el estado del examen permitido');
+      }
+    } catch (error) {
+      console.error('Error al actualizar el estado del examen permitido:', error);
+    }
+  };
+
+  // Logic for displaying current exam page
+  const indexOfLastExamen = currentPage * examenesPerPage;
+  const indexOfFirstExamen = indexOfLastExamen - examenesPerPage;
+  const currentExamenPage = currentExamen?.preguntasRespondidas.slice(indexOfFirstExamen, indexOfLastExamen);
+
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className='has-background-black-bis'>
@@ -71,6 +97,7 @@ const Evaluaciones = () => {
                     <th className="has-text-white">Datos del Examen</th>
                     <th className="has-text-white">Número de Intentos</th>
                     <th className="has-text-white">Calificación</th>
+                    <th className="has-text-white">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -90,6 +117,21 @@ const Evaluaciones = () => {
                         </td>
                         <td className="has-text-white">{item.intentos}</td>
                         <td className="has-text-white">{item.preguntasRespondidas[item.preguntasRespondidas.length - 1].porcentaje}%</td>
+                        <td className="has-text-white">
+                          <div className="tooltip" data-tooltip={item.examenPermitido ? 'No permitir examen' : 'Permitir examen'}>
+                            <button
+                              className="button is-small"
+                              style={{
+                                backgroundColor: item.examenPermitido ? '#ffdddd' : '#ddffdd',
+                                borderColor: item.examenPermitido ? 'red' : 'green',
+                                color: item.examenPermitido ? 'red' : 'green',
+                              }}
+                              onClick={() => toggleExamenPermitido(item)}
+                            >
+                              <i className={item.examenPermitido ? 'fas fa-ban' : 'fas fa-check'}></i>
+                            </button>
+                          </div>
+                        </td>
                       </tr>
                     ))}
                 </tbody>
@@ -106,7 +148,7 @@ const Evaluaciones = () => {
             <div className="box has-background-black" style={{ border: '2px solid #48C78E' }}>
               <h2 className="title has-text-white">Detalles del Examen</h2>
               <div className="content">
-                {currentExamen.preguntasRespondidas.map((intento, index) => (
+                {currentExamenPage.map((intento, index) => (
                   <div key={index} className="box" style={{ backgroundColor: '#14161A', border: '2px solid #48C78E', marginBottom: '1rem' }}>
                     <h3 className="subtitle has-text-white">Intento {intento.intento}</h3>
                     <p className="has-text-white"><strong>Fecha:</strong> {new Date(intento.fecha).toLocaleString()}</p>
@@ -129,6 +171,34 @@ const Evaluaciones = () => {
                   </div>
                 ))}
               </div>
+              <nav className="pagination is-centered" role="navigation" aria-label="pagination">
+                <a
+                  className="pagination-previous"
+                  onClick={() => paginate(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  Anterior
+                </a>
+                <a
+                  className="pagination-next"
+                  onClick={() => paginate(currentPage + 1)}
+                  disabled={currentPage * examenesPerPage >= currentExamen.preguntasRespondidas.length}
+                >
+                  Siguiente
+                </a>
+                <ul className="pagination-list">
+                  {Array.from({ length: Math.ceil(currentExamen.preguntasRespondidas.length / examenesPerPage) }, (_, i) => (
+                    <li key={i}>
+                      <a
+                        className={`pagination-link ${i + 1 === currentPage ? 'is-current' : ''}`}
+                        onClick={() => paginate(i + 1)}
+                      >
+                        {i + 1}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
             </div>
           </div>
           <button className="modal-close is-large" aria-label="close" onClick={handleCloseModal}></button>

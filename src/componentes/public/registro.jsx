@@ -6,6 +6,7 @@ const handleChange = (formData, setFormData) => e => {
     setFormData({ ...formData, [name]: value });
 };
 
+
 const validateStepOne = (formData) => {
     const { nombre, apellidoPaterno, apellidoMaterno, edad, sexo } = formData;
     if (!nombre || !apellidoPaterno || !apellidoMaterno || !edad || !sexo) {
@@ -118,7 +119,6 @@ const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
                         </select>
                     </div>
                     <input className="input is-black" type="text" placeholder="Matrícula" name="matricula" value={formData.matricula} onChange={handleChange(formData, setFormData)} style={inputStyle} />
-
                 </div>
                 <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={prevStep}>Anterior</button>
                 <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={() => validateStepTwo(formData) && nextStep()}>Siguiente</button>
@@ -158,6 +158,7 @@ const StepThree = ({ formData, setFormData, prevStep, nextStep }) => {
         </div>
     );
 };
+
 const handleChangeLenguajes = (formData, setFormData, value) => {
     const newLenguajes = formData.lenguajes.includes(value)
         ? formData.lenguajes.filter(l => l !== value)
@@ -226,7 +227,6 @@ const FormRegistro = () => {
         confirmarContrasena: '',
         lenguajes: []
     });
-    
 
     const nextStep = () => {
         setStep(step + 1);
@@ -250,24 +250,21 @@ const FormRegistro = () => {
                     matricula: formData.matricula,
                 }),
             });
-    
+
             const data = await response.json();
-    
-            if (!response.ok) {
-                console.log('Error en la respuesta de verificación:', data);
-                throw new Error(data.message);
+
+            if (data.message === 'Teléfono ya registrado.') {
+                alert('El teléfono ya está registrado. Por favor, use otro número.');
+                return;
+            } else if (data.message === 'Correo electrónico ya registrado.') {
+                alert('El correo electrónico ya está registrado. Por favor, use otro correo.');
+                return;
+            } else if (data.message === 'Matrícula ya registrada.') {
+                alert('La matrícula ya está registrada. Por favor, use otra matrícula.');
+                return;
             }
-    
-            console.log('Respuesta de verificación:', data);
-    
-            if (data.message === 'Usuario encontrado.') {
-                console.log('Usuario ya registrado con estos datos. Por favor, inicie sesión.');
-                alert('Usuario ya registrado con estos datos. Por favor, inicie sesión.');
-                setTimeout(() => {
-                    window.location.href = '/public/login';
-                }, 2000);
-    
-            } else if (data.message === 'Usuario no encontrado.') {
+
+            if (data.message === 'Usuario no encontrado.') {
                 const registro = await fetch('http://localhost:3001/api/usuarios', {
                     method: 'POST',
                     headers: {
@@ -292,25 +289,23 @@ const FormRegistro = () => {
                         evaluaciones_realizadas: [],
                     }),
                 });
-    
+
                 const registroData = await registro.json();
-    
+
                 if (!registro.ok) {
                     throw new Error('Error al registrar el usuario');
                 }
-    
+
                 alert('Registro completado!');
                 setTimeout(() => {
                     window.location.href = '/public/login';
                 }, 2000);
-    
             }
         } catch (error) {
             alert('Hubo un problema al registrar el usuario: ' + error.message);
             console.error('Error al registrar el usuario:', error);
         }
     };
-    
 
     switch (step) {
         case 1:
