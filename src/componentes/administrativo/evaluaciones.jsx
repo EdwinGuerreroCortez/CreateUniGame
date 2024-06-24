@@ -25,7 +25,7 @@ const Evaluaciones = () => {
   }, []);
 
   const handleSearch = () => {
-    // Implementa la lógica de búsqueda aquí si es necesario
+    setCurrentPage(1); // Reset pagination when searching
   };
 
   const handleViewDetails = (examen) => {
@@ -62,6 +62,10 @@ const Evaluaciones = () => {
   const currentExamenPage = currentExamen?.preguntasRespondidas.slice(indexOfFirstExamen, indexOfLastExamen);
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+
+  const filteredEvaluaciones = evaluaciones.filter(item =>
+    item.usuarioId && item.usuarioId.datos_personales && item.usuarioId.datos_personales.matricula.includes(searchTerm)
+  );
 
   return (
     <div className='has-background-black-bis'>
@@ -101,39 +105,37 @@ const Evaluaciones = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {evaluaciones
-                    .filter(item => item.usuarioId && item.usuarioId.datos_personales && item.usuarioId.datos_personales.matricula.includes(searchTerm))
-                    .map((item, index) => (
-                      <tr key={index}>
-                        <td className="has-text-white">{item.usuarioId.datos_personales.matricula}</td>
-                        <td className="has-text-white">{item.temaId.titulo}</td>
-                        <td className="has-text-white">
+                  {filteredEvaluaciones.map((item, index) => (
+                    <tr key={index}>
+                      <td className="has-text-white">{item.usuarioId.datos_personales.matricula}</td>
+                      <td className="has-text-white">{item.temaId.titulo}</td>
+                      <td className="has-text-white">
+                        <button
+                          className="button is-small is-info"
+                          onClick={() => handleViewDetails(item)}
+                        >
+                          Ver
+                        </button>
+                      </td>
+                      <td className="has-text-white">{item.intentos}</td>
+                      <td className="has-text-white">{item.preguntasRespondidas[item.preguntasRespondidas.length - 1].porcentaje}%</td>
+                      <td className="has-text-white">
+                        <div className="tooltip" data-tooltip={item.examenPermitido ? 'No permitir examen' : 'Permitir examen'}>
                           <button
-                            className="button is-small is-info"
-                            onClick={() => handleViewDetails(item)}
+                            className="button is-small"
+                            style={{
+                              backgroundColor: item.examenPermitido ? '#ffdddd' : '#ddffdd',
+                              borderColor: item.examenPermitido ? 'red' : 'green',
+                              color: item.examenPermitido ? 'red' : 'green',
+                            }}
+                            onClick={() => toggleExamenPermitido(item)}
                           >
-                            Ver
+                            <i className={item.examenPermitido ? 'fas fa-ban' : 'fas fa-check'}></i>
                           </button>
-                        </td>
-                        <td className="has-text-white">{item.intentos}</td>
-                        <td className="has-text-white">{item.preguntasRespondidas[item.preguntasRespondidas.length - 1].porcentaje}%</td>
-                        <td className="has-text-white">
-                          <div className="tooltip" data-tooltip={item.examenPermitido ? 'No permitir examen' : 'Permitir examen'}>
-                            <button
-                              className="button is-small"
-                              style={{
-                                backgroundColor: item.examenPermitido ? '#ffdddd' : '#ddffdd',
-                                borderColor: item.examenPermitido ? 'red' : 'green',
-                                color: item.examenPermitido ? 'red' : 'green',
-                              }}
-                              onClick={() => toggleExamenPermitido(item)}
-                            >
-                              <i className={item.examenPermitido ? 'fas fa-ban' : 'fas fa-check'}></i>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
