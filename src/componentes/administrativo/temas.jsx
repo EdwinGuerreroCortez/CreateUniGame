@@ -1,37 +1,38 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import 'bulma/css/bulma.min.css';
-import * as XLSX from 'xlsx';
-import '../CSS/adminForms2.css'; // Archivo CSS adicional para estilos específicos
+import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
+import "bulma/css/bulma.min.css";
+import * as XLSX from "xlsx";
+import "../CSS/adminForms2.css"; // Archivo CSS adicional para estilos específicos
+import { FaDownload } from "react-icons/fa";
 
 const TemaForm = () => {
   const [file, setFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
   const [temas, setTemas] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [alert, setAlert] = useState({ type: '', message: '' });
+  const [alert, setAlert] = useState({ type: "", message: "" });
   const [editMode, setEditMode] = useState(false);
   const [editTema, setEditTema] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(5);
   const [validationErrors, setValidationErrors] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
-  const [nuevoPaso, setNuevoPaso] = useState({ Titulo: '', Descripcion: '' });
-  const [descripcionTema, setDescripcionTema] = useState('');
+  const [nuevoPaso, setNuevoPaso] = useState({ Titulo: "", Descripcion: "" });
+  const [descripcionTema, setDescripcionTema] = useState("");
   const [pasosTema, setPasosTema] = useState([]);
-  const [tituloTema, setTituloTema] = useState('');
-  const [responsableTema, setResponsableTema] = useState('');
-  const [bibliografiaTema, setBibliografiaTema] = useState('');
+  const [tituloTema, setTituloTema] = useState("");
+  const [responsableTema, setResponsableTema] = useState("");
+  const [bibliografiaTema, setBibliografiaTema] = useState("");
   const fileInputRef = useRef(null);
 
   if (pasosTema.length === 0) {
-    setPasosTema([{ Titulo: '', Descripcion: '' }]);
+    setPasosTema([{ Titulo: "", Descripcion: "" }]);
   }
 
   useEffect(() => {
     if (alert.message) {
       const timer = setTimeout(() => {
-        setAlert({ type: '', message: '' });
+        setAlert({ type: "", message: "" });
       }, 5000); // Desaparece después de 5 segundos
 
       return () => clearTimeout(timer);
@@ -40,11 +41,19 @@ const TemaForm = () => {
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    if (selectedFile && (selectedFile.type === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' || selectedFile.type === 'application/vnd.ms-excel')) {
+    if (
+      selectedFile &&
+      (selectedFile.type ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+        selectedFile.type === "application/vnd.ms-excel")
+    ) {
       setFile(selectedFile);
       processExcelFile(selectedFile);
     } else {
-      setAlert({ type: 'error', message: 'Solo se permiten archivos Excel (.xlsx, .xls).' });
+      setAlert({
+        type: "error",
+        message: "Solo se permiten archivos Excel (.xlsx, .xls).",
+      });
     }
   };
 
@@ -52,30 +61,33 @@ const TemaForm = () => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const data = new Uint8Array(e.target.result);
-      const workbook = XLSX.read(data, { type: 'array' });
+      const workbook = XLSX.read(data, { type: "array" });
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
-      const json = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+      const json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
 
       let temas = [];
       let currentTema = null;
 
       json.forEach((row) => {
-        if (row['titulo']) {
+        if (row["titulo"]) {
           if (currentTema) {
             temas.push(currentTema);
           }
           currentTema = {
-            titulo: row['titulo'],
-            descripcion: row['descripcion'],
-            responsable: row['responsable'],
-            bibliografia: row['bibliografia'],
+            titulo: row["titulo"],
+            descripcion: row["descripcion"],
+            responsable: row["responsable"],
+            bibliografia: row["bibliografia"],
             pasos: [],
           };
         }
 
         if (currentTema) {
-          currentTema.pasos.push({ Titulo: row['pasos'], Descripcion: row['Descripcion'] });
+          currentTema.pasos.push({
+            Titulo: row["pasos"],
+            Descripcion: row["Descripcion"],
+          });
         }
       });
 
@@ -93,7 +105,7 @@ const TemaForm = () => {
   };
 
   const handleAgregarPaso = () => {
-    setPasosTema([...pasosTema, { Titulo: '', Descripcion: '' }]);
+    setPasosTema([...pasosTema, { Titulo: "", Descripcion: "" }]);
   };
 
   const handlePasoChange = (e, index, field) => {
@@ -109,8 +121,16 @@ const TemaForm = () => {
   };
 
   const handleModalClose = () => {
-    if (tituloTema.trim() || descripcionTema.trim() || pasosTema.some(paso => paso.Titulo.trim() || paso.Descripcion.trim())) {
-      if (window.confirm('¿Estás seguro de que quieres salir? Los cambios no se guardarán.')) {
+    if (
+      tituloTema.trim() ||
+      descripcionTema.trim() ||
+      pasosTema.some((paso) => paso.Titulo.trim() || paso.Descripcion.trim())
+    ) {
+      if (
+        window.confirm(
+          "¿Estás seguro de que quieres salir? Los cambios no se guardarán."
+        )
+      ) {
         setModalOpen(false);
         setValidationErrors([]);
       }
@@ -127,7 +147,7 @@ const TemaForm = () => {
   };
 
   const handleCloseAlert = () => {
-    setAlert({ type: '', message: '' });
+    setAlert({ type: "", message: "" });
   };
 
   const handleDownloadTema = (id) => {
@@ -135,16 +155,19 @@ const TemaForm = () => {
       .then((response) => response.blob())
       .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
-        link.setAttribute('download', `${id}.xlsx`);
+        link.setAttribute("download", `${id}.xlsx`);
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
       })
       .catch((error) => {
-        console.error('Error descargando el archivo Excel:', error);
-        setAlert({ type: 'error', message: 'Error descargando el archivo Excel. Inténtalo de nuevo.' });
+        console.error("Error descargando el archivo Excel:", error);
+        setAlert({
+          type: "error",
+          message: "Error descargando el archivo Excel. Inténtalo de nuevo.",
+        });
       });
   };
 
@@ -153,42 +176,48 @@ const TemaForm = () => {
       .then((response) => response.blob())
       .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
-        const link = document.createElement('a');
+        const link = document.createElement("a");
         link.href = url;
-        link.setAttribute('download', 'Plantilla_tema.xlsx');
+        link.setAttribute("download", "Plantilla_tema.xlsx");
         document.body.appendChild(link);
         link.click();
         link.parentNode.removeChild(link);
       })
       .catch((error) => {
-        console.error('Error descargando la plantilla:', error);
-        setAlert({ type: 'error', message: 'Error descargando la plantilla. Inténtalo de nuevo.' });
+        console.error("Error descargando la plantilla:", error);
+        setAlert({
+          type: "error",
+          message: "Error descargando la plantilla. Inténtalo de nuevo.",
+        });
       });
   };
 
   const handleSubirTemas = () => {
     setIsLoading(true);
-    fetch('http://localhost:3001/api/subir-temas', {
-      method: 'POST',
+    fetch("http://localhost:3001/api/subir-temas", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({ temas })
+      body: JSON.stringify({ temas }),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data.error) {
-          setAlert({ type: 'error', message: data.details.join(', ') });
+          setAlert({ type: "error", message: data.details.join(", ") });
         } else {
-          setAlert({ type: 'success', message: 'Temas subidos con éxito.' });
+          setAlert({ type: "success", message: "Temas subidos con éxito." });
           setTemas([]); // Limpia la lista de temas después de subirlos
         }
         setIsLoading(false);
       })
       .catch((error) => {
-        console.error('Error subiendo los temas:', error);
+        console.error("Error subiendo los temas:", error);
         setIsLoading(false);
-        setAlert({ type: 'error', message: 'Error subiendo los temas. Inténtalo de nuevo.' });
+        setAlert({
+          type: "error",
+          message: "Error subiendo los temas. Inténtalo de nuevo.",
+        });
       });
   };
 
@@ -208,7 +237,9 @@ const TemaForm = () => {
     return editTema.pasos.slice(startIndex, endIndex);
   };
 
-  const totalPages = Math.ceil(editTema ? editTema.pasos.length / itemsPerPage : 1);
+  const totalPages = Math.ceil(
+    editTema ? editTema.pasos.length / itemsPerPage : 1
+  );
 
   const handleSaveEdit = () => {
     const { titulo, descripcion, responsable, bibliografia, pasos } = editTema;
@@ -233,57 +264,82 @@ const TemaForm = () => {
       descripcion: descripcion.trim(),
       responsable: responsable.trim(),
       bibliografia: bibliografia.trim(),
-      pasos: JSON.stringify(pasos.map(p => ({
-        Titulo: p.Titulo.trim(),
-        Descripcion: p.Descripcion.trim()
-      })))
+      pasos: JSON.stringify(
+        pasos.map((p) => ({
+          Titulo: p.Titulo.trim(),
+          Descripcion: p.Descripcion.trim(),
+        }))
+      ),
     };
 
     fetch(`http://localhost:3001/api/temas/${editTema._id}`, {
-      method: 'PUT',
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(updatedTema)
+      body: JSON.stringify(updatedTema),
     })
-      .then(response => response.json())
-      .then(data => {
+      .then((response) => response.json())
+      .then((data) => {
         if (data.error) {
-          setAlert({ type: 'error', message: data.details.join(', ') });
+          setAlert({ type: "error", message: data.details.join(", ") });
         } else {
-          setTemas(temas.map(t => (t._id === data._id ? data : t)));
-          setAlert({ type: 'success', message: 'Tema actualizado con éxito.' });
+          setTemas(temas.map((t) => (t._id === data._id ? data : t)));
+          setAlert({ type: "success", message: "Tema actualizado con éxito." });
           setValidationErrors([]);
           // No cerrar el modal de edición
         }
       })
-      .catch(error => {
-        console.error('Error actualizando el tema:', error);
-        setAlert({ type: 'error', message: 'Error actualizando el tema. Inténtalo de nuevo.' });
+      .catch((error) => {
+        console.error("Error actualizando el tema:", error);
+        setAlert({
+          type: "error",
+          message: "Error actualizando el tema. Inténtalo de nuevo.",
+        });
       });
   };
 
   return (
-    <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
+    <div
+      style={{
+        backgroundColor: "#14161A",
+        minHeight: "100vh",
+        padding: "20px",
+      }}
+    >
       <div className="container">
-        <h1 className="title has-text-centered has-text-white">Administrar Temas</h1>
+        <h1 className="title has-text-centered has-text-white">
+          Administrar Temas
+        </h1>
 
         {alert.message && (
-          <div className={`notification ${alert.type === 'success' ? 'is-success' : 'is-danger'}`}>
+          <div
+            className={`notification ${
+              alert.type === "success" ? "is-success" : "is-danger"
+            }`}
+          >
             <button className="delete" onClick={handleCloseAlert}></button>
             {alert.message}
           </div>
         )}
 
-        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px', marginBottom: '20px', maxWidth: '800px', margin: '0 auto' }}>
+        <div
+          className="box"
+          style={{
+            backgroundColor: "#1F1F1F",
+            borderRadius: "10px",
+            marginBottom: "20px",
+            maxWidth: "800px",
+            margin: "0 auto",
+          }}
+        >
           <div className="field is-grouped is-grouped-centered">
-            <div className="control">
-              <button className="button is-info" onClick={handleDownloadPlantilla}>Descargar Plantilla</button>
-            </div>
             <div className="field">
-              <label className="label has-text-white">Subir Temas en Formato Excel:</label>
+              <label className="label has-text-white">
+                Subir Temas en Formato Excel:
+              </label>
               <div className="control">
-                <div className="file has-name is-boxed">
+                <div className="file has-name is-fullwidth is-boxed">
                   <label className="file-label">
                     <input
                       className="file-input"
@@ -291,28 +347,51 @@ const TemaForm = () => {
                       onChange={handleFileChange}
                       accept=".xlsx,.xls"
                     />
-                    <span className="file-cta">
+2                    <span className="file-cta">
                       <span className="file-icon">
                         <i className="fas fa-upload"></i>
                       </span>
-                      <span className="file-label">
-                        Selecciona un archivo…
-                      </span>
+                      <span className="file-label">Selecciona un archivo…</span>
                     </span>
                     {file && <span className="file-name">{file.name}</span>}
                   </label>
                 </div>
               </div>
             </div>
+          </div>
+          <div className="field is-grouped is-grouped-right">
             <div className="control">
-              <Link to="/admin/temas/contenidos" className="button is-primary">Ver Temas</Link>
+              <Link to="/admin/temas/contenidos" className="button is-primary">
+                Ver Temas
+              </Link>
+            </div>
+            <div className="control">
+              <button
+                className="button is-info"
+                data-tooltip="Descargar plantilla"
+                onClick={handleDownloadPlantilla}
+              >
+                <span className="icon">
+                  <FaDownload />
+                </span>
+              </button>
             </div>
           </div>
         </div>
 
         {temas.length > 0 && (
-          <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px', maxWidth: '800px', margin: '0 auto' }}>
-            <h2 className="title has-text-centered has-text-white">Temas a Subir</h2>
+          <div
+            className="box"
+            style={{
+              backgroundColor: "#1F1F1F",
+              borderRadius: "10px",
+              maxWidth: "800px",
+              margin: "0 auto",
+            }}
+          >
+            <h2 className="title has-text-centered has-text-white">
+              Temas a Subir
+            </h2>
             <table className="table is-fullwidth is-bordered">
               <thead>
                 <tr>
@@ -334,16 +413,20 @@ const TemaForm = () => {
                           <i className="fas fa-trash-alt"></i>
                         </span>
                       </button>
-
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            <div className="field is-grouped is-grouped-centered" style={{ marginTop: '20px' }}>
+            <div
+              className="field is-grouped is-grouped-centered"
+              style={{ marginTop: "20px" }}
+            >
               <div className="control">
                 <button
-                  className={`button is-primary ${isLoading ? 'is-loading' : ''}`}
+                  className={`button is-primary ${
+                    isLoading ? "is-loading" : ""
+                  }`}
                   onClick={handleSubirTemas}
                 >
                   Subir Todos los Temas
@@ -353,7 +436,7 @@ const TemaForm = () => {
           </div>
         )}
 
-        <hr className="hr" style={{ backgroundColor: '#fff' }} />
+        <hr className="hr" style={{ backgroundColor: "#fff" }} />
       </div>
     </div>
   );
