@@ -52,7 +52,8 @@ const FormRegistro = () => {
         });
   
         if (!response.ok) {
-          throw new Error('Correo o contraseña incorrectos');
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Correo o contraseña incorrectos');
         }
   
         const data = await response.json();
@@ -83,7 +84,6 @@ const FormRegistro = () => {
       alert('Por favor ingresa un correo válido y una contraseña.');
     }
   };
-  
   
   const handleBack = () => {
     navigate('/');
