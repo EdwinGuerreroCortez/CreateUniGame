@@ -50,25 +50,25 @@ const FormRegistro = () => {
           },
           body: JSON.stringify({ email, password }),
         });
-  
+
         if (!response.ok) {
           throw new Error('Correo o contraseña incorrectos');
         }
-  
+
         const data = await response.json();
         console.log('Inicio de sesión exitoso:', data);
-  
+
         const userId = data.userId;
         const userType = data.tipo;
-  
+
         if (userId && userType) {
           localStorage.setItem('userId', userId);
           localStorage.setItem('userType', userType);
-          localStorage.setItem('usuario', JSON.stringify(data)); // Asegúrate de almacenar los datos completos
-  
+          localStorage.setItem('usuario', JSON.stringify(data));
+
           if (userType === 'cliente') {
             navigate('/user/bienvenida');
-          } else if (userType === 'administrador') {
+          } else if (userType === 'administrador' || userType === 'docente') {
             navigate('/admin/bienvenida');
           } else {
             throw new Error('Tipo de usuario desconocido');
@@ -83,8 +83,7 @@ const FormRegistro = () => {
       alert('Por favor ingresa un correo válido y una contraseña.');
     }
   };
-  
-  
+
   const handleBack = () => {
     navigate('/');
   };

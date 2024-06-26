@@ -55,16 +55,17 @@ const App = () => {
         <Route path="/user/evaluacion/:temaId" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Evaluacion /></LayoutEncabeUser></RutaPrivada>} />
 
         {/* Rutas Administrativas */}
-        <Route path="/admin/bienvenida" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/bienvenida" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/usuarios" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Usuarios /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/temas" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><TemasAdd /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/temas/contenidos" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Contenidos /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/cuestionarios" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><CuestionariosForm /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/informacion/mv" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Mision /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/informacion/buzon" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Buzon /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/subirtema" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Subirtema /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/imagenes" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><SubirImagenes /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/evaluaciones" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Evaluaciones /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/temas" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><TemasAdd /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/temas/contenidos" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><Contenidos /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/cuestionarios" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><CuestionariosForm /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/informacion/mv" element={<RutaPrivada rolesPermitidos={['administrador', ]}><LayoutEncabeAdmin><Mision /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/informacion/buzon" element={<RutaPrivada rolesPermitidos={['administrador', ]}><LayoutEncabeAdmin><Buzon /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/subirtema" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><Subirtema /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/imagenes" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><SubirImagenes /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/evaluaciones" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><Evaluaciones /></LayoutEncabeAdmin></RutaPrivada>} />
+
 
       </Routes>
     </Router>
@@ -72,4 +73,3 @@ const App = () => {
 };
 
 export default App;
-  
