@@ -65,10 +65,10 @@ const TemaForm = () => {
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
       const json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-
+  
       let temas = [];
       let currentTema = null;
-
+  
       json.forEach((row) => {
         if (row["titulo"]) {
           if (currentTema) {
@@ -80,25 +80,40 @@ const TemaForm = () => {
             responsable: row["responsable"],
             bibliografia: row["bibliografia"],
             pasos: [],
+            subtemas: [],
           };
         }
-
+  
         if (currentTema) {
-          currentTema.pasos.push({
-            Titulo: row["pasos"],
-            Descripcion: row["Descripcion"],
-          });
+          if (row["pasos"] && row["Descripcion"]) {
+            currentTema.pasos.push({
+              Titulo: row["pasos"],
+              Descripcion: row["Descripcion"],
+            });
+          }
+          if (row["subtema"] && row["descripcionSubtema"]) {
+            currentTema.subtemas.push({
+              titulo: row["subtema"],
+              descripcion: row["descripcionSubtema"],
+              video: null,
+            });
+          }
         }
       });
-
+  
       if (currentTema) {
         temas.push(currentTema);
       }
-
+  
+      console.log('Datos procesados del Excel:', json); // Log para ver el JSON del Excel
+      console.log('Temas procesados:', temas); // Log para ver los temas procesados con subtemas
       setTemas(temas);
     };
     reader.readAsArrayBuffer(file);
   };
+  
+  
+  
 
   const handleVideoFileChange = (e) => {
     setVideoFile(e.target.files[0]);
@@ -191,6 +206,7 @@ const TemaForm = () => {
         });
       });
   };
+  
 
   const handleSubirTemas = () => {
     setIsLoading(true);
@@ -347,7 +363,7 @@ const TemaForm = () => {
                       onChange={handleFileChange}
                       accept=".xlsx,.xls"
                     />
-2                    <span className="file-cta">
+                  <span className="file-cta">
                       <span className="file-icon">
                         <i className="fas fa-upload"></i>
                       </span>
