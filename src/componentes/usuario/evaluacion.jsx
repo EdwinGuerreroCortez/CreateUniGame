@@ -152,7 +152,7 @@ const zoomIn = () => {
   if (zoomFactor < maxZoom) {
     setZoomFactor(prevZoom => prevZoom * 1.2); // Aumenta el factor de zoom en un 20%
     setOffsetX(prevOffsetX => prevOffsetX - 20); // Desplaza la imagen hacia la izquierda
-    setOffsetY(prevOffsetY => prevOffsetY - 20); // Desplaza la imagen hacia arriba
+    setOffsetY(prevOffsetY => prevOffsetY - 18); // Desplaza la imagen hacia arriba
   }
 };
 
