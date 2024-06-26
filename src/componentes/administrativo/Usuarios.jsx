@@ -92,21 +92,6 @@ const GestionUsuariosForm = () => {
     }
   };
 
-  const handleAutorizarUsuario = async (index, id, autorizacion) => {
-    try {
-      const nuevoEstado = !autorizacion;
-      await axios.put(`http://localhost:3001/api/usuarios/${id}/autorizar`, { autorizacion: nuevoEstado });
-      const usuariosActualizados = usuarios.map((usuario, i) => 
-        i === index ? { ...usuario, autorizacion: nuevoEstado } : usuario
-      );
-      setUsuarios(usuariosActualizados);
-      setNotification({ message: 'Estado de autorización actualizado con éxito.', type: 'is-success' });
-    } catch (error) {
-      console.error('Error al actualizar estado de autorización:', error);
-      setNotification({ message: 'Error al actualizar estado de autorización. Intente de nuevo.', type: 'is-danger' });
-    }
-  };
-
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <h1 className="title has-text-centered has-text-white">Gestión de Usuarios</h1>
@@ -179,7 +164,6 @@ const GestionUsuariosForm = () => {
               <th className="has-text-white">Nombre de Usuario</th>
               <th className="has-text-white">Correo</th>
               <th className="has-text-white">Rol</th>
-              <th className="has-text-white">Autorizado</th>
               <th className="has-text-white">Acciones</th>
             </tr>
           </thead>
@@ -192,17 +176,7 @@ const GestionUsuariosForm = () => {
                 <td className="has-text-white">{u.username}</td>
                 <td className="has-text-white">{u.datos_personales.correo}</td>
                 <td className="has-text-white">{u.tipo}</td>
-                <td className="has-text-white">{u.autorizacion ? 'Sí' : 'No'}</td>
                 <td>
-                  <button
-                    className={`button ${u.autorizacion ? 'is-warning' : 'is-success'} is-small`}
-                    onClick={() => handleAutorizarUsuario(index, u._id, u.autorizacion)}
-                    data-tooltip={u.autorizacion ? 'Desautorizar Usuario' : 'Autorizar Usuario'}
-                  >
-                    <span className="icon">
-                      <i className={`fas ${u.autorizacion ? 'fa-times-circle' : 'fa-check-circle'}`}></i>
-                    </span>
-                  </button>
                   <button
                     className="button is-danger is-small"
                     onClick={() => handleEliminarUsuario(index, u._id)}
