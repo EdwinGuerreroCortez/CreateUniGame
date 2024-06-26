@@ -1,7 +1,8 @@
-//
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import "bulma/css/bulma.min.css";
+import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
+
 
 const Evaluacion = () => {
   const { temaId } = useParams();
@@ -13,6 +14,8 @@ const Evaluacion = () => {
   const [respuestas, setRespuestas] = useState([]);
   const [numeroPregunta, setNumeroPregunta] = useState(0);
   const [examenPermitido, setExamenPermitido] = useState(false);
+  const [modalActivo, setModalActivo] = useState(false); // Estado para controlar el modal
+  const [imagenModal, setImagenModal] = useState(''); // Estado para la URL de la imagen en el modal
 
   const userId = localStorage.getItem('userId');
 
@@ -126,12 +129,24 @@ const Evaluacion = () => {
     return `${process.env.PUBLIC_URL}/imagenes/${imagen}`;
   };
 
+  // Función para abrir el modal y mostrar la imagen
+  const abrirModal = (imagen) => {
+    setImagenModal(imagen);
+    setModalActivo(true);
+  };
+
+  // Función para cerrar el modal
+  const cerrarModal = () => {
+    setModalActivo(false);
+    setImagenModal('');
+  };
+
   return (
     <div className="section" style={{ minHeight: '100vh', backgroundColor: '#14161A' }}>
       <div className="container">
         <div className="columns is-centered">
-          <div className="column is-full-mobile is-half-tablet is-one-third-desktop">
-            <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#021929' }}>
+          <div className="column">
+            <div className="box is-fullwidth" style={{ boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', backgroundColor: '#021929' }}>
               <h1 className="title has-text-white has-text-centered">Evaluación</h1>
               {examenPermitido ? (
                 <>
@@ -141,28 +156,51 @@ const Evaluacion = () => {
                       <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
                         <h2 className="subtitle has-text-white">{preguntaActual.pregunta}</h2>
                         {preguntaActual.imagen && (
-                          <figure className="image is-4by3">
-                            <img src={getImagenPath(preguntaActual.imagen)} alt="Imagen de la pregunta" />
-                          </figure>
-                        )}
-                        {preguntaActual.opciones && preguntaActual.opciones.map((opcion, index) => (
-                          <div key={index} className="field">
-                            <div className="control">
-                              <label className="radio has-text-white">
-                                <input
-                                  type="radio"
-                                  name={`pregunta`}
-                                  value={opcion}
-                                  onChange={() => handleOptionChange(opcion)}
-                                  checked={respuestaSeleccionada === opcion}
-                                  disabled={mostrarResultados}
-                                  style={{ marginRight: '0.5rem' }}
-                                />
-                                {opcion}
-                              </label>
+                          <>
+                            <figure
+                              className={`image is-centered`}
+                              style={{ maxWidth: '500px', margin: '0 auto', cursor: 'pointer' }}
+                              onClick={() => abrirModal(getImagenPath(preguntaActual.imagen))}
+                              data-tooltip="Dar clic"
+                            >
+                              <img
+                                src={getImagenPath(preguntaActual.imagen)}
+                                alt="Imagen de la pregunta"
+                                style={{ maxWidth: '100%', height: 'auto', objectFit: 'contain' }}
+                                 
+                              />
+                            </figure>
+                            <div  style={{ marginTop: '1rem' }}>
+                              <a  data-tooltip="Descargar imagen" href={getImagenPath(preguntaActual.imagen)} download className="button is-primary">
+                                <span className="icon" >
+                                  <i className="fas fa-download"></i>
+                                </span>
+                              </a>
                             </div>
-                          </div>
-                        ))}
+                          </>
+                        )}
+
+                        <div style={{ marginTop: '1rem' }}>
+                          <p className="title has-text-white is-size-5">Escoge tu respuesta:</p>
+                          {preguntaActual.opciones && preguntaActual.opciones.map((opcion, index) => (
+                            <div key={index} className="field">
+                              <div className="control">
+                                <label className="radio has-text-white">
+                                  <input
+                                    type="radio"
+                                    name={`pregunta`}
+                                    value={opcion}
+                                    onChange={() => handleOptionChange(opcion)}
+                                    checked={respuestaSeleccionada === opcion}
+                                    disabled={mostrarResultados}
+                                    style={{ marginRight: '0.5rem' }}
+                                  />
+                                  {opcion}
+                                </label>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                       <div className="has-text-centered">
                         <button
@@ -203,6 +241,20 @@ const Evaluacion = () => {
           </div>
         </div>
       </div>
+
+     {/* Modal para mostrar la imagen */}
+{modalActivo && (
+  <div className={`modal ${modalActivo ? 'is-active' : ''}`}>
+    <div className="modal-background" onClick={cerrarModal}></div>
+    <div className="modal-content" style={{ height: '500px', width: '900px' }}>
+      <p className="image">
+        <img src={imagenModal} style={{ height: '500px',  width: '900px' }} alt="Imagen ampliada" />
+      </p>
+    </div>
+    <button className="modal-close is-large" aria-label="close" onClick={cerrarModal}></button>
+  </div>
+)}
+
     </div>
   );
 };
