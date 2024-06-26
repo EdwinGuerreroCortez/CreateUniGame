@@ -9,22 +9,49 @@ const SubirImagenes = () => {
   const [uploadedImageNames, setUploadedImageNames] = useState([]);
   const [showFileDetails, setShowFileDetails] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+  const [alertType, setAlertType] = useState('');
+
+  const allowedExtensions = ['jpeg', 'jpg', 'png', 'gif'];
 
   const handleFileChange = (event) => {
     const files = event.target.files;
-    setSelectedFiles(files);
-    const details = Array.from(files).map(file => ({
-      name: file.name,
-      type: file.type,
-    }));
-    setFileDetails(details);
-    setShowFileDetails(true);
+    const invalidFiles = Array.from(files).filter(file => {
+      const extension = file.name.split('.').pop().toLowerCase();
+      return !allowedExtensions.includes(extension);
+    });
+    if (invalidFiles.length > 0) {
+      const invalidFileNames = invalidFiles.map(file => `${file.name} (${file.type})`).join(', ');
+      setAlertMessage(`Formatos no válidos: ${invalidFileNames}`);
+      setAlertType('is-danger');
+      setSelectedFiles([]);
+      setFileDetails([]);
+      setShowFileDetails(false);
+    } else {
+      const details = Array.from(files).map(file => ({
+        name: file.name,
+        type: file.type,
+        newName: file.name.split('.').slice(0, -1).join('.'), // Extract name without extension
+        extension: file.name.split('.').pop() // Extract the extension
+      }));
+      setSelectedFiles(files);
+      setFileDetails(details);
+      setShowFileDetails(true);
+      setAlertMessage('');
+    }
+  };
+
+  const handleNameChange = (index, newName) => {
+    const updatedDetails = [...fileDetails];
+    updatedDetails[index].newName = newName;
+    setFileDetails(updatedDetails);
   };
 
   const handleUpload = async () => {
     const formData = new FormData();
     for (let i = 0; i < selectedFiles.length; i++) {
-      formData.append('imagenes', selectedFiles[i]);
+      const newName = `${fileDetails[i].newName}.${fileDetails[i].extension}`;
+      formData.append('imagenes', selectedFiles[i], newName);
     }
 
     try {
@@ -42,9 +69,13 @@ const SubirImagenes = () => {
       setSelectedFiles([]);
       setShowFileDetails(false);
       setShowConfirmation(true);
+      setAlertMessage('Imágenes subidas exitosamente');
+      setAlertType('is-success');
     } catch (error) {
       console.error('Error al subir las imágenes:', error);
       setUploadProgress(null);
+      setAlertMessage('Error al subir las imágenes');
+      setAlertType('is-danger');
     }
   };
 
@@ -62,6 +93,12 @@ const SubirImagenes = () => {
   return (
     <div className="section" style={{ minHeight: '100vh', backgroundColor: '#14161A' }}>
       <div className="container">
+        {alertMessage && (
+          <div className={`notification ${alertType}`}>
+            {alertMessage}
+            <button className="delete" onClick={() => setAlertMessage('')}></button>
+          </div>
+        )}
         <div className="columns is-centered">
           <div className="column is-full-mobile is-half-tablet is-one-third-desktop">
             <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#021929' }}>
@@ -113,7 +150,16 @@ const SubirImagenes = () => {
               <h2 className="subtitle">Archivos Seleccionados:</h2>
               <ul>
                 {fileDetails.map((file, index) => (
-                  <li key={index}>{file.name} ({file.type})</li>
+                  <li key={index}>
+                    {file.name} ({file.type})<br />
+                    <input
+                      className="input"
+                      type="text"
+                      value={file.newName}
+                      onChange={(e) => handleNameChange(index, e.target.value)}
+                    />
+                    .{file.extension}
+                  </li>
                 ))}
               </ul>
             </section>
