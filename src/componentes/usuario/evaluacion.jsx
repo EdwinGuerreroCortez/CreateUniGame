@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom';
 import "bulma/css/bulma.min.css";
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
 
-
 const Evaluacion = () => {
   const { temaId } = useParams();
   const navigate = useNavigate();
@@ -16,6 +15,9 @@ const Evaluacion = () => {
   const [examenPermitido, setExamenPermitido] = useState(false);
   const [modalActivo, setModalActivo] = useState(false); // Estado para controlar el modal
   const [imagenModal, setImagenModal] = useState(''); // Estado para la URL de la imagen en el modal
+  const [zoomFactor, setZoomFactor] = useState(1.0); // Estado para controlar el factor de zoom de la imagen
+  const [offsetX, setOffsetX] = useState(0); // Estado para controlar el desplazamiento X de la imagen
+  const [offsetY, setOffsetY] = useState(0); // Estado para controlar el desplazamiento Y de la imagen
 
   const userId = localStorage.getItem('userId');
 
@@ -139,7 +141,31 @@ const Evaluacion = () => {
   const cerrarModal = () => {
     setModalActivo(false);
     setImagenModal('');
+    setZoomFactor(1.0); // Resetear el zoom al cerrar el modal
+    setOffsetX(0); // Resetear el desplazamiento X
+    setOffsetY(0); // Resetear el desplazamiento Y
   };
+
+// Función para hacer zoom in en la imagen dentro del modal
+const zoomIn = () => {
+  const maxZoom = 5; // Máximo factor de zoom permitido
+  if (zoomFactor < maxZoom) {
+    setZoomFactor(prevZoom => prevZoom * 1.2); // Aumenta el factor de zoom en un 20%
+    setOffsetX(prevOffsetX => prevOffsetX - 20); // Desplaza la imagen hacia la izquierda
+    setOffsetY(prevOffsetY => prevOffsetY - 20); // Desplaza la imagen hacia arriba
+  }
+};
+
+// Función para hacer zoom out en la imagen dentro del modal
+const zoomOut = () => {
+  const minZoom = 0.5; // Mínimo factor de zoom permitido
+  if (zoomFactor > minZoom) {
+    setZoomFactor(prevZoom => prevZoom / 1.2); // Reduce el factor de zoom en un 20%
+    setOffsetX(prevOffsetX => prevOffsetX + 20); // Desplaza la imagen hacia la derecha
+    setOffsetY(prevOffsetY => prevOffsetY + 20); // Desplaza la imagen hacia abajo
+  }
+};
+
 
   return (
     <div className="section" style={{ minHeight: '100vh', backgroundColor: '#14161A' }}>
@@ -149,84 +175,95 @@ const Evaluacion = () => {
             <div className="box is-fullwidth" style={{ boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', backgroundColor: '#021929' }}>
               <h1 className="title has-text-white has-text-centered">Evaluación</h1>
               {examenPermitido ? (
-                <>
-                  <h2 className="subtitle has-text-white has-text-centered">Pregunta {numeroPregunta + 1} de {preguntas.length}</h2>
-                  {preguntaActual && !mostrarResultados && (
-                    <form onSubmit={handleSubmit}>
-                      <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
-                        <h2 className="subtitle has-text-white">{preguntaActual.pregunta}</h2>
-                        {preguntaActual.imagen && (
-                          <>
-                            <figure
-                              className={`image is-centered`}
-                              style={{ maxWidth: '500px', margin: '0 auto', cursor: 'pointer' }}
-                              onClick={() => abrirModal(getImagenPath(preguntaActual.imagen))}
-                              data-tooltip="Dar clic"
-                            >
-                              <img
-                                src={getImagenPath(preguntaActual.imagen)}
-                                alt="Imagen de la pregunta"
-                                style={{ maxWidth: '100%', height: 'auto', objectFit: 'contain' }}
-                                 
-                              />
-                            </figure>
-                            <div  style={{ marginTop: '1rem' }}>
-                              <a  data-tooltip="Descargar imagen" href={getImagenPath(preguntaActual.imagen)} download className="button is-primary">
-                                <span className="icon" >
-                                  <i className="fas fa-download"></i>
-                                </span>
-                              </a>
-                            </div>
-                          </>
-                        )}
+                <div className="columns">
+                  <div className="column">
+                    <h2 className="subtitle has-text-white has-text-centered">Pregunta {numeroPregunta + 1} de {preguntas.length}</h2>
+                    {preguntaActual && !mostrarResultados && (
+                      <form onSubmit={handleSubmit}>
+                        <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                          <h2 className="subtitle has-text-white">{preguntaActual.pregunta}</h2>
 
-                        <div style={{ marginTop: '1rem' }}>
-                          <p className="title has-text-white is-size-5">Escoge tu respuesta:</p>
-                          {preguntaActual.opciones && preguntaActual.opciones.map((opcion, index) => (
-                            <div key={index} className="field">
-                              <div className="control">
-                                <label className="radio has-text-white">
-                                  <input
-                                    type="radio"
-                                    name={`pregunta`}
-                                    value={opcion}
-                                    onChange={() => handleOptionChange(opcion)}
-                                    checked={respuestaSeleccionada === opcion}
-                                    disabled={mostrarResultados}
-                                    style={{ marginRight: '0.5rem' }}
-                                  />
-                                  {opcion}
-                                </label>
+                          <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+                            <div style={{ flex: '1' }}>
+                              <div style={{ marginTop: '1rem' }}>
+                                <p className="title has-text-white is-size-5">Escoge tu respuesta:</p>
+                                {preguntaActual.opciones && preguntaActual.opciones.map((opcion, index) => (
+                                  <div key={index} className="field">
+                                    <div className="control">
+                                      <label className="radio has-text-white">
+                                        <input
+                                          type="radio"
+                                          name={`pregunta`}
+                                          value={opcion}
+                                          onChange={() => handleOptionChange(opcion)}
+                                          checked={respuestaSeleccionada === opcion}
+                                          disabled={mostrarResultados}
+                                          style={{ marginRight: '0.5rem' }}
+                                        />
+                                        {opcion}
+                                      </label>
+                                    </div>
+                                  </div>
+                                ))}
                               </div>
                             </div>
-                          ))}
+
+                            {preguntaActual.imagen && (
+                              <div style={{ flex: '1', marginLeft: '1rem', position: 'relative' }}>
+                                <figure className="image" style={{ alignSelf: 'flex-end', position: 'relative' }}>
+                                  <img
+                                    src={getImagenPath(preguntaActual.imagen)}
+                                    alt="Imagen de la pregunta"
+                                    style={{
+                                      maxWidth: '100%',
+                                      height: 'auto',
+                                      objectFit: 'contain',
+                                      transform: `scale(${zoomFactor}) translate(${offsetX}px, ${offsetY}px)`, // Aplica el factor de zoom y el desplazamiento
+                                      transition: 'transform 0.2s ease-in-out', // Transición suave
+                                      cursor: 'pointer'
+                                    }}
+                                    onClick={() => abrirModal(getImagenPath(preguntaActual.imagen))}
+                                    className="cursor-pointer"
+                                  />
+                                </figure>
+                                <div className="has-text-centered" style={{ marginTop: '1rem' }}>
+                                  <a href={getImagenPath(preguntaActual.imagen)} download className="button is-primary" data-tooltip="Descargar imagen" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}>
+                                    <span className="icon">
+                                      <i className="fas fa-download"></i>
+                                    </span>
+                                  </a>
+                                </div>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="has-text-centered">
+                            <button
+                              type="submit"
+                              className="button is-dark is-medium"
+                              style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}
+                              disabled={!respuestaSeleccionada}
+                            >
+                              {numeroPregunta < preguntas.length - 1 ? 'Siguiente Pregunta' : 'Ver Resultados'}
+                            </button>
+                          </div>
+                        </div>
+                      </form>
+                    )}
+                    {mostrarResultados && (
+                      <div className="box" style={{ backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
+                        <h2 className="subtitle has-text-white has-text-centered">Resultados</h2>
+                        <p className="has-text-white has-text-centered">Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
+                        <p className="has-text-white has-text-centered">Porcentaje de aciertos: {(calcularResultados() / preguntas.length * 100).toFixed(2)}%</p>
+                        <div className="has-text-centered" style={{ marginTop: '1rem' }}>
+                          <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => navigate('/user/curso')}>
+                            Volver al curso
+                          </button>
                         </div>
                       </div>
-                      <div className="has-text-centered">
-                        <button
-                          type="submit"
-                          className="button is-dark is-medium"
-                          style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}
-                          disabled={!respuestaSeleccionada}
-                        >
-                          {numeroPregunta < preguntas.length - 1 ? 'Siguiente Pregunta' : 'Ver Resultados'}
-                        </button>
-                      </div>
-                    </form>
-                  )}
-                  {mostrarResultados && (
-                    <div className="box" style={{ backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
-                      <h2 className="subtitle has-text-white has-text-centered">Resultados</h2>
-                      <p className="has-text-white has-text-centered">Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
-                      <p className="has-text-white has-text-centered">Porcentaje de aciertos: {(calcularResultados() / preguntas.length * 100).toFixed(2)}%</p>
-                      <div className="has-text-centered" style={{ marginTop: '1rem' }}>
-                        <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={() => navigate('/user/curso')}>
-                          Volver al curso
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </>
+                    )}
+                  </div>
+                </div>
               ) : (
                 <div className="box" style={{ backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
                   <h2 className="subtitle has-text-white has-text-centered">No puedes realizar esta evaluación</h2>
@@ -242,18 +279,34 @@ const Evaluacion = () => {
         </div>
       </div>
 
-     {/* Modal para mostrar la imagen */}
-{modalActivo && (
-  <div className={`modal ${modalActivo ? 'is-active' : ''}`}>
-    <div className="modal-background" onClick={cerrarModal}></div>
-    <div className="modal-content" style={{ height: '500px', width: '900px' }}>
-      <p className="image">
-        <img src={imagenModal} style={{ height: '500px',  width: '900px' }} alt="Imagen ampliada" />
-      </p>
-    </div>
-    <button className="modal-close is-large" aria-label="close" onClick={cerrarModal}></button>
-  </div>
-)}
+      {/* Botones de zoom fuera del modal */}
+      {modalActivo && (
+        <div className={`modal ${modalActivo ? 'is-active' : ''}`}>
+          <div className="modal-background" onClick={cerrarModal}></div>
+          <div className="modal-content">
+            <p className="image">
+              <img src={imagenModal} style={{ maxWidth: '100%', height: 'auto', objectFit: 'contain' }} alt="Imagen ampliada" />
+            </p>
+          </div>
+          <button className="modal-close is-large" aria-label="close" onClick={cerrarModal}></button>
+        </div>
+      )}
+
+      {/* Botones de zoom */}
+      <div className="has-text-centered mt-3">
+        <button className="button is-primary is-small mr-2" onClick={zoomIn}>
+          <span className="icon">
+            <i className="fas fa-search-plus"></i>
+          </span>
+          <span>Zoom In</span>
+        </button>
+        <button className="button is-primary is-small" onClick={zoomOut}>
+          <span className="icon">
+            <i className="fas fa-search-minus"></i>
+          </span>
+          <span>Zoom Out</span>
+        </button>
+      </div>
 
     </div>
   );
