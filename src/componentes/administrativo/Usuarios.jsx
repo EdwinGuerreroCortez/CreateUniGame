@@ -29,6 +29,15 @@ const GestionUsuariosForm = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (notification.message) {
+      const timer = setTimeout(() => {
+        setNotification({ message: '', type: '' });
+      }, 2000); // 2000ms = 2 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [notification]);
+
   const obtenerUsuarios = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/usuarios');
@@ -93,11 +102,16 @@ const GestionUsuariosForm = () => {
       setIsModalActive(false); // Cerrar el modal
     } catch (error) {
       console.error('Error al guardar usuario:', error);
-      setNotification({ message: 'Error al registrar usuario. Intente de nuevo.', type: 'is-danger' });
+      const errorMessage = error.response && error.response.data && error.response.data.error
+        ? error.response.data.error
+        : 'Error al registrar usuario. Intente de nuevo.';
+      setNotification({ message: errorMessage, type: 'is-danger' });
+      setIsModalActive(false); // Cerrar el modal en caso de error también
     }
   };
+
+
   const handleEliminarUsuario = async (index, id) => {
-    // Activar confirmación de eliminación
     setConfirmDelete({ active: true, index, id });
   };
 
@@ -111,12 +125,10 @@ const GestionUsuariosForm = () => {
       console.error('Error al eliminar usuario:', error);
       setNotification({ message: 'Error al eliminar usuario. Intente de nuevo.', type: 'is-danger' });
     }
-    // Desactivar confirmación de eliminación y limpiar estado
     setConfirmDelete({ active: false, index: null, id: null });
   };
 
   const handleCancelarEliminarUsuario = () => {
-    // Cancelar eliminación, desactivando confirmación de eliminación
     setConfirmDelete({ active: false, index: null, id: null });
   };
 
@@ -152,7 +164,7 @@ const GestionUsuariosForm = () => {
             <span>Agregar Usuario</span>
           </button>
         </div>
-        <h2 className="title is-4 has-text-centered has-text-white">Lista de Usuarios</h2>
+        <h2 className="title is-4 has-text-centered has-text-white">Lista de Usuarios Registrados</h2>
 
         <div className="table-container">
           <table className="table is-fullwidth is-striped is-hoverable" style={{ backgroundColor: '#090A0C' }}>
@@ -161,10 +173,10 @@ const GestionUsuariosForm = () => {
                 <th className="has-text-white">Nombre</th>
                 <th className="has-text-white">Apellido Paterno</th>
                 <th className="has-text-white">Apellido Materno</th>
-                <th className="has-text-white">Nombre de Usuario</th>
+                <th className="has-text-white"> Usuario</th>
                 <th className="has-text-white">Correo</th>
                 <th className="has-text-white">Telefono</th>
-                <th className="has-text-white">Rol</th>
+                <th className="has-text-white">Tipo</th>
                 <th className="has-text-white">Acciones</th>
               </tr>
             </thead>
@@ -240,6 +252,17 @@ const GestionUsuariosForm = () => {
                       <input className="input" type="text" name="nomusuario" value={usuario.nomusuario} onChange={handleChange} placeholder="Nombre de Usuario" required />
                     </div>
                   </div>
+                  <div className="field">
+                    <label className="label has-text-white">Tipo de Usuario</label>
+                    <div className="control">
+                      <div className="select is-fullwidth">
+                        <select name="tipo" value={usuario.tipo} onChange={handleChange} required>
+                          <option value="docente">Docente</option>
+                          <option value="administrador">Administrador</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <div className="column is-half">
                   <div className="field">
@@ -297,41 +320,38 @@ const GestionUsuariosForm = () => {
         </div>
         <button className="modal-close is-large" aria-label="close" onClick={() => setIsModalActive(false)}></button>
       </div>
-      
-  {/* Modal de confirmación de eliminación */}
-  {confirmDelete.active && (
-  <div className={`modal ${confirmDelete.active ? "is-active" : ""}`}>
-    <div className="modal-background"></div>
-    <div className="modal-content">
-      <div className="modal-card has-background-black">
-        <header className="modal-card-head has-background-black-bis" style={{ justifyContent: "center" }}>
-          <p className="modal-card-title has-text-centered has-text-white">
-            Confirmar Eliminación
-          </p>
-          <button className="delete" aria-label="close" onClick={handleCancelarEliminarUsuario}></button>
-        </header>
-        <section className="modal-card-body has-background-black-bis">
-          <p className="has-text-centered has-text-white">
-            ¿Estás seguro de que quieres eliminar este usuario?
-          </p>
-        </section>
-        <footer className="modal-card-foot has-background-black-bis" style={{ justifyContent: "center" }}>
-          <button className="button is-danger" style={{ marginRight: "20px" }} onClick={confirmarEliminarUsuario}>
-            Eliminar
-          </button>
-          <button className="button" onClick={handleCancelarEliminarUsuario}>
-            Cancelar
-          </button>
-        </footer>
-      </div>
-    </div>
-    <button className="modal-close is-large" aria-label="close" onClick={handleCancelarEliminarUsuario}></button>
-  </div>
-   )}
 
+      {/* Modal de confirmación de eliminación */}
+      {confirmDelete.active && (
+        <div className={`modal ${confirmDelete.active ? "is-active" : ""}`}>
+          <div className="modal-background"></div>
+          <div className="modal-content">
+            <div className="modal-card has-background-black">
+              <header className="modal-card-head has-background-black-bis" style={{ justifyContent: "center" }}>
+                <p className="modal-card-title has-text-centered has-text-white">
+                  Confirmar Eliminación
+                </p>
+                <button className="delete" aria-label="close" onClick={handleCancelarEliminarUsuario}></button>
+              </header>
+              <section className="modal-card-body has-background-black-bis">
+                <p className="has-text-centered has-text-white">
+                  ¿Estás seguro de que quieres eliminar este usuario?
+                </p>
+              </section>
+              <footer className="modal-card-foot has-background-black-bis" style={{ justifyContent: "center" }}>
+                <button className="button is-danger" style={{ marginRight: "20px" }} onClick={confirmarEliminarUsuario}>
+                  Eliminar
+                </button>
+                <button className="button" onClick={handleCancelarEliminarUsuario}>
+                  Cancelar
+                </button>
+              </footer>
+            </div>
+          </div>
+          <button className="modal-close is-large" aria-label="close" onClick={handleCancelarEliminarUsuario}></button>
+        </div>
+      )}
     </div>
-
-    
   );
 };
 
