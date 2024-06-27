@@ -21,6 +21,7 @@ const FormRegistro = () => {
   const [emailValid, setEmailValid] = useState(false);
   const [backgroundIndex, setBackgroundIndex] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,7 +53,8 @@ const FormRegistro = () => {
         });
 
         if (!response.ok) {
-          throw new Error('Correo o contraseña incorrectos');
+          const errorData = await response.json();
+          throw new Error(errorData.message || 'Error desconocido');
         }
 
         const data = await response.json();
@@ -80,10 +82,10 @@ const FormRegistro = () => {
           throw new Error('ID del usuario o tipo no encontrados en la respuesta');
         }
       } catch (error) {
-        alert(error.message);
+        setErrorMessage(error.message);
       }
     } else {
-      alert('Por favor ingresa un correo válido y una contraseña.');
+      setErrorMessage('Por favor ingresa un correo válido y una contraseña.');
     }
   };
 
@@ -115,6 +117,11 @@ const FormRegistro = () => {
         <div className="card-content">
           <h2 className="title has-text-centered has-text-white">Iniciar Sesión</h2>
           <p className="has-text-centered" style={{ marginBottom: '10px' }}>Ingresa tus datos para acceder a tu cuenta.</p>
+          {errorMessage && (
+            <div className="notification is-danger is-light">
+              {errorMessage}
+            </div>
+          )}
           <form onSubmit={handleSubmit}>
             <div className="field">
               <label className="label has-text-white">Email</label>
