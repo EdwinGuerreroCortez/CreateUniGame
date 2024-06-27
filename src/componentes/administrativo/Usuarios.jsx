@@ -257,24 +257,25 @@ const GestionUsuariosForm = () => {
                       <input className="input" type="text" name="telefono" value={usuario.telefono} onChange={handleChange} placeholder="Teléfono" required />
                     </div>
                   </div>
+                  <div className="field">
+                    <label className="label has-text-white">Tipo de Usuario</label>
+                    <div className="control">
+                      <div className="select is-fullwidth">
+                        <select name="tipo" value={usuario.tipo} onChange={handleChange} required>
+                          <option value="docente">Docente</option>
+                          <option value="administrador">Administrador</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="field is-grouped is-grouped-right">
+              <div className="field is-grouped is-grouped-centered">
                 <div className="control">
-                  <button type="submit" className="button is-success">
-                    <span className="icon">
-                      <i className="fas fa-save"></i>
-                    </span>
-                    <span>Guardar</span>
-                  </button>
+                  <button className="button is-success" type="submit">Guardar Usuario</button>
                 </div>
                 <div className="control">
-                  <button type="button" className="button" onClick={() => setIsModalActive(false)}>
-                    <span className="icon">
-                      <i className="fas fa-times"></i>
-                    </span>
-                    <span>Cancelar</span>
-                  </button>
+                  <button className="button is-danger" type="button" onClick={() => setIsModalActive(false)}>Cancelar</button>
                 </div>
               </div>
             </form>
