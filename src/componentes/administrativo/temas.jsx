@@ -25,6 +25,10 @@ const TemaForm = () => {
   const [bibliografiaTema, setBibliografiaTema] = useState("");
   const fileInputRef = useRef(null);
 
+  //subtemas
+  const [subtemas, setSubtemas] = useState([]);
+
+
   if (pasosTema.length === 0) {
     setPasosTema([{ Titulo: "", Descripcion: "" }]);
   }

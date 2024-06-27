@@ -46,7 +46,7 @@
 }
 
 .delete-icon:hover::after {
-  content: 'Eliminar paso';
+  content: 'Eliminar';
   position: absolute;
   top: -20px;
   right: 0;
@@ -62,7 +62,7 @@
 }
 
 .add-button:hover::after {
-  content: 'Agregar paso';
+  content: 'Agregar ';
   position: absolute;
   top: -20px;
   left: 50%;

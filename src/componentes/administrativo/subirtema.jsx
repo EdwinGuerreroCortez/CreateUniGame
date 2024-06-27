@@ -15,6 +15,8 @@ const SubirTema = () => {
   const [paginaActual, setPaginaActual] = useState(0);
   const pasosPorPagina = 1;
 
+  const [subtemas, setSubtemas] = useState([]);
+
   useEffect(() => {
     if (alert.message) {
       const timer = setTimeout(() => {
@@ -23,6 +25,27 @@ const SubirTema = () => {
       return () => clearTimeout(timer);
     }
   }, [alert]);
+
+  //subtemas
+  const handleAgregarSubtema = () => {
+    setSubtemas([...subtemas, { Titulo: "", Descripcion: "", Link: "" }]);
+  };
+
+  const handleSubtemaChange = (index, field, value) => {
+    const newSubtemas = [...subtemas];
+    newSubtemas[index][field] = value;
+    setSubtemas(newSubtemas);
+  };
+  const handleEliminarSubtema = (index) => {
+    if (subtemas.length > 1) {
+      if (window.confirm("¿Estás seguro de que quieres eliminar este subtema?")) {
+        const nuevosSubtemas = [...subtemas];
+        nuevosSubtemas.splice(index, 1);
+        setSubtemas(nuevosSubtemas);
+      }
+    }
+  };
+
 
   const handleInputChange = (index, field, value) => {
     const newPasos = [...pasos];
@@ -37,11 +60,13 @@ const SubirTema = () => {
 
   const handleEliminarPaso = (index) => {
     if (pasos.length > 1) {
-      const newPasos = [...pasos];
-      newPasos.splice(index, 1);
-      setPasos(newPasos);
-      if (paginaActual > 0 && index <= startIndex) {
-        setPaginaActual(paginaActual - 1); // Retrocede una página si se elimina el único paso en la página actual
+      if (window.confirm("¿Estás seguro de que quieres eliminar este paso?")) {
+        const newPasos = [...pasos];
+        newPasos.splice(index, 1);
+        setPasos(newPasos);
+        if (paginaActual > 0 && index <= startIndex) {
+          setPaginaActual(paginaActual - 1); // Retrocede una página si se elimina el único paso en la página actual
+        }
       }
     }
   };
@@ -52,14 +77,14 @@ const SubirTema = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (
       !titulo ||
       !descripcion ||
       !responsable ||
       !bibliografia ||
-      !videoFile ||
-      pasos.some((p) => !p.Titulo || !p.Descripcion)
+      pasos.some((p) => !p.Titulo || !p.Descripcion) ||
+      subtemas.some((s) => !s.Titulo || !s.Descripcion || !s.Link)
     ) {
       setAlert({
         type: "warning",
@@ -67,28 +92,35 @@ const SubirTema = () => {
       });
       return;
     }
-
+  
     setIsLoading(true);
     const formData = new FormData();
     formData.append("titulo", titulo);
     formData.append("descripcion", descripcion);
     formData.append("responsable", responsable);
     formData.append("bibliografia", bibliografia);
-    formData.append("video", videoFile);
+    if (videoFile) {
+      formData.append("video", videoFile);
+    }
     formData.append("pasos", JSON.stringify(pasos));
-
+    if (subtemas.length > 0) {
+      formData.append("subtemas", JSON.stringify(subtemas));
+    } else {
+      formData.append("subtemas", JSON.stringify([]));
+    }
+  
     try {
       const response = await fetch("http://localhost:3001/api/subirTema", {
         method: "POST",
         body: formData,
       });
-
+  
       if (!response.ok) {
         throw new Error(
           "Error al crear el tema. Código de estado: " + response.status
         );
       }
-
+  
       const data = await response.json();
       if (data.error) {
         setAlert({ type: "error", message: data.error });
@@ -99,6 +131,7 @@ const SubirTema = () => {
         setResponsable("");
         setBibliografia("");
         setPasos([{ Titulo: "", Descripcion: "" }]);
+        setSubtemas([{ Titulo: "", Descripcion: "", Link: "" }]);
         setVideoFile(null);
         setPaginaActual(0); // Reiniciar paginación al enviar el formulario
       }
@@ -112,12 +145,13 @@ const SubirTema = () => {
       setIsLoading(false);
     }
   };
+  
 
   const startIndex = paginaActual * pasosPorPagina;
   const endIndex = startIndex + pasosPorPagina;
 
   return (
-    <div className="has-background-black" style={{ minHeight: "100vh" }}>
+    <div style={{ minHeight: "100vh", background: '#14161A', marginTop: '20px' }}>
       {isLoading && (
         <div className="loading-overlay">
           <div className="loading-circle"></div>
@@ -130,13 +164,12 @@ const SubirTema = () => {
 
             {alert.message && (
               <div
-                className={`notification ${
-                  alert.type === "success"
-                    ? "is-success"
-                    : alert.type === "warning"
+                className={`notification ${alert.type === "success"
+                  ? "is-success"
+                  : alert.type === "warning"
                     ? "is-warning"
                     : "is-danger"
-                }`}
+                  }`}
               >
                 <button
                   className="delete"
@@ -233,7 +266,7 @@ const SubirTema = () => {
                     {pasos.length > 1 && (
                       <div
                         className="delete-icon"
-                        title="Eliminar paso"
+                        title="Eliminar"
                         onClick={() => handleEliminarPaso(startIndex + index)}
                       >
                         <FaTrash />
@@ -310,6 +343,85 @@ const SubirTema = () => {
                 </button>
               </div>
               <br />
+              <div className="field">
+                <div className="control is-pulled-right">
+                  <button
+                    type="button"
+                    className="button is-success is-small"
+                    onClick={handleAgregarSubtema}
+                    data-tooltip="Agregar Subtema"
+                    style={{ marginBottom: '20px' }}
+                  >
+                    <span className="icon">
+                      <FaPlus />
+                    </span>
+                    <span>Agregar Subtema</span>
+                  </button>
+                </div>
+                <br />
+                <br />
+                {subtemas.length > 0 && subtemas.map((subtema, index) => (
+                  <div
+                    key={index}
+                    className="box subtema-box"
+                    style={{
+                      backgroundColor: "#272727",
+                      marginBottom: "10px",
+                      padding: "10px",
+                      position: "relative",
+                    }}
+                  >
+                    {subtemas.length > 1 && (
+                      <div
+                        className="delete-icon"
+                        title="Eliminar"
+                        onClick={() => handleEliminarSubtema(index)}
+                      >
+                        <FaTrash />
+                      </div>
+                    )}
+                    <div className="field">
+                      <label className="label has-text-white">Título del Subtema</label>
+                      <div className="control">
+                        <input
+                          className="input"
+                          type="text"
+                          value={subtema.Titulo}
+                          onChange={(e) => handleSubtemaChange(index, "Titulo", e.target.value)}
+                          placeholder="Título del Subtema"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div className="field">
+                      <label className="label has-text-white">Descripción del Subtema</label>
+                      <div className="control">
+                        <textarea
+                          className="textarea"
+                          value={subtema.Descripcion}
+                          onChange={(e) => handleSubtemaChange(index, "Descripcion", e.target.value)}
+                          placeholder="Descripción del Subtema"
+                          required
+                        ></textarea>
+                      </div>
+                    </div>
+                    <div className="field">
+                      <label className="label has-text-white">Link del Video</label>
+                      <div className="control">
+                        <input
+                          className="input"
+                          type="text"
+                          value={subtema.Link}
+                          onChange={(e) => handleSubtemaChange(index, "Link", e.target.value)}
+                          placeholder="Link del Video"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
               <div className="control has-text-centered">
                 <button type="submit" className="button is-primary">
                   Subir Tema
