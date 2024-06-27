@@ -25,9 +25,10 @@ const TemaForm = () => {
   const [bibliografiaTema, setBibliografiaTema] = useState("");
   const fileInputRef = useRef(null);
 
-  //subtemas
+  // Subtemas
   const [subtemas, setSubtemas] = useState([]);
-
+  const [cursos, setCursos] = useState([]); // Estado para almacenar la lista de cursos
+  const [cursoSeleccionado, setCursoSeleccionado] = useState(""); // Estado para el curso seleccionado
 
   if (pasosTema.length === 0) {
     setPasosTema([{ Titulo: "", Descripcion: "" }]);
@@ -42,6 +43,25 @@ const TemaForm = () => {
       return () => clearTimeout(timer);
     }
   }, [alert]);
+
+  useEffect(() => {
+    // Función para cargar la lista de cursos desde el backend
+    const fetchCursos = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/cursos"); // Reemplaza con tu endpoint real
+        if (!response.ok) {
+          throw new Error("Error al cargar los cursos.");
+        }
+        const data = await response.json();
+        setCursos(data); // Guarda los cursos en el estado
+      } catch (error) {
+        console.error("Error al cargar los cursos:", error);
+        // Manejo de errores si es necesario
+      }
+    };
+
+    fetchCursos(); // Llama a la función para cargar los cursos cuando el componente se monte
+  }, []);
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
@@ -116,9 +136,6 @@ const TemaForm = () => {
     reader.readAsArrayBuffer(file);
   };
   
-  
-  
-
   const handleVideoFileChange = (e) => {
     setVideoFile(e.target.files[0]);
   };
@@ -210,21 +227,28 @@ const TemaForm = () => {
         });
       });
   };
-  
 
   const handleSubirTemas = () => {
+    if (!cursoSeleccionado) {
+      setAlert({
+        type: "error",
+        message: "Selecciona un curso antes de subir los temas.",
+      });
+      return;
+    }
+
     setIsLoading(true);
     fetch("http://localhost:3001/api/subir-temas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ temas }),
+      body: JSON.stringify({ temas, cursoId: cursoSeleccionado }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.error) {
-          setAlert({ type: "error", message: data.details.join(", ") });
+          setAlert({ type: "error", message: data.details ? data.details.join(", ") : data.error });
         } else {
           setAlert({ type: "success", message: "Temas subidos con éxito." });
           setTemas([]); // Limpia la lista de temas después de subirlos
@@ -367,7 +391,7 @@ const TemaForm = () => {
                       onChange={handleFileChange}
                       accept=".xlsx,.xls"
                     />
-                  <span className="file-cta">
+                    <span className="file-cta">
                       <span className="file-icon">
                         <i className="fas fa-upload"></i>
                       </span>
@@ -395,6 +419,25 @@ const TemaForm = () => {
                   <FaDownload />
                 </span>
               </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="field">
+          <label className="label has-text-white">Seleccionar Curso:</label>
+          <div className="control">
+            <div className="select is-fullwidth">
+              <select
+                value={cursoSeleccionado}
+                onChange={(e) => setCursoSeleccionado(e.target.value)}
+              >
+                <option value="">Selecciona un curso</option>
+                {cursos.map((curso) => (
+                  <option key={curso._id} value={curso._id}>
+                    {curso.nombre}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>

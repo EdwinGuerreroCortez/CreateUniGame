@@ -31,8 +31,9 @@ import CuestionariosForm from './componentes/administrativo/cuestionario';
 import Subirtema from './componentes/administrativo/subirtema';
 import SubirImagenes from './componentes/administrativo/imagenes';
 import Evaluaciones from './componentes/administrativo/evaluaciones'
+import CrearCurso from './componentes/administrativo/curso';
 
-//Componentes Administrativos
+//Componentes Docentes
 import LayoutEncabeDocen from './componentes/docente/LayoutEncabeDocen';
 import BienvenidaDocen from './componentes/docente/bienvenidaDocen';
 import TemasDocen from './componentes/docente/temas';
@@ -76,6 +77,8 @@ const App = () => {
         <Route path="/admin/subirtema" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Subirtema /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/imagenes" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><SubirImagenes /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/evaluaciones" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Evaluaciones /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/crearcurso" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><CrearCurso /></LayoutEncabeAdmin></RutaPrivada>} />
+
 
         {/* Rutas Docentes */}
         <Route path="/docente/bienvenida" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><BienvenidaDocen /></LayoutEncabeDocen></RutaPrivada>} />

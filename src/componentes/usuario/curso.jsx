@@ -3,12 +3,6 @@ import "bulma/css/bulma.min.css";
 import '../CSS/carga.css';
 import { useNavigate } from 'react-router-dom';
 
-const courses = [
-  { id: 1, name: 'Programación'},
-  { id: 2, name: 'Matemáticas' },
-  // Agrega más cursos si es necesario
-];
-
 const Curso = () => {
   const [paginaActualCursos, setPaginaActualCursos] = useState(1);
   const [paginaActualTemas, setPaginaActualTemas] = useState(1);
@@ -18,39 +12,53 @@ const Curso = () => {
   const [pasoActual, setPasoActual] = useState(-1); // -1 para la introducción
   const [cursoFinalizado, setCursoFinalizado] = useState(false);
   const [evaluacionHabilitada, setEvaluacionHabilitada] = useState(false); // Estado para la habilitación de la evaluación
+  const [cursos, setCursos] = useState([]); // Estado para almacenar los cursos desde el backend
   const temasPorPagina = 6;
   const cursosPorPagina = 2; // Ajusta este valor según la cantidad de cursos que quieras mostrar por página
   const [cursoActual, setCursoActual] = useState(null);
   const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
-  
+
   const navigate = useNavigate();
+
+  // Función para obtener los cursos desde el backend
+  const fetchCursos = async () => {
+    try {
+      const response = await fetch('http://localhost:3001/api/cursos');
+      const data = await response.json();
+      setCursos(data);
+    } catch (error) {
+      console.error('Error al cargar los cursos:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCursos();
+  }, []);
+
+  // Función para obtener los temas del curso seleccionado
+  const fetchTemasDelCurso = async (cursoId) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/cursos/${cursoId}/temas`);
+      const data = await response.json();
+      setTemas(data);
+    } catch (error) {
+      console.error('Error al cargar los temas del curso:', error);
+    }
+  };
 
   const seleccionarCurso = (curso) => {
     setCursoSeleccionado(curso);
+    fetchTemasDelCurso(curso._id);
   };
 
   const regresarACursos = () => {
     setCursoSeleccionado(null);
     setTemaSeleccionado(null);
+    setTemas([]); // Limpia los temas cuando se regresa a la lista de cursos
   };
 
   // Obtiene el userId desde localStorage
   const userId = localStorage.getItem('userId');
-
-  useEffect(() => {
-    const fetchTemas = async () => {
-      try {
-        const response = await fetch('http://localhost:3001/api/temas'); // Actualiza la URL según sea necesario
-        const data = await response.json();
-        const temasHabilitados = data.filter(tema => tema.habilitado);
-        setTemas(temasHabilitados);
-      } catch (error) {
-        console.error('Error al cargar los temas:', error);
-      }
-    };
-
-    fetchTemas();
-  }, []);
 
   useEffect(() => {
     const verificarEvaluacion = async () => {
@@ -156,8 +164,8 @@ const Curso = () => {
 
   const indiceUltimoCurso = paginaActualCursos * cursosPorPagina;
   const indicePrimerCurso = indiceUltimoCurso - cursosPorPagina;
-  const cursosActuales = courses.slice(indicePrimerCurso, indiceUltimoCurso);
-  const totalPaginasCursos = Math.ceil(courses.length / cursosPorPagina);
+  const cursosActuales = cursos.slice(indicePrimerCurso, indiceUltimoCurso); // Utiliza cursos obtenidos del backend
+  const totalPaginasCursos = Math.ceil(cursos.length / cursosPorPagina);
 
   return (
     <div className="section has-background-black-bis">
@@ -170,7 +178,7 @@ const Curso = () => {
                 <div>
                   {cursosActuales.map((curso) => (
                     <div
-                      key={curso.id}
+                      key={curso._id}
                       className="box"
                       style={{ cursor: "pointer", backgroundColor: "navy", marginTop: "20px" }}
                       onClick={() => seleccionarCurso(curso)}
@@ -179,7 +187,7 @@ const Curso = () => {
                         className="menu-label has-text-white"
                         style={{ cursor: "pointer" }}
                       >
-                        <span className="title has-text-white is-size-6">{curso.name}</span>
+                        <span className="title has-text-white is-size-6">{curso.nombre}</span>
                       </div>
                     </div>
                   ))}
@@ -271,7 +279,6 @@ const Curso = () => {
               </div>
             )}
           </div>
- 
 
           <div className="column is-three-quarters">
             {temaSeleccionado ? (
@@ -366,5 +373,3 @@ const Curso = () => {
 };
 
 export default Curso;
-
-
