@@ -19,6 +19,7 @@ const GestionUsuariosForm = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [notification, setNotification] = useState({ message: '', type: '' });
   const [isModalActive, setIsModalActive] = useState(false); // Estado para el modal
+  const [confirmDelete, setConfirmDelete] = useState({ active: false, index: null, id: null }); // Estado para confirmación de eliminación
 
   useEffect(() => {
     obtenerUsuarios();
@@ -95,8 +96,13 @@ const GestionUsuariosForm = () => {
       setNotification({ message: 'Error al registrar usuario. Intente de nuevo.', type: 'is-danger' });
     }
   };
-
   const handleEliminarUsuario = async (index, id) => {
+    // Activar confirmación de eliminación
+    setConfirmDelete({ active: true, index, id });
+  };
+
+  const confirmarEliminarUsuario = async () => {
+    const { index, id } = confirmDelete;
     try {
       await axios.delete(`http://localhost:3001/api/usuarios/${id}`);
       setUsuarios(usuarios.filter((_, i) => i !== index));
@@ -105,6 +111,13 @@ const GestionUsuariosForm = () => {
       console.error('Error al eliminar usuario:', error);
       setNotification({ message: 'Error al eliminar usuario. Intente de nuevo.', type: 'is-danger' });
     }
+    // Desactivar confirmación de eliminación y limpiar estado
+    setConfirmDelete({ active: false, index: null, id: null });
+  };
+
+  const handleCancelarEliminarUsuario = () => {
+    // Cancelar eliminación, desactivando confirmación de eliminación
+    setConfirmDelete({ active: false, index: null, id: null });
   };
 
   const handleAutorizarUsuario = async (index, id, autorizacion) => {
@@ -166,24 +179,26 @@ const GestionUsuariosForm = () => {
                   <td className="has-text-white">{u.datos_personales.telefono}</td>
                   <td className="has-text-white">{u.tipo}</td>
                   <td>
-                    <button
-                      className={`button ${u.autorizacion ? 'is-success' : 'is-danger'} is-small`}
-                      onClick={() => handleAutorizarUsuario(index, u._id, !u.autorizacion)}
-                      data-tooltip={u.autorizacion ? 'Revocar Autorización' : 'Autorizar Usuario'}
-                    >
-                      <span className="icon">
-                        <i className={`fas ${u.autorizacion ? 'fa-check' : 'fa-ban'}`}></i>
-                      </span>
-                    </button>
-                    <button
-                      className="button is-danger is-small"
-                      onClick={() => handleEliminarUsuario(index, u._id)}
-                      data-tooltip="Eliminar Usuario"
-                    >
-                      <span className="icon">
-                        <i className="fas fa-trash-alt"></i>
-                      </span>
-                    </button>
+                    <div className="buttons is-centered is-grouped">
+                      <button
+                        className={`button ${u.autorizacion ? 'is-success' : 'is-danger'} is-small`}
+                        onClick={() => handleAutorizarUsuario(index, u._id, !u.autorizacion)}
+                        data-tooltip={u.autorizacion ? 'Revocar Autorización' : 'Autorizar Usuario'}
+                      >
+                        <span className="icon">
+                          <i className={`fas ${u.autorizacion ? 'fa-check' : 'fa-ban'}`}></i>
+                        </span>
+                      </button>
+                      <button
+                        className="button is-danger is-small"
+                        onClick={() => handleEliminarUsuario(index, u._id)}
+                        data-tooltip="Eliminar Usuario"
+                      >
+                        <span className="icon">
+                          <i className="fas fa-trash-alt"></i>
+                        </span>
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -257,25 +272,24 @@ const GestionUsuariosForm = () => {
                       <input className="input" type="text" name="telefono" value={usuario.telefono} onChange={handleChange} placeholder="Teléfono" required />
                     </div>
                   </div>
-                  <div className="field">
-                    <label className="label has-text-white">Tipo de Usuario</label>
-                    <div className="control">
-                      <div className="select is-fullwidth">
-                        <select name="tipo" value={usuario.tipo} onChange={handleChange} required>
-                          <option value="docente">Docente</option>
-                          <option value="administrador">Administrador</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
-              <div className="field is-grouped is-grouped-centered">
+              <div className="field is-grouped is-grouped-right">
                 <div className="control">
-                  <button className="button is-success" type="submit">Guardar Usuario</button>
+                  <button type="submit" className="button is-success">
+                    <span className="icon">
+                      <i className="fas fa-save"></i>
+                    </span>
+                    <span>Guardar</span>
+                  </button>
                 </div>
                 <div className="control">
-                  <button className="button is-danger" type="button" onClick={() => setIsModalActive(false)}>Cancelar</button>
+                  <button type="button" className="button" onClick={() => setIsModalActive(false)}>
+                    <span className="icon">
+                      <i className="fas fa-times"></i>
+                    </span>
+                    <span>Cancelar</span>
+                  </button>
                 </div>
               </div>
             </form>
@@ -283,7 +297,41 @@ const GestionUsuariosForm = () => {
         </div>
         <button className="modal-close is-large" aria-label="close" onClick={() => setIsModalActive(false)}></button>
       </div>
+      
+  {/* Modal de confirmación de eliminación */}
+  {confirmDelete.active && (
+  <div className={`modal ${confirmDelete.active ? "is-active" : ""}`}>
+    <div className="modal-background"></div>
+    <div className="modal-content">
+      <div className="modal-card has-background-black">
+        <header className="modal-card-head has-background-black-bis" style={{ justifyContent: "center" }}>
+          <p className="modal-card-title has-text-centered has-text-white">
+            Confirmar Eliminación
+          </p>
+          <button className="delete" aria-label="close" onClick={handleCancelarEliminarUsuario}></button>
+        </header>
+        <section className="modal-card-body has-background-black-bis">
+          <p className="has-text-centered has-text-white">
+            ¿Estás seguro de que quieres eliminar este usuario?
+          </p>
+        </section>
+        <footer className="modal-card-foot has-background-black-bis" style={{ justifyContent: "center" }}>
+          <button className="button is-danger" style={{ marginRight: "20px" }} onClick={confirmarEliminarUsuario}>
+            Eliminar
+          </button>
+          <button className="button" onClick={handleCancelarEliminarUsuario}>
+            Cancelar
+          </button>
+        </footer>
+      </div>
     </div>
+    <button className="modal-close is-large" aria-label="close" onClick={handleCancelarEliminarUsuario}></button>
+  </div>
+   )}
+
+    </div>
+
+    
   );
 };
 
