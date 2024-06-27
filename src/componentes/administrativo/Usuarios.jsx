@@ -41,7 +41,7 @@ const GestionUsuariosForm = () => {
     const { name, value } = e.target;
     setUsuario({
       ...usuario,
-      [name]: value
+      [name]: value,
     });
   };
 
@@ -107,6 +107,19 @@ const GestionUsuariosForm = () => {
     }
   };
 
+  const handleAutorizarUsuario = async (index, id, autorizacion) => {
+    try {
+      await axios.put(`http://localhost:3001/api/usuarios/${id}/autorizar`, { autorizacion });
+      const updatedUsuarios = [...usuarios];
+      updatedUsuarios[index].autorizacion = autorizacion;
+      setUsuarios(updatedUsuarios);
+      setNotification({ message: `Usuario ${autorizacion ? 'autorizado' : 'desautorizado'} con éxito.`, type: 'is-success' });
+    } catch (error) {
+      console.error('Error al actualizar autorización:', error);
+      setNotification({ message: 'Error al actualizar autorización. Intente de nuevo.', type: 'is-danger' });
+    }
+  };
+
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <h1 className="title has-text-centered has-text-white">Gestión de Usuarios</h1>
@@ -154,6 +167,15 @@ const GestionUsuariosForm = () => {
                   <td className="has-text-white">{u.tipo}</td>
                   <td>
                     <button
+                      className={`button ${u.autorizacion ? 'is-success' : 'is-danger'} is-small`}
+                      onClick={() => handleAutorizarUsuario(index, u._id, !u.autorizacion)}
+                      data-tooltip={u.autorizacion ? 'Revocar Autorización' : 'Autorizar Usuario'}
+                    >
+                      <span className="icon">
+                        <i className={`fas ${u.autorizacion ? 'fa-check' : 'fa-ban'}`}></i>
+                      </span>
+                    </button>
+                    <button
                       className="button is-danger is-small"
                       onClick={() => handleEliminarUsuario(index, u._id)}
                       data-tooltip="Eliminar Usuario"
@@ -198,25 +220,13 @@ const GestionUsuariosForm = () => {
                     </div>
                   </div>
                   <div className="field">
-                    <label className="label has-text-white">Género</label>
-                    <div className="control">
-                      <div className="select is-fullwidth">
-                        <select name="genero" value={usuario.genero} onChange={handleChange} required>
-                          <option value="">Seleccionar</option>
-                          <option value="Masculino">Masculino</option>
-                          <option value="Femenino">Femenino</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="column is-half">
-                  <div className="field">
                     <label className="label has-text-white">Nombre de Usuario</label>
                     <div className="control">
                       <input className="input" type="text" name="nomusuario" value={usuario.nomusuario} onChange={handleChange} placeholder="Nombre de Usuario" required />
                     </div>
                   </div>
+                </div>
+                <div className="column is-half">
                   <div className="field">
                     <label className="label has-text-white">Correo Electrónico</label>
                     <div className="control">
@@ -230,30 +240,41 @@ const GestionUsuariosForm = () => {
                     </div>
                   </div>
                   <div className="field">
+                    <label className="label has-text-white">Género</label>
+                    <div className="control">
+                      <div className="select is-fullwidth">
+                        <select name="genero" value={usuario.genero} onChange={handleChange} required>
+                          <option value="">Seleccione</option>
+                          <option value="Masculino">Masculino</option>
+                          <option value="Femenino">Femenino</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="field">
                     <label className="label has-text-white">Teléfono</label>
                     <div className="control">
                       <input className="input" type="text" name="telefono" value={usuario.telefono} onChange={handleChange} placeholder="Teléfono" required />
                     </div>
                   </div>
-                  <div className="field">
-                    <label className="label has-text-white">Tipo de Usuario</label>
-                    <div className="control">
-                      <div className="select is-fullwidth">
-                        <select name="tipo" value={usuario.tipo} onChange={handleChange} required>
-                          <option value="docente">Docente</option>
-                          <option value="administrador">Administrador</option>
-                        </select>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
-              <div className="field is-grouped is-grouped-centered">
+              <div className="field is-grouped is-grouped-right">
                 <div className="control">
-                  <button className="button is-success" type="submit">Guardar Usuario</button>
+                  <button type="submit" className="button is-success">
+                    <span className="icon">
+                      <i className="fas fa-save"></i>
+                    </span>
+                    <span>Guardar</span>
+                  </button>
                 </div>
                 <div className="control">
-                  <button className="button is-danger" type="button" onClick={() => setIsModalActive(false)}>Cancelar</button>
+                  <button type="button" className="button" onClick={() => setIsModalActive(false)}>
+                    <span className="icon">
+                      <i className="fas fa-times"></i>
+                    </span>
+                    <span>Cancelar</span>
+                  </button>
                 </div>
               </div>
             </form>
