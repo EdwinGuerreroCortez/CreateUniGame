@@ -13,9 +13,18 @@ const Evaluaciones = () => {
   useEffect(() => {
     const fetchEvaluaciones = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/examenes');
+        const userId = localStorage.getItem('userId');
+        const response = await fetch(`http://localhost:3001/api/usuario/${userId}/temasbuscar`);
         const data = await response.json();
-        setEvaluaciones(data);
+
+        const examenesIds = data.examenes.map(examen => examen._id);
+
+        const examenesDetalles = await Promise.all(examenesIds.map(async (id) => {
+          const response = await fetch(`http://localhost:3001/api/examenes/${id}`);
+          return response.json();
+        }));
+
+        setEvaluaciones(examenesDetalles);
       } catch (error) {
         console.error('Error al obtener las evaluaciones:', error);
       }

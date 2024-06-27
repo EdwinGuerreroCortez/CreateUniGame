@@ -62,6 +62,8 @@ const BarraNavDocen = () => {
                         </div>
                     </div>
                     <Link className="navbar-item has-text-success" to="/docente/imagenes">Imagenes</Link>
+                    <Link className="navbar-item has-text-success" to="/docente/crearcurso">Crear Curso</Link>
+
                 </div>
 
                 <div className="navbar-end">

@@ -19,27 +19,36 @@ const CuestionariosForm = () => {
   const [itemsPerPage] = useState(5);
 
   useEffect(() => {
-    const fetchTemas = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/temas');
-        const filteredTemas = response.data.filter(tema => !tema.evaluacion_id);
-        setTemas(filteredTemas);
-      } catch (error) {
-        console.error('Error al obtener los temas:', error);
-      }
-    };
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      const fetchTemas = async () => {
+        try {
+          const response = await axios.get(`http://localhost:3001/api/usuario/${userId}/temas`);
+          const filteredTemas = response.data.filter(tema => !tema.evaluacion_id);
+          setTemas(filteredTemas);
+        } catch (error) {
+          console.error('Error al obtener los temas:', error);
+        }
+      };
 
-    const fetchEvaluaciones = async () => {
-      try {
-        const response = await axios.get('http://localhost:3001/api/evaluaciones');
-        setEvaluaciones(response.data);
-      } catch (error) {
-        console.error('Error al obtener las evaluaciones:', error);
-      }
-    };
+      const fetchTemasEvaluaciones = async () => {
+        try {
+          const response = await axios.get(`http://localhost:3001/api/usuario/${userId}/temas-evaluaciones`);
+          const evaluacionesResponse = response.data.map(te => ({
+            ...te.evaluacion,
+            tema_titulo: te.tema.titulo
+          }));
+          setEvaluaciones(evaluacionesResponse);
+        } catch (error) {
+          console.error('Error al obtener las evaluaciones:', error);
+        }
+      };
 
-    fetchTemas();
-    fetchEvaluaciones();
+      fetchTemas();
+      fetchTemasEvaluaciones();
+    } else {
+      console.error("No userId found in localStorage");
+    }
   }, []);
 
   const handleToggleHabilitado = async (evaluacionId, habilitado) => {
@@ -300,7 +309,7 @@ const CuestionariosForm = () => {
             <label className="label has-text-white">Tema</label>
             <div className="control">
               <div className="select">
-              <select value={tema} onChange={(e) => setTema(e.target.value)} required>
+                <select value={tema} onChange={(e) => setTema(e.target.value)} required>
                   <option value="" disabled>Selecciona un tema</option>
                   {temas.map((tema) => (
                     <option key={tema._id} value={tema._id}>{tema.titulo}</option>
@@ -361,11 +370,11 @@ const CuestionariosForm = () => {
             <tbody>
               {evaluaciones && evaluaciones.length > 0 ? (
                 evaluaciones.map((evaluacion) => {
-                  const { tema_id, evaluacion: preguntas, habilitado } = evaluacion;
+                  const { tema_titulo, evaluacion: preguntas, habilitado } = evaluacion;
                   return (
                     <tr key={evaluacion._id}>
                       <td className="has-text-white" style={{ verticalAlign: 'middle' }}>
-                        {tema_id ? tema_id.titulo : 'Tema no disponible'}
+                        {tema_titulo ? tema_titulo : 'Tema no disponible'}
                       </td>
                       <td className="has-text-white" style={{ verticalAlign: 'middle' }}>{preguntas.length} preguntas</td>
                       <td className="has-text-centered has-text-white" style={{ verticalAlign: 'middle' }}>
@@ -533,59 +542,59 @@ const CuestionariosForm = () => {
                   <ul className="pagination-list">
                     {Array.from({ length: totalPages }, (_, i) => (
                       <li key={i}>
-                      <button
-                        className={`pagination-link ${currentPage === i + 1 ? 'is-current' : ''}`}
-                        onClick={() => handlePageChange(i + 1)}
-                      >
-                        {i + 1}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            </section>
-            <footer className="modal-card-foot">
-              <div className="footer-left">
-                <button className="button is-success" onClick={handleModalSave}>
-                  <span className="icon">
-                    <i className="fas fa-save"></i>
-                  </span>
-                  <span>Guardar</span>
-                </button>
-                <button className="button" onClick={handleModalClose}>
-                  <span className="icon">
-                    <i className="fas fa-times"></i>
-                  </span>
-                  <span>Cancelar</span>
-                </button>
-              </div>
-              <div className="footer-right" style={{ marginLeft: '150px' }}>
-                <div className="file is-primary has-name">
-                  <label className="file-label">
-                    <input className="file-input" type="file" accept=".xlsx, .xls" onChange={handleEditFileChange} />
-                    <span className="file-cta">
-                      <span className="file-icon">
-                        <i className="fas fa-upload"></i>
-                      </span>
-                      <span className="file-label">
-                        Subir actualización...
-                      </span>
+                        <button
+                          className={`pagination-link ${currentPage === i + 1 ? 'is-current' : ''}`}
+                          onClick={() => handlePageChange(i + 1)}
+                        >
+                          {i + 1}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+              </section>
+              <footer className="modal-card-foot">
+                <div className="footer-left">
+                  <button className="button is-success" onClick={handleModalSave}>
+                    <span className="icon">
+                      <i className="fas fa-save"></i>
                     </span>
-                    {editFile && (
-                      <span className="file-name">
-                        {editFile.name}
-                      </span>
-                    )}
-                  </label>
+                    <span>Guardar</span>
+                  </button>
+                  <button className="button" onClick={handleModalClose}>
+                    <span className="icon">
+                      <i className="fas fa-times"></i>
+                    </span>
+                    <span>Cancelar</span>
+                  </button>
                 </div>
-              </div>
-            </footer>
+                <div className="footer-right" style={{ marginLeft: '150px' }}>
+                  <div className="file is-primary has-name">
+                    <label className="file-label">
+                      <input className="file-input" type="file" accept=".xlsx, .xls" onChange={handleEditFileChange} />
+                      <span className="file-cta">
+                        <span className="file-icon">
+                          <i className="fas fa-upload"></i>
+                        </span>
+                        <span className="file-label">
+                          Subir actualización...
+                        </span>
+                      </span>
+                      {editFile && (
+                        <span className="file-name">
+                          {editFile.name}
+                        </span>
+                      )}
+                    </label>
+                  </div>
+                </div>
+              </footer>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
 };
 
 export default CuestionariosForm;

@@ -5,7 +5,7 @@ import * as XLSX from "xlsx";
 import "../CSS/adminForms2.css"; // Archivo CSS adicional para estilos específicos
 import { FaDownload } from "react-icons/fa";
 
-const TemaForm = () => {
+const TemaFormDocente = () => {
   const [file, setFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
   const [temas, setTemas] = useState([]);
@@ -25,19 +25,25 @@ const TemaForm = () => {
   const [bibliografiaTema, setBibliografiaTema] = useState("");
   const fileInputRef = useRef(null);
 
-  //subtemas
   const [subtemas, setSubtemas] = useState([]);
+  const [userCourses, setUserCourses] = useState([]);
+  const [selectedCourse, setSelectedCourse] = useState("");
+  const userId = localStorage.getItem('userId');
 
-
-  if (pasosTema.length === 0) {
-    setPasosTema([{ Titulo: "", Descripcion: "" }]);
-  }
+  useEffect(() => {
+    if (userId) {
+      fetch(`http://localhost:3001/api/usuario/${userId}/cursos`)
+        .then(response => response.json())
+        .then(data => setUserCourses(data))
+        .catch(error => console.error('Error fetching user courses:', error));
+    }
+  }, [userId]);
 
   useEffect(() => {
     if (alert.message) {
       const timer = setTimeout(() => {
         setAlert({ type: "", message: "" });
-      }, 5000); // Desaparece después de 5 segundos
+      }, 5000);
 
       return () => clearTimeout(timer);
     }
@@ -47,8 +53,7 @@ const TemaForm = () => {
     const selectedFile = e.target.files[0];
     if (
       selectedFile &&
-      (selectedFile.type ===
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
+      (selectedFile.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" ||
         selectedFile.type === "application/vnd.ms-excel")
     ) {
       setFile(selectedFile);
@@ -69,10 +74,10 @@ const TemaForm = () => {
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
       const json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-  
+
       let temas = [];
       let currentTema = null;
-  
+
       json.forEach((row) => {
         if (row["titulo"]) {
           if (currentTema) {
@@ -87,7 +92,7 @@ const TemaForm = () => {
             subtemas: [],
           };
         }
-  
+
         if (currentTema) {
           if (row["pasos"] && row["Descripcion"]) {
             currentTema.pasos.push({
@@ -104,20 +109,17 @@ const TemaForm = () => {
           }
         }
       });
-  
+
       if (currentTema) {
         temas.push(currentTema);
       }
-  
-      console.log('Datos procesados del Excel:', json); // Log para ver el JSON del Excel
-      console.log('Temas procesados:', temas); // Log para ver los temas procesados con subtemas
+
+      console.log('Datos procesados del Excel:', json);
+      console.log('Temas procesados:', temas);
       setTemas(temas);
     };
     reader.readAsArrayBuffer(file);
   };
-  
-  
-  
 
   const handleVideoFileChange = (e) => {
     setVideoFile(e.target.files[0]);
@@ -210,21 +212,28 @@ const TemaForm = () => {
         });
       });
   };
-  
 
   const handleSubirTemas = () => {
+    if (!selectedCourse) {
+      setAlert({
+        type: "error",
+        message: "Selecciona un curso antes de subir los temas.",
+      });
+      return;
+    }
+
     setIsLoading(true);
     fetch("http://localhost:3001/api/subir-temas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ temas }),
+      body: JSON.stringify({ temas, cursoId: selectedCourse }),
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.error) {
-          setAlert({ type: "error", message: data.details.join(", ") });
+          setAlert({ type: "error", message: data.details ? data.details.join(", ") : data.error });
         } else {
           setAlert({ type: "success", message: "Temas subidos con éxito." });
           setTemas([]); // Limpia la lista de temas después de subirlos
@@ -367,7 +376,7 @@ const TemaForm = () => {
                       onChange={handleFileChange}
                       accept=".xlsx,.xls"
                     />
-                  <span className="file-cta">
+                    <span className="file-cta">
                       <span className="file-icon">
                         <i className="fas fa-upload"></i>
                       </span>
@@ -381,7 +390,7 @@ const TemaForm = () => {
           </div>
           <div className="field is-grouped is-grouped-right">
             <div className="control">
-              <Link to="/admin/temas/contenidos" className="button is-primary">
+              <Link to="/docente/temas/contenidos" className="button is-primary">
                 Ver Temas
               </Link>
             </div>
@@ -395,6 +404,25 @@ const TemaForm = () => {
                   <FaDownload />
                 </span>
               </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="field">
+          <label className="label has-text-white">Seleccionar Curso:</label>
+          <div className="control">
+            <div className="select is-fullwidth">
+              <select
+                value={selectedCourse}
+                onChange={(e) => setSelectedCourse(e.target.value)}
+              >
+                <option value="">Selecciona un curso</option>
+                {userCourses.map((curso) => (
+                  <option key={curso._id} value={curso._id}>
+                    {curso.nombre}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
@@ -462,4 +490,4 @@ const TemaForm = () => {
   );
 };
 
-export default TemaForm;
+export default TemaFormDocente;

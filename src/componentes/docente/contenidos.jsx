@@ -20,10 +20,15 @@ const Contenidos = () => {
   const [currentTemaId, setCurrentTemaId] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/temas")
-      .then((response) => response.json())
-      .then((data) => setTemas(data))
-      .catch((error) => console.error("Error fetching temas:", error));
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      fetch(`http://localhost:3001/api/usuario/${userId}/temas`)
+        .then((response) => response.json())
+        .then((data) => setTemas(data))
+        .catch((error) => console.error("Error fetching temas:", error));
+    } else {
+      console.error("No userId found in localStorage");
+    }
   }, []);
 
   useEffect(() => {
