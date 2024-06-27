@@ -68,9 +68,12 @@ const FormRegistro = () => {
 
           if (userType === 'cliente') {
             navigate('/user/bienvenida');
-          } else if (userType === 'administrador' || userType === 'docente') {
+          } else if (userType === 'administrador') {
             navigate('/admin/bienvenida');
-          } else {
+          } else if(userType === 'docente'){
+            navigate('/docente/bienvenida');
+          }else
+          {
             throw new Error('Tipo de usuario desconocido');
           }
         } else {

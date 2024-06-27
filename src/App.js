@@ -32,6 +32,17 @@ import Subirtema from './componentes/administrativo/subirtema';
 import SubirImagenes from './componentes/administrativo/imagenes';
 import Evaluaciones from './componentes/administrativo/evaluaciones'
 
+//Componentes Administrativos
+import LayoutEncabeDocen from './componentes/docente/LayoutEncabeDocen';
+import BienvenidaDocen from './componentes/docente/bienvenidaDocen';
+import TemasDocen from './componentes/docente/temas';
+import ContenidosDocen from './componentes/docente/contenidos';
+import CuestionariosFormDocen from './componentes/docente/cuestionario';
+import SubirtemaDocen from './componentes/docente/subirtema';
+import SubirImagenesDocen from './componentes/docente/imagenes';
+import EvaluacionesDocen from './componentes/docente/evaluaciones'
+
+//proteccion de rutas
 import RutaPrivada from './componentes/contextos/ContextoAutenticacion';
 
 const App = () => {
@@ -55,17 +66,25 @@ const App = () => {
         <Route path="/user/evaluacion/:temaId" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Evaluacion /></LayoutEncabeUser></RutaPrivada>} />
 
         {/* Rutas Administrativas */}
-        <Route path="/admin/bienvenida" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/bienvenida" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/usuarios" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Usuarios /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/temas" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><TemasAdd /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/temas/contenidos" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><Contenidos /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/cuestionarios" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><CuestionariosForm /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/informacion/mv" element={<RutaPrivada rolesPermitidos={['administrador', ]}><LayoutEncabeAdmin><Mision /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/informacion/buzon" element={<RutaPrivada rolesPermitidos={['administrador', ]}><LayoutEncabeAdmin><Buzon /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/subirtema" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><Subirtema /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/imagenes" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><SubirImagenes /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/evaluaciones" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><Evaluaciones /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/temas" element={<RutaPrivada rolesPermitidos={['administrador' ]}><LayoutEncabeAdmin><TemasAdd /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/temas/contenidos" element={<RutaPrivada rolesPermitidos={['administrador' ]}><LayoutEncabeAdmin><Contenidos /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/cuestionarios" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><CuestionariosForm /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/informacion/mv" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Mision /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/informacion/buzon" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Buzon /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/subirtema" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Subirtema /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/imagenes" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><SubirImagenes /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/evaluaciones" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Evaluaciones /></LayoutEncabeAdmin></RutaPrivada>} />
 
+        {/* Rutas Docentes */}
+        <Route path="/docente/bienvenida" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><BienvenidaDocen /></LayoutEncabeDocen></RutaPrivada>} />
+        <Route path="/docente/temas" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><TemasDocen /></LayoutEncabeDocen></RutaPrivada>} />
+        <Route path="/docente/temas/contenidos" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><ContenidosDocen /></LayoutEncabeDocen></RutaPrivada>} />
+        <Route path="/docente/cuestionarios" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><CuestionariosFormDocen /></LayoutEncabeDocen></RutaPrivada>} />
+        <Route path="/docente/subirtema" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><SubirtemaDocen /></LayoutEncabeDocen></RutaPrivada>} />
+        <Route path="/docente/imagenes" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><SubirImagenesDocen /></LayoutEncabeDocen></RutaPrivada>} />
+        <Route path="/docente/evaluaciones" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><EvaluacionesDocen /></LayoutEncabeDocen></RutaPrivada>} />
 
       </Routes>
     </Router>
