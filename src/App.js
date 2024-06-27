@@ -31,6 +31,7 @@ import CuestionariosForm from './componentes/administrativo/cuestionario';
 import Subirtema from './componentes/administrativo/subirtema';
 import SubirImagenes from './componentes/administrativo/imagenes';
 import Evaluaciones from './componentes/administrativo/evaluaciones'
+import CrearCurso from './componentes/administrativo/curso';
 
 import RutaPrivada from './componentes/contextos/ContextoAutenticacion';
 
@@ -65,6 +66,7 @@ const App = () => {
         <Route path="/admin/subirtema" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><Subirtema /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/imagenes" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><SubirImagenes /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/evaluaciones" element={<RutaPrivada rolesPermitidos={['administrador', 'docente']}><LayoutEncabeAdmin><Evaluaciones /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/crearcurso" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><CrearCurso /></LayoutEncabeAdmin></RutaPrivada>} />
 
 
       </Routes>

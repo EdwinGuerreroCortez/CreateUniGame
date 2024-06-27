@@ -73,6 +73,9 @@ const BarraNavAdmin = () => {
                         </div>
                     </div>
                     <Link className="navbar-item has-text-success" to="/admin/imagenes">Imagenes</Link>
+
+                    {/* Nuevo enlace para "Crear Curso" */}
+                    <Link className="navbar-item has-text-success" to="/admin/crearcurso">Crear Curso</Link>
                 </div>
 
                 <div className="navbar-end">
