@@ -173,7 +173,7 @@ const GestionUsuariosForm = () => {
                 <th className="has-text-white">Nombre</th>
                 <th className="has-text-white">Apellido Paterno</th>
                 <th className="has-text-white">Apellido Materno</th>
-                <th className="has-text-white"> Usuario</th>
+                <th className="has-text-white">Usuario</th>
                 <th className="has-text-white">Correo</th>
                 <th className="has-text-white">Telefono</th>
                 <th className="has-text-white">Tipo</th>
