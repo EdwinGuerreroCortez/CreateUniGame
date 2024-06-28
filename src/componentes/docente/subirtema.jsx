@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from "react";
 import "../CSS/subirtemaForm.css";
 import "bulma/css/bulma.min.css";
-import { FaTrash, FaPlus, FaArrowLeft, FaArrowRight } from "react-icons/fa"; // Importamos los iconos de react-icons
+import { FaTrash, FaPlus, FaArrowLeft, FaArrowRight } from "react-icons/fa";
 
-const SubirTema = () => {
+const SubirTemaDocente = () => {
   const [titulo, setTitulo] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [responsable, setResponsable] = useState("");
   const [bibliografia, setBibliografia] = useState("");
+  const [curso, setCurso] = useState(""); 
+  const [cursos, setCursos] = useState([]); 
   const [pasos, setPasos] = useState([{ Titulo: "", Descripcion: "" }]);
   const [videoFile, setVideoFile] = useState(null);
   const [alert, setAlert] = useState({ type: "", message: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [paginaActual, setPaginaActual] = useState(0);
   const pasosPorPagina = 1;
-
   const [subtemas, setSubtemas] = useState([]);
 
   useEffect(() => {
@@ -26,7 +27,26 @@ const SubirTema = () => {
     }
   }, [alert]);
 
-  //subtemas
+  // Obtener la lista de cursos desde el backend usando userId
+  useEffect(() => {
+    const fetchCursos = async () => {
+      const userId = localStorage.getItem('userId');
+      try {
+        const response = await fetch(`http://localhost:3001/api/usuario/${userId}/cursos`);
+        if (!response.ok) {
+          throw new Error("Error al obtener los cursos.");
+        }
+        const data = await response.json();
+        setCursos(data);
+      } catch (error) {
+        console.error("Error al obtener los cursos:", error);
+        setAlert({ type: "error", message: "Error al obtener los cursos." });
+      }
+    };
+
+    fetchCursos();
+  }, []);
+
   const handleAgregarSubtema = () => {
     setSubtemas([...subtemas, { Titulo: "", Descripcion: "", Link: "" }]);
   };
@@ -36,6 +56,7 @@ const SubirTema = () => {
     newSubtemas[index][field] = value;
     setSubtemas(newSubtemas);
   };
+
   const handleEliminarSubtema = (index) => {
     if (subtemas.length > 1) {
       if (window.confirm("¿Estás seguro de que quieres eliminar este subtema?")) {
@@ -46,7 +67,6 @@ const SubirTema = () => {
     }
   };
 
-
   const handleInputChange = (index, field, value) => {
     const newPasos = [...pasos];
     newPasos[index][field] = value;
@@ -55,7 +75,7 @@ const SubirTema = () => {
 
   const handleAgregarPaso = () => {
     setPasos([...pasos, { Titulo: "", Descripcion: "" }]);
-    setPaginaActual(paginaActual + 1); // Pasar automáticamente a la siguiente página
+    setPaginaActual(paginaActual + 1); 
   };
 
   const handleEliminarPaso = (index) => {
@@ -65,7 +85,7 @@ const SubirTema = () => {
         newPasos.splice(index, 1);
         setPasos(newPasos);
         if (paginaActual > 0 && index <= startIndex) {
-          setPaginaActual(paginaActual - 1); // Retrocede una página si se elimina el único paso en la página actual
+          setPaginaActual(paginaActual - 1);
         }
       }
     }
@@ -83,6 +103,7 @@ const SubirTema = () => {
       !descripcion ||
       !responsable ||
       !bibliografia ||
+      !curso ||
       pasos.some((p) => !p.Titulo || !p.Descripcion) ||
       subtemas.some((s) => !s.Titulo || !s.Descripcion || !s.Link)
     ) {
@@ -99,6 +120,7 @@ const SubirTema = () => {
     formData.append("descripcion", descripcion);
     formData.append("responsable", responsable);
     formData.append("bibliografia", bibliografia);
+    formData.append("curso", curso);
     if (videoFile) {
       formData.append("video", videoFile);
     }
@@ -130,10 +152,11 @@ const SubirTema = () => {
         setDescripcion("");
         setResponsable("");
         setBibliografia("");
+        setCurso("");
         setPasos([{ Titulo: "", Descripcion: "" }]);
         setSubtemas([{ Titulo: "", Descripcion: "", Link: "" }]);
         setVideoFile(null);
-        setPaginaActual(0); // Reiniciar paginación al enviar el formulario
+        setPaginaActual(0);
       }
     } catch (error) {
       console.error("Error creando el tema:", error);
@@ -145,7 +168,6 @@ const SubirTema = () => {
       setIsLoading(false);
     }
   };
-  
 
   const startIndex = paginaActual * pasosPorPagina;
   const endIndex = startIndex + pasosPorPagina;
@@ -224,6 +246,25 @@ const SubirTema = () => {
                     value={bibliografia}
                     onChange={(e) => setBibliografia(e.target.value)}
                   />
+                </div>
+              </div>
+
+              <div className="field">
+                <label className="label has-text-white">Curso</label>
+                <div className="control">
+                  <div className="select is-fullwidth">
+                    <select
+                      value={curso}
+                      onChange={(e) => setCurso(e.target.value)}
+                    >
+                      <option value="">Selecciona un curso</option>
+                      {cursos.map((curso) => (
+                        <option key={curso._id} value={curso._id}>
+                          {curso.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
@@ -435,4 +476,4 @@ const SubirTema = () => {
   );
 };
 
-export default SubirTema;
+export default SubirTemaDocente;

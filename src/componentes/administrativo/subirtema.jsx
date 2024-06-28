@@ -8,6 +8,8 @@ const SubirTema = () => {
   const [descripcion, setDescripcion] = useState("");
   const [responsable, setResponsable] = useState("");
   const [bibliografia, setBibliografia] = useState("");
+  const [curso, setCurso] = useState(""); // Estado para el curso seleccionado
+  const [cursos, setCursos] = useState([]); // Estado para la lista de cursos
   const [pasos, setPasos] = useState([{ Titulo: "", Descripcion: "" }]);
   const [videoFile, setVideoFile] = useState(null);
   const [alert, setAlert] = useState({ type: "", message: "" });
@@ -25,6 +27,25 @@ const SubirTema = () => {
       return () => clearTimeout(timer);
     }
   }, [alert]);
+
+  // Obtener la lista de cursos desde el backend
+  useEffect(() => {
+    const fetchCursos = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/cursos");
+        if (!response.ok) {
+          throw new Error("Error al obtener los cursos.");
+        }
+        const data = await response.json();
+        setCursos(data);
+      } catch (error) {
+        console.error("Error al obtener los cursos:", error);
+        setAlert({ type: "error", message: "Error al obtener los cursos." });
+      }
+    };
+
+    fetchCursos();
+  }, []);
 
   //subtemas
   const handleAgregarSubtema = () => {
@@ -45,7 +66,6 @@ const SubirTema = () => {
       }
     }
   };
-
 
   const handleInputChange = (index, field, value) => {
     const newPasos = [...pasos];
@@ -83,6 +103,7 @@ const SubirTema = () => {
       !descripcion ||
       !responsable ||
       !bibliografia ||
+      !curso ||
       pasos.some((p) => !p.Titulo || !p.Descripcion) ||
       subtemas.some((s) => !s.Titulo || !s.Descripcion || !s.Link)
     ) {
@@ -99,6 +120,7 @@ const SubirTema = () => {
     formData.append("descripcion", descripcion);
     formData.append("responsable", responsable);
     formData.append("bibliografia", bibliografia);
+    formData.append("curso", curso); // Include the course ID
     if (videoFile) {
       formData.append("video", videoFile);
     }
@@ -130,6 +152,7 @@ const SubirTema = () => {
         setDescripcion("");
         setResponsable("");
         setBibliografia("");
+        setCurso("");
         setPasos([{ Titulo: "", Descripcion: "" }]);
         setSubtemas([{ Titulo: "", Descripcion: "", Link: "" }]);
         setVideoFile(null);
@@ -145,7 +168,6 @@ const SubirTema = () => {
       setIsLoading(false);
     }
   };
-  
 
   const startIndex = paginaActual * pasosPorPagina;
   const endIndex = startIndex + pasosPorPagina;
@@ -224,6 +246,25 @@ const SubirTema = () => {
                     value={bibliografia}
                     onChange={(e) => setBibliografia(e.target.value)}
                   />
+                </div>
+              </div>
+
+              <div className="field">
+                <label className="label has-text-white">Curso</label>
+                <div className="control">
+                  <div className="select is-fullwidth">
+                    <select
+                      value={curso}
+                      onChange={(e) => setCurso(e.target.value)}
+                    >
+                      <option value="">Selecciona un curso</option>
+                      {cursos.map((curso) => (
+                        <option key={curso._id} value={curso._id}>
+                          {curso.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
 
