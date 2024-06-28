@@ -357,37 +357,35 @@ const Curso = () => {
                       </div>
                       {temaSeleccionado.subtemas.length > 0 && (
                         <div>
-                          <h3 className="title is-6 has-text-white">Subtemas</h3>
+                          <h3 className="title is-6 has-text-white">Subtemas:</h3>
                           {temaSeleccionado.subtemas.map((subtema) => (
                             <div
-                              key={subtema._id}
-                              className="card"
-                              style={{
-                                cursor: "pointer",
-                                marginBottom: "0.5rem",
-                                backgroundColor:
-                                  subtemaSeleccionado &&
-                                  subtemaSeleccionado._id === subtema._id
-                                    ? "blue"
-                                    : "navy",
-                                opacity:
-                                  subtemaSeleccionado &&
-                                  subtemaSeleccionado._id === subtema._id
-                                    ? 0.5
-                                    : 1,
-                                padding: "5px", // Hacer las tarjetas de subtemas más pequeñas
-                              }}
-                              onClick={() => seleccionarSubtema(subtema)}
+                            key={subtema._id}
+                            className="card"
+                            style={{
+                              cursor: "pointer",
+                              marginBottom: "0.5rem",
+                              backgroundColor:
+                                subtemaSeleccionado && subtemaSeleccionado._id === subtema._id
+                                  ? "blue"
+                                  : "navy",
+                              opacity: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id
+                                ? 0.5
+                                : 1,
+                              padding: "2px", // Hacer las tarjetas de subtemas más pequeñas
+                            }}
+                            onClick={() => seleccionarSubtema(subtema)}
+                          >
+                            <div
+                              className="card-content"
+                              style={{ padding: "0.4rem" }} // Ajustar el padding para hacer la tarjeta más pequeña
                             >
-                              <div
-                                className="card-content"
-                                style={{ padding: "0.5rem" }}
-                              >
-                                <p className="title is-6 has-text-white">
-                                  {subtema.titulo}
-                                </p>
-                              </div>
+                              <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}> 
+                                {subtema.titulo}
+                              </p>
                             </div>
+                          </div>
+                          
                           ))}
                         </div>
                       )}
