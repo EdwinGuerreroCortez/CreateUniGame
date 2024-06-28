@@ -325,7 +325,7 @@ const Curso = () => {
                 {pasoActual === -1 ? (
                   <div className="has-text-centered" style={{ marginTop: "20px" }}>
                     <button className="button is-primary" onClick={siguientePaso}>
-                      Empezar Curso
+                      Empezar Curso 
                     </button>
                   </div>
                 ) : cursoFinalizado ? (
