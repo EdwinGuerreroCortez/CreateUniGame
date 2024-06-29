@@ -251,23 +251,7 @@ const Evaluacion = () => {
                                     onDragStart={(e) => e.preventDefault()} // Evitar el arrastre de la imagen por defecto
                                     onClick={toggleModal} // Abrir modal al hacer clic en la imagen
                                   />
-                                  
-                               </div>
-                                {/* Botones de zoom */}
-                                <div className="has-text-centered mt-3">
-                               <button className="button is-primary is-small mr-2" onClick={zoomIn}>
-                               <span className="icon">
-                              <i className="fas fa-search-plus"></i>
-                              </span>
-                              <span>Zoom In</span>
-                        </button>
-                       <button className="button is-primary is-small" onClick={zoomOut}>
-                      <span className="icon">
-                        <i className="fas fa-search-minus"></i>
-                      </span>
-                      <span>Zoom Out</span>
-                      </button>
-                         </div>
+                                </div>
                                 {modalActivo && (
                                   <div className="modal is-active">
                                     <div className="modal-background" onClick={toggleModal}></div>
@@ -325,7 +309,21 @@ const Evaluacion = () => {
         </div>
       </div>
 
-    
+      {/* Botones de zoom */}
+      <div className="has-text-centered mt-3">
+        <button className="button is-primary is-small mr-2" onClick={zoomIn}>
+          <span className="icon">
+            <i className="fas fa-search-plus"></i>
+          </span>
+          <span>Zoom In</span>
+        </button>
+        <button className="button is-primary is-small" onClick={zoomOut}>
+          <span className="icon">
+            <i className="fas fa-search-minus"></i>
+          </span>
+          <span>Zoom Out</span>
+        </button>
+      </div>
     </div>
   );
 };
