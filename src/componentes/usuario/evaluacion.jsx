@@ -13,11 +13,12 @@ const Evaluacion = () => {
   const [respuestas, setRespuestas] = useState([]);
   const [numeroPregunta, setNumeroPregunta] = useState(0);
   const [examenPermitido, setExamenPermitido] = useState(false);
-  const [modalActivo, setModalActivo] = useState(false); // Estado para controlar el modal
-  const [imagenModal, setImagenModal] = useState(''); // Estado para la URL de la imagen en el modal
   const [zoomFactor, setZoomFactor] = useState(1.0); // Estado para controlar el factor de zoom de la imagen
   const [offsetX, setOffsetX] = useState(0); // Estado para controlar el desplazamiento X de la imagen
   const [offsetY, setOffsetY] = useState(0); // Estado para controlar el desplazamiento Y de la imagen
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [startY, setStartY] = useState(0);
 
   const userId = localStorage.getItem('userId');
 
@@ -72,10 +73,17 @@ const Evaluacion = () => {
       setNumeroPregunta(numeroPregunta + 1);
       setPreguntaActual(preguntas[numeroPregunta + 1]);
       setRespuestaSeleccionada(null);
+      resetZoomAndOffset(); // Restablecer el zoom y el desplazamiento al cambiar de pregunta
     } else {
       setMostrarResultados(true);
       guardarResultados(nuevasRespuestas);
     }
+  };
+
+  const resetZoomAndOffset = () => {
+    setZoomFactor(1.0);
+    setOffsetX(0);
+    setOffsetY(0);
   };
 
   const guardarResultados = async (respuestas) => {
@@ -131,41 +139,46 @@ const Evaluacion = () => {
     return `${process.env.PUBLIC_URL}/imagenes/${imagen}`;
   };
 
-  // Función para abrir el modal y mostrar la imagen
-  const abrirModal = (imagen) => {
-    setImagenModal(imagen);
-    setModalActivo(true);
+  // Función para hacer zoom in en la imagen
+  const zoomIn = () => {
+    const maxZoom = 5; // Máximo factor de zoom permitido
+    if (zoomFactor < maxZoom) {
+      setZoomFactor(prevZoom => prevZoom * 1.2); // Aumenta el factor de zoom en un 20%
+    }
   };
 
-  // Función para cerrar el modal
-  const cerrarModal = () => {
-    setModalActivo(false);
-    setImagenModal('');
-    setZoomFactor(1.0); // Resetear el zoom al cerrar el modal
-    setOffsetX(0); // Resetear el desplazamiento X
-    setOffsetY(0); // Resetear el desplazamiento Y
+  // Función para hacer zoom out en la imagen
+  const zoomOut = () => {
+    const minZoom = 0.5; // Mínimo factor de zoom permitido
+    if (zoomFactor > minZoom) {
+      setZoomFactor(prevZoom => prevZoom / 1.2); // Reduce el factor de zoom en un 20%
+    }
   };
 
-// Función para hacer zoom in en la imagen dentro del modal
-const zoomIn = () => {
-  const maxZoom = 5; // Máximo factor de zoom permitido
-  if (zoomFactor < maxZoom) {
-    setZoomFactor(prevZoom => prevZoom * 1.2); // Aumenta el factor de zoom en un 20%
-    setOffsetX(prevOffsetX => prevOffsetX - 20); // Desplaza la imagen hacia la izquierda
-    setOffsetY(prevOffsetY => prevOffsetY - 19); // Desplaza la imagen hacia arriba
-  }
-};
+  // Funciones para arrastrar la imagen
+  const startDragging = (e) => {
+    setIsDragging(true);
+    setStartX(e.clientX - offsetX);
+    setStartY(e.clientY - offsetY);
+  };
 
-// Función para hacer zoom out en la imagen dentro del modal
-const zoomOut = () => {
-  const minZoom = 0.5; // Mínimo factor de zoom permitido
-  if (zoomFactor > minZoom) {
-    setZoomFactor(prevZoom => prevZoom / 1.2); // Reduce el factor de zoom en un 20%
-    setOffsetX(prevOffsetX => prevOffsetX + 20); // Desplaza la imagen hacia la derecha
-    setOffsetY(prevOffsetY => prevOffsetY + 20); // Desplaza la imagen hacia abajo
-  }
-};
+  const onDragging = (e) => {
+    if (isDragging) {
+      setOffsetX(e.clientX - startX);
+      setOffsetY(e.clientY - startY);
+    }
+  };
 
+  const stopDragging = () => {
+    setIsDragging(false);
+  };
+
+  // Modal para mostrar imagen en tamaño completo
+  const [modalActivo, setModalActivo] = useState(false);
+
+  const toggleModal = () => {
+    setModalActivo(!modalActivo);
+  };
 
   return (
     <div className="section" style={{ minHeight: '100vh', backgroundColor: '#14161A' }}>
@@ -209,35 +222,68 @@ const zoomOut = () => {
                             </div>
 
                             {preguntaActual.imagen && (
-                              <div style={{ flex: '1', marginLeft: '1rem', position: 'relative' }}>
-                                <figure className="image" style={{ alignSelf: 'flex-end', position: 'relative' }}>
+                              <div style={{ flex: '1', marginLeft: '2rem', position: 'relative' }}>
+                                <div
+                                  className=" is-flex is-justify-content-center is-align-items-center"
+                                  style={{
+                                    width: '100%',
+                                    height: '300px',
+                                    overflow: 'hidden',
+                                    position: 'relative',
+                                    border: '2px solid #333',  // Borde gris oscuro
+                                  }}
+                                >
                                   <img
                                     src={getImagenPath(preguntaActual.imagen)}
                                     alt="Imagen de la pregunta"
                                     style={{
-                                      maxWidth: '100%',
-                                      height: 'auto',
-                                      objectFit: 'contain',
-                                      transform: `scale(${zoomFactor}) translate(${offsetX}px, ${offsetY}px)`, // Aplica el factor de zoom y el desplazamiento
-                                      transition: 'transform 0.2s ease-in-out', // Transición suave
-                                      cursor: 'pointer'
+                                      position: 'absolute',
+                                      transform: `scale(${zoomFactor}) translate(${offsetX}px, ${offsetY}px)`,
+                                      transformOrigin: 'center center',
+                                      transition: 'transform 0.2s ease-in-out',
+                                      cursor: isDragging ? 'grabbing' : 'grab',
+                                      userSelect: 'none'
                                     }}
-                                    onClick={() => abrirModal(getImagenPath(preguntaActual.imagen))}
-                                    className="cursor-pointer"
+                                    onMouseDown={startDragging}
+                                    onMouseMove={onDragging}
+                                    onMouseUp={stopDragging}
+                                    onMouseLeave={stopDragging}
+                                    onDragStart={(e) => e.preventDefault()} // Evitar el arrastre de la imagen por defecto
+                                    onClick={toggleModal} // Abrir modal al hacer clic en la imagen
                                   />
-                                </figure>
-                                <div className="has-text-centered" style={{ marginTop: '1rem' }}>
-                                  <a href={getImagenPath(preguntaActual.imagen)} download className="button is-primary" data-tooltip="Descargar imagen" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}>
-                                    <span className="icon">
-                                      <i className="fas fa-download"></i>
-                                    </span>
-                                  </a>
-                                </div>
+                                  
+                               </div>
+                                {/* Botones de zoom */}
+                                <div className="has-text-centered mt-3">
+                               <button className="button is-primary is-small mr-2" onClick={zoomIn}>
+                               <span className="icon">
+                              <i className="fas fa-search-plus"></i>
+                              </span>
+                              <span>Zoom In</span>
+                        </button>
+        <button className="button is-primary is-small" onClick={zoomOut}>
+          <span className="icon">
+            <i className="fas fa-search-minus"></i>
+          </span>
+          <span>Zoom Out</span>
+        </button>
+      </div>
+                                {modalActivo && (
+                                  <div className="modal is-active">
+                                    <div className="modal-background" onClick={toggleModal}></div>
+                                    <div className="modal-content">
+                                      <p className="image is-4by3">
+                                        <img src={getImagenPath(preguntaActual.imagen)} alt="Imagen de la pregunta" />
+                                      </p>
+                                    </div>
+                                    <button className="modal-close is-large" aria-label="close" onClick={toggleModal}></button>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>
 
-                          <div className="has-text-centered">
+                          <div className="has-text-centered" style={{ marginTop: '2rem' }}>
                             <button
                               type="submit"
                               className="button is-dark is-medium"
@@ -279,35 +325,7 @@ const zoomOut = () => {
         </div>
       </div>
 
-      {/* Botones de zoom fuera del modal */}
-      {modalActivo && (
-        <div className={`modal ${modalActivo ? 'is-active' : ''}`}>
-          <div className="modal-background" onClick={cerrarModal}></div>
-          <div className="modal-content">
-            <p className="image">
-              <img src={imagenModal} style={{ maxWidth: '100%', height: 'auto', objectFit: 'contain' }} alt="Imagen ampliada" />
-            </p>
-          </div>
-          <button className="modal-close is-large" aria-label="close" onClick={cerrarModal}></button>
-        </div>
-      )}
-
-      {/* Botones de zoom */}
-      <div className="has-text-centered mt-3">
-        <button className="button is-primary is-small mr-2" onClick={zoomIn}>
-          <span className="icon">
-            <i className="fas fa-search-plus"></i>
-          </span>
-          <span>Zoom In</span>
-        </button>
-        <button className="button is-primary is-small" onClick={zoomOut}>
-          <span className="icon">
-            <i className="fas fa-search-minus"></i>
-          </span>
-          <span>Zoom Out</span>
-        </button>
-      </div>
-
+    
     </div>
   );
 };
