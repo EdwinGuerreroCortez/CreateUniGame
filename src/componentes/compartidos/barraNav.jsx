@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../CSS/style2.css'; // Importa el archivo CSS
-import logo from '../img/logo_empresa.gif';
+import logo from '../img/logo_Study.png';
 import '@fortawesome/fontawesome-free/css/all.css'; // Importa Font Awesome
 
 const BarraNav = () => {

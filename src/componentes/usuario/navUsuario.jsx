@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import 'bulma/css/bulma.min.css';
 import '../CSS/style2.css';
-import logo from '../img/logo_empresa.gif';
+import logo from '../img/logo_Study.png';
 import Perfil from '../usuario/perfil';
 
 const BarraNav = () => {

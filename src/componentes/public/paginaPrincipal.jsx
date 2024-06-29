@@ -1,9 +1,12 @@
 import React from 'react';
 import Slider from 'react-slick';
-import juego2 from '../img/juego2.png';
-import juego3 from '../img/juego2d.jpg';
-import juego4 from '../img/juego4.jpg';
-import juego5 from '../img/juego5.jpg';
+import img1 from '../img/img (1).jpg';
+import img2 from '../img/img (2).jpg';
+import img3 from '../img/img (3).jpg';
+import img5 from '../img/img (5).jpg';
+import img6 from '../img/img (6).jpg';
+import img7 from '../img/img (7).jpg';
+import img8 from '../img/img (8).jpg';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../CSS/style.css';
@@ -65,7 +68,7 @@ const PaginaPrincipal = () => {
           <div className="column is-half">
             <div className="slider-container">
               <Slider {...settings}>
-                {[juego2, juego3, juego4, juego5].map((imgSrc, index) => (
+                {[img1, img2, img3, img5, img6, img7, img8].map((imgSrc, index) => (
                   <div key={index} className="slider-slide">
                     <img src={imgSrc} alt={`Slide ${index + 1}`} className="slider-image" />
                   </div>

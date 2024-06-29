@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../CSS/style2.css'; // Asegúrate de que este archivo contenga los estilos apropiados
-import logo from '../img/logo_empresa.gif';
+import logo from '../img/logo_Study.png';
 
 const BarraNavAdmin = () => {
     const [isActive, setIsActive] = useState(false);
