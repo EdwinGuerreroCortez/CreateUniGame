@@ -17,6 +17,8 @@ const Curso = () => {
   const cursosPorPagina = 2; // Ajusta este valor según la cantidad de cursos que quieras mostrar por página
   const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
   const [subtemaSeleccionado, setSubtemaSeleccionado] = useState(null); // Estado para el subtema seleccionado
+  const [showSubscriptionPrompt, setShowSubscriptionPrompt] = useState(false);
+  const [subscriptionMessage, setSubscriptionMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -48,10 +50,60 @@ const Curso = () => {
     }
   };
 
-  const seleccionarCurso = (curso) => {
-    setCursoSeleccionado(curso);
-    fetchTemasDelCurso(curso._id);
-    setTemas([]);
+  // Función para suscribirse al curso
+  const suscribirseACurso = async (cursoId) => {
+    const userId = localStorage.getItem("userId");
+    try {
+      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/suscribirse/${cursoId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      if (response.status === 200) {
+        setSubscriptionMessage("");
+        fetchTemasDelCurso(cursoId);
+        setCursoSeleccionado(data.curso);
+      } else {
+        setSubscriptionMessage(data.message);
+        setShowSubscriptionPrompt(true);
+      }
+    } catch (error) {
+      console.error("Error al suscribirse al curso:", error);
+    }
+  };
+
+  const verificarSuscripcion = async (curso) => {
+    const userId = localStorage.getItem("userId");
+    try {
+      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/verificar-suscripcion/${curso._id}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const data = await response.json();
+      if (response.status === 200) {
+        if (data.message.includes("baneado")) {
+          alert("Has sido baneado de este curso.");
+        } else if (data.message.includes("¿Deseas suscribirte?")) {
+          const userConfirmed = window.confirm(data.message + " ¿Deseas suscribirte?");
+          if (userConfirmed) {
+            await suscribirseACurso(curso._id);
+          } else {
+            setCursoSeleccionado(null);
+          }
+        } else {
+          setCursoSeleccionado(curso);
+          fetchTemasDelCurso(curso._id);
+        }
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error("Error al verificar suscripción del curso:", error);
+    }
   };
 
   const regresarACursos = () => {
@@ -63,9 +115,6 @@ const Curso = () => {
   const regresarATemas = () => {
     setSubtemaSeleccionado(null); // Limpiar solo el subtema seleccionado al regresar
   };
-
-  // Obtiene el userId desde localStorage
-  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const verificarEvaluacion = async () => {
@@ -137,11 +186,12 @@ const Curso = () => {
 
   const pasoAnterior = () => {
     if (pasoActual > -1) {
-      setPasoActual(pasoAnterior - 1);
+      setPasoActual(pasoActual - 1);
     }
   };
 
   const handleEvaluationClick = async () => {
+    const userId = localStorage.getItem("userId");
     try {
       const response = await fetch(`http://localhost:3001/api/usuarios/${userId}`);
       const userData = await response.json();
@@ -240,7 +290,7 @@ const Curso = () => {
                         backgroundColor: "navy",
                         marginTop: "20px",
                       }}
-                      onClick={() => seleccionarCurso(curso)}
+                      onClick={() => verificarSuscripcion(curso)}
                     >
                       <div
                         className="menu-label has-text-white"
@@ -360,32 +410,31 @@ const Curso = () => {
                           <h3 className="title is-6 has-text-white">Subtemas:</h3>
                           {temaSeleccionado.subtemas.map((subtema) => (
                             <div
-                            key={subtema._id}
-                            className="card"
-                            style={{
-                              cursor: "pointer",
-                              marginBottom: "0.5rem",
-                              backgroundColor:
-                                subtemaSeleccionado && subtemaSeleccionado._id === subtema._id
-                                  ? "blue"
-                                  : "navy",
-                              opacity: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id
-                                ? 0.5
-                                : 1,
-                              padding: "2px", // Hacer las tarjetas de subtemas más pequeñas
-                            }}
-                            onClick={() => seleccionarSubtema(subtema)}
-                          >
-                            <div
-                              className="card-content"
-                              style={{ padding: "0.4rem" }} // Ajustar el padding para hacer la tarjeta más pequeña
+                              key={subtema._id}
+                              className="card"
+                              style={{
+                                cursor: "pointer",
+                                marginBottom: "0.5rem",
+                                backgroundColor:
+                                  subtemaSeleccionado && subtemaSeleccionado._id === subtema._id
+                                    ? "blue"
+                                    : "navy",
+                                opacity: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id
+                                  ? 0.5
+                                  : 1,
+                                padding: "2px", // Hacer las tarjetas de subtemas más pequeñas
+                              }}
+                              onClick={() => seleccionarSubtema(subtema)}
                             >
-                              <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}> 
-                                {subtema.titulo}
-                              </p>
+                              <div
+                                className="card-content"
+                                style={{ padding: "0.4rem" }} // Ajustar el padding para hacer la tarjeta más pequeña
+                              >
+                                <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}> 
+                                  {subtema.titulo}
+                                </p>
+                              </div>
                             </div>
-                          </div>
-                          
                           ))}
                         </div>
                       )}
