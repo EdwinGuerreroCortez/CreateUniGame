@@ -261,13 +261,13 @@ const Evaluacion = () => {
                               </span>
                               <span>Zoom In</span>
                         </button>
-        <button className="button is-primary is-small" onClick={zoomOut}>
-          <span className="icon">
-            <i className="fas fa-search-minus"></i>
-          </span>
-          <span>Zoom Out</span>
-        </button>
-      </div>
+                       <button className="button is-primary is-small" onClick={zoomOut}>
+                      <span className="icon">
+                        <i className="fas fa-search-minus"></i>
+                      </span>
+                      <span>Zoom Out</span>
+                      </button>
+                         </div>
                                 {modalActivo && (
                                   <div className="modal is-active">
                                     <div className="modal-background" onClick={toggleModal}></div>
