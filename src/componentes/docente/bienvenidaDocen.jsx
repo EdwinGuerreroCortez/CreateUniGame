@@ -61,7 +61,7 @@ const BienvenidaAdmin = () => {
             <div className="card profile-card" style={{ backgroundColor: '#001f3f', border: '2px solid #3273dc', borderRadius: '8px', boxShadow: '0 4px 8px rgba(50, 115, 220, 0.5)', color: '#ffffff', padding: '1.1rem', height: '100%' }}>
               <div className="card-content has-text-centered">
                 <div className="content">
-                  <h2 className="title has-text-white">Panel Administrativo</h2>
+                  <h2 className="title has-text-white">Panel Docente</h2>
                   <img 
                     src={userData.imagenPerfil || 'https://via.placeholder.com/150'} 
                     alt={`Foto de perfil de ${userData.datos_personales.nombre}`} 

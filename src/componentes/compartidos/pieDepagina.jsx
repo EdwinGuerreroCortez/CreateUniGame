@@ -51,8 +51,8 @@ const PieDePagina = () => {
         <div className="content has-text-centered" style={{ borderTop: '1px solid white', borderBottom: '1px solid white', padding: '2rem 0' }}>
           <div className="columns">
             <div className="column">
-              <p>Nuestra misión es proporcionar una educación de clase mundial en desarrollo de videojuegos para cualquier persona, en cualquier lugar.</p>
-              <p>Master Game es una plataforma educativa dedicada al aprendizaje interactivo en la creación de videojuegos.</p>
+              <p>Nuestra misión es proporcionar una educación de clase mundial en diversas áreas de la computación para cualquier persona, en cualquier lugar.</p>
+              <p>StudyWeb es una plataforma educativa dedicada al aprendizaje interactivo en tecnología y computación.</p>
             </div>
             <div className="column">
               <p>Únete a nuestra comunidad:</p>
@@ -68,7 +68,7 @@ const PieDePagina = () => {
           <div style={{ marginTop: '20px' }}>
             <p>Síguenos en nuestras redes sociales:</p>
             <div className="buttons is-centered">
-              <a className="button is-light" href="https://facebook.com" aria-label="Facebook"> 
+              <a className="button is-light" href="https://facebook.com" aria-label="Facebook">
                 <i className="fab fa-facebook-f"></i>
               </a>
               <a className="button is-light" href="https://twitter.com" aria-label="Twitter">
@@ -82,7 +82,7 @@ const PieDePagina = () => {
               </a>
             </div>
           </div>
-          <p>© 2024 Master Game. Todos los derechos reservados.</p>
+          <p>© 2024 StudyWeb. Todos los derechos reservados.</p>
         </div>
       </footer>
       

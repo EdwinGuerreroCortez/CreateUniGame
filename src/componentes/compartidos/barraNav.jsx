@@ -23,7 +23,7 @@ const BarraNav = () => {
       <div className="navbar-brand">
         <img src={logo} alt="Logo" className="navbar-item" style={{ height: '5rem' }} />
         <Link className="navbar-item has-text-white animated-letters" to="/">
-          {renderAnimatedLetters("MasterGame")}
+          {renderAnimatedLetters("StudyWeb")}
         </Link>
         <a role="button" className={`navbar-burger burger ${isActive ? 'is-active' : ''}`} aria-label="menu" aria-expanded={isActive ? 'true' : 'false'} onClick={toggleBurgerMenu}>
           <span aria-hidden="true"></span>
@@ -37,7 +37,7 @@ const BarraNav = () => {
           <div className="navbar-item has-dropdown is-hoverable">
             <a className="navbar-link has-text-success">Explorar</a>
             <div className="navbar-dropdown">
-              <Link className="navbar-item has-text-success" to="/public/acerca">Acerca de MasterGame</Link>
+              <Link className="navbar-item has-text-success" to="/public/acerca">Acerca de StudyWeb</Link>
               <Link className="navbar-item has-text-success" to="/public/contactanos">Contáctanos</Link>
             </div>
           </div>

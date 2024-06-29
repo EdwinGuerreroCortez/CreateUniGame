@@ -6,7 +6,7 @@ const PieDePaginaUser = () => {
       <div className="content has-text-centered" style={{ borderTop: '1px solid white', borderBottom: '1px solid white', padding: '2rem 0' }}>
         <div className="columns">
           <div className="column">
-            <p>Gracias por ser parte de la comunidad Master Game. Esperamos que disfrutes de tu aprendizaje y crecimiento.</p>
+            <p>Gracias por ser parte de la comunidad StudyWeb. Esperamos que disfrutes de tu aprendizaje y crecimiento.</p>
             <p>Explora nuestros recursos y cursos diseñados especialmente para ti.</p>
           </div>
         </div>
@@ -27,7 +27,7 @@ const PieDePaginaUser = () => {
             </a>
           </div>
         </div>
-        <p>© 2024 Master Game. Todos los derechos reservados.</p>
+        <p>© 2024 StudyWeb. Todos los derechos reservados.</p>
       </div>
     </footer>
   );

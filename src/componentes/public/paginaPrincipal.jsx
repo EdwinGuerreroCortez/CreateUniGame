@@ -77,12 +77,12 @@ const PaginaPrincipal = () => {
             <div className="card tarjeta-larga has-background-black has-border-white has-shadow">
               <div className="card-content">
                 <div className="content has-text-centered">
-                  <h1 className="title has-text-white">Explora el mundo de la creación de juegos</h1>
+                  <h1 className="title has-text-white">Explora el mundo de la Informatica</h1>
                   <p className="has-text-white">
-                    Nuestra plataforma te ofrece todas las herramientas necesarias para comenzar a desarrollar tus propios videojuegos, abarcando desde conceptos fundamentales hasta técnicas de programación y diseño gráfico.
+                    Nuestra plataforma te ofrece todas las herramientas necesarias para comenzar a aprender diversas áreas de la computación, abarcando desde conceptos fundamentales hasta técnicas avanzadas en programación, diseño de bases de datos y desarrollo de software.
                   </p>
                   <p className="is-size-4 has-text-white">
-                    ¡No esperes más y comienza tu aventura en el desarrollo de juegos hoy mismo!
+                    ¡No esperes más y comienza tu aventura en el mundo de la Informatica hoy mismo!
                   </p>
                 </div>
               </div>
@@ -91,10 +91,10 @@ const PaginaPrincipal = () => {
         </div>
         <div className="has-text-white has-text-centered additional-text" style={{ color: 'green' }}>
           <h2 className="is-size-4">
-            Comienza a usar Unity. Da vida a todo lo que puedas imaginar con Unity.
+            Aprende a programar. Da vida a tus ideas con nuestros cursos especializados.
           </h2>
           <h2 className="is-size-4 color-change">
-            Explora nuestros temas; contamos con videos que explicarán paso a paso el proceso para la creación de un pequeño videojuego.
+            Explora nuestros temas; contamos con videos y materiales que explicarán paso a paso diversos procesos en el desarrollo de software, bases de datos y más.
           </h2>
         </div>
       </div>
