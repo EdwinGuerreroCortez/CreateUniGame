@@ -7,24 +7,19 @@ import axios from 'axios';
 const AlumnosSubcritosAdmi = () => {
   const [cursos, setCursos] = useState([]);
   const [selectedCursoId, setSelectedCursoId] = useState('');
-  const userId = localStorage.getItem('userId'); // Fetching userId from localStorage
 
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/cursos-subscritores/${userId}`);
+        const response = await axios.get(`http://localhost:3001/api/cursos-subscritores`);
         setCursos(response.data);
       } catch (error) {
         console.error('Error al obtener los cursos:', error);
       }
     };
 
-    if (userId) {
-      fetchCursos();
-    } else {
-      console.error('No userId found in localStorage');
-    }
-  }, [userId]);
+    fetchCursos();
+  }, []);
 
   const handleCursoChange = (e) => {
     setSelectedCursoId(e.target.value);
@@ -32,7 +27,7 @@ const AlumnosSubcritosAdmi = () => {
 
   const toggleBan = async (cursoId, subId) => {
     try {
-      const response = await axios.put(`http://localhost:3001/api/cursos/${cursoId}/subscritores/${subId}/banear`);
+      await axios.put(`http://localhost:3001/api/cursos/${cursoId}/subscritores/${subId}/banear`);
       setCursos((prevCursos) =>
         prevCursos.map((curso) =>
           curso._id === cursoId
