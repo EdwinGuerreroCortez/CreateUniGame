@@ -89,23 +89,10 @@ const Evaluacion = () => {
   const guardarResultados = async (respuestas) => {
     const porcentaje = (respuestas.filter(respuesta => respuesta.correcta).length / preguntas.length) * 100;
     console.log("Guardando resultados...", { temaId, porcentaje, preguntasRespondidas: respuestas });
-
+  
     try {
-      // Guardar en la colección de usuarios
-      await fetch(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          temaId,
-          porcentaje,
-          preguntasRespondidas: respuestas,
-        }),
-      });
-
-      // Guardar en la colección de exámenes
-      await fetch(`http://localhost:3001/api/examenes`, {
+      // Guardar en la colección de exámenes y obtener el ID del examen creado
+      const examenResponse = await fetch(`http://localhost:3001/api/examenes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -118,12 +105,34 @@ const Evaluacion = () => {
           fecha: new Date() // Enviar la fecha actual
         }),
       });
-
+  
+      if (!examenResponse.ok) {
+        throw new Error('Error al guardar el examen.');
+      }
+  
+      const examenData = await examenResponse.json();
+      const examenId = examenData.examen._id; // Obtener el ID del examen creado
+  
+      // Guardar en la colección de usuarios
+      await fetch(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tema_id: temaId,
+          porcentaje,
+          preguntas_respondidas: respuestas,
+          examen_id: examenId, // Añadir el ID del examen
+        }),
+      });
+  
       console.log("Resultados guardados exitosamente.");
     } catch (error) {
       console.error('Error al guardar los resultados:', error);
     }
   };
+  
 
   const calcularResultados = () => {
     let correctas = 0;
