@@ -1,25 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../CSS/style2.css'; // Asegúrate de que este archivo contenga los estilos apropiados
 import logo from '../img/logo_Study.png';
 
 const BarraNavAdmin = () => {
-    const [isActive, setIsActive] = useState(false);
-    const [userType, setUserType] = useState(null); // Estado para almacenar el tipo de usuario
     const navigate = useNavigate();
 
-    useEffect(() => {
-        // Obtener la información del usuario desde localStorage
-        const userData = JSON.parse(localStorage.getItem('usuario'));
-        if (userData) {
-            setUserType(userData.tipo); // Establecer el tipo de usuario en el estado
-            console.log('Tipo de usuario:', userData.tipo); // Depuración en consola
-        }
-    }, []);
-
-    const toggleBurgerMenu = () => {
-        setIsActive(!isActive);
-    };
 
     const handleLogout = () => {
         localStorage.removeItem('userId'); // Eliminar la sesión de localStorage
@@ -41,14 +27,9 @@ const BarraNavAdmin = () => {
                 <Link className="navbar-item has-text-white animated-letters" to="/administrativa">
                     {renderAnimatedLetters("StudyWeb")}
                 </Link>
-                <a role="button" className={`navbar-burger burger ${isActive ? 'is-active' : ''}`} aria-label="menu" aria-expanded={isActive ? 'true' : 'false'} onClick={toggleBurgerMenu}>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                    <span aria-hidden="true"></span>
-                </a>
             </div>
 
-            <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
+            <div className="navbar-menu">
                 <div className="navbar-start">
                     <div className="navbar-item has-dropdown is-hoverable">
                         <a className="navbar-link has-text-success">Administración</a>
@@ -71,8 +52,13 @@ const BarraNavAdmin = () => {
                     </div>
                     <Link className="navbar-item has-text-success" to="/admin/imagenes">Imagenes</Link>
 
-                    {/* Nuevo enlace para "Crear Curso" */}
-                    <Link className="navbar-item has-text-success" to="/admin/crearcurso">Crear Curso</Link>
+                    <div className="navbar-item has-dropdown is-hoverable">
+                        <a className="navbar-link has-text-success">Gestión de Curso</a>
+                        <div className="navbar-dropdown">
+                            <Link className="navbar-item" to="/admin/crearcurso">Crear Curso</Link>
+                            <Link className="navbar-item" to="/admin/alumnos-suscritos">Alumnos suscritos</Link>
+                        </div>
+                    </div>
                 </div>
 
                 <div className="navbar-end">

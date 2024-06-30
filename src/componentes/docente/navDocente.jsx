@@ -62,8 +62,15 @@ const BarraNavDocen = () => {
                         </div>
                     </div>
                     <Link className="navbar-item has-text-success" to="/docente/imagenes">Imagenes</Link>
-                    <Link className="navbar-item has-text-success" to="/docente/crearcurso">Crear Curso</Link>
 
+                    <div className="navbar-item has-dropdown is-hoverable">
+                        <a className="navbar-link has-text-success">Gestión de Curso</a>
+                        <div className="navbar-dropdown">
+                            <Link className="navbar-item" to="/docente/crearcurso">Crear Curso</Link>
+                            <Link className="navbar-item" to="/docente/alumnos-suscritos">Alumnos suscritos</Link>
+                            
+                        </div>
+                    </div>
                 </div>
 
                 <div className="navbar-end">

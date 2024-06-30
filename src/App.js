@@ -32,6 +32,7 @@ import Subirtema from './componentes/administrativo/subirtema';
 import SubirImagenes from './componentes/administrativo/imagenes';
 import Evaluaciones from './componentes/administrativo/evaluaciones'
 import CrearCurso from './componentes/administrativo/curso';
+import AlumnosSubcritosAdmi from './componentes/administrativo/alumnosSubcritos';
 
 //Componentes Docentes
 import LayoutEncabeDocen from './componentes/docente/LayoutEncabeDocen';
@@ -43,7 +44,7 @@ import SubirtemaDocen from './componentes/docente/subirtema';
 import SubirImagenesDocen from './componentes/docente/imagenes';
 import EvaluacionesDocen from './componentes/docente/evaluaciones'
 import CrearCursoDocente from './componentes/docente/cursoDocente';
-
+import AlumnosSubcritos from './componentes/docente/alumnosSubcritos';
 //proteccion de rutas
 import RutaPrivada from './componentes/contextos/ContextoAutenticacion';
 
@@ -79,6 +80,7 @@ const App = () => {
         <Route path="/admin/imagenes" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><SubirImagenes /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/evaluaciones" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Evaluaciones /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/crearcurso" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><CrearCurso /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/alumnos-suscritos" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><AlumnosSubcritosAdmi/></LayoutEncabeAdmin></RutaPrivada>} />
 
 
         {/* Rutas Docentes */}
@@ -90,6 +92,7 @@ const App = () => {
         <Route path="/docente/imagenes" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><SubirImagenesDocen /></LayoutEncabeDocen></RutaPrivada>} />
         <Route path="/docente/evaluaciones" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><EvaluacionesDocen /></LayoutEncabeDocen></RutaPrivada>} />
         <Route path="/docente/crearcurso" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><CrearCursoDocente /></LayoutEncabeDocen></RutaPrivada>} />
+        <Route path="/docente/alumnos-suscritos" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><AlumnosSubcritos/></LayoutEncabeDocen></RutaPrivada>} />
 
       </Routes>
     </Router>
