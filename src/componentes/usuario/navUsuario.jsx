@@ -10,6 +10,7 @@ const BarraNav = () => {
   const [estaActivo, setEstaActivo] = useState(false);
   const [estaPerfilAbierto, setEstaPerfilAbierto] = useState(false);
   const [usuario, setUsuario] = useState(null);
+  const [cargandoUsuario, setCargandoUsuario] = useState(true); // Nuevo estado para indicador de carga
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,7 +23,11 @@ const BarraNav = () => {
           setUsuario(data);
         } catch (error) {
           console.error('Error al obtener los datos del usuario', error);
+        } finally {
+          setCargandoUsuario(false); // Desactivar indicador de carga
         }
+      } else {
+        setCargandoUsuario(false); // Desactivar indicador de carga si no hay userId
       }
     };
 
@@ -49,7 +54,6 @@ const BarraNav = () => {
     localStorage.removeItem('usuario');
     navigate('/');
   };
-  
 
   return (
     <nav className="navbar has-background-black" role="navigation" aria-label="main navigation" style={{ height: '5rem' }}>
@@ -82,10 +86,14 @@ const BarraNav = () => {
         <div className="navbar-end">
           <div className="navbar-item">
             <div className="buttons">
-              {usuario && (
-                <figure className="image is-48x48" style={{ cursor: 'pointer' }} onClick={alternarModalPerfil}>
-                  <img className="is-rounded imagen-perfil" src={usuario.imagenPerfil || 'https://via.placeholder.com/48'} alt="Perfil" />
-                </figure>
+              {cargandoUsuario ? (
+                <div className="button is-loading">Cargando...</div> 
+              ) : (
+                usuario && (
+                  <figure className="image is-48x48" style={{ cursor: 'pointer' }} onClick={alternarModalPerfil}>
+                    <img className="is-rounded imagen-perfil" src={usuario.imagenPerfil || 'https://via.placeholder.com/48'} alt="Perfil" />
+                  </figure>
+                )
               )}
               <button className="button is-primary" onClick={handleLogout} style={{marginTop:'1px'}}>Cerrar sesión</button>
             </div>

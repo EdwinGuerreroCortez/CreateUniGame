@@ -116,39 +116,45 @@ const Curso = () => {
     setSubtemaSeleccionado(null); // Limpiar solo el subtema seleccionado al regresar
   };
 
-  useEffect(() => {
-    const verificarEvaluacion = async () => {
-      if (temaSeleccionado && temaSeleccionado._id) {
-        try {
-          const evaluacionResponse = await fetch(
-            `http://localhost:3001/api/tema-evaluacion/${temaSeleccionado._id}`
-          );
-          const evaluacionData = await evaluacionResponse.json();
+  const verificarEvaluacion = async (temaId) => {
+    try {
+      const evaluacionResponse = await fetch(
+        `http://localhost:3001/api/tema-evaluacion/${temaId}`
+      );
+      const evaluacionData = await evaluacionResponse.json();
 
-          if (
-            evaluacionData &&
-            evaluacionData.evaluacion_habilitada !== undefined
-          ) {
-            console.log("Evaluación habilitada:", evaluacionData.evaluacion_habilitada);
+      if (
+        evaluacionData &&
+        evaluacionData.evaluacion_habilitada !== undefined
+      ) {
+        console.log("Evaluación habilitada:", evaluacionData.evaluacion_habilitada);
 
-            if (temaSeleccionado._id === evaluacionData._id) {
-              setEvaluacionHabilitada(evaluacionData.evaluacion_habilitada);
-            }
-          } else {
-            console.error(
-              "La evaluación recibida no tiene la estructura esperada:",
-              evaluacionData
-            );
-          }
-        } catch (error) {
-          console.error("Error al verificar la evaluación:", error);
+        if (temaId === evaluacionData._id) {
+          setEvaluacionHabilitada(evaluacionData.evaluacion_habilitada);
         }
       } else {
-        setEvaluacionHabilitada(false);
+        console.error(
+          "La evaluación recibida no tiene la estructura esperada:",
+          evaluacionData
+        );
       }
-    };
+    } catch (error) {
+      console.error("Error al verificar la evaluación:", error);
+    }
+  };
 
-    verificarEvaluacion();
+  useEffect(() => {
+    let intervalId;
+    if (temaSeleccionado) {
+      verificarEvaluacion(temaSeleccionado._id);
+      intervalId = setInterval(() => {
+        verificarEvaluacion(temaSeleccionado._id);
+      }, 1000); // Actualiza cada segundo
+
+    } else {
+      setEvaluacionHabilitada(false);
+    }
+    return () => clearInterval(intervalId); // Limpiar el intervalo cuando el componente se desmonte o temaSeleccionado cambie
   }, [temaSeleccionado]);
 
   const cambiarPaginaTemas = (numeroPagina) => {
