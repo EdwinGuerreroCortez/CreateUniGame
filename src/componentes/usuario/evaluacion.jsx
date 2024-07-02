@@ -23,10 +23,17 @@ const Evaluacion = () => {
   const [modalActivo, setModalActivo] = useState(false);
   const [inspeccionando, setInspeccionando] = useState(false);
   const [respuestasAnteriores, setRespuestasAnteriores] = useState([]); // Estado para las respuestas anteriores
+  const [tiempoRestante, setTiempoRestante] = useState(7200); // Tiempo inicial de 2 horas (7200 segundos)
 
   const userId = localStorage.getItem('userId');
 
   useEffect(() => {
+    const storedPreguntas = JSON.parse(localStorage.getItem(`preguntas-${temaId}`));
+    const storedNumeroPregunta = parseInt(localStorage.getItem(`numeroPregunta-${temaId}`));
+    const storedRespuestas = JSON.parse(localStorage.getItem(`respuestas-${temaId}`));
+    const storedTiempoRestante = parseInt(localStorage.getItem(`tiempoRestante-${temaId}`));
+    const startTime = localStorage.getItem(`startTime-${temaId}`);
+
     const fetchEvaluacion = async () => {
       try {
         const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${temaId}`);
@@ -47,11 +54,29 @@ const Evaluacion = () => {
         }
 
         if (examenPermitido) {
-          const response = await fetch(`http://localhost:3001/api/evaluaciones/${temaId}?limit=10`);
-          const data = await response.json();
-          if (data.evaluacion) {
-            setPreguntas(data.evaluacion);
-            setPreguntaActual(data.evaluacion[0]);
+          if (storedPreguntas) {
+            setPreguntas(storedPreguntas);
+            setPreguntaActual(storedPreguntas[storedNumeroPregunta || 0]);
+            if (storedNumeroPregunta) {
+              setNumeroPregunta(storedNumeroPregunta);
+            }
+            if (storedRespuestas) {
+              setRespuestas(storedRespuestas);
+            }
+            if (storedTiempoRestante && startTime) {
+              const elapsedTime = Math.floor((Date.now() - new Date(startTime)) / 1000);
+              const newTiempoRestante = storedTiempoRestante - elapsedTime;
+              setTiempoRestante(newTiempoRestante > 0 ? newTiempoRestante : 0);
+            }
+          } else {
+            const response = await fetch(`http://localhost:3001/api/evaluaciones/${temaId}?limit=10`);
+            const data = await response.json();
+            if (data.evaluacion) {
+              const preguntasAleatorias = data.evaluacion.sort(() => 0.5 - Math.random()).slice(0, 10);
+              setPreguntas(preguntasAleatorias);
+              setPreguntaActual(preguntasAleatorias[0]);
+              localStorage.setItem(`preguntas-${temaId}`, JSON.stringify(preguntasAleatorias));
+            }
           }
         }
       } catch (error) {
@@ -60,6 +85,20 @@ const Evaluacion = () => {
     };
     fetchEvaluacion();
   }, [temaId, userId, examenPermitido]);
+
+  useEffect(() => {
+    if (tiempoRestante > 0) {
+      const timer = setTimeout(() => {
+        setTiempoRestante(tiempoRestante - 1);
+        localStorage.setItem(`tiempoRestante-${temaId}`, tiempoRestante - 1);
+        localStorage.setItem(`startTime-${temaId}`, new Date().toISOString());
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    } else if (!mostrarResultados) {
+      finalizarExamen();
+    }
+  }, [tiempoRestante]);
 
   const handleOptionChange = (opcion) => {
     setRespuestaSeleccionada(opcion);
@@ -75,20 +114,40 @@ const Evaluacion = () => {
     setRespuestas(nuevasRespuestas);
 
     if (numeroPregunta < preguntas.length - 1) {
-      setNumeroPregunta(numeroPregunta + 1);
-      setPreguntaActual(preguntas[numeroPregunta + 1]);
+      const nuevoNumeroPregunta = numeroPregunta + 1;
+      setNumeroPregunta(nuevoNumeroPregunta);
+      setPreguntaActual(preguntas[nuevoNumeroPregunta]);
       setRespuestaSeleccionada(null);
       resetZoomAndOffset(); // Restablecer el zoom y el desplazamiento al cambiar de pregunta
     } else {
-      guardarResultados(nuevasRespuestas);
-      setMostrarResultados(true);
+      finalizarExamen(nuevasRespuestas);
     }
+
+    localStorage.setItem(`respuestas-${temaId}`, JSON.stringify(nuevasRespuestas));
+    localStorage.setItem(`numeroPregunta-${temaId}`, numeroPregunta + 1);
   };
 
   const resetZoomAndOffset = () => {
     setZoomFactor(1.0);
     setOffsetX(0);
     setOffsetY(0);
+  };
+
+  const finalizarExamen = (respuestasFinalizadas = respuestas) => {
+    const respuestasCompletadas = respuestasFinalizadas.map((respuesta, index) => ({
+      ...respuesta,
+      correcta: respuesta.correcta !== undefined ? respuesta.correcta : false,
+    }));
+
+    const preguntasNoRespondidas = preguntas.slice(respuestasCompletadas.length).map(pregunta => ({
+      pregunta: pregunta.pregunta,
+      respuesta: null,
+      correcta: false,
+    }));
+
+    const respuestasFinales = [...respuestasCompletadas, ...preguntasNoRespondidas];
+    guardarResultados(respuestasFinales);
+    setMostrarResultados(true);
   };
 
   const guardarResultados = async (respuestas) => {
@@ -128,6 +187,11 @@ const Evaluacion = () => {
       });
 
       console.log("Resultados guardados exitosamente.");
+      localStorage.removeItem(`preguntas-${temaId}`);
+      localStorage.removeItem(`numeroPregunta-${temaId}`);
+      localStorage.removeItem(`respuestas-${temaId}`);
+      localStorage.removeItem(`tiempoRestante-${temaId}`);
+      localStorage.removeItem(`startTime-${temaId}`);
     } catch (error) {
       console.error('Error al guardar los resultados:', error);
     }
@@ -162,6 +226,22 @@ const Evaluacion = () => {
 
   const getImagenPath = (imagen) => {
     return `${process.env.PUBLIC_URL}/imagenes/${imagen}`;
+  };
+
+  // Función para hacer zoom in en la imagen
+  const zoomIn = () => {
+    const maxZoom = 5; // Máximo factor de zoom permitido
+    if (zoomFactor < maxZoom) {
+      setZoomFactor(prevZoom => prevZoom * 1.2); // Aumenta el factor de zoom en un 20%
+    }
+  };
+
+  // Función para hacer zoom out en la imagen
+  const zoomOut = () => {
+    const minZoom = 0.5; // Mínimo factor de zoom permitido
+    if (zoomFactor > minZoom) {
+      setZoomFactor(prevZoom => prevZoom / 1.2); // Reduce el factor de zoom en un 20%
+    }
   };
 
   const renderResultados = () => {
@@ -231,6 +311,14 @@ const Evaluacion = () => {
     setModalActivo(!modalActivo);
   };
 
+  // Función para formatear el tiempo en hh:mm:ss
+  const formatTime = (seconds) => {
+    const h = Math.floor(seconds / 3600);
+    const m = Math.floor((seconds % 3600) / 60);
+    const s = seconds % 60;
+    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
   return (
     <div className="section" style={{ minHeight: '100vh', backgroundColor: '#14161A' }}>
       <div className="container">
@@ -241,7 +329,10 @@ const Evaluacion = () => {
               {examenPermitido && !examenRealizado ? (
                 <div className="columns">
                   <div className="column">
-                    <h2 className="subtitle has-text-white has-text-centered">Pregunta {numeroPregunta + 1} de {preguntas.length}</h2>
+                    <div className="is-flex is-justify-content-space-between">
+                      <h2 className="subtitle has-text-white">Pregunta {numeroPregunta + 1} de {preguntas.length}</h2>
+                      <h2 className="subtitle has-text-white">Tiempo restante: {formatTime(tiempoRestante)}</h2>
+                    </div>
                     {preguntaActual && !mostrarResultados && (
                       <form onSubmit={handleSubmit}>
                         <div className="box" style={{ marginBottom: '1.5rem', backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
@@ -364,6 +455,23 @@ const Evaluacion = () => {
           </div>
         </div>
       </div>
+
+      {/* Botones de zoom */}
+      <div className="has-text-centered mt-3">
+        <button className="button is-primary is-small mr-2" onClick={zoomIn}>
+          <span className="icon">
+            <i className="fas fa-search-plus"></i>
+          </span>
+          <span>Zoom In</span>
+        </button>
+        <button className="button is-primary is-small" onClick={zoomOut}>
+          <span className="icon">
+            <i className="fas fa-search-minus"></i>
+          </span>
+          <span>Zoom Out</span>
+        </button>
+      </div>
+      
       {modalActivo && (
         <div className={`modal ${modalActivo ? 'is-active' : ''}`}>
           <div className="modal-background" onClick={toggleModal}></div>
