@@ -6,7 +6,6 @@ const handleChange = (formData, setFormData) => e => {
     setFormData({ ...formData, [name]: value });
 };
 
-
 const validateStepOne = (formData) => {
     const { nombre, apellidoPaterno, apellidoMaterno, edad, sexo } = formData;
     if (!nombre || !apellidoPaterno || !apellidoMaterno || !edad || !sexo) {
@@ -76,11 +75,29 @@ const validateStepThree = (formData) => {
 
 const inputStyle = { marginBottom: '15px' };
 
+const StepIndicator = ({ step }) => (
+    <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+        {[1, 2, 3, 4].map((s) => (
+            <div
+                key={s}
+                style={{
+                    width: '10px',
+                    height: '10px',
+                    margin: '0 5px',
+                    borderRadius: '50%',
+                    backgroundColor: s <= step ? 'white' : '#555',
+                }}
+            />
+        ))}
+    </div>
+);
+
 const StepOne = ({ formData, setFormData, nextStep }) => (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
             <div className="card-content">
                 <h2 className="title has-text-centered has-text-white">Registro - Paso 1</h2>
+                <StepIndicator step={1} />
                 <div className="field">
                     <input className="input is-black" type="text" placeholder="Nombre" name="nombre" value={formData.nombre} onChange={handleChange(formData, setFormData)} style={inputStyle} />
                     <input className="input is-black" type="text" placeholder="Apellido Paterno" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange(formData, setFormData)} style={inputStyle} />
@@ -105,6 +122,7 @@ const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
         <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
             <div className="card-content">
                 <h2 className="title has-text-centered has-text-white">Registro - Paso 2</h2>
+                <StepIndicator step={2} />
                 <div className="field">
                     <input className="input is-black" type="text" placeholder="Teléfono" name="telefono" value={formData.telefono} onChange={handleChange(formData, setFormData)} style={inputStyle} />
                     <input className="input is-black" type="email" placeholder="Correo Electrónico" name="correoElectronico" value={formData.correoElectronico} onChange={handleChange(formData, setFormData)} style={inputStyle} />
@@ -136,6 +154,7 @@ const StepThree = ({ formData, setFormData, prevStep, nextStep }) => {
             <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
                 <div className="card-content">
                     <h2 className="title has-text-centered has-text-white">Registro - Paso 3</h2>
+                    <StepIndicator step={3} />
                     <div className="field">
                         <input className="input is-black" type="text" placeholder="Usuario" name="usuario" value={formData.usuario} onChange={handleChange(formData, setFormData)} style={inputStyle} />
                         <div className="field has-addons" style={{ marginBottom: '15px', alignItems: 'center' }}>
@@ -160,21 +179,29 @@ const StepThree = ({ formData, setFormData, prevStep, nextStep }) => {
 };
 
 const handleChangeLenguajes = (formData, setFormData, value) => {
-    const newLenguajes = formData.lenguajes.includes(value)
-        ? formData.lenguajes.filter(l => l !== value)
-        : [...formData.lenguajes, value];
-    setFormData({ ...formData, lenguajes: newLenguajes });
+    if (value === 'Todos') {
+        const allOptions = ['Python', 'JavaScript', 'C#', 'C++', 'Java', 'Lua', 'HTML5', 'Swift', 'Ruby', 'PHP', 'Kotlin', 'MySQL', 'PostgreSQL', 'MongoDB', 'SQLite', 'Oracle', 'SQL Server'];
+        setFormData({ ...formData, lenguajes: allOptions });
+    } else if (value === 'Ninguno') {
+        setFormData({ ...formData, lenguajes: [] });
+    } else {
+        const newLenguajes = formData.lenguajes.includes(value)
+            ? formData.lenguajes.filter(l => l !== value)
+            : [...formData.lenguajes, value];
+        setFormData({ ...formData, lenguajes: newLenguajes });
+    }
 };
 
 const StepFour = ({ formData, setFormData, prevStep, finishRegistration }) => (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+        <div className="card has-background-black has-text-white" style={{ maxWidth: '600px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
             <div className="card-content">
-                <h2 className="title has-text-centered has-text-white">Experiencia en Lenguajes</h2>
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '20px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-around', marginBottom: '10px' }}>
-                        {['Python', 'JavaScript', 'C#', 'C++'].map((lang) => (
-                            <label className="checkbox" key={lang} style={{ marginRight: '10px' }}>
+                <h2 className="title has-text-centered has-text-white">Experiencia - Paso 4</h2>
+                <StepIndicator step={4} />
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginBottom: '20px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        {['Python', 'JavaScript', 'C#', 'C++', 'Java', 'HTML5', 'Swift', 'Ruby', 'PHP'].map((lang) => (
+                            <label className="checkbox" key={lang} style={{ width: '30%', margin: '10px 0', textAlign: 'left' }}>
                                 <input
                                     type="checkbox"
                                     name="lenguajes"
@@ -187,18 +214,33 @@ const StepFour = ({ formData, setFormData, prevStep, finishRegistration }) => (
                             </label>
                         ))}
                     </div>
-                    <div style={{ display: 'flex', justifyContent: 'space-around' }}>
-                        {['Java', 'Lua', 'HTML5', 'Swift'].map((lang) => (
-                            <label className="checkbox" key={lang} style={{ marginRight: '10px' }}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
+                        {['MySQL', 'PostgreSQL', 'MongoDB', 'SQLite', 'Oracle', 'SQL Server'].map((db) => (
+                            <label className="checkbox" key={db} style={{ width: '30%', margin: '10px 0', textAlign: 'left' }}>
                                 <input
                                     type="checkbox"
                                     name="lenguajes"
-                                    value={lang}
-                                    checked={formData.lenguajes.includes(lang)}
-                                    onChange={() => handleChangeLenguajes(formData, setFormData, lang)}
+                                    value={db}
+                                    checked={formData.lenguajes.includes(db)}
+                                    onChange={() => handleChangeLenguajes(formData, setFormData, db)}
                                     style={{ marginRight: '5px' }}
                                 />
-                                {lang}
+                                {db}
+                            </label>
+                        ))}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                        {['Todos', 'Ninguno'].map((option) => (
+                            <label className="checkbox" key={option} style={{ width: '30%', margin: '10px 0', textAlign: 'left' }}>
+                                <input
+                                    type="checkbox"
+                                    name="lenguajes"
+                                    value={option}
+                                    checked={option === 'Todos' ? formData.lenguajes.length === 17 : formData.lenguajes.length === 0}
+                                    onChange={() => handleChangeLenguajes(formData, setFormData, option)}
+                                    style={{ marginRight: '5px' }}
+                                />
+                                {option}
                             </label>
                         ))}
                     </div>
@@ -307,18 +349,14 @@ const FormRegistro = () => {
         }
     };
 
-    switch (step) {
-        case 1:
-            return <StepOne formData={formData} setFormData={setFormData} nextStep={nextStep} />;
-        case 2:
-            return <StepTwo formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />;
-        case 3:
-            return <StepThree formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />;
-        case 4:
-            return <StepFour formData={formData} setFormData={setFormData} prevStep={prevStep} finishRegistration={finishRegistration} />;
-        default:
-            return <StepOne formData={formData} setFormData={setFormData} nextStep={nextStep} />;
-    }
+    return (
+        <div>
+            {step === 1 && <StepOne formData={formData} setFormData={setFormData} nextStep={nextStep} />}
+            {step === 2 && <StepTwo formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />}
+            {step === 3 && <StepThree formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />}
+            {step === 4 && <StepFour formData={formData} setFormData={setFormData} prevStep={prevStep} finishRegistration={finishRegistration} />}
+        </div>
+    );
 };
 
 export default FormRegistro;

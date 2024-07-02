@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Modal from 'react-modal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFacebookF, faTwitter, faInstagram, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
+import { faInfoCircle, faUserPlus, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 
 // Estilo para el modal
 const customStyles = {
@@ -57,11 +60,20 @@ const PieDePagina = () => {
             <div className="column">
               <p>Únete a nuestra comunidad:</p>
               <div className="buttons is-centered">
-                <Link className="button is-link" to="/public/registro">Únete</Link>
-                <Link className="button is-info" to="/public/login">Conéctate</Link>
+                <Link className="button is-link" to="/public/registro">
+                  <FontAwesomeIcon icon={faUserPlus} style={{ marginRight: '8px' }} />
+                  Únete
+                </Link>
+                <Link className="button is-info" to="/public/login">
+                  <FontAwesomeIcon icon={faSignInAlt} style={{ marginRight: '8px' }} />
+                  Conéctate
+                </Link>
               </div>
               <div className="buttons is-centered" style={{ marginTop: '1rem' }}>
-                <button className="button is-primary" onClick={openModal}>Más Información</button>
+                <button className="button is-primary" onClick={openModal}>
+                  <FontAwesomeIcon icon={faInfoCircle} style={{ marginRight: '8px' }} />
+                  Más Información
+                </button>
               </div>
             </div>
           </div>
@@ -69,16 +81,16 @@ const PieDePagina = () => {
             <p>Síguenos en nuestras redes sociales:</p>
             <div className="buttons is-centered">
               <a className="button is-light" href="https://facebook.com" aria-label="Facebook">
-                <i className="fab fa-facebook-f"></i>
+                <FontAwesomeIcon icon={faFacebookF} />
               </a>
               <a className="button is-light" href="https://twitter.com" aria-label="Twitter">
-                <i className="fab fa-twitter"></i>
+                <FontAwesomeIcon icon={faTwitter} />
               </a>
               <a className="button is-light" href="https://instagram.com" aria-label="Instagram">
-                <i className="fab fa-instagram"></i>
+                <FontAwesomeIcon icon={faInstagram} />
               </a>
               <a className="button is-light" href="https://linkedin.com" aria-label="LinkedIn">
-                <i className="fab fa-linkedin-in"></i>
+                <FontAwesomeIcon icon={faLinkedinIn} />
               </a>
             </div>
           </div>

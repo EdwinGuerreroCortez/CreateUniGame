@@ -86,10 +86,18 @@ const AlumnosSubcritosAdmi = () => {
                     curso.subscritores.map((sub) => (
                       <tr key={sub._id}>
                         <td className="has-text-white">
-                          {sub.usuario.datos_personales.nombre} {sub.usuario.datos_personales.apellido_paterno}
+                          {sub.usuario && sub.usuario.datos_personales && (
+                            <>
+                              {sub.usuario.datos_personales.nombre} {sub.usuario.datos_personales.apellido_paterno}
+                            </>
+                          )}
                         </td>
-                        <td className="has-text-white">{sub.usuario.datos_personales.matricula}</td>
-                        <td className="has-text-white">{sub.usuario.datos_personales.correo}</td>
+                        <td className="has-text-white">
+                          {sub.usuario && sub.usuario.datos_personales && sub.usuario.datos_personales.matricula}
+                        </td>
+                        <td className="has-text-white">
+                          {sub.usuario && sub.usuario.datos_personales && sub.usuario.datos_personales.correo}
+                        </td>
                         <td className="has-text-centered has-text-white">
                           <span
                             className="icon has-tooltip-arrow has-tooltip-multiline"

@@ -5,6 +5,8 @@ import 'bulma/css/bulma.min.css';
 import '../CSS/style2.css';
 import logo from '../img/logo_Study.png';
 import Perfil from '../usuario/perfil';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faCompass, faBook, faFolderOpen, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 const BarraNav = () => {
   const [estaActivo, setEstaActivo] = useState(false);
@@ -71,16 +73,32 @@ const BarraNav = () => {
 
       <div id="navbarBasicExample" className={`navbar-menu ${estaActivo ? 'is-active' : ''}`}>
         <div className="navbar-start">
+          <Link className="navbar-item has-text-success" to="/user/bienvenida">
+            <FontAwesomeIcon icon={faHome} style={{ marginRight: '5px' }} />
+            Inicio
+          </Link>
           <div className="navbar-item has-dropdown is-hoverable">
-            <a className="navbar-link has-text-success">Explorar</a>
+            <a className="navbar-link has-text-success">
+              <FontAwesomeIcon icon={faCompass} style={{ marginRight: '5px' }} />
+              Explorar
+            </a>
             <div className="navbar-dropdown">
-              <Link className="navbar-item has-text-success" to="/user/acerca">Acerca de StudyWeb</Link>
-              <Link className="navbar-item has-text-success" to="/user/contacto">Contáctanos</Link>
+              <Link className="navbar-item has-text-success" to="/user/acerca">
+                Acerca de StudyWeb
+              </Link>
+              <Link className="navbar-item has-text-success" to="/user/contacto">
+                Contáctanos
+              </Link>
             </div>
           </div>
-          <Link className="navbar-item has-text-success" to="/user/bienvenida">Inicio</Link>
-          <Link className="navbar-item has-text-success" to="/user/curso">Curso</Link>
-          <Link className="navbar-item has-text-success" to="/user/recursos">Recursos</Link>
+          <Link className="navbar-item has-text-success" to="/user/curso">
+            <FontAwesomeIcon icon={faBook} style={{ marginRight: '5px' }} />
+            Curso
+          </Link>
+          <Link className="navbar-item has-text-success" to="/user/recursos">
+            <FontAwesomeIcon icon={faFolderOpen} style={{ marginRight: '5px' }} />
+            Recursos
+          </Link>
         </div>
 
         <div className="navbar-end">
@@ -95,7 +113,10 @@ const BarraNav = () => {
                   </figure>
                 )
               )}
-              <button className="button is-primary" onClick={handleLogout} style={{marginTop:'1px'}}>Cerrar sesión</button>
+              <button className="button is-primary" onClick={handleLogout} style={{marginTop:'1px'}}>
+                <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: '5px' }} />
+                Cerrar sesión
+              </button>
             </div>
           </div>
         </div>

@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import '../CSS/style2.css'; // Importa el archivo CSS
 import logo from '../img/logo_Study.png';
 import '@fortawesome/fontawesome-free/css/all.css'; // Importa Font Awesome
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignInAlt, faUserPlus, faHome, faCompass } from '@fortawesome/free-solid-svg-icons'; // Importa los iconos necesarios
 
 const BarraNav = () => {
   const [isActive, setIsActive] = useState(false);
@@ -35,20 +37,31 @@ const BarraNav = () => {
       <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
         <div className="navbar-start">
           <div className="navbar-item has-dropdown is-hoverable">
-            <a className="navbar-link has-text-success">Explorar</a>
+            <a className="navbar-link has-text-success">
+              <FontAwesomeIcon icon={faCompass} style={{ marginRight: '0.5rem' }} />
+              Explorar
+            </a>
             <div className="navbar-dropdown">
               <Link className="navbar-item has-text-success" to="/public/acerca">Acerca de StudyWeb</Link>
               <Link className="navbar-item has-text-success" to="/public/contactanos">Contáctanos</Link>
             </div>
           </div>
-          <Link className="navbar-item has-text-success" to="/">Inicio</Link>
+          <Link className="navbar-item has-text-success" to="/">
+            <FontAwesomeIcon icon={faHome} style={{ marginRight: '0.5rem' }} />
+            Inicio
+          </Link>
         </div>
 
         <div className="navbar-end">
           <div className="navbar-item">
-        
-            <Link className="button is-success" to="/public/login" style={{ marginRight: '0.5rem' }}>Iniciar Sesión</Link>
-            <Link className="button is-primary" to="/public/registro" style={{ marginRight: '0.5rem' }}>Registraté</Link>
+            <Link className="button is-success" to="/public/login" style={{ marginRight: '0.5rem' }}>
+              <FontAwesomeIcon icon={faSignInAlt} style={{ marginRight: '0.5rem' }} />
+              Iniciar Sesión
+            </Link>
+            <Link className="button is-primary" to="/public/registro" style={{ marginRight: '0.5rem' }}>
+              <FontAwesomeIcon icon={faUserPlus} style={{ marginRight: '0.5rem' }} />
+              Regístrate
+            </Link>
           </div>
         </div>
       </div>

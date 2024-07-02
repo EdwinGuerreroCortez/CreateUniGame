@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import 'bulma/css/bulma.min.css'; // Importa Bulma CSS
 import '../CSS/perfil.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUser, faUserTie, faUserGraduate, faBirthdayCake, faPhone, faEnvelope, faKey, faSave, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const Perfil = ({ estaAbierto, alCerrar }) => {
   const [usuario, setUsuario] = useState({
@@ -201,59 +203,68 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
               <div className="columns">
                 <div className="column">
                   <div className="field">
-                    <label className="label">Nombre de Usuario</label>
-                    <div className="control">
+                    <label className="label"><FontAwesomeIcon icon={faUser} style={{ marginRight: '5px' }} /> Nombre de Usuario</label>
+                    <div className="control has-icons-left">
                       <input className="input inputperfil" type="text" name="nombreUsuario" value={usuario.nombreUsuario} onChange={handleChange} disabled={!editando} />
+                      <span className="icon is-small is-left"></span>
                     </div>
                   </div>
                   <div className="field">
-                    <label className="label">Nombre</label>
-                    <div className="control">
+                    <label className="label"><FontAwesomeIcon icon={faUserTie} style={{ marginRight: '5px' }} /> Nombre</label>
+                    <div className="control has-icons-left">
                       <input className="input inputperfil" type="text" name="nombre" value={usuario.nombre} onChange={handleChange} disabled={!editando} />
+                      <span className="icon is-small is-left"></span>
                     </div>
                   </div>
                   <div className="field">
-                    <label className="label">Apellido Paterno</label>
-                    <div className="control">
+                    <label className="label"><FontAwesomeIcon icon={faUser} style={{ marginRight: '5px' }} /> Apellido Paterno</label>
+                    <div className="control has-icons-left">
                       <input className="input inputperfil" type="text" name="apellidoPaterno" value={usuario.apellidoPaterno} onChange={handleChange} disabled={!editando} />
+                      <span className="icon is-small is-left"></span>
                     </div>
                   </div>
                   <div className="field">
-                    <label className="label">Apellido Materno</label>
-                    <div className="control">
+                    <label className="label"><FontAwesomeIcon icon={faUser} style={{ marginRight: '5px' }} /> Apellido Materno</label>
+                    <div className="control has-icons-left">
                       <input className="input inputperfil" type="text" name="apellidoMaterno" value={usuario.apellidoMaterno} onChange={handleChange} disabled={!editando} />
+                      <span className="icon is-small is-left"></span>
                     </div>
                   </div>
                 </div>
                 <div className="column">
                   <div className="field">
-                    <label className="label">Edad</label>
-                    <div className="control">
+                    <label className="label"><FontAwesomeIcon icon={faBirthdayCake} style={{ marginRight: '5px' }} /> Edad</label>
+                    <div className="control has-icons-left">
                       <input className="input inputperfil" type="number" name="edad" value={usuario.edad} onChange={handleChange} disabled={!editando} />
+                      <span className="icon is-small is-left"></span>
                     </div>
                   </div>
                   <div className="field">
-                    <label className="label">Teléfono</label>
-                    <div className="control">
+                    <label className="label"><FontAwesomeIcon icon={faPhone} style={{ marginRight: '5px' }} /> Teléfono</label>
+                    <div className="control has-icons-left">
                       <input className="input inputperfil" type="text" name="telefono" value={usuario.telefono} onChange={handleChange} disabled={!editando} />
+                      <span className="icon is-small is-left"></span>
                     </div>
                   </div>
                   <div className="field">
-                    <label className="label">Correo</label>
-                    <div className="control">
+                    <label className="label"><FontAwesomeIcon icon={faEnvelope} style={{ marginRight: '5px' }} /> Correo</label>
+                    <div className="control has-icons-left">
                       <input className="input inputperfil" type="email" name="correo" value={usuario.correo} onChange={handleChange} disabled={!editando} />
+                      <span className="icon is-small is-left"></span>
                     </div>
                   </div>
                   <div className="field">
-                    <label className="label">Matrícula</label>
-                    <div className="control">
+                    <label className="label"><FontAwesomeIcon icon={faKey} style={{ marginRight: '5px' }} /> Matrícula</label>
+                    <div className="control has-icons-left">
                       <input className="input inputperfil" type="text" value={usuario.matricula} disabled />
+                      <span className="icon is-small is-left"></span>
                     </div>
                   </div>
                   <div className="field">
-                    <label className="label">Contraseña</label>
-                    <div className="control">
+                    <label className="label"><FontAwesomeIcon icon={faKey} style={{ marginRight: '5px' }} /> Contraseña</label>
+                    <div className="control has-icons-left">
                       <input className="input inputperfil" type="password" name="contrasena" value={usuario.contrasena} onChange={handleChange} disabled={!editando} placeholder="••••••••" />
+                      <span className="icon is-small is-left"></span>
                     </div>
                   </div>
                 </div>
@@ -261,11 +272,13 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
               <div className="field is-grouped is-grouped-right mt-4">
                 <div className="control">
                   <button className="button is-info" onClick={() => { if (editando) handleGuardar(); setEditando(!editando); }} disabled={cargando}>
-                    {editando ? 'Guardar' : 'Editar'}
+                    {editando ? <><FontAwesomeIcon icon={faSave} style={{ marginRight: '5px' }} /> Guardar</> : <><FontAwesomeIcon icon={faEdit} style={{ marginRight: '5px' }} /> Editar</>}
                   </button>
                 </div>
                 <div className="control">
-                  <button className="button is-danger" onClick={alCerrar}>Cerrar</button>
+                  <button className="button is-danger" onClick={alCerrar}>
+                    <FontAwesomeIcon icon={faTimes} style={{ marginRight: '5px' }} /> Cerrar
+                  </button>
                 </div>
               </div>
             </div>

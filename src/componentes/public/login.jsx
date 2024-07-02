@@ -15,6 +15,16 @@ import '../CSS/style.css';
 
 const backgrounds = [img9, img1, img3, img6, img4, img8, img5, img2, img7];
 
+const preloadImages = (images) => {
+  return Promise.all(images.map((image) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = image;
+      img.onload = resolve;
+    });
+  }));
+};
+
 const FormRegistro = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,6 +32,7 @@ const FormRegistro = () => {
   const [backgroundIndex, setBackgroundIndex] = useState(0);
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [imagesPreloaded, setImagesPreloaded] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,11 +45,19 @@ const FormRegistro = () => {
   }, [email]);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setBackgroundIndex((current) => (current + 1) % backgrounds.length);
-    }, 5000);
-    return () => clearInterval(intervalId);
+    preloadImages(backgrounds).then(() => {
+      setImagesPreloaded(true);
+    });
   }, []);
+
+  useEffect(() => {
+    if (imagesPreloaded) {
+      const intervalId = setInterval(() => {
+        setBackgroundIndex((current) => (current + 1) % backgrounds.length);
+      }, 5000);
+      return () => clearInterval(intervalId);
+    }
+  }, [imagesPreloaded]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -107,8 +126,19 @@ const FormRegistro = () => {
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       transition: 'background-image 1s ease-in-out',
-      minHeight: '100vh'
+      minHeight: '100vh',
+      position: 'relative'
     }}>
+      <div style={{
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        transition: 'background-color 1s ease-in-out'
+      }}></div>
+
       <button onClick={handleBack} className="button is-light button-back" style={{ position: 'absolute', top: '10px', left: '10px' }}>
         Atrás
       </button>
