@@ -47,9 +47,8 @@ const SubirTema = () => {
     fetchCursos();
   }, []);
 
-  //subtemas
   const handleAgregarSubtema = () => {
-    setSubtemas([...subtemas, { Titulo: "", Descripcion: "", Link: "" }]);
+    setSubtemas([...subtemas, { Titulo: "", Descripcion: "" }]);
   };
 
   const handleSubtemaChange = (index, field, value) => {
@@ -57,6 +56,7 @@ const SubirTema = () => {
     newSubtemas[index][field] = value;
     setSubtemas(newSubtemas);
   };
+
   const handleEliminarSubtema = (index) => {
     if (subtemas.length > 1) {
       if (window.confirm("¿Estás seguro de que quieres eliminar este subtema?")) {
@@ -97,7 +97,7 @@ const SubirTema = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (
       !titulo ||
       !descripcion ||
@@ -105,7 +105,7 @@ const SubirTema = () => {
       !bibliografia ||
       !curso ||
       pasos.some((p) => !p.Titulo || !p.Descripcion) ||
-      subtemas.some((s) => !s.Titulo || !s.Descripcion || !s.Link)
+      subtemas.some((s) => !s.Titulo || !s.Descripcion)
     ) {
       setAlert({
         type: "warning",
@@ -113,7 +113,7 @@ const SubirTema = () => {
       });
       return;
     }
-  
+
     setIsLoading(true);
     const formData = new FormData();
     formData.append("titulo", titulo);
@@ -125,24 +125,20 @@ const SubirTema = () => {
       formData.append("video", videoFile);
     }
     formData.append("pasos", JSON.stringify(pasos));
-    if (subtemas.length > 0) {
-      formData.append("subtemas", JSON.stringify(subtemas));
-    } else {
-      formData.append("subtemas", JSON.stringify([]));
-    }
-  
+    formData.append("subtemas", JSON.stringify(subtemas));
+
     try {
       const response = await fetch("http://localhost:3001/api/subirTema", {
         method: "POST",
         body: formData,
       });
-  
+
       if (!response.ok) {
         throw new Error(
           "Error al crear el tema. Código de estado: " + response.status
         );
       }
-  
+
       const data = await response.json();
       if (data.error) {
         setAlert({ type: "error", message: data.error });
@@ -154,7 +150,7 @@ const SubirTema = () => {
         setBibliografia("");
         setCurso("");
         setPasos([{ Titulo: "", Descripcion: "" }]);
-        setSubtemas([{ Titulo: "", Descripcion: "", Link: "" }]);
+        setSubtemas([]);
         setVideoFile(null);
         setPaginaActual(0); // Reiniciar paginación al enviar el formulario
       }
@@ -444,19 +440,6 @@ const SubirTema = () => {
                           placeholder="Descripción del Subtema"
                           required
                         ></textarea>
-                      </div>
-                    </div>
-                    <div className="field">
-                      <label className="label has-text-white">Link del Video</label>
-                      <div className="control">
-                        <input
-                          className="input"
-                          type="text"
-                          value={subtema.Link}
-                          onChange={(e) => handleSubtemaChange(index, "Link", e.target.value)}
-                          placeholder="Link del Video"
-                          required
-                        />
                       </div>
                     </div>
                   </div>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import "bulma/css/bulma.min.css";
 import "../CSS/adminForms2.css";
@@ -18,6 +18,17 @@ const Contenidos = () => {
   const [videoFile, setVideoFile] = useState(null);
   const [videoModalOpen, setVideoModalOpen] = useState(false);
   const [currentTemaId, setCurrentTemaId] = useState(null);
+  const [subtemas, setSubtemas] = useState([]);
+  const [subtemaModalOpen, setSubtemaModalOpen] = useState(false);
+  const [subtemaVideoFile, setSubtemaVideoFile] = useState(null);
+  const [subtemaUploadingVideo, setSubtemaUploadingVideo] = useState(false);
+  const [currentSubtemaId, setCurrentSubtemaId] = useState(null);
+  const [videoLink, setVideoLink] = useState("");
+  const [uploadMethod, setUploadMethod] = useState("upload");
+  const [subtemaUploadMethod, setSubtemaUploadMethod] = useState("upload");
+  const [subtemaVideoLink, setSubtemaVideoLink] = useState({}); // Estado para el link del video de subtema
+
+  const videoInputRef = useRef(null);
 
   useEffect(() => {
     fetch("http://localhost:3001/api/temas")
@@ -183,54 +194,229 @@ const Contenidos = () => {
     setVideoModalOpen(true);
   };
 
-  const handleConfirmUpload = () => {
-    if (!videoFile) {
-      setAlert({
-        type: "error",
-        message: "Por favor, selecciona un archivo de video.",
-      });
-      return;
+  const handleUploadSubtemaVideo = (subtemaId) => {
+    setCurrentSubtemaId(subtemaId);
+    setSubtemaVideoFile(null);
+    setSubtemaUploadMethod("upload");
+    setSubtemaVideoLink("");
+    if (videoInputRef.current) {
+      videoInputRef.current.value = null; // Reset the file input value
     }
+    if (subtemaModalOpen) {
+      videoInputRef.current.click();
+    } else {
+      setSubtemaModalOpen(true);
+    }
+  };
 
-    setUploadingVideo(true);
-
-    const formData = new FormData();
-    formData.append("video", videoFile);
-
-    fetch(`http://localhost:3001/api/upload-video/${currentTemaId}`, {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.error) {
-          setAlert({ type: "error", message: data.error });
-        } else {
-          setTemas(
-            temas.map((t) =>
-              t._id === currentTemaId ? { ...t, video: data.videoUrl } : t
-            )
-          );
-          setAlert({ type: "success", message: "Video subido con éxito." });
-        }
-      })
-      .catch((error) => {
-        console.error("Error subiendo el video:", error);
+  const handleConfirmUpload = () => {
+    if (uploadMethod === "upload") {
+      if (!videoFile) {
         setAlert({
           type: "error",
-          message: "Error subiendo el video. Inténtalo de nuevo.",
+          message: "Por favor, selecciona un archivo de video.",
         });
+        return;
+      }
+  
+      setUploadingVideo(true);
+  
+      const formData = new FormData();
+      formData.append("video", videoFile);
+  
+      fetch(`http://localhost:3001/api/upload-video/${currentTemaId}`, {
+        method: "POST",
+        body: formData,
       })
-      .finally(() => {
-        setUploadingVideo(false);
-        setVideoFile(null);
-        setVideoModalOpen(false);
-      });
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            setAlert({ type: "error", message: data.error });
+          } else {
+            setTemas(
+              temas.map((t) =>
+                t._id === currentTemaId ? { ...t, video: data.videoUrl } : t
+              )
+            );
+            setAlert({ type: "success", message: "Video subido con éxito." });
+          }
+        })
+        .catch((error) => {
+          console.error("Error subiendo el video:", error);
+          setAlert({
+            type: "error",
+            message: "Error subiendo el video. Inténtalo de nuevo.",
+          });
+        })
+        .finally(() => {
+          setUploadingVideo(false);
+          setVideoFile(null);
+          setVideoModalOpen(false);
+        });
+    } else if (uploadMethod === "link") {
+      if (!videoLink.trim()) {
+        setAlert({
+          type: "error",
+          message: "Por favor, ingresa un link de video.",
+        });
+        return;
+      }
+  
+      fetch(`http://localhost:3001/api/upload-video-link/${currentTemaId}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ videoLink: videoLink.trim() }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            setAlert({ type: "error", message: data.error });
+          } else {
+            setTemas(
+              temas.map((t) =>
+                t._id === currentTemaId ? { ...t, video: data.videoUrl } : t
+              )
+            );
+            setAlert({
+              type: "success",
+              message: "Link de video guardado con éxito.",
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error guardando el link de video:", error);
+          setAlert({
+            type: "error",
+            message: "Error guardando el link de video. Inténtalo de nuevo.",
+          });
+        })
+        .finally(() => {
+          setVideoLink("");
+          setVideoModalOpen(false);
+        });
+    }
+  };
+  
+
+  const handleConfirmSubtemaUpload = (subtemaId) => {
+    if (subtemaUploadMethod === "upload") {
+      if (!subtemaVideoFile) {
+        setAlert({
+          type: "error",
+          message: "Por favor, selecciona un archivo de video.",
+        });
+        return;
+      }
+
+      setSubtemaUploadingVideo(true);
+
+      const formData = new FormData();
+      formData.append("video", subtemaVideoFile);
+
+      fetch(
+        `http://localhost:3001/api/upload-subtema-video/${currentTemaId}/${subtemaId}`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            setAlert({ type: "error", message: data.error });
+          } else {
+            const updatedTemas = temas.map((t) => {
+              if (t._id === currentTemaId) {
+                t.subtemas = t.subtemas.map((s) =>
+                  s._id === subtemaId ? { ...s, video: data.videoUrl } : s
+                );
+              }
+              return t;
+            });
+            setTemas(updatedTemas);
+            setAlert({ type: "success", message: "Video subido con éxito." });
+          }
+        })
+        .catch((error) => {
+          console.error("Error subiendo el video:", error);
+          setAlert({
+            type: "error",
+            message: "Error subiendo el video. Inténtalo de nuevo.",
+          });
+        })
+        .finally(() => {
+          setSubtemaUploadingVideo(false);
+          setSubtemaVideoFile(null);
+          setCurrentSubtemaId(null);
+        });
+    } else if (subtemaUploadMethod === "link") {
+      const videoLink = subtemaVideoLink[subtemaId];
+      if (!videoLink || !videoLink.trim()) {
+        setAlert({
+          type: "error",
+          message: "Por favor, ingresa un link de video.",
+        });
+        return;
+      }
+
+      fetch(
+        `http://localhost:3001/api/upload-subtema-video/${currentTemaId}/${subtemaId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ videoLink: videoLink.trim() }),
+        }
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.error) {
+            setAlert({ type: "error", message: data.error });
+          } else {
+            const updatedTemas = temas.map((t) => {
+              if (t._id === currentTemaId) {
+                t.subtemas = t.subtemas.map((s) =>
+                  s._id === subtemaId ? { ...s, video: data.videoUrl } : s
+                );
+              }
+              return t;
+            });
+            setTemas(updatedTemas);
+            setAlert({
+              type: "success",
+              message: "Link de video guardado con éxito.",
+            });
+          }
+        })
+        .catch((error) => {
+          console.error("Error guardando el link de video:", error);
+          setAlert({
+            type: "error",
+            message: "Error guardando el link de video. Inténtalo de nuevo.",
+          });
+        })
+        .finally(() => {
+          setSubtemaVideoLink((prevLinks) => ({
+            ...prevLinks,
+            [subtemaId]: "",
+          }));
+          setCurrentSubtemaId(null);
+        });
+    }
   };
 
   const handleCancelUpload = () => {
     setVideoFile(null);
     setVideoModalOpen(false);
+  };
+
+  const handleCancelSubtemaUpload = () => {
+    setSubtemaVideoFile(null);
+    setSubtemaUploadingVideo(false);
+    setCurrentSubtemaId(null);
   };
 
   const validateTemaFields = (tema) => {
@@ -270,6 +456,12 @@ const Contenidos = () => {
       });
   };
 
+  const showSubtemas = (subtemas, temaId) => {
+    setSubtemas(subtemas);
+    setCurrentTemaId(temaId);
+    setSubtemaModalOpen(true);
+  };
+
   return (
     <div
       style={{
@@ -294,131 +486,140 @@ const Contenidos = () => {
           </div>
         )}
         <div className="control is-pulled-right" style={{ margin: "10px" }}>
-          <Link to="/admin/temas" className="button is-primary"  data-tooltip="Agregar tema">
-            <span className="icon " >
-              <i className="fas fa-plus " ></i>
+          <Link to="/admin/temas" className="button is-primary" data-tooltip="Agregar tema">
+            <span className="icon">
+              <i className="fas fa-plus"></i>
             </span>
-            
           </Link>
         </div>
-       
+
         <div className="box" style={{ backgroundColor: "#090A0C" }}>
           <div className="table-container">
-          <table className="table is-fullwidth is-striped is-hoverable">
-            <thead>
-              <tr>
-                <th className="has-text-white">Título</th>
-                <th className="has-text-white">Responsable</th>
-                <th className="has-text-white">Fecha</th>
-                <th className="has-text-white">Descripción</th>
-                <th className="has-text-white">Número de Pasos</th>
-                <th className="has-text-white">Video</th>
-                <th className="has-text-centered has-text-white">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {temas && temas.length > 0 ? (
-                temas.map((tema) => {
-                  const allFieldsFilled = validateTemaFields(tema);
-                  return (
-                    <tr key={tema._id}>
-                      <td className="has-text-white">{tema.titulo}</td>
-                      <td className="has-text-white">{tema.responsable}</td>
-                      <td className="has-text-white">
-                        {new Date(tema.fecha_creacion).toLocaleDateString()}
-                      </td>
-                      <td className="has-text-white">{tema.descripcion}</td>
-                      <td className="has-text-white">
-                        {tema.pasos ? tema.pasos.length : 0} pasos
-                      </td>
-                      <td className="has-text-white">
-                        {tema.video ? (
-                          <a
-                            className="has-text-link"
-                            href={tema.video}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Ver Video
-                          </a>
-                        ) : (
-                          <div>
-                            <span
-                              className="icon has-text-link is-large button-tooltip "
-                              onClick={() => handleUploadVideo(tema._id)}
-                              data-tooltip="Subir video"
-                            >
-                              <i className="fas fa-upload fa-lg"></i>
-                            </span>
-                          </div>
-                        )}
-                      </td>
-
-                      <td className="has-text-centered has-text-white">
-                        <div className="buttons is-centered is-grouped">
+            <table className="table is-fullwidth is-striped is-hoverable">
+              <thead>
+                <tr>
+                  <th className="has-text-white">Título</th>
+                  <th className="has-text-white">Responsable</th>
+                  <th className="has-text-white">Fecha</th>
+                  <th className="has-text-white">Descripción</th>
+                  <th className="has-text-white">Número de Pasos</th>
+                  <th className="has-text-white">Subtemas</th>
+                  <th className="has-text-white">Video</th>
+                  <th className="has-text-centered has-text-white">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                {temas && temas.length > 0 ? (
+                  temas.map((tema) => {
+                    const allFieldsFilled = validateTemaFields(tema);
+                    return (
+                      <tr key={tema._id}>
+                        <td className="has-text-white">{tema.titulo}</td>
+                        <td className="has-text-white">{tema.responsable}</td>
+                        <td className="has-text-white">
+                          {new Date(tema.fecha_creacion).toLocaleDateString()}
+                        </td>
+                        <td className="has-text-white">{tema.descripcion}</td>
+                        <td className="has-text-white">
+                          {tema.pasos ? tema.pasos.length : 0} pasos
+                        </td>
+                        <td className="has-text-white">
                           <button
                             className="button is-small is-info button-tooltip"
-                            onClick={() => handleEdit(tema)}
-                            data-tooltip="Editar"
+                            onClick={() => showSubtemas(tema.subtemas, tema._id)}
+                            data-tooltip="Mostrar Subtemas"
                           >
-                            <span className="icon">
-                              <i className="fas fa-edit"></i>
-                            </span>
+                            {tema.subtemas.length} subtemas
                           </button>
+                        </td>
+                        <td className="has-text-white">
+                          {tema.video ? (
+                            <a
+                              className="has-text-link"
+                              href={tema.video}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Ver Video
+                            </a>
+                          ) : (
+                            <div>
+                              <span
+                                className="icon has-text-link is-large button-tooltip "
+                                onClick={() => handleUploadVideo(tema._id)}
+                                data-tooltip="Subir video"
+                              >
+                                <i className="fas fa-upload fa-lg"></i>
+                              </span>
+                            </div>
+                          )}
+                        </td>
 
-                          <button
-                            className="button is-small is-danger button-tooltip"
-                            onClick={() => confirmDelete(tema._id)}
-                            data-tooltip="Eliminar"
-                          >
-                            <span className="icon">
-                              <i className="fas fa-trash"></i>
-                            </span>
-                          </button>
+                        <td className="has-text-centered has-text-white">
+                          <div className="buttons is-centered is-grouped">
+                            <button
+                              className="button is-small is-info button-tooltip"
+                              onClick={() => handleEdit(tema)}
+                              data-tooltip="Editar"
+                            >
+                              <span className="icon">
+                                <i className="fas fa-edit"></i>
+                              </span>
+                            </button>
 
-                          <button
-                            className="button is-small is-warning button-tooltip"
-                            onClick={() => handleDownloadTema(tema._id)}
-                            data-tooltip="Descargar Excel"
-                          >
-                            <span className="icon">
-                              <i className="fas fa-file-download"></i>
-                            </span>
-                          </button>
-                          <button
-                            className={`button is-small ${
-                              tema.habilitado ? "is-success" : "is-light"
-                            }`}
-                            onClick={() => handleToggleHabilitar(tema._id)}
-                            data-tooltip={
-                              tema.habilitado
-                                ? "Deshabilitar tema"
-                                : "Habilitar tema"
-                            }
-                            disabled={!allFieldsFilled}
-                          >
-                            <span className="icon">
-                              <i
-                                className={`fas ${
-                                  tema.habilitado ? "fa-eye-slash" : "fa-eye"
-                                }`}
-                              ></i>
-                            </span>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })
-              ) : (
-                <tr>
-                  <td className="has-text-white" colSpan="7">
-                    No hay temas disponibles.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                            <button
+                              className="button is-small is-danger button-tooltip"
+                              onClick={() => confirmDelete(tema._id)}
+                              data-tooltip="Eliminar"
+                            >
+                              <span className="icon">
+                                <i className="fas fa-trash"></i>
+                              </span>
+                            </button>
+
+                            <button
+                              className="button is-small is-warning button-tooltip"
+                              onClick={() => handleDownloadTema(tema._id)}
+                              data-tooltip="Descargar Excel"
+                            >
+                              <span className="icon">
+                                <i className="fas fa-file-download"></i>
+                              </span>
+                            </button>
+                            <button
+                              className={`button is-small ${
+                                tema.habilitado ? "is-success" : "is-light"
+                              }`}
+                              onClick={() => handleToggleHabilitar(tema._id)}
+                              data-tooltip={
+                                tema.habilitado
+                                  ? "Deshabilitar tema"
+                                  : "Habilitar tema"
+                              }
+                              disabled={!allFieldsFilled}
+                            >
+                              <span className="icon">
+                                <i
+                                  className={`fas ${
+                                    tema.habilitado ? "fa-eye-slash" : "fa-eye"
+                                  }`}
+                                ></i>
+                              </span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td className="has-text-white" colSpan="8">
+                      No hay temas disponibles.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -441,8 +642,8 @@ const Contenidos = () => {
               </header>
               <section className="modal-card-body has-background-white">
                 <p className="has-text-centered has-text-black">
-                Al eliminar el tema, también se eliminará su evaluación. 
-                ¿Estás seguro de que deseas eliminar este tema?
+                  Al eliminar el tema, también se eliminará su evaluación.
+                  ¿Estás seguro de que deseas eliminar este tema?
                 </p>
               </section>
               <footer
@@ -668,27 +869,56 @@ const Contenidos = () => {
                   ></button>
                 </header>
                 <section className="modal-card-body has-text-centered">
-                  <div className="file has-name is-boxed is-centered">
-                    <label className="file-label">
-                      <input
-                        className="file-input"
-                        type="file"
-                        accept="video/*"
-                        onChange={handleVideoChange}
-                      />
-                      <span className="file-cta">
-                        <span className="file-icon">
-                          <i className="fas fa-upload"></i>
-                        </span>
-                        <span className="file-label">Subir video</span>
-                      </span>
-                      <span className="file-name">
-                        {videoFile
-                          ? videoFile.name
-                          : "Ningún archivo seleccionado"}
-                      </span>
-                    </label>
+                  <div className="field">
+                    <label className="label">Método de subida</label>
+                    <div className="control">
+                      <div className="select is-fullwidth">
+                        <select
+                          value={uploadMethod}
+                          onChange={(e) => setUploadMethod(e.target.value)}
+                        >
+                          <option value="upload">Cargar archivo de video</option>
+                          <option value="link">Ingresar link de video</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
+                  {uploadMethod === "upload" ? (
+                    <div className="file has-name is-boxed is-centered">
+                      <label className="file-label">
+                        <input
+                          className="file-input"
+                          type="file"
+                          accept="video/*"
+                          onChange={handleVideoChange}
+                        />
+                        <span className="file-cta">
+                          <span className="file-icon">
+                            <i className="fas fa-upload"></i>
+                          </span>
+                          <span className="file-label">Subir video</span>
+                        </span>
+                        <span className="file-name">
+                          {videoFile
+                            ? videoFile.name
+                            : "Ningún archivo seleccionado"}
+                        </span>
+                      </label>
+                    </div>
+                  ) : (
+                    <div className="field">
+                      <label className="label">Link del video</label>
+                      <div className="control">
+                        <input
+                          className="input"
+                          type="text"
+                          value={videoLink}
+                          onChange={(e) => setVideoLink(e.target.value)}
+                          placeholder="https://example.com/video.mp4"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </section>
                 <footer className="modal-card-foot is-centered">
                   <div className="buttons">
@@ -697,7 +927,11 @@ const Contenidos = () => {
                         uploadingVideo ? "is-loading" : ""
                       }`}
                       onClick={handleConfirmUpload}
-                      disabled={!videoFile || uploadingVideo}
+                      disabled={
+                        (uploadMethod === "upload" && !videoFile) ||
+                        (uploadMethod === "link" && !videoLink) ||
+                        uploadingVideo
+                      }
                     >
                       {uploadingVideo ? "Subiendo..." : "Subir Video"}
                     </button>
@@ -706,6 +940,141 @@ const Contenidos = () => {
                     </button>
                   </div>
                 </footer>
+              </div>
+            </div>
+          </div>
+        )}
+        {subtemaModalOpen && (
+          <div className={`modal ${subtemaModalOpen ? "is-active" : ""}`}>
+            <div className="modal-background"></div>
+            <div className="modal-content">
+              <div className="box">
+                <header className="modal-card-head">
+                  <p className="modal-card-title has-text-centered">
+                    Subtemas
+                  </p>
+                  <button
+                    className="delete"
+                    aria-label="close"
+                    onClick={() => setSubtemaModalOpen(false)}
+                  ></button>
+                </header>
+                <section className="modal-card-body">
+                  {subtemas.map((subtema) => (
+                    <div key={subtema._id} className="box">
+                      <h3 className="title is-4">{subtema.titulo}</h3>
+                      <p>{subtema.descripcion}</p>
+                      {subtema.video ? (
+                        <a
+                          className="has-text-link"
+                          href={subtema.video}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          Ver Video
+                        </a>
+                      ) : (
+                        <>
+                          <div className="field">
+                            <label className="label">Método de subida</label>
+                            <div className="control">
+                              <div className="select is-fullwidth">
+                                <select
+                                  value={subtemaUploadMethod}
+                                  onChange={(e) =>
+                                    setSubtemaUploadMethod(e.target.value)
+                                  }
+                                >
+                                  <option value="upload">
+                                    Cargar archivo de video
+                                  </option>
+                                  <option value="link">
+                                    Ingresar link de video
+                                  </option>
+                                </select>
+                              </div>
+                            </div>
+                          </div>
+                          {subtemaUploadMethod === "upload" ? (
+                            <div className="file has-name is-boxed is-centered">
+                              <label className="file-label">
+                                <input
+                                  className="file-input"
+                                  type="file"
+                                  accept="video/*"
+                                  ref={videoInputRef}
+                                  onChange={(e) => {
+                                    setSubtemaVideoFile(e.target.files[0]);
+                                    setCurrentSubtemaId(subtema._id);
+                                  }}
+                                />
+                                <span className="file-cta">
+                                  <span className="file-icon">
+                                    <i className="fas fa-upload"></i>
+                                  </span>
+                                  <span className="file-label">
+                                    Subir video
+                                  </span>
+                                </span>
+                                <span className="file-name">
+                                  {subtemaVideoFile &&
+                                  subtema._id === currentSubtemaId
+                                    ? subtemaVideoFile.name
+                                    : "Ningún archivo seleccionado"}
+                                </span>
+                              </label>
+                            </div>
+                          ) : (
+                            <div className="field">
+                              <label className="label">Link del video</label>
+                              <div className="control">
+                                <input
+                                  className="input"
+                                  type="text"
+                                  value={subtemaVideoLink[subtema._id] || ""}
+                                  onChange={(e) =>
+                                    setSubtemaVideoLink((prevLinks) => ({
+                                      ...prevLinks,
+                                      [subtema._id]: e.target.value,
+                                    }))
+                                  }
+                                  placeholder="https://example.com/video.mp4"
+                                />
+                              </div>
+                            </div>
+                          )}
+                          <div className="buttons is-centered">
+                            <button
+                              className={`button is-success ${
+                                subtemaUploadingVideo ? "is-loading" : ""
+                              }`}
+                              onClick={() =>
+                                handleConfirmSubtemaUpload(subtema._id)
+                              }
+                              disabled={
+                                (subtemaUploadMethod === "upload" &&
+                                  !subtemaVideoFile) ||
+                                (subtemaUploadMethod === "link" &&
+                                  !subtemaVideoLink[subtema._id]) ||
+                                subtemaUploadingVideo
+                              }
+                            >
+                              {subtemaUploadingVideo
+                                ? "Subiendo..."
+                                : "Subir Video"}
+                            </button>
+                            <button
+                              className="button"
+                              onClick={handleCancelSubtemaUpload}
+                            >
+                              Cancelar
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </section>
               </div>
             </div>
           </div>
