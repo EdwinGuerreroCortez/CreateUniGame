@@ -92,8 +92,10 @@ const TemaForm = () => {
   
       let temas = [];
       let currentTema = null;
+      let errors = [];
   
-      json.forEach((row) => {
+      json.forEach((row, index) => {
+        const rowIndex = index + 2; // Índice de fila Excel (1-based)
         if (row["titulo"]) {
           if (currentTema) {
             temas.push(currentTema);
@@ -106,21 +108,47 @@ const TemaForm = () => {
             pasos: [],
             subtemas: [],
           };
+  
+          // Validaciones del tema
+          if (!currentTema.descripcion.trim()) {
+            errors.push(`La descripción del tema en la fila ${rowIndex} está vacía.`);
+          }
+          if (!currentTema.responsable.trim()) {
+            errors.push(`El responsable del tema en la fila ${rowIndex} está vacío.`);
+          }
+          if (!currentTema.bibliografia.trim()) {
+            errors.push(`La bibliografía del tema en la fila ${rowIndex} está vacía.`);
+          }
         }
   
         if (currentTema) {
-          if (row["pasos"] && row["Descripcion"]) {
+          if (row["pasos"] || row["Descripcion"]) {
+            if (!row["pasos"].trim()) {
+              errors.push(`El título del paso en la fila ${rowIndex} está vacío.`);
+            }
+            if (!row["Descripcion"].trim()) {
+              errors.push(`La descripción del paso en la fila ${rowIndex} está vacía.`);
+            }
             currentTema.pasos.push({
               Titulo: row["pasos"],
               Descripcion: row["Descripcion"],
             });
           }
-          if (row["subtema"] && row["descripcionSubtema"]) {
-            currentTema.subtemas.push({
-              titulo: row["subtema"],
-              descripcion: row["descripcionSubtema"],
-              video: null,
-            });
+  
+          if (row["subtema"] || row["descripcionSubtema"]) {
+            if (!row["subtema"].trim()) {
+              errors.push(`El título del subtema en la fila ${rowIndex} está vacío.`);
+            }
+            if (!row["descripcionSubtema"].trim()) {
+              errors.push(`La descripción del subtema en la fila ${rowIndex} está vacía.`);
+            }
+            if (row["subtema"] && row["descripcionSubtema"]) {
+              currentTema.subtemas.push({
+                titulo: row["subtema"],
+                descripcion: row["descripcionSubtema"],
+                video: row["Link"] || null,
+              });
+            }
           }
         }
       });
@@ -129,12 +157,15 @@ const TemaForm = () => {
         temas.push(currentTema);
       }
   
-      console.log('Datos procesados del Excel:', json); // Log para ver el JSON del Excel
-      console.log('Temas procesados:', temas); // Log para ver los temas procesados con subtemas
-      setTemas(temas);
+      if (errors.length > 0) {
+        setAlert({ type: "error", message: errors.join(", ") });
+      } else {
+        setTemas(temas);
+      }
     };
     reader.readAsArrayBuffer(file);
   };
+  
   
   const handleVideoFileChange = (e) => {
     setVideoFile(e.target.files[0]);
