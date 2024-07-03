@@ -31,7 +31,11 @@ const CrearCurso = () => {
       setError('');
     } catch (error) {
       console.error('Error al crear el curso:', error);
-      setError('Hubo un error al crear el curso. Por favor, intenta nuevamente.');
+      if (error.response && error.response.data && error.response.data.message === 'El curso ya existe') {
+        setError('Ya existe un curso con ese nombre.');
+      } else {
+        setError('Hubo un error al crear el curso. Por favor, intenta nuevamente.');
+      }
     }
   };
 
