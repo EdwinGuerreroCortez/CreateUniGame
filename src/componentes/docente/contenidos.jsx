@@ -446,7 +446,8 @@ const Contenidos = () => {
               </header>
               <section className="modal-card-body has-background-white">
                 <p className="has-text-centered has-text-black">
-                  ¿Estás seguro de que deseas eliminar este tema?
+                Al eliminar el tema, también se eliminará su evaluación. 
+                ¿Estás seguro de que deseas eliminar este tema?
                 </p>
               </section>
               <footer

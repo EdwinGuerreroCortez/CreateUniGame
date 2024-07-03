@@ -165,7 +165,7 @@ const Evaluaciones = () => {
                           marginBottom: '1rem'
                         }}
                       >
-                        <p className="has-text-white"><strong>Pregunta:</strong> {respuesta.pregunta}</p>
+                        <p className="has-text-white"><strong>Pregunta {i + 1}:</strong> {respuesta.pregunta}</p>
                         <p className="has-text-white"><strong>Respuesta:</strong> {respuesta.respuesta}</p>
                         <p className="has-text-white"><strong>Correcta:</strong> {respuesta.correcta ? 'Sí' : 'No'}</p>
                       </div>
