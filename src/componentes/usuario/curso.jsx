@@ -317,9 +317,8 @@ const Curso = () => {
                       {[...Array(totalPaginasCursos)].map((_, i) => (
                         <li key={i}>
                           <a
-                            className={`pagination-link ${
-                              paginaActualCursos === i + 1 ? "is-current" : ""
-                            }`}
+                            className={`pagination-link ${paginaActualCursos === i + 1 ? "is-current" : ""
+                              }`}
                             onClick={() => cambiarPaginaCursos(i + 1)}
                           >
                             {i + 1}
@@ -436,7 +435,7 @@ const Curso = () => {
                                 className="card-content"
                                 style={{ padding: "0.4rem" }} // Ajustar el padding para hacer la tarjeta más pequeña
                               >
-                                <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}> 
+                                <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>
                                   {subtema.titulo}
                                 </p>
                               </div>
@@ -456,9 +455,8 @@ const Curso = () => {
                         {[...Array(totalPaginasTemas)].map((_, i) => (
                           <li key={i}>
                             <a
-                              className={`pagination-link ${
-                                paginaActualTemas === i + 1 ? "is-current" : ""
-                              }`}
+                              className={`pagination-link ${paginaActualTemas === i + 1 ? "is-current" : ""
+                                }`}
                               onClick={() => cambiarPaginaTemas(i + 1)}
                             >
                               {i + 1}
@@ -576,28 +574,42 @@ const Curso = () => {
                         >
                           Finalizar Curso
                         </button>
-                        <div
-                          className="notification is-link is-light"
-                          style={{
-                            padding: "0.9rem 1rem",
-                            fontSize: "0.9rem",
-                            marginTop: "20px",
-                          }}
-                        >
-                          <strong>Importante:</strong> Una vez terminado el curso,
-                          deberás contestar la siguiente evaluación para seguir con los
-                          demás temas.
-                        </div>
-                        <div className="control" style={{ marginTop: "10px" }}>
-                          <button
-                            className="button is-link is-size-8 is-fullwidth"
-                            type="button"
-                            onClick={handleEvaluationClick}
-                            disabled={!evaluacionHabilitada} // Deshabilita el botón si la evaluación no está habilitada
+                        {evaluacionHabilitada ? (
+                          <>
+                            <div
+                              className="notification is-link is-light"
+                              style={{
+                                padding: "0.9rem 1rem",
+                                fontSize: "0.9rem",
+                                marginTop: "20px",
+                              }}
+                            >
+                              <strong>Importante:</strong> Una vez terminado el curso,
+                              deberás contestar la siguiente evaluación para seguir con los
+                              demás temas.
+                            </div>
+                            <div className="control" style={{ marginTop: "10px" }}>
+                              <button
+                                className="button is-link is-size-8 is-fullwidth"
+                                type="button"
+                                onClick={handleEvaluationClick}
+                              >
+                                Responder Evaluación
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <div
+                            className="notification is-link is-light"
+                            style={{
+                              padding: "0.9rem 1rem",
+                              fontSize: "0.9rem",
+                              marginTop: "20px",
+                            }}
                           >
-                            Responder Evaluación
-                          </button>
-                        </div>
+                            <strong>Importante:</strong> El tema ha concluido o el examen no está disponible. Por favor, comuníquese con el docente si tiene alguna duda.
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <>
