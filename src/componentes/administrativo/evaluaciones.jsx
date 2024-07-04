@@ -85,6 +85,12 @@ const Evaluaciones = () => {
   };
 
   const handleFilterConcentrado = (curso) => {
+    if (!curso) {
+      setFilteredConcentrado([]);
+      setMaxEvaluaciones(0);
+      return;
+    }
+  
     const concentrado = evaluaciones.filter(evaluacion => evaluacion.nombreCurso === curso)
       .reduce((acc, evaluacion) => {
         const matricula = evaluacion.usuarioId.datos_personales.matricula;
@@ -95,12 +101,10 @@ const Evaluaciones = () => {
         acc[matricula].calificaciones.push(evaluacion.preguntasRespondidas[evaluacion.preguntasRespondidas.length - 1].porcentaje);
         return acc;
       }, {});
-
-    // Encontrar el máximo número de evaluaciones hechas por cualquier usuario en este curso
+  
     const maxEval = Math.max(...Object.values(concentrado).map(item => item.calificaciones.length));
     setMaxEvaluaciones(maxEval);
-
-    // Completar con ceros las calificaciones faltantes y calcular el promedio
+  
     const concentradoCompleto = Object.values(concentrado).map(item => {
       const calificacionesCompletas = [...item.calificaciones, ...Array(maxEval - item.calificaciones.length).fill(0)];
       const promedio = calificacionesCompletas.reduce((acc, cal) => acc + cal, 0) / maxEval;
@@ -111,9 +115,10 @@ const Evaluaciones = () => {
         promedio: promedio.toFixed(2)
       };
     });
-
+  
     setFilteredConcentrado(concentradoCompleto);
   };
+  
 
   const handleDownloadConcentrado = () => {
     const worksheetData = [
