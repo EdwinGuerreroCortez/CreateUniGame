@@ -68,6 +68,8 @@ const BarraNavAdmin = () => {
                         <div className="navbar-dropdown">
                             <Link className="navbar-item" to="/admin/crearcurso">Crear Curso</Link>
                             <Link className="navbar-item" to="/admin/alumnos-suscritos">Alumnos suscritos</Link>
+                            <Link className="navbar-item" to="/admin/generarConcentrado">Generar concentrado</Link>
+
                         </div>
                     </div>
                     

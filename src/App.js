@@ -33,6 +33,7 @@ import SubirImagenes from './componentes/administrativo/imagenes';
 import Evaluaciones from './componentes/administrativo/evaluaciones'
 import CrearCurso from './componentes/administrativo/curso';
 import AlumnosSubcritosAdmi from './componentes/administrativo/alumnosSubcritos';
+import GenerarConcentrado from './componentes/administrativo/generarConcentrado';
 
 //Componentes Docentes
 import LayoutEncabeDocen from './componentes/docente/LayoutEncabeDocen';
@@ -81,6 +82,7 @@ const App = () => {
         <Route path="/admin/evaluaciones" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Evaluaciones /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/crearcurso" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><CrearCurso /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/alumnos-suscritos" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><AlumnosSubcritosAdmi/></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/generarConcentrado" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><GenerarConcentrado/></LayoutEncabeAdmin></RutaPrivada>} />
 
 
         {/* Rutas Docentes */}
