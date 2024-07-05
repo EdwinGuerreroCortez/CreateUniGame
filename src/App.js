@@ -18,6 +18,7 @@ import Bienvenida from './componentes/usuario/bienvenida';
 import Recursos from './componentes/usuario/recursos';
 import Curso from './componentes/usuario/curso';
 import Evaluacion from './componentes/usuario/evaluacion';
+import CursosDisponibles from './componentes/usuario/cursosDisponibles';
 
 // Componentes Administrativos
 import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
@@ -61,7 +62,7 @@ const App = () => {
         <Route path="/public/contactanos" element={<LayoutConEncab><Contactanos /></LayoutConEncab>} />
 
         {/* Rutas de Usuario */}
-        <Route path="/user/bienvenida" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Bienvenida /></LayoutEncabeUser></RutaPrivada>} />
+        <Route path="/user/bienvenida" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Bienvenida /><CursosDisponibles/></LayoutEncabeUser></RutaPrivada>} />
         <Route path="/user/recursos" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Recursos /></LayoutEncabeUser></RutaPrivada>} />
         <Route path="/user/acerca" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Acerca /></LayoutEncabeUser></RutaPrivada>} />
         <Route path="/user/curso" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Curso /></LayoutEncabeUser></RutaPrivada>} />

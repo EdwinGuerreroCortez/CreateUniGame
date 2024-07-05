@@ -22,87 +22,30 @@ const Curso = () => {
 
   const navigate = useNavigate();
 
-  // Función para obtener los cursos desde el backend
-  const fetchCursos = async () => {
+  // Función para obtener los cursos suscritos desde el backend
+  const fetchCursosSuscritos = async () => {
+    const userId = localStorage.getItem("userId");
     try {
-      const response = await fetch("http://localhost:3001/api/cursos");
+      const response = await fetch(`http://localhost:3001/api/usuario/${userId}/cursos`);
       const data = await response.json();
       setCursos(data);
     } catch (error) {
-      console.error("Error al cargar los cursos:", error);
+      console.error("Error al cargar los cursos suscritos:", error);
     }
   };
 
   useEffect(() => {
-    fetchCursos();
+    fetchCursosSuscritos();
   }, []);
 
   // Función para obtener los temas del curso seleccionado
   const fetchTemasDelCurso = async (cursoId) => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/api/cursos/${cursoId}/temas`
-      );
+      const response = await fetch(`http://localhost:3001/api/cursos/${cursoId}/temas`);
       const data = await response.json();
       setTemas(data);
     } catch (error) {
       console.error("Error al cargar los temas del curso:", error);
-    }
-  };
-
-  // Función para suscribirse al curso
-  const suscribirseACurso = async (cursoId) => {
-    const userId = localStorage.getItem("userId");
-    try {
-      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/suscribirse/${cursoId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      if (response.status === 200) {
-        setSubscriptionMessage("");
-        fetchTemasDelCurso(cursoId);
-        setCursoSeleccionado(data.curso);
-      } else {
-        setSubscriptionMessage(data.message);
-        setShowSubscriptionPrompt(true);
-      }
-    } catch (error) {
-      console.error("Error al suscribirse al curso:", error);
-    }
-  };
-
-  const verificarSuscripcion = async (curso) => {
-    const userId = localStorage.getItem("userId");
-    try {
-      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/verificar-suscripcion/${curso._id}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      });
-      const data = await response.json();
-      if (response.status === 200) {
-        if (data.message.includes("baneado")) {
-          alert("Has sido baneado de este curso.");
-        } else if (data.message.includes("¿Deseas suscribirte?")) {
-          const userConfirmed = window.confirm(data.message + " ¿Deseas suscribirte?");
-          if (userConfirmed) {
-            await suscribirseACurso(curso._id);
-          } else {
-            setCursoSeleccionado(null);
-          }
-        } else {
-          setCursoSeleccionado(curso);
-          fetchTemasDelCurso(curso._id);
-        }
-      } else {
-        alert(data.message);
-      }
-    } catch (error) {
-      console.error("Error al verificar suscripción del curso:", error);
     }
   };
 
@@ -118,25 +61,17 @@ const Curso = () => {
 
   const verificarEvaluacion = async (temaId) => {
     try {
-      const evaluacionResponse = await fetch(
-        `http://localhost:3001/api/tema-evaluacion/${temaId}`
-      );
+      const evaluacionResponse = await fetch(`http://localhost:3001/api/tema-evaluacion/${temaId}`);
       const evaluacionData = await evaluacionResponse.json();
 
-      if (
-        evaluacionData &&
-        evaluacionData.evaluacion_habilitada !== undefined
-      ) {
+      if (evaluacionData && evaluacionData.evaluacion_habilitada !== undefined) {
         console.log("Evaluación habilitada:", evaluacionData.evaluacion_habilitada);
 
         if (temaId === evaluacionData._id) {
           setEvaluacionHabilitada(evaluacionData.evaluacion_habilitada);
         }
       } else {
-        console.error(
-          "La evaluación recibida no tiene la estructura esperada:",
-          evaluacionData
-        );
+        console.error("La evaluación recibida no tiene la estructura esperada:", evaluacionData);
       }
     } catch (error) {
       console.error("Error al verificar la evaluación:", error);
@@ -150,7 +85,6 @@ const Curso = () => {
       intervalId = setInterval(() => {
         verificarEvaluacion(temaSeleccionado._id);
       }, 1000); // Actualiza cada segundo
-
     } else {
       setEvaluacionHabilitada(false);
     }
@@ -210,9 +144,7 @@ const Curso = () => {
           state: { mostrarResultados: true },
         });
       } else {
-        const userConfirmed = window.confirm(
-          "¿Desea responder la siguiente evaluación?"
-        );
+        const userConfirmed = window.confirm("¿Desea responder la siguiente evaluación?");
         if (userConfirmed) {
           navigate(`/user/evaluacion/${temaSeleccionado._id}`);
         }
@@ -285,7 +217,7 @@ const Curso = () => {
                   marginTop: "20px",
                 }}
               >
-                <h2 className="title is-4 has-text-white is-centered">Cursos</h2>
+                <h2 className="title is-4 has-text-white is-centered">Cursos Suscritos</h2>
                 <div>
                   {cursosActuales.map((curso) => (
                     <div
@@ -296,29 +228,22 @@ const Curso = () => {
                         backgroundColor: "navy",
                         marginTop: "20px",
                       }}
-                      onClick={() => verificarSuscripcion(curso)}
+                      onClick={() => {
+                        setCursoSeleccionado(curso);
+                        fetchTemasDelCurso(curso._id);
+                      }}
                     >
-                      <div
-                        className="menu-label has-text-white"
-                        style={{ cursor: "pointer" }}
-                      >
-                        <span className="title has-text-white is-size-6">
-                          {curso.nombre}
-                        </span>
+                      <div className="menu-label has-text-white" style={{ cursor: "pointer" }}>
+                        <span className="title has-text-white is-size-6">{curso.nombre}</span>
                       </div>
                     </div>
                   ))}
-                  <nav
-                    className="pagination is-centered"
-                    role="navigation"
-                    aria-label="pagination"
-                  >
+                  <nav className="pagination is-centered" role="navigation" aria-label="pagination">
                     <ul className="pagination-list">
                       {[...Array(totalPaginasCursos)].map((_, i) => (
                         <li key={i}>
                           <a
-                            className={`pagination-link ${paginaActualCursos === i + 1 ? "is-current" : ""
-                              }`}
+                            className={`pagination-link ${paginaActualCursos === i + 1 ? "is-current" : ""}`}
                             onClick={() => cambiarPaginaCursos(i + 1)}
                           >
                             {i + 1}
@@ -337,18 +262,12 @@ const Curso = () => {
                 >
                   {mostrarTemas ? (
                     <span>
-                      <i
-                        className="fas fa-chevron-left"
-                        style={{ marginRight: "8px" }}
-                      ></i>
+                      <i className="fas fa-chevron-left" style={{ marginRight: "8px" }}></i>
                       Ocultar Temas
                     </span>
                   ) : (
                     <span>
-                      <i
-                        className="fas fa-chevron-right"
-                        style={{ marginRight: "8px" }}
-                      ></i>
+                      <i className="fas fa-chevron-right" style={{ marginRight: "8px" }}></i>
                       Mostrar Temas
                     </span>
                   )}
@@ -405,9 +324,7 @@ const Curso = () => {
                         onClick={() => seleccionarTema(temaSeleccionado)} // Permitir volver a seleccionar el tema
                       >
                         <div className="card-content" style={{ padding: "0.5rem" }}>
-                          <p className="title is-5 has-text-white">
-                            {temaSeleccionado.titulo}
-                          </p>
+                          <p className="title is-5 has-text-white">{temaSeleccionado.titulo}</p>
                         </div>
                       </div>
                       {temaSeleccionado.subtemas.length > 0 && (
@@ -420,24 +337,14 @@ const Curso = () => {
                               style={{
                                 cursor: "pointer",
                                 marginBottom: "0.5rem",
-                                backgroundColor:
-                                  subtemaSeleccionado && subtemaSeleccionado._id === subtema._id
-                                    ? "blue"
-                                    : "navy",
-                                opacity: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id
-                                  ? 0.5
-                                  : 1,
+                                backgroundColor: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id ? "blue" : "navy",
+                                opacity: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id ? 0.5 : 1,
                                 padding: "2px", // Hacer las tarjetas de subtemas más pequeñas
                               }}
                               onClick={() => seleccionarSubtema(subtema)}
                             >
-                              <div
-                                className="card-content"
-                                style={{ padding: "0.4rem" }} // Ajustar el padding para hacer la tarjeta más pequeña
-                              >
-                                <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>
-                                  {subtema.titulo}
-                                </p>
+                              <div className="card-content" style={{ padding: "0.4rem" }}> {/* Ajustar el padding para hacer la tarjeta más pequeña */}
+                                <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>{subtema.titulo}</p>
                               </div>
                             </div>
                           ))}
@@ -446,17 +353,12 @@ const Curso = () => {
                     </div>
                   )}
                   {!temaSeleccionado && (
-                    <nav
-                      className="pagination is-centered"
-                      role="navigation"
-                      aria-label="pagination"
-                    >
+                    <nav className="pagination is-centered" role="navigation" aria-label="pagination">
                       <ul className="pagination-list">
                         {[...Array(totalPaginasTemas)].map((_, i) => (
                           <li key={i}>
                             <a
-                              className={`pagination-link ${paginaActualTemas === i + 1 ? "is-current" : ""
-                                }`}
+                              className={`pagination-link ${paginaActualTemas === i + 1 ? "is-current" : ""}`}
                               onClick={() => cambiarPaginaTemas(i + 1)}
                             >
                               {i + 1}
@@ -488,8 +390,7 @@ const Curso = () => {
                 className="title is-4 has-text-white"
                 style={{ textAlign: "center" }}
               >
-                Por favor, elige un curso y posteriormente el tema para ver más
-                información
+                Por favor, elige un curso al inicio y posteriormente el tema para ver más información
               </h2>
               <div
                 aria-label="Orange and tan hamster running in a metal wheel"
@@ -532,25 +433,18 @@ const Curso = () => {
               >
                 {!subtemaSeleccionado ? (
                   <>
-                    <h2 className="title is-4 has-text-white">
-                      {temaSeleccionado.titulo}
-                    </h2>
+                    <h2 className="title is-4 has-text-white">{temaSeleccionado.titulo}</h2>
                     <p className="is-size-6">Autor: {temaSeleccionado.responsable}</p>
                     <p className="is-size-6">
-                      Fecha:{" "}
-                      {new Date(temaSeleccionado.fecha_creacion).toLocaleDateString()}
+                      Fecha: {new Date(temaSeleccionado.fecha_creacion).toLocaleDateString()}
                     </p>
                     {renderVideo(temaSeleccionado.video)}
-                    <h2 className="title is-3 has-text-centered has-text-white">
-                      Descripción
-                    </h2>
+                    <h2 className="title is-3 has-text-centered has-text-white">Descripción</h2>
                     <p>{temaSeleccionado.descripcion}</p>
                   </>
                 ) : (
                   <>
-                    <h2 className="title is-4 has-text-centered has-text-white">
-                      {subtemaSeleccionado.titulo}
-                    </h2>
+                    <h2 className="title is-4 has-text-centered has-text-white">{subtemaSeleccionado.titulo}</h2>
                     <p>{subtemaSeleccionado.descripcion}</p>
                     {renderVideo(subtemaSeleccionado.video)}
                   </>
@@ -559,9 +453,7 @@ const Curso = () => {
                   <>
                     {pasoActual === -1 ? (
                       <div className="has-text-centered" style={{ marginTop: "20px" }}>
-                        <button className="button is-primary" onClick={siguientePaso}>
-                          Empezar Curso
-                        </button>
+                        <button className="button is-primary" onClick={siguientePaso}>Empezar Curso</button>
                       </div>
                     ) : cursoFinalizado ? (
                       <div className="has-text-centered" style={{ marginTop: "20px" }}>
@@ -584,16 +476,10 @@ const Curso = () => {
                                 marginTop: "20px",
                               }}
                             >
-                              <strong>Importante:</strong> Una vez terminado el curso,
-                              deberás contestar la siguiente evaluación para seguir con los
-                              demás temas.
+                              <strong>Importante:</strong> Una vez terminado el curso, deberás contestar la siguiente evaluación para seguir con los demás temas.
                             </div>
                             <div className="control" style={{ marginTop: "10px" }}>
-                              <button
-                                className="button is-link is-size-8 is-fullwidth"
-                                type="button"
-                                onClick={handleEvaluationClick}
-                              >
+                              <button className="button is-link is-size-8 is-fullwidth" type="button" onClick={handleEvaluationClick}>
                                 Responder Evaluación
                               </button>
                             </div>
@@ -613,14 +499,9 @@ const Curso = () => {
                       </div>
                     ) : (
                       <>
-                        <h2 className="title is-4 has-text-centered has-text-white">
-                          Pasos
-                        </h2>
+                        <h2 className="title is-4 has-text-centered has-text-white">Pasos</h2>
                         <div className="content">
-                          <h3 className="subtitle is-5 has-text-white">
-                            Paso {pasoActual + 1}:{" "}
-                            {temaSeleccionado.pasos[pasoActual].Titulo}
-                          </h3>
+                          <h3 className="subtitle is-5 has-text-white">Paso {pasoActual + 1}: {temaSeleccionado.pasos[pasoActual].Titulo}</h3>
                           <p>{temaSeleccionado.pasos[pasoActual].Descripcion}</p>
                         </div>
                         <div
@@ -640,13 +521,8 @@ const Curso = () => {
                               Paso Anterior
                             </button>
                           )}
-                          <button
-                            className="button is-primary"
-                            onClick={siguientePaso}
-                          >
-                            {pasoActual < temaSeleccionado.pasos.length - 1
-                              ? "Siguiente Paso"
-                              : "Finalizar Curso"}
+                          <button className="button is-primary" onClick={siguientePaso}>
+                            {pasoActual < temaSeleccionado.pasos.length - 1 ? "Siguiente Paso" : "Finalizar Curso"}
                           </button>
                         </div>
                       </>

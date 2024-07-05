@@ -1,0 +1,34 @@
+.curso-card {
+    width: 200px;
+    height: 300px;
+    transition: all 0.5s ease;
+  }
+  
+  .curso-card.expanded {
+    width: 500px;
+    height: auto;
+    border: 3px solid white;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+  }
+  
+  .title.is-5 {
+    font-size: 1.5rem;
+  }
+  
+  .title.is-5.long-text {
+    font-size: 1rem;
+  }
+  
+  .arrow-button {
+    font-size: 2rem;
+    padding: 0.5rem 1rem;
+    margin: 0 20px;
+    background: none;
+    border: none;
+    color: white;
+  }
+  
+  .section.has-background-black-bis {
+    min-height: 600px;
+  }
+  
