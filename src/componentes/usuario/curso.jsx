@@ -281,6 +281,7 @@ const Curso = () => {
                     position: "relative",
                   }}
                 >
+                  
                   <button
                     className="button is-link"
                     onClick={subtemaSeleccionado ? regresarATemas : regresarACursos}
@@ -290,6 +291,8 @@ const Curso = () => {
                     <i className="fas fa-arrow-left"></i>
                   </button>
                   <h2 className="title is-4 has-text-white is-centered">Temas</h2>
+                  
+                  
                   {!temaSeleccionado ? (
                     temasActuales.map((tema) => (
                       <div
@@ -387,10 +390,10 @@ const Curso = () => {
               }}
             >
               <h2
-                className="title is-4 has-text-white"
+                className="title is-5 has-text-white"
                 style={{ textAlign: "center" }}
               >
-                Por favor, elige un curso al inicio y posteriormente el tema para ver más información
+                Por favor, elige un curso y posteriormente el tema para ver más información
               </h2>
               <div
                 aria-label="Orange and tan hamster running in a metal wheel"
@@ -419,6 +422,12 @@ const Curso = () => {
                 </div>
                 <div className="spoke"></div>
               </div>
+              <h3
+                className="title is-6 has-text-white"
+                style={{ textAlign: "center", marginTop:"10px" }}
+              >
+                Si no encuentra ningún curso, inscribase a nuestros diversos cursos
+              </h3>
             </div>
           )}
           {cursoSeleccionado && temaSeleccionado && (
