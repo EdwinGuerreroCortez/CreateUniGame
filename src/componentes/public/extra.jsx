@@ -1,12 +1,12 @@
 import React from 'react';
-import logo1 from '../img/icono_ap.png';
-import logo2 from '../img/icono_con.png';
-import logo3 from '../img/icono_herra.png';
+import learningIcon from '../img/learning.svg';
+import contentIcon from '../img/content.svg';
+import communityIcon from '../img/community.svg';
 
 const caracteristicas = [
-  { id: 1, icono: logo1, titulo: "Aprendizaje Interactivo", descripcion: "Accede a cursos dinámicos que te permiten aprender a tu propio ritmo, facilitando la comprensión de cada concepto antes de avanzar." },
-  { id: 2, icono: logo2, titulo: "Contenido Especializado", descripcion: "Nuestros contenidos están diseñados por expertos en diversas áreas de la computación, cubriendo desde los fundamentos hasta técnicas avanzadas." },
-  { id: 3, icono: logo3, titulo: "Comunidad y Soporte", descripcion: "Únete a nuestra comunidad de entusiastas de la tecnología, participa en discusiones y recibe soporte directo de instructores." }
+  { id: 1, icono: learningIcon, titulo: "Aprendizaje Interactivo", descripcion: "Accede a cursos dinámicos que te permiten aprender a tu propio ritmo, facilitando la comprensión de cada concepto antes de avanzar." },
+  { id: 2, icono: contentIcon, titulo: "Contenido Especializado", descripcion: "Nuestros contenidos están diseñados por expertos en diversas áreas de la computación, cubriendo desde los fundamentos hasta técnicas avanzadas." },
+  { id: 3, icono: communityIcon, titulo: "Comunidad y Soporte", descripcion: "Únete a nuestra comunidad de entusiastas de la tecnología, participa en discusiones y recibe soporte directo de instructores." }
 ];
 
 const Extra = () => {
@@ -30,8 +30,8 @@ const Extra = () => {
                 overflow: 'hidden'
               }}>
                 <div className="card-image" style={{ padding: '10px' }}>
-                  <figure className="image is-128x128" style={{ margin: 'auto' }}>
-                    <img src={item.icono} alt={`Icono de ${item.titulo}`} style={{ width: '120px', height: '120px' }} />
+                  <figure className="image" style={{ margin: 'auto', width: '150px', height: '150px' }}>
+                    <img src={item.icono} alt={`Icono de ${item.titulo}`} style={{ width: '150px', height: '150px' }} />
                   </figure>
                 </div>
                 <div className="card-content">
