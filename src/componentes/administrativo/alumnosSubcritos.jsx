@@ -11,7 +11,7 @@ const AlumnosSubcritosAdmi = () => {
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const response = await axios.get(`http://localhost:3001/api/cursos-subscritores`);
+        const response = await axios.get(`http://172.16.19.1:3001/api/cursos-subscritores`);
         setCursos(response.data);
       } catch (error) {
         console.error('Error al obtener los cursos:', error);
@@ -27,7 +27,7 @@ const AlumnosSubcritosAdmi = () => {
 
   const toggleBan = async (cursoId, subId) => {
     try {
-      await axios.put(`http://localhost:3001/api/cursos/${cursoId}/subscritores/${subId}/banear`);
+      await axios.put(`http://172.16.19.1:3001/api/cursos/${cursoId}/subscritores/${subId}/banear`);
       setCursos((prevCursos) =>
         prevCursos.map((curso) =>
           curso._id === cursoId

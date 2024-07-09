@@ -15,7 +15,7 @@ const Buzon = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/contact/messages');
+        const response = await axios.get('http://172.16.19.1:3001/api/contact/messages');
         setMessages(response.data);
       } catch (error) {
         console.error('Error al obtener los mensajes:', error);
@@ -27,7 +27,7 @@ const Buzon = () => {
   useEffect(() => {
     const fetchLatestMessage = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/contact/latest');
+        const response = await axios.get('http://172.16.19.1:3001/api/contact/latest');
         setLatestMessage(response.data);
       } catch (error) {
         console.error('Error al obtener el último mensaje:', error);
@@ -65,7 +65,7 @@ const Buzon = () => {
       try {
         console.log('ID del mensaje seleccionado:', selectedMessage); // Añadido para depuración
         console.log('Respuesta:', response); // Añadido para depuración
-        const res = await axios.put(`http://localhost:3001/api/contact/messages/questions/${selectedMessage}`, { respuesta: response });
+        const res = await axios.put(`http://172.16.19.1:3001/api/contact/messages/questions/${selectedMessage}`, { respuesta: response });
         const updatedMessages = messages.map(message => message._id === selectedMessage ? res.data : message);
         setMessages(updatedMessages);
         setSelectedMessage('');
@@ -94,7 +94,7 @@ const Buzon = () => {
 
   const handleEliminarMessage = async (id) => {
     try {
-      await axios.delete(`http://localhost:3001/api/contact/messages/${id}`);
+      await axios.delete(`http://172.16.19.1:3001/api/contact/messages/${id}`);
       setMessages(messages.filter(message => message._id !== id));
       setSuccessMessage('Mensaje eliminado exitosamente.');
       setErrorMessage('');
