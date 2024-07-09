@@ -112,7 +112,7 @@ const styles = {
     alignItems: 'stretch', // Ensure columns stretch to the same height
   },
   card: {
-    backgroundColor: '##000080', // Un azul ligeramente más claro
+    backgroundColor: '#000080', // Un azul ligeramente más claro
     border: '2px solid #3273dc',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(50, 115, 220, 0.5)',
