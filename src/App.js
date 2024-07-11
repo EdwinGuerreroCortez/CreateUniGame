@@ -31,11 +31,11 @@ import Usuarios from './componentes/administrativo/Usuarios';
 import CuestionariosForm from './componentes/administrativo/cuestionario';
 import Subirtema from './componentes/administrativo/subirtema';
 import SubirImagenes from './componentes/administrativo/imagenes';
-import Evaluaciones from './componentes/administrativo/evaluaciones'
+import Evaluaciones from './componentes/administrativo/evaluaciones';
 import CrearCurso from './componentes/administrativo/curso';
 import AlumnosSubcritosAdmi from './componentes/administrativo/alumnosSubcritos';
 
-//Componentes Docentes
+// Componentes Docentes
 import LayoutEncabeDocen from './componentes/docente/LayoutEncabeDocen';
 import BienvenidaDocen from './componentes/docente/bienvenidaDocen';
 import TemasDocen from './componentes/docente/temas';
@@ -43,15 +43,15 @@ import ContenidosDocen from './componentes/docente/contenidos';
 import CuestionariosFormDocen from './componentes/docente/cuestionario';
 import SubirtemaDocen from './componentes/docente/subirtema';
 import SubirImagenesDocen from './componentes/docente/imagenes';
-import EvaluacionesDocen from './componentes/docente/evaluaciones'
+import EvaluacionesDocen from './componentes/docente/evaluaciones';
 import CrearCursoDocente from './componentes/docente/cursoDocente';
 import AlumnosSubcritos from './componentes/docente/alumnosSubcritos';
-//proteccion de rutas
+// Proteccion de rutas
 import RutaPrivada from './componentes/contextos/ContextoAutenticacion';
 
 const App = () => {
   return (
-    <Router>
+    <Router basename="/studyweb">
       <Routes>
         {/* Rutas Principales */}
         <Route path="/" element={<LayoutConEncab><PaginaPrincipal /><Temas /><Extra /><Fqs /></LayoutConEncab>} />
@@ -72,8 +72,8 @@ const App = () => {
         {/* Rutas Administrativas */}
         <Route path="/admin/bienvenida" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><BienvenidaAdmin /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/usuarios" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Usuarios /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/temas" element={<RutaPrivada rolesPermitidos={['administrador' ]}><LayoutEncabeAdmin><TemasAdd /></LayoutEncabeAdmin></RutaPrivada>} />
-        <Route path="/admin/temas/contenidos" element={<RutaPrivada rolesPermitidos={['administrador' ]}><LayoutEncabeAdmin><Contenidos /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/temas" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><TemasAdd /></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/admin/temas/contenidos" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Contenidos /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/cuestionarios" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><CuestionariosForm /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/informacion/mv" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Mision /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/informacion/buzon" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Buzon /></LayoutEncabeAdmin></RutaPrivada>} />
@@ -82,7 +82,6 @@ const App = () => {
         <Route path="/admin/evaluaciones" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><Evaluaciones /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/crearcurso" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><CrearCurso /></LayoutEncabeAdmin></RutaPrivada>} />
         <Route path="/admin/alumnos-suscritos" element={<RutaPrivada rolesPermitidos={['administrador']}><LayoutEncabeAdmin><AlumnosSubcritosAdmi/></LayoutEncabeAdmin></RutaPrivada>} />
-
 
         {/* Rutas Docentes */}
         <Route path="/docente/bienvenida" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><BienvenidaDocen /></LayoutEncabeDocen></RutaPrivada>} />
