@@ -16,7 +16,7 @@ const Bienvenida = () => {
       const userId = localStorage.getItem('userId');
       if (userId) {
         try {
-          const response = await axios.get(`http://localhost:3001/api/usuarios/${userId}`);
+          const response = await axios.get(`http://172.16.19.1:3001/api/usuarios/${userId}`);
           const data = response.data;
           setUserData(data);
           localStorage.setItem('userData', JSON.stringify(data));
@@ -112,7 +112,7 @@ const styles = {
     alignItems: 'stretch', // Ensure columns stretch to the same height
   },
   card: {
-    backgroundColor: '##000080', // Un azul ligeramente más claro
+    backgroundColor: '#000080', // Un azul ligeramente más claro
     border: '2px solid #3273dc',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(50, 115, 220, 0.5)',

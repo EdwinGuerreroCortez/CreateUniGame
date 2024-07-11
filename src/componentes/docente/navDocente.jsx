@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '../CSS/style2.css'; // Asegúrate de que este archivo contenga los estilos apropiados
 import logo from '../img/logo_Study.png';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'; // Icono para cerrar sesión
 
 const BarraNavDocen = () => {
     const [isActive, setIsActive] = useState(false);
@@ -50,8 +52,13 @@ const BarraNavDocen = () => {
 
             <div id="navbarBasicExample" className={`navbar-menu ${isActive ? 'is-active' : ''}`}>
                 <div className="navbar-start">
-                    <Link className="navbar-item has-text-success" to="/docente/cuestionarios">Cuestionarios</Link>
-                    <Link className="navbar-item has-text-success" to="/docente/evaluaciones">Evaluaciones</Link>
+                    <div className="navbar-item has-dropdown is-hoverable">
+                        <a className="navbar-link has-text-success">Gestión de Cuestionarios</a>
+                        <div className="navbar-dropdown">
+                            <Link className="navbar-item has-text-success" to="/docente/cuestionarios">Subir Cuestionarios</Link>
+                            <Link className="navbar-item has-text-success" to="/docente/evaluaciones">Evaluaciones Realizadas</Link>
+                        </div>
+                    </div>
 
                     <div className="navbar-item has-dropdown is-hoverable">
                         <a className="navbar-link has-text-success">Temas</a>
@@ -61,21 +68,24 @@ const BarraNavDocen = () => {
                             <Link className="navbar-item" to="/docente/temas/contenidos">Administrar Contenidos</Link>
                         </div>
                     </div>
-                    <Link className="navbar-item has-text-success" to="/docente/imagenes">Imagenes</Link>
 
                     <div className="navbar-item has-dropdown is-hoverable">
                         <a className="navbar-link has-text-success">Gestión de Curso</a>
                         <div className="navbar-dropdown">
                             <Link className="navbar-item" to="/docente/crearcurso">Crear Curso</Link>
                             <Link className="navbar-item" to="/docente/alumnos-suscritos">Alumnos suscritos</Link>
-                            
                         </div>
                     </div>
+                    <Link className="navbar-item has-text-success" to="/docente/imagenes">Imágenes</Link>
+
                 </div>
 
                 <div className="navbar-end">
                     <div className="navbar-item">
-                        <button className="button is-primary" onClick={handleLogout}>Cerrar Sesión</button>
+                        <button className="button is-primary" onClick={handleLogout}>
+                            <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: '8px' }} />
+                            Cerrar Sesión
+                        </button>
                     </div>
                 </div>
             </div>

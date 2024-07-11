@@ -15,7 +15,7 @@ const CursosDisponibles = () => {
 
   const fetchCursos = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/cursos");
+      const response = await fetch("http://172.16.19.1:3001/api/cursos");
       const data = await response.json();
       setCursos(data);
     } catch (error) {
@@ -26,7 +26,7 @@ const CursosDisponibles = () => {
   const fetchCursosSuscritos = async () => {
     const userId = localStorage.getItem("userId");
     try {
-      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/cursos-suscritos`);
+      const response = await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}/cursos-suscritos`);
       const data = await response.json();
       setCursosSuscritos(data.cursos);
     } catch (error) {
@@ -41,7 +41,7 @@ const CursosDisponibles = () => {
 
   const fetchTemasDelCurso = async (cursoId) => {
     try {
-      const response = await fetch(`http://localhost:3001/api/cursos/${cursoId}/temas`);
+      const response = await fetch(`http://172.16.19.1:3001/api/cursos/${cursoId}/temas`);
       const data = await response.json();
       setTemas(data.slice(0, 6)); // Limitar a 6 temas
     } catch (error) {
@@ -53,7 +53,7 @@ const CursosDisponibles = () => {
     const userId = localStorage.getItem("userId");
     try {
       const response = await fetch(
-        `http://localhost:3001/api/usuarios/${userId}/suscribirse/${cursoId}`,
+        `http://172.16.19.1:3001/api/usuarios/${userId}/suscribirse/${cursoId}`,
         {
           method: "POST",
           headers: {

@@ -48,7 +48,7 @@ const TemaForm = () => {
     // Función para cargar la lista de cursos desde el backend
     const fetchCursos = async () => {
       try {
-        const response = await fetch("http://localhost:3001/api/cursos"); // Reemplaza con tu endpoint real
+        const response = await fetch("http://172.16.19.1:3001/api/cursos"); // Reemplaza con tu endpoint real
         if (!response.ok) {
           throw new Error("Error al cargar los cursos.");
         }
@@ -218,7 +218,7 @@ const TemaForm = () => {
   };
 
   const handleDownloadTema = (id) => {
-    fetch(`http://localhost:3001/api/download-tema/${id}`)
+    fetch(`http://172.16.19.1:3001/api/download-tema/${id}`)
       .then((response) => response.blob())
       .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
@@ -239,7 +239,7 @@ const TemaForm = () => {
   };
 
   const handleDownloadPlantilla = () => {
-    fetch(`http://localhost:3001/api/download-plantilla`)
+    fetch(`http://172.16.19.1:3001/api/download-plantilla`)
       .then((response) => response.blob())
       .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
@@ -269,7 +269,7 @@ const TemaForm = () => {
     }
 
     setIsLoading(true);
-    fetch("http://localhost:3001/api/subir-temas", {
+    fetch("http://172.16.19.1:3001/api/subir-temas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -347,7 +347,7 @@ const TemaForm = () => {
       ),
     };
 
-    fetch(`http://localhost:3001/api/temas/${editTema._id}`, {
+    fetch(`http://172.16.19.1:3001/api/temas/${editTema._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
