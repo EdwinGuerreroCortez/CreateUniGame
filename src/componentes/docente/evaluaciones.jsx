@@ -16,18 +16,20 @@ const Evaluaciones = () => {
   const [showConcentradoModal, setShowConcentradoModal] = useState(false);
   const [filteredConcentrado, setFilteredConcentrado] = useState([]);
   const [maxEvaluaciones, setMaxEvaluaciones] = useState(0);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [concentradoDate, setConcentradoDate] = useState('');
 
   useEffect(() => {
     const fetchEvaluaciones = async () => {
       try {
         const userId = localStorage.getItem('userId');
-        const response = await fetch(`http://172.16.19.1:3001/api/usuario/${userId}/temasbuscar`);
+        const response = await fetch(`http://localhost:3001/api/usuario/${userId}/temasbuscar`);
         const data = await response.json();
 
         const examenesIds = data.examenes.map(examen => examen._id);
 
         const examenesDetalles = await Promise.all(examenesIds.map(async (id) => {
-          const response = await fetch(`http://172.16.19.1:3001/api/examenes/${id}`);
+          const response = await fetch(`http://localhost:3001/api/examenes/${id}`);
           return response.json();
         }));
 
@@ -60,7 +62,7 @@ const Evaluaciones = () => {
 
   const toggleExamenPermitido = async (examen) => {
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/examenes/${examen._id}/toggle`, {
+      const response = await fetch(`http://localhost:3001/api/examenes/${examen._id}/toggle`, {
         method: 'PUT',
       });
       if (response.ok) {
@@ -84,30 +86,33 @@ const Evaluaciones = () => {
   const filteredEvaluaciones = evaluaciones.filter(item =>
     item.usuarioId && item.usuarioId.datos_personales &&
     item.usuarioId.datos_personales.matricula.includes(searchTerm) &&
-    (selectedCurso === '' || item.nombreCurso === selectedCurso)
+    (selectedCurso === '' || item.nombreCurso === selectedCurso) &&
+    (selectedDate === '' || new Date(item.fechaUltimoIntento) >= new Date(selectedDate))
   );
 
   const handleGenerateConcentrado = () => {
     setShowConcentradoModal(true);
   };
 
-  const handleFilterConcentrado = (curso) => {
-    if (!curso) {
+  const handleFilterConcentrado = (curso, date) => {
+    if (!curso && !date) {
       setFilteredConcentrado([]);
       setMaxEvaluaciones(0);
       return;
     }
 
-    const concentrado = evaluaciones.filter(evaluacion => evaluacion.nombreCurso === curso)
-      .reduce((acc, evaluacion) => {
-        const matricula = evaluacion.usuarioId.datos_personales.matricula;
-        const nombreCompleto = `${evaluacion.usuarioId.datos_personales.nombre} ${evaluacion.usuarioId.datos_personales.apellido_paterno} ${evaluacion.usuarioId.datos_personales.apellido_materno}`;
-        if (!acc[matricula]) {
-          acc[matricula] = { matricula, nombreCompleto, calificaciones: [] };
-        }
-        acc[matricula].calificaciones.push(evaluacion.preguntasRespondidas[evaluacion.preguntasRespondidas.length - 1].porcentaje);
-        return acc;
-      }, {});
+    const concentrado = evaluaciones.filter(evaluacion =>
+      (curso === '' || evaluacion.nombreCurso === curso) &&
+      (date === '' || new Date(evaluacion.fechaUltimoIntento) >= new Date(date))
+    ).reduce((acc, evaluacion) => {
+      const matricula = evaluacion.usuarioId.datos_personales.matricula;
+      const nombreCompleto = `${evaluacion.usuarioId.datos_personales.nombre} ${evaluacion.usuarioId.datos_personales.apellido_paterno} ${evaluacion.usuarioId.datos_personales.apellido_materno}`;
+      if (!acc[matricula]) {
+        acc[matricula] = { matricula, nombreCompleto, calificaciones: [] };
+      }
+      acc[matricula].calificaciones.push(evaluacion.preguntasRespondidas[evaluacion.preguntasRespondidas.length - 1].porcentaje);
+      return acc;
+    }, {});
 
     const maxEval = Math.max(...Object.values(concentrado).map(item => item.calificaciones.length));
     setMaxEvaluaciones(maxEval);
@@ -172,7 +177,7 @@ const Evaluaciones = () => {
                 </button>
               </div>
             </div>
-            <div className="field">
+            <div className="field has-addons">
               <div className="control">
                 <div className="select is-info">
                   <select value={selectedCurso} onChange={(e) => setSelectedCurso(e.target.value)}>
@@ -183,13 +188,20 @@ const Evaluaciones = () => {
                   </select>
                 </div>
               </div>
+              <div className="control">
+                <input
+                  className="input is-info"
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                />
+              </div>
             </div>
             <div className="field">
               <div className="control">
                 <button className="button is-primary" onClick={handleGenerateConcentrado}>
                   Generar Concentrado
                 </button>
-                
               </div>
             </div>
             <div className="table-container">
@@ -200,6 +212,7 @@ const Evaluaciones = () => {
                     <th className="has-text-white">Matrícula</th>
                     <th className="has-text-white">Examen</th>
                     <th className="has-text-white">Curso</th>
+                    <th className="has-text-white">Fecha del Último Intento</th>
                     <th className="has-text-white">Datos del Examen</th>
                     <th className="has-text-white">Número de Intentos</th>
                     <th className="has-text-white">Calificación</th>
@@ -212,6 +225,7 @@ const Evaluaciones = () => {
                       <td className="has-text-white">{item.usuarioId.datos_personales.matricula}</td>
                       <td className="has-text-white">{item.tituloTema}</td>
                       <td className="has-text-white">{item.nombreCurso}</td>
+                      <td className="has-text-white">{new Date(item.fechaUltimoIntento).toLocaleDateString()}</td>
                       <td className="has-text-white">
                         <button
                           className="button is-small is-info"
@@ -316,16 +330,27 @@ const Evaluaciones = () => {
           <div className="modal-content">
             <div className="box has-background-black" style={{ border: '2px solid #48C78E' }}>
               <h2 className="title has-text-white">Generar Concentrado</h2>
-              <div className="field">
+              <div className="field has-addons">
                 <div className="control">
                   <div className="select is-info">
-                    <select onChange={(e) => handleFilterConcentrado(e.target.value)}>
+                    <select onChange={(e) => handleFilterConcentrado(e.target.value, concentradoDate)}>
                       <option value="">Seleccione un curso</option>
                       {cursos.map((curso, index) => (
                         <option key={index} value={curso}>{curso}</option>
                       ))}
                     </select>
                   </div>
+                </div>
+                <div className="control">
+                  <input
+                    className="input is-info"
+                    type="date"
+                    value={concentradoDate}
+                    onChange={(e) => {
+                      setConcentradoDate(e.target.value);
+                      handleFilterConcentrado(selectedCurso, e.target.value);
+                    }}
+                  />
                 </div>
               </div>
               <div className="table-container">
