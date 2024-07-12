@@ -134,46 +134,57 @@ const Evaluaciones = () => {
 
   const handleDownloadConcentrado = () => {
     const worksheetData = [
+      ['Datos del Concentrado'],
+      ['Curso:', selectedCurso ? selectedCurso : 'Todos los cursos'],
+      ['Fecha de generación:', new Date().toLocaleDateString()],
+      [],
       ['NO.', 'Matrícula', 'Nombre Completo', ...Array.from({ length: maxEvaluaciones }, (_, index) => `Evaluación ${index + 1}`), 'Promedio']
     ];
 
     filteredConcentrado.forEach((item, index) => {
-      const row = [index + 1, item.matricula, item.nombreCompleto, ...item.calificaciones, item.promedio];
+      const row = [index + 1, item.matricula, item.nombreCompleto, ...item.calificaciones.map(cal => cal !== null ? cal : 'N/P'), item.promedio];
       worksheetData.push(row);
     });
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-    // Estilo de los encabezados
     const headerStyle = {
-      font: { bold: true, color: { rgb: "FFFFFF" } }, // Texto blanco
-      fill: { fgColor: { rgb: "FFFF00" } }, // Fondo amarillo
+      font: { bold: true, color: { rgb: "FFFFFF" } },
+      fill: { fgColor: { rgb: "FFFF00" } },
       alignment: { horizontal: "center", vertical: "center" }
     };
 
-    // Estilo de las celdas
     const cellStyle = {
-      alignment: { horizontal: "center", vertical: "center" }
+      alignment: { horizontal: "center", vertical: "center" },
+      border: {
+        top: { style: "thin" },
+        bottom: { style: "thin" },
+        left: { style: "thin" },
+        right: { style: "thin" }
+      }
     };
 
-    // Aplicar estilos
-    for (let i = 0; i < worksheetData.length; i++) {
-      const row = worksheetData[i];
-      for (let j = 0; j < row.length; j++) {
-        const cellAddress = XLSX.utils.encode_cell({ r: i, c: j });
-        if (!worksheet[cellAddress]) worksheet[cellAddress] = { v: row[j] };
-        if (i === 0) {
-          worksheet[cellAddress].s = headerStyle;
-        } else {
-          worksheet[cellAddress].s = cellStyle;
-          if (row[j] === 'null') {
-            worksheet[cellAddress].s.fill = { fgColor: { rgb: "FF0000" } }; // Fondo rojo para null
+    const applyStyles = (ws) => {
+      const range = XLSX.utils.decode_range(ws['!ref']);
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const cell_address = { c: C, r: R };
+          const cell_ref = XLSX.utils.encode_cell(cell_address);
+          if (!ws[cell_ref]) continue;
+          if (R === 0 || R === 1 || R === 2 || R === 4) {
+            ws[cell_ref].s = headerStyle;
+          } else {
+            ws[cell_ref].s = cellStyle;
+            if (ws[cell_ref].v === 'N/P') {
+              ws[cell_ref].s.fill = { fgColor: { rgb: "FF0000" } }; // Red background for 'N/P'
+            }
           }
         }
       }
-    }
+    };
 
-    // Ajustar el tamaño de las celdas
+    applyStyles(worksheet);
+
     const wscols = [
       { wch: 5 },  // NO.
       { wch: 15 }, // Matrícula
@@ -198,7 +209,7 @@ const Evaluaciones = () => {
     <div className='has-background-black-bis'>
       <section className="section">
         <h1 className="title has-text-centered has-text-white">Evaluaciones</h1>
-        <div className="card has-background-black" style={{ border: `2px solid #48C78E` }}>
+        <div className="card has-background-black" style={{ border: '2px solid #48C78E' }}>
           <div className="card-content">
             <div className="field has-addons">
               <div className="control is-expanded">
@@ -413,7 +424,7 @@ const Evaluaciones = () => {
                         <td className="has-text-white">{item.matricula}</td>
                         <td className="has-text-white">{item.nombreCompleto}</td>
                         {item.calificaciones.map((calificacion, i) => (
-                          <td key={i} className="has-text-white">{calificacion !== null ? calificacion : 'null'}</td>
+                          <td key={i} className="has-text-white">{calificacion !== null ? calificacion : 'N/P'}</td>
                         ))}
                         <td className="has-text-white">{item.promedio}</td>
                       </tr>

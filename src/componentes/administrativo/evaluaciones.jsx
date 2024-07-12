@@ -11,13 +11,13 @@ const Evaluaciones = () => {
   const [currentExamen, setCurrentExamen] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [examenesPerPage] = useState(1);
-  const [selectedCurso, setSelectedCurso] = useState(''); // Estado para el curso seleccionado
-  const [cursos, setCursos] = useState([]); // Estado para la lista de cursos
-  const [showConcentradoModal, setShowConcentradoModal] = useState(false); // Estado para el modal de concentrado
-  const [filteredConcentrado, setFilteredConcentrado] = useState([]); // Estado para el concentrado filtrado
-  const [maxEvaluaciones, setMaxEvaluaciones] = useState(0); // Estado para el máximo número de evaluaciones
-  const [selectedDate, setSelectedDate] = useState(''); // Estado para la fecha seleccionada
-  const [concentradoDate, setConcentradoDate] = useState(''); // Estado para la fecha seleccionada en el concentrado
+  const [selectedCurso, setSelectedCurso] = useState('');
+  const [cursos, setCursos] = useState([]);
+  const [showConcentradoModal, setShowConcentradoModal] = useState(false);
+  const [filteredConcentrado, setFilteredConcentrado] = useState([]);
+  const [maxEvaluaciones, setMaxEvaluaciones] = useState(0);
+  const [selectedDate, setSelectedDate] = useState('');
+  const [concentradoDate, setConcentradoDate] = useState('');
 
   useEffect(() => {
     const fetchEvaluaciones = async () => {
@@ -26,7 +26,6 @@ const Evaluaciones = () => {
         const data = await response.json();
         setEvaluaciones(data);
 
-        // Extraer la lista de cursos de las evaluaciones
         const cursosUnicos = Array.from(new Set(data.map(examen => examen.nombreCurso)));
         setCursos(cursosUnicos);
       } catch (error) {
@@ -38,7 +37,7 @@ const Evaluaciones = () => {
   }, []);
 
   const handleSearch = () => {
-    setCurrentPage(1); // Reset pagination when searching
+    setCurrentPage(1);
   };
 
   const handleViewDetails = (examen) => {
@@ -49,7 +48,7 @@ const Evaluaciones = () => {
   const handleCloseModal = () => {
     setShowModal(false);
     setCurrentExamen(null);
-    setCurrentPage(1); // Reset pagination when closing modal
+    setCurrentPage(1);
   };
 
   const toggleExamenPermitido = async (examen) => {
@@ -69,7 +68,6 @@ const Evaluaciones = () => {
     }
   };
 
-  // Logic for displaying current exam page
   const indexOfLastExamen = currentPage * examenesPerPage;
   const indexOfFirstExamen = indexOfLastExamen - examenesPerPage;
   const currentExamenPage = currentExamen?.preguntasRespondidas.slice(indexOfFirstExamen, indexOfLastExamen);
@@ -93,8 +91,8 @@ const Evaluaciones = () => {
       setMaxEvaluaciones(0);
       return;
     }
-  
-    const concentrado = evaluaciones.filter(evaluacion => 
+
+    const concentrado = evaluaciones.filter(evaluacion =>
       (curso === '' || evaluacion.nombreCurso === curso) &&
       (date === '' || new Date(evaluacion.fechaUltimoIntento) >= new Date(date))
     ).reduce((acc, evaluacion) => {
@@ -106,14 +104,14 @@ const Evaluaciones = () => {
       acc[matricula].calificaciones.push(evaluacion.preguntasRespondidas[evaluacion.preguntasRespondidas.length - 1].porcentaje);
       return acc;
     }, {});
-  
+
     const maxEval = Math.max(...Object.values(concentrado).map(item => item.calificaciones.length));
     setMaxEvaluaciones(maxEval);
-  
+
     const concentradoCompleto = Object.values(concentrado).map(item => {
-      const calificacionesCompletas = [...item.calificaciones, ...Array(maxEval - item.calificaciones.length).fill(null)];
-      const sum = calificacionesCompletas.reduce((acc, cal) => acc + (cal !== null ? cal : 0), 0);
-      const promedio = (sum / calificacionesCompletas.length).toFixed(2);
+      const calificacionesCompletas = [...item.calificaciones, ...Array(maxEval - item.calificaciones.length).fill('N/P')];
+      const sum = calificacionesCompletas.reduce((acc, cal) => acc + (cal !== 'N/P' ? cal : 0), 0);
+      const promedio = (sum / maxEval).toFixed(2);
       return {
         matricula: item.matricula,
         nombreCompleto: item.nombreCompleto,
@@ -121,12 +119,16 @@ const Evaluaciones = () => {
         promedio: promedio
       };
     });
-  
+
     setFilteredConcentrado(concentradoCompleto);
   };
 
   const handleDownloadConcentrado = () => {
     const worksheetData = [
+      [{ v: 'Datos del Concentrado', s: { alignment: { horizontal: "center" }, font: { bold: true } } }],
+      [`Curso: ${selectedCurso || 'Todos los cursos'}`],
+      [`Fecha de generación: ${new Date().toLocaleDateString()}`],
+      [],
       ['NO.', 'Matrícula', 'Nombre Completo', ...Array.from({ length: maxEvaluaciones }, (_, index) => `Evaluación ${index + 1}`), 'Promedio']
     ];
 
@@ -137,48 +139,53 @@ const Evaluaciones = () => {
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-    // Aplicar estilos
+    // Aplicar estilos para todo el documento
     const range = XLSX.utils.decode_range(worksheet['!ref']);
-    for (let R = range.s.r; R <= range.e.r; ++R) {
-      for (let C = range.s.c; C <= range.e.c; ++C) {
-        const cellAddress = { c: C, r: R };
-        const cellRef = XLSX.utils.encode_cell(cellAddress);
-        if (!worksheet[cellRef]) continue;
-        
-        // Estilo de los encabezados
-        if (R === 0) {
-          worksheet[cellRef].s = {
-            font: { bold: true, color: { rgb: "FFFFFF" } },
-            fill: { fgColor: { rgb: "FFFF00" } },
-            alignment: { horizontal: "center", vertical: "center" }
-          };
-        } else {
-          worksheet[cellRef].s = {
-            alignment: { horizontal: "center", vertical: "center" }
-          };
-          // Fondo rojo para celdas con valor 'null'
-          if (worksheet[cellRef].v === 'null') {
-            worksheet[cellRef].s.fill = { fgColor: { rgb: "FF0000" } };
-          }
-        }
-      }
-    }
-
-    // Ajustar el tamaño de las celdas
-    const wscols = [
+    worksheet['!cols'] = [
       { wch: 5 },  // NO.
       { wch: 15 }, // Matrícula
       { wch: 35 }, // Nombre Completo
       ...Array(maxEvaluaciones).fill({ wch: 12 }), // Evaluaciones
       { wch: 10 }  // Promedio
     ];
-    worksheet['!cols'] = wscols;
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = { c: C, r: R };
+        const cellRef = XLSX.utils.encode_cell(cellAddress);
+        if (!worksheet[cellRef]) continue;
+
+        // Estilo de encabezado
+        if (R === 5) {
+          worksheet[cellRef].s = {
+            font: { bold: true, color: { rgb: "FFFFFF" } },
+            fill: { fgColor: { rgb: "0000FF" } }, // Fondo azul
+            alignment: { horizontal: "center", vertical: "center" }
+          };
+        } else if (R === 9) {
+          worksheet[cellRef].s = {
+            font: { bold: true, color: { rgb: "FFFFFF" } },
+            fill: { fgColor: { rgb: "FFFF00" } },
+            alignment: { horizontal: "center", vertical: "center" }
+          };
+        } else if (R > 10) { // Estilo de las celdas normales
+          worksheet[cellRef].s = {
+            alignment: { horizontal: "center", vertical: "center" }
+          };
+          if (worksheet[cellRef].v === 'N/P') {
+            worksheet[cellRef].s.fill = { fgColor: { rgb: "FF0000" } }; // Fondo rojo para 'N/P'
+          }
+        }
+      }
+    }
 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Concentrado');
 
-    const cursoName = selectedCurso ? selectedCurso : 'Todos los cursos';
-    const fileName = `Concentrado_${cursoName}.xlsx`;
+    let fileName = `Concentrado_${selectedCurso ? selectedCurso : 'Todos_los_cursos'}`;
+    if (selectedDate) {
+      fileName += `_${selectedDate}`;
+    }
+    fileName += '.xlsx';
 
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
@@ -404,9 +411,9 @@ const Evaluaciones = () => {
                         <td className="has-text-white">{item.matricula}</td>
                         <td className="has-text-white">{item.nombreCompleto}</td>
                         {item.calificaciones.map((calificacion, i) => (
-                          <td key={i} className="has-text-white" style={{ backgroundColor: calificacion === 'null' ? '#FF0000' : 'transparent' }}>{calificacion !== null ? calificacion : 'null'}</td>
+                          <td key={i} className="has-text-white" style={{ backgroundColor: calificacion === 'N/P' ? '#FF0000' : 'transparent' }}>{calificacion !== 'N/P' ? calificacion : 'N/P'}</td>
                         ))}
-                        <td className="has-text-white">{item.promedio !== null ? item.promedio : 'null'}</td>
+                        <td className="has-text-white">{item.promedio !== 'N/P' ? item.promedio : 'N/P'}</td>
                       </tr>
                     ))}
                   </tbody>
