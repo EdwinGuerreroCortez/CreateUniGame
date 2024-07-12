@@ -111,13 +111,14 @@ const Evaluaciones = () => {
     setMaxEvaluaciones(maxEval);
   
     const concentradoCompleto = Object.values(concentrado).map(item => {
-      const calificacionesCompletas = [...item.calificaciones, ...Array(maxEval - item.calificaciones.length).fill(0)];
-      const promedio = calificacionesCompletas.reduce((acc, cal) => acc + cal, 0) / maxEval;
+      const calificacionesCompletas = [...item.calificaciones, ...Array(maxEval - item.calificaciones.length).fill(null)];
+      const sum = calificacionesCompletas.reduce((acc, cal) => acc + (cal !== null ? cal : 0), 0);
+      const promedio = (sum / calificacionesCompletas.length).toFixed(2);
       return {
         matricula: item.matricula,
         nombreCompleto: item.nombreCompleto,
         calificaciones: calificacionesCompletas,
-        promedio: promedio.toFixed(2)
+        promedio: promedio
       };
     });
   
@@ -126,15 +127,53 @@ const Evaluaciones = () => {
 
   const handleDownloadConcentrado = () => {
     const worksheetData = [
-      ['Matrícula', 'Nombre Completo', ...Array.from({ length: maxEvaluaciones }, (_, index) => `Evaluación ${index + 1}`), 'Promedio']
+      ['NO.', 'Matrícula', 'Nombre Completo', ...Array.from({ length: maxEvaluaciones }, (_, index) => `Evaluación ${index + 1}`), 'Promedio']
     ];
 
-    filteredConcentrado.forEach(item => {
-      const row = [item.matricula, item.nombreCompleto, ...item.calificaciones, item.promedio];
+    filteredConcentrado.forEach((item, index) => {
+      const row = [index + 1, item.matricula, item.nombreCompleto, ...item.calificaciones, item.promedio];
       worksheetData.push(row);
     });
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+    // Aplicar estilos
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellAddress = { c: C, r: R };
+        const cellRef = XLSX.utils.encode_cell(cellAddress);
+        if (!worksheet[cellRef]) continue;
+        
+        // Estilo de los encabezados
+        if (R === 0) {
+          worksheet[cellRef].s = {
+            font: { bold: true, color: { rgb: "FFFFFF" } },
+            fill: { fgColor: { rgb: "FFFF00" } },
+            alignment: { horizontal: "center", vertical: "center" }
+          };
+        } else {
+          worksheet[cellRef].s = {
+            alignment: { horizontal: "center", vertical: "center" }
+          };
+          // Fondo rojo para celdas con valor 'null'
+          if (worksheet[cellRef].v === 'null') {
+            worksheet[cellRef].s.fill = { fgColor: { rgb: "FF0000" } };
+          }
+        }
+      }
+    }
+
+    // Ajustar el tamaño de las celdas
+    const wscols = [
+      { wch: 5 },  // NO.
+      { wch: 15 }, // Matrícula
+      { wch: 35 }, // Nombre Completo
+      ...Array(maxEvaluaciones).fill({ wch: 12 }), // Evaluaciones
+      { wch: 10 }  // Promedio
+    ];
+    worksheet['!cols'] = wscols;
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Concentrado');
 
@@ -365,9 +404,9 @@ const Evaluaciones = () => {
                         <td className="has-text-white">{item.matricula}</td>
                         <td className="has-text-white">{item.nombreCompleto}</td>
                         {item.calificaciones.map((calificacion, i) => (
-                          <td key={i} className="has-text-white">{calificacion}</td>
+                          <td key={i} className="has-text-white" style={{ backgroundColor: calificacion === 'null' ? '#FF0000' : 'transparent' }}>{calificacion !== null ? calificacion : 'null'}</td>
                         ))}
-                        <td className="has-text-white">{item.promedio}</td>
+                        <td className="has-text-white">{item.promedio !== null ? item.promedio : 'null'}</td>
                       </tr>
                     ))}
                   </tbody>

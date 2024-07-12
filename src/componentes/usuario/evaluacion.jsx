@@ -36,7 +36,7 @@ const Evaluacion = () => {
 
     const fetchEvaluacion = async () => {
       try {
-        const examenResponse = await fetch(`http://172.16.19.1:3001/api/examenes/${userId}/${temaId}`);
+        const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${temaId}`);
         if (examenResponse.status === 200) {
           const examenData = await examenResponse.json();
           console.log('Examen encontrado:', examenData);
@@ -69,7 +69,7 @@ const Evaluacion = () => {
               setTiempoRestante(newTiempoRestante > 0 ? newTiempoRestante : 0);
             }
           } else {
-            const response = await fetch(`http://172.16.19.1:3001/api/evaluaciones/${temaId}?limit=10`);
+            const response = await fetch(`http://localhost:3001/api/evaluaciones/${temaId}?limit=10`);
             const data = await response.json();
             if (data.evaluacion) {
               const preguntasAleatorias = data.evaluacion.sort(() => 0.5 - Math.random()).slice(0, 10);
@@ -155,7 +155,7 @@ const Evaluacion = () => {
     console.log("Guardando resultados...", { temaId, porcentaje, preguntasRespondidas: respuestas });
 
     try {
-      const examenResponse = await fetch(`http://172.16.19.1:3001/api/examenes`, {
+      const examenResponse = await fetch(`http://localhost:3001/api/examenes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -176,7 +176,7 @@ const Evaluacion = () => {
       const examenData = await examenResponse.json();
       const examenId = examenData.examen._id; // Obtener el ID del examen creado
 
-      await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}/evaluaciones`, {
+      await fetch(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ const Evaluacion = () => {
 
   const cargarUltimasRespuestas = async () => {
     try {
-      const examenResponse = await fetch(`http://172.16.19.1:3001/api/examenes/${userId}/${temaId}/ultimo`);
+      const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${temaId}/ultimo`);
       if (examenResponse.ok) {
         const examenData = await examenResponse.json();
         console.log('Últimas respuestas encontradas:', examenData);

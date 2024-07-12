@@ -37,7 +37,7 @@ const CrearCursoDocente = () => {
     }
 
     try {
-      const response = await axios.post('http://172.16.19.1:3001/api/crearCursoAsignarUsuario', {
+      const response = await axios.post('http://localhost:3001/api/crearCursoAsignarUsuario', {
         nombre: nombreCurso,
         usuarioId
       });
