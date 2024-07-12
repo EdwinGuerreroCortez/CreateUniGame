@@ -128,7 +128,7 @@ const SubirTemaDocente = () => {
     formData.append("subtemas", JSON.stringify(subtemas));
   
     try {
-      const response = await fetch("http://172.16.19.1:3001/api/subirTema", {
+      const response = await fetch("http://localhost:3001/api/subirTema", {
         method: "POST",
         body: formData,
       });
