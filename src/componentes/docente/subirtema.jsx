@@ -169,7 +169,7 @@ const SubirTemaDocente = () => {
   const endIndex = startIndex + pasosPorPagina;
 
   return (
-    <div style={{ minHeight: "100vh", background: '#14161A', marginTop: '20px' }}>
+    <div style={{ minHeight: "100vh", background: '#14161A', paddingTop:'30px'}}>
       {isLoading && (
         <div className="loading-overlay">
           <div className="loading-circle"></div>
