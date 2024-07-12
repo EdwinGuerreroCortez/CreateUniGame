@@ -26,9 +26,10 @@ const Curso = () => {
   const fetchCursosSuscritos = async () => {
     const userId = localStorage.getItem("userId");
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/usuario/${userId}/cursos`);
+      const response = await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}/cursos-suscritos`);
       const data = await response.json();
-      setCursos(data);
+      console.log('Datos de cursos suscritos:', data); // Línea de depuración
+      setCursos(data.cursos); // Asegúrate de que el backend devuelve un objeto con una propiedad 'cursos'
     } catch (error) {
       console.error("Error al cargar los cursos suscritos:", error);
     }
