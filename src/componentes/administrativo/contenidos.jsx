@@ -31,7 +31,7 @@ const Contenidos = () => {
   const videoInputRef = useRef(null);
 
   useEffect(() => {
-    fetch("http://172.16.19.1:3001/api/temas")
+    fetch("http://localhost:3001/api/temas")
       .then((response) => response.json())
       .then((data) => setTemas(data))
       .catch((error) => console.error("Error fetching temas:", error));
@@ -48,7 +48,7 @@ const Contenidos = () => {
 
   const handleEliminarTema = (id) => {
     setIsDeleting(true);
-    fetch(`http://172.16.19.1:3001/api/temas/${id}`, {
+    fetch(`http://localhost:3001/api/temas/${id}`, {
       method: "DELETE",
     })
       .then(() => {
@@ -73,7 +73,7 @@ const Contenidos = () => {
   };
 
   const handleDownloadTema = (id) => {
-    fetch(`http://172.16.19.1:3001/api/download-tema/${id}`)
+    fetch(`http://localhost:3001/api/download-tema/${id}`)
       .then((response) => response.blob())
       .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
@@ -150,7 +150,7 @@ const Contenidos = () => {
       ),
     };
 
-    fetch(`http://172.16.19.1:3001/api/temas/${editTema._id}`, {
+    fetch(`http://localhost:3001/api/temas/${editTema._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -224,7 +224,7 @@ const Contenidos = () => {
       const formData = new FormData();
       formData.append("video", videoFile);
   
-      fetch(`http://172.16.19.1:3001/api/upload-video/${currentTemaId}`, {
+      fetch(`http://localhost:3001/api/upload-video/${currentTemaId}`, {
         method: "POST",
         body: formData,
       })
@@ -262,7 +262,7 @@ const Contenidos = () => {
         return;
       }
   
-      fetch(`http://172.16.19.1:3001/api/upload-video-link/${currentTemaId}`, {
+      fetch(`http://localhost:3001/api/upload-video-link/${currentTemaId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -316,7 +316,7 @@ const Contenidos = () => {
       formData.append("video", subtemaVideoFile);
 
       fetch(
-        `http://172.16.19.1:3001/api/upload-subtema-video/${currentTemaId}/${subtemaId}`,
+        `http://localhost:3001/api/upload-subtema-video/${currentTemaId}/${subtemaId}`,
         {
           method: "POST",
           body: formData,
@@ -362,7 +362,7 @@ const Contenidos = () => {
       }
 
       fetch(
-        `http://172.16.19.1:3001/api/upload-subtema-video/${currentTemaId}/${subtemaId}`,
+        `http://localhost:3001/api/upload-subtema-video/${currentTemaId}/${subtemaId}`,
         {
           method: "POST",
           headers: {
@@ -432,7 +432,7 @@ const Contenidos = () => {
   };
 
   const handleToggleHabilitar = (id) => {
-    fetch(`http://172.16.19.1:3001/api/temas/${id}/habilitar`, {
+    fetch(`http://localhost:3001/api/temas/${id}/habilitar`, {
       method: "PUT",
     })
       .then((response) => response.json())

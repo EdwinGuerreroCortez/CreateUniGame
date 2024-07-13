@@ -93,7 +93,7 @@ const BarraNav = () => {
           </div>
           <Link className="navbar-item has-text-success" to="/user/curso">
             <FontAwesomeIcon icon={faBook} style={{ marginRight: '5px' }} />
-            Curso
+            Cursos
           </Link>
           <Link className="navbar-item has-text-success" to="/user/recursos">
             <FontAwesomeIcon icon={faFolderOpen} style={{ marginRight: '5px' }} />

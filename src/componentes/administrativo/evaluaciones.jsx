@@ -22,7 +22,7 @@ const Evaluaciones = () => {
   useEffect(() => {
     const fetchEvaluaciones = async () => {
       try {
-        const response = await fetch('http://172.16.19.1:3001/api/examenes');
+        const response = await fetch('http://localhost:3001/api/examenes');
         const data = await response.json();
         setEvaluaciones(data);
 
@@ -53,7 +53,7 @@ const Evaluaciones = () => {
 
   const toggleExamenPermitido = async (examen) => {
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/examenes/${examen._id}/toggle`, {
+      const response = await fetch(`http://localhost:3001/api/examenes/${examen._id}/toggle`, {
         method: 'PUT',
       });
       if (response.ok) {
