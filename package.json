@@ -29,6 +29,7 @@
     "react-scripts": "5.0.1",
     "react-slick": "^0.30.2",
     "react-spring": "^9.7.3",
+    "sheetjs-style": "^0.15.8",
     "slick-carousel": "^1.8.1",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",

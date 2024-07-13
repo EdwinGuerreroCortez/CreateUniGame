@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bulma/css/bulma.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import * as XLSX from 'xlsx';
+import * as XLSX from 'sheetjs-style'; // Usamos sheetjs-style en lugar de xlsx
 import { saveAs } from 'file-saver';
 
 const Evaluaciones = () => {
@@ -83,15 +83,17 @@ const Evaluaciones = () => {
 
   const handleGenerateConcentrado = () => {
     setShowConcentradoModal(true);
+    handleFilterConcentrado(selectedCurso, concentradoDate);
   };
-
+  
   const handleFilterConcentrado = (curso, date) => {
+    setSelectedCurso(curso);  // Asegurarse de actualizar el curso seleccionado
     if (!curso && !date) {
       setFilteredConcentrado([]);
       setMaxEvaluaciones(0);
       return;
     }
-
+  
     const concentrado = evaluaciones.filter(evaluacion =>
       (curso === '' || evaluacion.nombreCurso === curso) &&
       (date === '' || new Date(evaluacion.fechaUltimoIntento) >= new Date(date))
@@ -104,10 +106,10 @@ const Evaluaciones = () => {
       acc[matricula].calificaciones.push(evaluacion.preguntasRespondidas[evaluacion.preguntasRespondidas.length - 1].porcentaje);
       return acc;
     }, {});
-
+  
     const maxEval = Math.max(...Object.values(concentrado).map(item => item.calificaciones.length));
     setMaxEvaluaciones(maxEval);
-
+  
     const concentradoCompleto = Object.values(concentrado).map(item => {
       const calificacionesCompletas = [...item.calificaciones, ...Array(maxEval - item.calificaciones.length).fill('N/P')];
       const sum = calificacionesCompletas.reduce((acc, cal) => acc + (cal !== 'N/P' ? cal : 0), 0);
@@ -119,26 +121,27 @@ const Evaluaciones = () => {
         promedio: promedio
       };
     });
-
+  
     setFilteredConcentrado(concentradoCompleto);
   };
-
+  
   const handleDownloadConcentrado = () => {
     const worksheetData = [
-      [{ v: 'Datos del Concentrado', s: { alignment: { horizontal: "center" }, font: { bold: true } } }],
-      [`Curso: ${selectedCurso || 'Todos los cursos'}`],
-      [`Fecha de generación: ${new Date().toLocaleDateString()}`],
+      [],
+      ['', { v: 'Datos del Concentrado', s: { alignment: { horizontal: "center" }, font: { bold: true }, fill: { fgColor: { rgb: "CCFFCC" } } } }],
+      ['', { v: `Curso: ${selectedCurso || 'Todos los cursos'}`, s: { alignment: { horizontal: "left" }, font: { bold: true } } }],
+      ['', { v: `Fecha de generación: ${new Date().toLocaleDateString()}`, s: { alignment: { horizontal: "left" }, font: { bold: true } } }],
       [],
       ['NO.', 'Matrícula', 'Nombre Completo', ...Array.from({ length: maxEvaluaciones }, (_, index) => `Evaluación ${index + 1}`), 'Promedio']
     ];
-
+  
     filteredConcentrado.forEach((item, index) => {
       const row = [index + 1, item.matricula, item.nombreCompleto, ...item.calificaciones, item.promedio];
       worksheetData.push(row);
     });
-
+  
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-
+  
     // Aplicar estilos para todo el documento
     const range = XLSX.utils.decode_range(worksheet['!ref']);
     worksheet['!cols'] = [
@@ -148,50 +151,83 @@ const Evaluaciones = () => {
       ...Array(maxEvaluaciones).fill({ wch: 12 }), // Evaluaciones
       { wch: 10 }  // Promedio
     ];
-    for (let R = range.s.r; R <= range.e.r; ++R) {
-      for (let C = range.s.c; C <= range.e.c; ++C) {
+  
+    // Combinar celdas para "Datos del Concentrado"
+    worksheet['!merges'] = [
+      { s: { r: 1, c: 1 }, e: { r: 1, c: 4 } }, // Combina celdas B2 a E2
+      { s: { r: 2, c: 1 }, e: { r: 2, c: 4 } }, // Combina celdas B3 a E3
+      { s: { r: 3, c: 1 }, e: { r: 3, c: 4 } }  // Combina celdas B4 a E4
+    ];
+  
+    // Estilo para la sección "Datos del Concentrado"
+    for (let R = 1; R <= 3; ++R) {
+      for (let C = 1; C <= 4; ++C) {
         const cellAddress = { c: C, r: R };
         const cellRef = XLSX.utils.encode_cell(cellAddress);
-        if (!worksheet[cellRef]) continue;
-
-        // Estilo de encabezado
-        if (R === 5) {
+        if (worksheet[cellRef]) {
           worksheet[cellRef].s = {
-            font: { bold: true, color: { rgb: "FFFFFF" } },
-            fill: { fgColor: { rgb: "0000FF" } }, // Fondo azul
+            fill: { fgColor: { rgb: "CCFFCC" } }, // Fondo verde claro
+            font: { bold: true },
             alignment: { horizontal: "center", vertical: "center" }
           };
-        } else if (R === 9) {
-          worksheet[cellRef].s = {
-            font: { bold: true, color: { rgb: "FFFFFF" } },
-            fill: { fgColor: { rgb: "FFFF00" } },
-            alignment: { horizontal: "center", vertical: "center" }
-          };
-        } else if (R > 10) { // Estilo de las celdas normales
-          worksheet[cellRef].s = {
-            alignment: { horizontal: "center", vertical: "center" }
-          };
-          if (worksheet[cellRef].v === 'N/P') {
-            worksheet[cellRef].s.fill = { fgColor: { rgb: "FF0000" } }; // Fondo rojo para 'N/P'
+        }
+      }
+    }
+  
+    // Estilo para la tabla de evaluaciones
+    for (let R = 5; R <= range.e.r; ++R) {
+      for (let C = 0; C <= range.e.c; ++C) {
+        const cellAddress = { c: C, r: R };
+        const cellRef = XLSX.utils.encode_cell(cellAddress);
+        if (worksheet[cellRef]) {
+          if (R === 5) { // Encabezados
+            worksheet[cellRef].s = {
+              font: { bold: true, color: { rgb: "000000" } },
+              fill: { fgColor: { rgb: "FFD700" } }, // Fondo amarillo dorado
+              alignment: { horizontal: "center", vertical: "center" },
+              border: {
+                top: { style: "thin", color: { rgb: "000000" } },
+                bottom: { style: "thin", color: { rgb: "000000" } },
+                left: { style: "thin", color: { rgb: "000000" } },
+                right: { style: "thin", color: { rgb: "000000" } }
+              }
+            };
+          } else { // Datos
+            worksheet[cellRef].s = {
+              alignment: { horizontal: "center", vertical: "center" },
+              border: {
+                top: { style: "thin", color: { rgb: "000000" } },
+                bottom: { style: "thin", color: { rgb: "000000" } },
+                left: { style: "thin", color: { rgb: "000000" } },
+                right: { style: "thin", color: { rgb: "000000" } }
+              }
+            };
+            if (C === 0) { // Columna de NO.
+              worksheet[cellRef].s.fill = { fgColor: { rgb: "FFA500" } }; // Fondo anaranjado
+              worksheet[cellRef].s.font = { bold: true, color: { rgb: "000000" } };
+            }
+            if (worksheet[cellRef].v === 'N/P') {
+              worksheet[cellRef].s.fill = { fgColor: { rgb: "FF0000" } }; // Fondo rojo claro para 'N/P'
+            }
           }
         }
       }
     }
-
+  
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Concentrado');
-
+  
     let fileName = `Concentrado_${selectedCurso ? selectedCurso : 'Todos_los_cursos'}`;
     if (selectedDate) {
       fileName += `_${selectedDate}`;
     }
     fileName += '.xlsx';
-
+  
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(blob, fileName);
   };
-
+  
   return (
     <div className='has-background-black-bis'>
       <section className="section">
@@ -435,3 +471,4 @@ const Evaluaciones = () => {
 };
 
 export default Evaluaciones;
+

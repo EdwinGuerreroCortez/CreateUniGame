@@ -51,6 +51,15 @@ const CuestionariosForm = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (alert.message) {
+      const timer = setTimeout(() => {
+        setAlert({ type: '', message: '' });
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [alert]);
+
   const handleToggleHabilitado = async (evaluacionId, habilitado) => {
     try {
       const response = await axios.put(`http://localhost:3001/api/evaluaciones/${evaluacionId}/habilitar`, { habilitado });
@@ -72,36 +81,37 @@ const CuestionariosForm = () => {
     setEditFile(e.target.files[0]);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (newFile && tema.trim()) {
-      setIsLoading(true);
-      setAlert({ type: '', message: '' });
-      const formData = new FormData();
-      formData.append('file', newFile);
-      formData.append('tema', tema);
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (newFile && tema.trim()) {
+    setIsLoading(true);
+    setAlert({ type: '', message: '' });
+    const formData = new FormData();
+    formData.append('file', newFile);
+    formData.append('tema', tema);
 
-      try {
-        const response = await axios.post('http://localhost:3001/api/evaluaciones/upload', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        });
-        setAlert({ type: 'success', message: 'Archivo subido exitosamente' });
-        setNewFile(null);
-        setTema('');
-        setEvaluaciones([...evaluaciones, response.data.evaluacion]);
-      } catch (error) {
-        console.error('Error al subir archivo:', error);
-        const errorMessage = error.response && error.response.data && Array.isArray(error.response.data.details)
-          ? error.response.data.details.join(', ')
-          : 'Error al subir archivo';
-        setAlert({ type: 'error', message: errorMessage });
-      } finally {
-        setIsLoading(false);
-      }
+    try {
+      const response = await axios.post('http://localhost:3001/api/evaluaciones/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setAlert({ type: 'success', message: 'Archivo subido exitosamente' });
+      setNewFile(null);
+      setTema('');
+      setEvaluaciones([...evaluaciones, response.data.evaluacion]);
+      window.location.reload(); // Recargar la página
+    } catch (error) {
+      console.error('Error al subir archivo:', error);
+      const errorMessage = error.response && error.response.data && Array.isArray(error.response.data.details)
+        ? error.response.data.details.join(', ')
+        : 'Error al subir archivo';
+      setAlert({ type: 'error', message: errorMessage });
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }
+};
 
   const handleEdit = (evaluacion) => {
     setEditMode(true);

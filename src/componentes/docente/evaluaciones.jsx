@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import 'bulma/css/bulma.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import * as XLSX from 'xlsx';
+import * as XLSX from 'sheetjs-style';
 import { saveAs } from 'file-saver';
 
-const Evaluaciones = () => {
+const EvaluacionesDocente = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [evaluaciones, setEvaluaciones] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -95,6 +95,7 @@ const Evaluaciones = () => {
   };
 
   const handleFilterConcentrado = (curso, date) => {
+    setSelectedCurso(curso);  // Asegurarse de actualizar el curso seleccionado
     if (!curso && !date) {
       setFilteredConcentrado([]);
       setMaxEvaluaciones(0);
@@ -118,8 +119,8 @@ const Evaluaciones = () => {
     setMaxEvaluaciones(maxEval);
 
     const concentradoCompleto = Object.values(concentrado).map(item => {
-      const calificacionesCompletas = [...item.calificaciones, ...Array(maxEval - item.calificaciones.length).fill(null)];
-      const sum = calificacionesCompletas.reduce((acc, cal) => acc + (cal !== null ? cal : 0), 0);
+      const calificacionesCompletas = [...item.calificaciones, ...Array(maxEval - item.calificaciones.length).fill('N/P')];
+      const sum = calificacionesCompletas.reduce((acc, cal) => acc + (cal !== 'N/P' ? cal : 0), 0);
       const promedio = (sum / maxEval).toFixed(2);
       return {
         matricula: item.matricula,
@@ -134,71 +135,101 @@ const Evaluaciones = () => {
 
   const handleDownloadConcentrado = () => {
     const worksheetData = [
-      ['Datos del Concentrado'],
-      ['Curso:', selectedCurso ? selectedCurso : 'Todos los cursos'],
-      ['Fecha de generación:', new Date().toLocaleDateString()],
-      [],
-      ['NO.', 'Matrícula', 'Nombre Completo', ...Array.from({ length: maxEvaluaciones }, (_, index) => `Evaluación ${index + 1}`), 'Promedio']
+        [],
+        ['', { v: 'Datos del Concentrado', s: { alignment: { horizontal: "center" }, font: { bold: true }, fill: { fgColor: { rgb: "CCFFCC" } } } }],
+        ['', { v: `Curso: ${selectedCurso || 'Todos los cursos'}`, s: { alignment: { horizontal: "left" }, font: { bold: true } } }],
+        ['', { v: `Fecha de generación: ${new Date().toLocaleDateString()}`, s: { alignment: { horizontal: "left" }, font: { bold: true } } }],
+        [],
+        ['NO.', 'Matrícula', 'Nombre Completo', ...Array.from({ length: maxEvaluaciones }, (_, index) => `Evaluación ${index + 1}`), 'Promedio']
     ];
 
     filteredConcentrado.forEach((item, index) => {
-      const row = [index + 1, item.matricula, item.nombreCompleto, ...item.calificaciones.map(cal => cal !== null ? cal : 'N/P'), item.promedio];
-      worksheetData.push(row);
+        const row = [index + 1, item.matricula, item.nombreCompleto, ...item.calificaciones, item.promedio];
+        worksheetData.push(row);
     });
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-    const headerStyle = {
-      font: { bold: true, color: { rgb: "FFFFFF" } },
-      fill: { fgColor: { rgb: "FFFF00" } },
-      alignment: { horizontal: "center", vertical: "center" }
-    };
-
-    const cellStyle = {
-      alignment: { horizontal: "center", vertical: "center" },
-      border: {
-        top: { style: "thin" },
-        bottom: { style: "thin" },
-        left: { style: "thin" },
-        right: { style: "thin" }
-      }
-    };
-
-    const applyStyles = (ws) => {
-      const range = XLSX.utils.decode_range(ws['!ref']);
-      for (let R = range.s.r; R <= range.e.r; ++R) {
-        for (let C = range.s.c; C <= range.e.c; ++C) {
-          const cell_address = { c: C, r: R };
-          const cell_ref = XLSX.utils.encode_cell(cell_address);
-          if (!ws[cell_ref]) continue;
-          if (R === 0 || R === 1 || R === 2 || R === 4) {
-            ws[cell_ref].s = headerStyle;
-          } else {
-            ws[cell_ref].s = cellStyle;
-            if (ws[cell_ref].v === 'N/P') {
-              ws[cell_ref].s.fill = { fgColor: { rgb: "FF0000" } }; // Red background for 'N/P'
-            }
-          }
-        }
-      }
-    };
-
-    applyStyles(worksheet);
-
-    const wscols = [
-      { wch: 5 },  // NO.
-      { wch: 15 }, // Matrícula
-      { wch: 35 }, // Nombre Completo
-      ...Array(maxEvaluaciones).fill({ wch: 12 }), // Evaluaciones
-      { wch: 10 }  // Promedio
+    // Aplicar estilos para todo el documento
+    const range = XLSX.utils.decode_range(worksheet['!ref']);
+    worksheet['!cols'] = [
+        { wch: 5 },  // NO.
+        { wch: 15 }, // Matrícula
+        { wch: 35 }, // Nombre Completo
+        ...Array(maxEvaluaciones).fill({ wch: 12 }), // Evaluaciones
+        { wch: 10 }  // Promedio
     ];
-    worksheet['!cols'] = wscols;
+
+    // Combinar celdas para "Datos del Concentrado"
+    worksheet['!merges'] = [
+        { s: { r: 1, c: 1 }, e: { r: 1, c: 4 } }, // Combina celdas B2 a E2
+        { s: { r: 2, c: 1 }, e: { r: 2, c: 4 } }, // Combina celdas B3 a E3
+        { s: { r: 3, c: 1 }, e: { r: 3, c: 4 } }  // Combina celdas B4 a E4
+    ];
+
+    // Estilo para la sección "Datos del Concentrado"
+    for (let R = 1; R <= 3; ++R) {
+        for (let C = 1; C <= 4; ++C) {
+            const cellAddress = { c: C, r: R };
+            const cellRef = XLSX.utils.encode_cell(cellAddress);
+            if (worksheet[cellRef]) {
+                worksheet[cellRef].s = {
+                    fill: { fgColor: { rgb: "CCFFCC" } }, // Fondo verde claro
+                    font: { bold: true },
+                    alignment: { horizontal: "center", vertical: "center" }
+                };
+            }
+        }
+    }
+
+    // Estilo para la tabla de evaluaciones
+    for (let R = 5; R <= range.e.r; ++R) {
+        for (let C = 0; C <= range.e.c; ++C) {
+            const cellAddress = { c: C, r: R };
+            const cellRef = XLSX.utils.encode_cell(cellAddress);
+            if (worksheet[cellRef]) {
+                if (R === 5) { // Encabezados
+                    worksheet[cellRef].s = {
+                        font: { bold: true, color: { rgb: "000000" } },
+                        fill: { fgColor: { rgb: "FFD700" } }, // Fondo amarillo dorado
+                        alignment: { horizontal: "center", vertical: "center" },
+                        border: {
+                            top: { style: "thin", color: { rgb: "000000" } },
+                            bottom: { style: "thin", color: { rgb: "000000" } },
+                            left: { style: "thin", color: { rgb: "000000" } },
+                            right: { style: "thin", color: { rgb: "000000" } }
+                        }
+                    };
+                } else { // Datos
+                    worksheet[cellRef].s = {
+                        alignment: { horizontal: "center", vertical: "center" },
+                        border: {
+                            top: { style: "thin", color: { rgb: "000000" } },
+                            bottom: { style: "thin", color: { rgb: "000000" } },
+                            left: { style: "thin", color: { rgb: "000000" } },
+                            right: { style: "thin", color: { rgb: "000000" } }
+                        }
+                    };
+                    if (C === 0) { // Columna de NO.
+                        worksheet[cellRef].s.fill = { fgColor: { rgb: "FFA500" } }; // Fondo anaranjado
+                        worksheet[cellRef].s.font = { bold: true, color: { rgb: "000000" } };
+                    }
+                    if (worksheet[cellRef].v === 'N/P') {
+                        worksheet[cellRef].s.fill = { fgColor: { rgb: "FF0000" } }; // Fondo rojo claro para 'N/P'
+                    }
+                }
+            }
+        }
+    }
 
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Concentrado');
 
-    const cursoName = selectedCurso ? selectedCurso : 'Todos los cursos';
-    const fileName = `Concentrado_${cursoName}.xlsx`;
+    let fileName = `Concentrado_${selectedCurso ? selectedCurso : 'Todos_los_cursos'}`;
+    if (selectedDate) {
+        fileName += `_${selectedDate}`;
+    }
+    fileName += '.xlsx';
 
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
@@ -424,7 +455,7 @@ const Evaluaciones = () => {
                         <td className="has-text-white">{item.matricula}</td>
                         <td className="has-text-white">{item.nombreCompleto}</td>
                         {item.calificaciones.map((calificacion, i) => (
-                          <td key={i} className="has-text-white">{calificacion !== null ? calificacion : 'N/P'}</td>
+                          <td key={i} className="has-text-white" style={{ backgroundColor: calificacion === 'N/P' ? '#FF0000' : 'transparent' }}>{calificacion !== 'N/P' ? calificacion : 'N/P'}</td>
                         ))}
                         <td className="has-text-white">{item.promedio}</td>
                       </tr>
@@ -447,4 +478,4 @@ const Evaluaciones = () => {
   );
 };
 
-export default Evaluaciones;
+export default EvaluacionesDocente;
