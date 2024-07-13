@@ -84,7 +84,7 @@ const Bienvenida = () => {
             <div className="card" style={styles.card}>
               <div className="card-content has-text-centered" style={styles.cardContent}>
                 <div className="content">
-                  <h1 className="title has-text-white">¡Bienvenido!</h1>
+                  <h2 className="title has-text-white">¡Bienvenido!</h2>
                   <p>Gracias por unirte a nuestra plataforma.</p>
                   <p>En esta plataforma encontrarás una gran variedad de recursos y contenido para aprender y mejorar tus habilidades en diversas áreas de la computación y tecnología.</p>
                   <img src={animacion} alt="Animación" style={styles.animationImage} />
@@ -112,7 +112,7 @@ const styles = {
     alignItems: 'stretch', // Ensure columns stretch to the same height
   },
   card: {
-    backgroundColor: '#000080', // Un azul ligeramente más claro
+    backgroundColor: '#15156b', // Un azul ligeramente más claro
     border: '2px solid #3273dc',
     borderRadius: '8px',
     boxShadow: '0 4px 8px rgba(50, 115, 220, 0.5)',

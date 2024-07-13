@@ -1,34 +1,76 @@
 .curso-card {
-    width: 200px;
-    height: 300px;
-    transition: all 0.5s ease;
+  background-color: #1e1e2f;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, height 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  cursor: pointer;
+}
+
+.curso-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+}
+
+.curso-card.selected {
+  border: 2px solid #00d1b2;
+  height: auto;
+}
+
+.curso-card.selected::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #00d1b2;
+  animation: borderAnimation 2s linear infinite;
+}
+
+@keyframes borderAnimation {
+  0% {
+    border-color: #00d1b2;
   }
-  
-  .curso-card.expanded {
-    width: 500px;
-    height: auto;
-    border: 3px solid white;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+  50% {
+    border-color: transparent;
   }
-  
-  .title.is-5 {
-    font-size: 1.5rem;
+  100% {
+    border-color: #00d1b2;
   }
-  
-  .title.is-5.long-text {
-    font-size: 1rem;
+}
+
+.curso-card .title {
+  font-size: 1.5rem;
+}
+
+.curso-card .button {
+  margin-top: 20px;
+}
+
+@keyframes lift {
+  0%, 100% {
+    transform: translateY(0);
   }
-  
-  .arrow-button {
-    font-size: 2rem;
-    padding: 0.5rem 1rem;
-    margin: 0 20px;
-    background: none;
-    border: none;
-    color: white;
+  50% {
+    transform: translateY(-10px);
   }
-  
-  .section.has-background-black-bis {
-    min-height: 600px;
-  }
-  
+}
+
+.curso-card.animate {
+  animation: lift 1s ease;
+}
+
+.temas-container {
+  transition: height 0.3s ease, overflow 0.3s ease;
+}
+
+.has-text-centered {
+  text-align: center;
+}
+
+.has-text-grey-light {
+  color: #B0B0B0;
+}
