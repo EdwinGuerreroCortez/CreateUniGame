@@ -1,0 +1,61 @@
+.acerca-section {
+    background-color: #14161A;
+    color: white;
+    padding: 60px 20px;
+    font-family: 'Poppins', sans-serif;
+  }
+  
+  .image-container {
+    position: relative;
+    display: inline-block;
+    box-shadow: 0 0 15px 5px rgba(72, 199, 142, 0.5);
+    border-radius: 10px;
+  }
+  
+  .image {
+    display: block;
+    border-radius: 10px;
+    max-width: 100%;
+    height: auto;
+    transition: transform 0.3s ease;
+  }
+  
+  .image-container:hover .image {
+    transform: scale(1.05);
+  }
+  
+  .title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .glowing-text {
+    text-shadow: 0 0 5px rgba(72, 199, 142, 0.5);
+    animation: glow 1.5s infinite alternate;
+  }
+  
+  @keyframes glow {
+    from {
+      text-shadow: 0 0 5px rgba(72, 199, 142, 0.5);
+    }
+    to {
+      text-shadow: 0 0 20px rgba(72, 199, 142, 1);
+    }
+  }
+  
+  .animate-text {
+    animation: fadeIn 2s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  

@@ -1,4 +1,3 @@
-// src/components/ContactForm.js
 import React, { useState } from 'react';
 import contactImage from '../img/contactanos.webp';
 import 'bulma/css/bulma.min.css';
@@ -9,7 +8,7 @@ const ContactForm = () => {
     tipoMensaje: 'Pregunta',
     correo: '',
     mensaje: '',
-    preguntaEspecifica: '', // Nuevo campo para pregunta específica
+    preguntaEspecifica: '',
   });
   const [alert, setAlert] = useState(null);
 
@@ -28,7 +27,7 @@ const ContactForm = () => {
         setAlert({ type: 'is-danger', message: 'Debe especificar su pregunta.' });
         setTimeout(() => {
           setAlert(null);
-        }, 3000); // Ocultar la alerta después de 5 segundos
+        }, 3000);
         return;
       }
     } else {
@@ -36,7 +35,7 @@ const ContactForm = () => {
         setAlert({ type: 'is-danger', message: 'El mensaje no puede estar vacío.' });
         setTimeout(() => {
           setAlert(null);
-        }, 3000); // Ocultar la alerta después de 5 segundos
+        }, 3000);
         return;
       }
     }
@@ -75,12 +74,11 @@ const ContactForm = () => {
           tipoMensaje: 'Pregunta',
           correo: '',
           mensaje: '',
-          preguntaEspecifica: '', // Reiniciar campo de pregunta específica
+          preguntaEspecifica: '',
         });
         setTimeout(() => {
           setAlert(null);
-        }, 3000); // Ocultar la alerta después de 5 segundos
-
+        }, 3000);
       } else {
         setAlert({ type: 'is-danger', message: 'Error al enviar el mensaje.' });
       }
@@ -90,18 +88,20 @@ const ContactForm = () => {
   };
 
   return (
-    <section className="section" style={styles.section}>
+    <section className="contact-section">
       <div className="container">
         <div className="columns is-vcentered is-variable is-8">
           <div className="column is-half">
-            <figure className="image-container" style={styles.imageContainer}>
-              <img src={contactImage} alt="Contact Us" style={styles.image} />
+            <figure className="image-container">
+              <img src={contactImage} alt="Contact Us" className="contact-image" />
             </figure>
           </div>
           <div className="column is-half">
-            <div className="box has-background-dark" style={styles.box}>
-              <h1 className="title has-text-white is-size-3">Contáctanos</h1>
-              <p className="has-text-white">
+            <div className="box contact-box" id='contact'>
+              <h1 className="title contact-title" id='titlee'>
+                Contáctanos
+              </h1>
+              <p className="contact-description">
                 Para cualquier sugerencia, pregunta o queja, por favor completa el siguiente formulario.
               </p>
               {alert && (
@@ -111,9 +111,9 @@ const ContactForm = () => {
               )}
               <form onSubmit={handleSubmit}>
                 <div className="field">
-                  <label className="label has-text-white">Tipo de Mensaje</label>
+                  <label className="label contact-label">Tipo de Mensaje</label>
                   <div className="control">
-                    <div className="select is-fullwidth" style={styles.select}>
+                    <div className="select is-fullwidth contact-select">
                       <select name="tipoMensaje" value={formData.tipoMensaje} onChange={handleChange}>
                         <option>Pregunta</option>
                         <option>Sugerencia</option>
@@ -123,17 +123,16 @@ const ContactForm = () => {
                   </div>
                 </div>
                 <div className="field">
-                  <label className="label has-text-white">Correo Electrónico</label>
+                  <label className="label contact-label">Correo Electrónico</label>
                   <div className="control has-icons-left">
                     <input
-                      className="input"
+                      className="input contact-input"
                       type="email"
                       name="correo"
                       value={formData.correo}
                       onChange={handleChange}
                       required
                       placeholder="ej. alex@example.com"
-                      style={styles.input}
                     />
                     <span className="icon is-small is-left">
                       <i className="fas fa-envelope"></i>
@@ -142,16 +141,15 @@ const ContactForm = () => {
                 </div>
                 {formData.tipoMensaje === 'Pregunta' ? (
                   <div className="field">
-                    <label className="label has-text-white">¿Cuál es su pregunta específica?</label>
+                    <label className="label contact-label">¿Cuál es su pregunta específica?</label>
                     <div className="control has-icons-left">
                       <input
-                        className="input"
+                        className="input contact-input"
                         type="text"
                         name="preguntaEspecifica"
                         value={formData.preguntaEspecifica}
                         onChange={handleChange}
                         placeholder="Escriba su pregunta aquí"
-                        style={styles.input}
                       />
                       <span className="icon is-small is-left">
                         <i className="fas fa-question-circle"></i>
@@ -160,16 +158,15 @@ const ContactForm = () => {
                   </div>
                 ) : (
                   <div className="field">
-                    <label className="label has-text-white">Mensaje</label>
+                    <label className="label contact-label">Mensaje</label>
                     <div className="control has-icons-left">
                       <textarea
-                        className="textarea"
+                        className="textarea contact-textarea"
                         name="mensaje"
                         value={formData.mensaje}
                         onChange={handleChange}
                         required
                         placeholder="Escribe tu mensaje aquí"
-                        style={styles.textarea}
                       />
                       <span className="icon is-small is-left">
                         <i className="fas fa-comment-dots"></i>
@@ -179,8 +176,11 @@ const ContactForm = () => {
                 )}
                 <div className="field">
                   <div className="control">
-                    <button className="button is-primary" type="submit" style={styles.button}>
-                      Enviar
+                    <button className="button is-primary contact-button" type="submit">
+                      <span className="icon">
+                        <i className="fas fa-paper-plane"></i>
+                      </span>
+                      <span>Enviar</span>
                     </button>
                   </div>
                 </div>
@@ -192,55 +192,5 @@ const ContactForm = () => {
     </section>
   );
 }
-
-const styles = {
-  section: {
-    backgroundColor: '#14161A',
-    color: 'white',
-    padding: '40px 20px',
-    fontFamily: 'Poppins, sans-serif',
-  },
-  imageContainer: {
-    position: 'relative',
-    display: 'inline-block',
-    boxShadow: '0 0 15px 5px rgba(72, 199, 142, 0.5)', // Borde luminoso alrededor de la imagen
-    borderRadius: '10px',
-  },
-  image: {
-    display: 'block',
-    borderRadius: '10px',
-    maxWidth: '100%',
-    height: 'auto',
-  },
-  box: {
-    backgroundColor: '#090A0C',
-    padding: '30px',
-    borderRadius: '10px',
-    border: '1px solid #48C78E',
-    boxShadow: '0 0 10px rgba(72, 199, 142, 0.5)',
-  },
-  input: {
-    backgroundColor: '#2C2F33',
-    color: 'white',
-    border: '1px solid #48C78E',
-  },
-  textarea: {
-    backgroundColor: '#2C2F33',
-    color: 'white',
-    border: '1px solid #48C78E',
-    paddingLeft: '40px'
-  },
-  button: {
-    backgroundColor: '#48C78E',
-    borderColor: '#48C78E',
-    color: 'white',
-  },
-  select: {
-    backgroundColor: '#2C2F33',
-    color: 'white',
-    border: '1px solid #48C78E',
-    height: '42px'
-  },
-};
 
 export default ContactForm;

@@ -4,8 +4,8 @@ import Modal from 'react-modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faTwitter, faInstagram, faLinkedinIn } from '@fortawesome/free-brands-svg-icons';
 import { faInfoCircle, faUserPlus, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
+import '../CSS/PieDePagina.css'; // Archivo CSS para los estilos adicionales
 
-// Estilo para el modal
 const customStyles = {
   content: {
     top: '50%',
@@ -17,9 +17,11 @@ const customStyles = {
     backgroundColor: 'rgba(0, 0, 0, 0.85)', // Fondo transparente
     color: '#fff',
     border: '1px solid #fff',
+    borderRadius: '15px', // Bordes redondeados
     padding: '2rem',
     width: '80%',
     maxWidth: '800px',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.3)', // Sombra
   },
   overlay: {
     backgroundColor: 'rgba(0, 0, 0, 0.7)', // Fondo semi-transparente

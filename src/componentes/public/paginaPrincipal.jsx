@@ -15,11 +15,11 @@ const PaginaPrincipal = () => {
   const settings = {
     dots: true,
     infinite: true,
-    speed: 1000, // Velocidad de la transición en milisegundos (ms)
+    speed: 1000,
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 5000, // Tiempo de espera entre transiciones en milisegundos (ms)
+    autoplaySpeed: 5000,
     customPaging: (i) => <div className="dot"></div>,
     responsive: [
       {

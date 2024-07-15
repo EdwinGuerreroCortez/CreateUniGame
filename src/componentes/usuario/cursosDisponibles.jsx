@@ -86,7 +86,7 @@ const CursosDisponibles = () => {
   };
 
   const seleccionarCurso = (curso) => {
-    setCursoSeleccionado(curso);
+    setCursoSeleccionado(cursoSeleccionado === curso ? null : curso);
   };
 
   const estaSuscrito = (cursoId) => {
@@ -156,9 +156,9 @@ const CursosDisponibles = () => {
                   <span className="title is-4 has-text-white" style={{ fontSize: curso.nombre.length > 10 ? '1rem' : '1.5rem' }}>
                     {curso.nombre}
                   </span>
-                  <div className="temas-container" style={{ marginTop: "10px", height: cursoSeleccionado && cursoSeleccionado._id === curso._id ? 'auto' : '60px', overflow: cursoSeleccionado && cursoSeleccionado._id === curso._id ? 'visible' : 'hidden' }}>
-                    <p>Temas a aprender:</p>
-                    {cursoSeleccionado && cursoSeleccionado._id === curso._id && (
+                  {cursoSeleccionado && cursoSeleccionado._id === curso._id && (
+                    <div className="temas-container" style={{ marginTop: "10px" }}>
+                      <p>Temas a aprender:</p>
                       <ul>
                         {temas[curso._id] && temas[curso._id].map((tema) => (
                           <li key={tema._id} className="has-text-white">
@@ -166,8 +166,8 @@ const CursosDisponibles = () => {
                           </li>
                         ))}
                       </ul>
-                    )}
-                  </div>
+                    </div>
+                  )}
                   <button
                     className="button is-link is-size-8 is-fullwidth"
                     onClick={(e) => {

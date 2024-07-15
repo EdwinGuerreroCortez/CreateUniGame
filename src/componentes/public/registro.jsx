@@ -94,7 +94,7 @@ const StepIndicator = ({ step }) => (
 
 const StepOne = ({ formData, setFormData, nextStep }) => (
 <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
-<div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+<div className="card has-background-black has-text-white" style={{ maxWidth: '420px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
             <div className="card-content">
                 <h2 className="title has-text-centered has-text-white">Registro - Paso 1</h2>
                 <StepIndicator step={1} />
@@ -119,7 +119,7 @@ const StepOne = ({ formData, setFormData, nextStep }) => (
 
 const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
 <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
-        <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+        <div className="card has-background-black has-text-white" style={{ maxWidth: '420px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
             <div className="card-content">
                 <h2 className="title has-text-centered has-text-white">Registro - Paso 2</h2>
                 <StepIndicator step={2} />
@@ -151,7 +151,7 @@ const StepThree = ({ formData, setFormData, prevStep, nextStep }) => {
 
     return (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
-            <div className="card has-background-black has-text-white" style={{ maxWidth: '400px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+            <div className="card has-background-black has-text-white" style={{ maxWidth: '420px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
                 <div className="card-content">
                     <h2 className="title has-text-centered has-text-white">Registro - Paso 3</h2>
                     <StepIndicator step={3} />

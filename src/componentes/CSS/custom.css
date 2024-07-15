@@ -2,7 +2,7 @@
   background-color: #1e1e2f;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, height 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
   overflow: hidden;
   padding: 20px;
@@ -16,7 +16,6 @@
 
 .curso-card.selected {
   border: 2px solid #00d1b2;
-  height: auto;
 }
 
 .curso-card.selected::before {
@@ -73,4 +72,18 @@
 
 .has-text-grey-light {
   color: #B0B0B0;
+}
+
+@media (max-width: 768px) {
+  .curso-card {
+    font-size: 14px;
+  }
+  
+  .curso-card .title {
+    font-size: 1rem;
+  }
+
+  .button.is-link {
+    font-size: 12px;
+  }
 }

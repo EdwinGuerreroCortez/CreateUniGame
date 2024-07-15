@@ -13,7 +13,9 @@ const FAQ = () => {
         const response = await axios.get('http://localhost:3001/api/contact/messages/questions');
         // Filtrar las FAQs para mostrar solo las que tienen respuesta
         const faqsWithAnswer = response.data.filter(faq => faq.respuesta);
-        setFaqs(faqsWithAnswer);
+        // Seleccionar 10 preguntas aleatorias
+        const faqsAleatorias = faqsWithAnswer.sort(() => 0.5 - Math.random()).slice(0, 10);
+        setFaqs(faqsAleatorias);
       } catch (error) {
         console.error('Error al obtener las FAQs:', error);
       }
@@ -45,7 +47,10 @@ const FAQ = () => {
         {faqs.map((faq, index) => (
           <div key={faq._id} style={styles.faqItem}>
             <div
-              style={styles.question}
+              style={{
+                ...styles.question,
+                backgroundColor: hoveredIndex === index ? '#2c2f33' : 'transparent',
+              }}
               onClick={() => toggleFAQ(index)}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
@@ -71,32 +76,46 @@ const styles = {
     borderRadius: '8px',
     maxWidth: '800px',
     margin: '20px auto',
+    marginTop:'20px',
     color: 'white',
-    width: '90%'
+    width: '90%',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
   },
   header: {
-    fontSize: '28px',
+    fontSize: '32px',
     color: 'white',
     textAlign: 'center',
     margin: '20px 0',
-    position: 'relative'
+    position: 'relative',
+    fontWeight: 'bold',
   },
   title: {
-    textShadow: '0 0 10px white',
+    textShadow: '0 0 1px white',
     position: 'relative'
   },
   faqItem: {
-    marginBottom: '10px',
-    padding: '10px',
-    borderBottom: '1px solid grey'
+    marginBottom: '15px',
+    padding: '15px',
+    borderBottom: '1px solid grey',
+    borderRadius: '8px',
+    backgroundColor: '#2c2f33',
+    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
   },
   question: {
     fontWeight: 'bold',
     cursor: 'pointer',
-    transition: 'background-color 0.3s'
+    fontSize: '18px',
+    transition: 'background-color 0.3s',
+    padding: '10px',
+    borderRadius: '8px'
   },
   answer: {
-    marginTop: '5px'
+    marginTop: '10px',
+    fontSize: '16px',
+    lineHeight: '1.5',
+    padding: '10px',
+    borderRadius: '8px',
+    backgroundColor: '#3a3d41'
   }
 };
 

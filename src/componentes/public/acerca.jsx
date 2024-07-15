@@ -1,16 +1,16 @@
 import React from 'react';
 import imagenStudyWeb from '../img/img_acerca.webp'; // Suponiendo que tienes una imagen representativa
 import 'bulma/css/bulma.min.css';
-import '../CSS/AcercaDeUniGame.css'; // Archivo CSS para los estilos adicionales
+import '../CSS/AcercaDeStudyWeb.css'; // Archivo CSS para los estilos adicionales
 
 const AcercaDeStudyWeb = () => {
   return (
-    <section className="section" style={styles.section}>
+    <section className="section acerca-section">
       <div className="container">
         <div className="columns is-vcentered">
           <div className="column is-half">
-            <figure className="image-container" style={styles.imageContainer}>
-              <img src={imagenStudyWeb} alt="StudyWeb" style={styles.image} />
+            <figure className="image-container">
+              <img src={imagenStudyWeb} alt="StudyWeb" className="image" />
             </figure>
           </div>
           <div className="column is-half">
@@ -32,26 +32,5 @@ const AcercaDeStudyWeb = () => {
     </section>
   );
 }
-
-const styles = {
-  section: {
-    backgroundColor: '#14161A',
-    color: 'white',
-    padding: '60px 20px',
-    fontFamily: 'Poppins, sans-serif',
-  },
-  imageContainer: {
-    position: 'relative',
-    display: 'inline-block',
-    boxShadow: '0 0 15px 5px rgba(72, 199, 142, 0.5)', // Borde luminoso alrededor de la imagen
-    borderRadius: '10px',
-  },
-  image: {
-    display: 'block',
-    borderRadius: '10px',
-    maxWidth: '100%',
-    height: 'auto',
-  },
-};
 
 export default AcercaDeStudyWeb;
