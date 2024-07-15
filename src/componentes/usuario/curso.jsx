@@ -28,7 +28,7 @@ const Curso = () => {
     try {
       const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/cursos-suscritos`);
       const data = await response.json();
-      console.log('Datos de cursos suscritos:', data); // Línea de depuración
+       // Línea de depuración
       setCursos(data.cursos); // Asegúrate de que el backend devuelve un objeto con una propiedad 'cursos'
     } catch (error) {
       console.error("Error al cargar los cursos suscritos:", error);
@@ -66,7 +66,7 @@ const Curso = () => {
       const evaluacionData = await evaluacionResponse.json();
 
       if (evaluacionData && evaluacionData.evaluacion_habilitada !== undefined) {
-        console.log("Evaluación habilitada:", evaluacionData.evaluacion_habilitada);
+        
 
         if (temaId === evaluacionData._id) {
           setEvaluacionHabilitada(evaluacionData.evaluacion_habilitada);

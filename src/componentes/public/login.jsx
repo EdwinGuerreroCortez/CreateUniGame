@@ -77,7 +77,7 @@ const FormRegistro = () => {
         }
 
         const data = await response.json();
-        console.log('Inicio de sesión exitoso:', data);
+        
 
         const userId = data.userId;
         const userType = data.tipo;

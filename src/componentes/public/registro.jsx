@@ -280,7 +280,7 @@ const FormRegistro = () => {
 
     const finishRegistration = async () => {
         try {
-            console.log('Enviando datos de verificación:', formData);
+            
             const response = await fetch('http://localhost:3001/api/verificar', {
                 method: 'POST',
                 headers: {

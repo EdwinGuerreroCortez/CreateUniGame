@@ -82,7 +82,7 @@ const GestionUsuariosForm = () => {
     const generoConvertido = usuario.genero === 'Masculino' ? 'M' : 'F';
     const usuarioConGeneroConvertido = { ...usuario, genero: generoConvertido };
 
-    console.log('Datos del usuario antes de enviar:', usuarioConGeneroConvertido); // Línea de debug
+     // Línea de debug
 
     try {
       await axios.post(endpoint, { ...usuarioConGeneroConvertido });

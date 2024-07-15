@@ -39,7 +39,7 @@ const Evaluacion = () => {
         const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${temaId}`);
         if (examenResponse.status === 200) {
           const examenData = await examenResponse.json();
-          console.log('Examen encontrado:', examenData);
+          
 
           if (examenData.examenPermitido) {
             setExamenPermitido(true);
@@ -152,7 +152,7 @@ const Evaluacion = () => {
 
   const guardarResultados = async (respuestas) => {
     const porcentaje = (respuestas.filter(respuesta => respuesta.correcta).length / preguntas.length) * 100;
-    console.log("Guardando resultados...", { temaId, porcentaje, preguntasRespondidas: respuestas });
+    
 
     try {
       const examenResponse = await fetch(`http://localhost:3001/api/examenes`, {
@@ -186,7 +186,7 @@ const Evaluacion = () => {
         }),
       });
 
-      console.log("Resultados guardados exitosamente.");
+      
       localStorage.removeItem(`preguntas-${temaId}`);
       localStorage.removeItem(`numeroPregunta-${temaId}`);
       localStorage.removeItem(`respuestas-${temaId}`);
@@ -202,7 +202,7 @@ const Evaluacion = () => {
       const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${temaId}/ultimo`);
       if (examenResponse.ok) {
         const examenData = await examenResponse.json();
-        console.log('Últimas respuestas encontradas:', examenData);
+        
         const ultimaRespuesta = examenData.preguntasRespondidas[0]; // Obtener el primer elemento del arreglo ordenado
         setRespuestasAnteriores(ultimaRespuesta.respuestas); // Guardar las respuestas del último intento en el estado
         setModalActivo(true); // Mostrar el modal con las respuestas

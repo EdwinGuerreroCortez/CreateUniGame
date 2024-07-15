@@ -15,7 +15,7 @@ const BarraNavDocen = () => {
         const userData = JSON.parse(localStorage.getItem('usuario'));
         if (userData) {
             setUserType(userData.tipo); // Establecer el tipo de usuario en el estado
-            console.log('Tipo de usuario:', userData.tipo); // Depuración en consola
+             // Depuración en consola
         }
     }, []);
 

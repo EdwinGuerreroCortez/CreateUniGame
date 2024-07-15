@@ -63,7 +63,7 @@ const SubirImagenes = () => {
           setUploadProgress(Math.round((progressEvent.loaded * 100) / progressEvent.total));
         }
       });
-      console.log('Imágenes subidas exitosamente:', response.data);
+      
       setUploadedImageNames(response.data.imageNames);
       setUploadProgress(null);
       setSelectedFiles([]);
