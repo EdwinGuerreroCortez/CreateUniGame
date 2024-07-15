@@ -85,15 +85,15 @@ const Evaluaciones = () => {
     setShowConcentradoModal(true);
     handleFilterConcentrado(selectedCurso, concentradoDate);
   };
-  
+
   const handleFilterConcentrado = (curso, date) => {
-    setSelectedCurso(curso);  // Asegurarse de actualizar el curso seleccionado
+    setSelectedCurso(curso);
     if (!curso && !date) {
       setFilteredConcentrado([]);
       setMaxEvaluaciones(0);
       return;
     }
-  
+
     const concentrado = evaluaciones.filter(evaluacion =>
       (curso === '' || evaluacion.nombreCurso === curso) &&
       (date === '' || new Date(evaluacion.fechaUltimoIntento) >= new Date(date))
@@ -106,12 +106,12 @@ const Evaluaciones = () => {
       acc[matricula].calificaciones.push(evaluacion.preguntasRespondidas[evaluacion.preguntasRespondidas.length - 1].porcentaje);
       return acc;
     }, {});
-  
-    const maxEval = Math.max(...Object.values(concentrado).map(item => item.calificaciones.length));
+
+    const maxEval = Math.max(...Object.values(concentrado).map(item => item.calificaciones.length), 0);
     setMaxEvaluaciones(maxEval);
-  
+
     const concentradoCompleto = Object.values(concentrado).map(item => {
-      const calificacionesCompletas = [...item.calificaciones, ...Array(maxEval - item.calificaciones.length).fill('N/P')];
+      const calificacionesCompletas = [...item.calificaciones, ...Array(Math.max(0, maxEval - item.calificaciones.length)).fill('N/P')];
       const sum = calificacionesCompletas.reduce((acc, cal) => acc + (cal !== 'N/P' ? cal : 0), 0);
       const promedio = (sum / maxEval).toFixed(2);
       return {
@@ -121,10 +121,10 @@ const Evaluaciones = () => {
         promedio: promedio
       };
     });
-  
+
     setFilteredConcentrado(concentradoCompleto);
   };
-  
+
   const handleDownloadConcentrado = () => {
     const worksheetData = [
       [],
@@ -134,14 +134,14 @@ const Evaluaciones = () => {
       [],
       ['NO.', 'Matrícula', 'Nombre Completo', ...Array.from({ length: maxEvaluaciones }, (_, index) => `Evaluación ${index + 1}`), 'Promedio']
     ];
-  
+
     filteredConcentrado.forEach((item, index) => {
       const row = [index + 1, item.matricula, item.nombreCompleto, ...item.calificaciones, item.promedio];
       worksheetData.push(row);
     });
-  
+
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-  
+
     // Aplicar estilos para todo el documento
     const range = XLSX.utils.decode_range(worksheet['!ref']);
     worksheet['!cols'] = [
@@ -151,14 +151,14 @@ const Evaluaciones = () => {
       ...Array(maxEvaluaciones).fill({ wch: 12 }), // Evaluaciones
       { wch: 10 }  // Promedio
     ];
-  
+
     // Combinar celdas para "Datos del Concentrado"
     worksheet['!merges'] = [
       { s: { r: 1, c: 1 }, e: { r: 1, c: 4 } }, // Combina celdas B2 a E2
       { s: { r: 2, c: 1 }, e: { r: 2, c: 4 } }, // Combina celdas B3 a E3
       { s: { r: 3, c: 1 }, e: { r: 3, c: 4 } }  // Combina celdas B4 a E4
     ];
-  
+
     // Estilo para la sección "Datos del Concentrado"
     for (let R = 1; R <= 3; ++R) {
       for (let C = 1; C <= 4; ++C) {
@@ -173,7 +173,7 @@ const Evaluaciones = () => {
         }
       }
     }
-  
+
     // Estilo para la tabla de evaluaciones
     for (let R = 5; R <= range.e.r; ++R) {
       for (let C = 0; C <= range.e.c; ++C) {
@@ -213,21 +213,21 @@ const Evaluaciones = () => {
         }
       }
     }
-  
+
     const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Concentrado');
-  
+
     let fileName = `Concentrado_${selectedCurso ? selectedCurso : 'Todos_los_cursos'}`;
     if (selectedDate) {
       fileName += `_${selectedDate}`;
     }
     fileName += '.xlsx';
-  
+
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(blob, fileName);
   };
-  
+
   return (
     <div className='has-background-black-bis'>
       <section className="section">
@@ -471,4 +471,3 @@ const Evaluaciones = () => {
 };
 
 export default Evaluaciones;
-
