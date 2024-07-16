@@ -1,9 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import img1 from '../img/login1.jpg';
+import img2 from '../img/login2.webp';
+import img3 from '../img/login3.webp';
+import img4 from '../img/login4.webp';
+import img5 from '../img/login5.jpg';
+import img6 from '../img/login6.jpg';
+import img7 from '../img/img11.jpg';
+import img8 from '../img/img9.jpg';
+import img9 from '../img/img8.jpg';
 import 'bulma/css/bulma.min.css';
 import '../CSS/style.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+
+const backgrounds = [img9, img1, img3, img6, img4, img8, img5, img2, img7];
+
+const preloadImages = (images) => {
+  return Promise.all(images.map((image) => {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.src = image;
+      img.onload = resolve;
+    });
+  }));
+};
 
 const RecuperarContrasena = () => {
   const [email, setEmail] = useState('');
@@ -16,6 +35,7 @@ const RecuperarContrasena = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [backgroundIndex, setBackgroundIndex] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +48,14 @@ const RecuperarContrasena = () => {
       return () => clearTimeout(timer);
     }
   }, [errorMessage, successMessage]);
+
+  useEffect(() => {
+    preloadImages(backgrounds);
+    const interval = setInterval(() => {
+      setBackgroundIndex((prevIndex) => (prevIndex + 1) % backgrounds.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handleEmailSubmit = async (event) => {
     event.preventDefault();
@@ -177,13 +205,14 @@ const RecuperarContrasena = () => {
           <span className="icon is-small is-left has-text-white">
             <i className="fas fa-lock"></i>
           </span>
-          <span
-            className="icon is-small is-right has-text-white"
-            style={{ cursor: 'pointer' }}
+          <button
+            type="button"
+            className="button is-small is-right has-text-white"
             onClick={() => setShowPassword(!showPassword)}
+            style={{ position: 'absolute', right: '10px', top: '5px', backgroundColor: 'green', color: 'black' }}
           >
-            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
-          </span>
+            {showPassword ? 'Ocultar' : 'Mostrar'}
+          </button>
         </div>
       </div>
       <div className="field">
@@ -199,13 +228,14 @@ const RecuperarContrasena = () => {
           <span className="icon is-small is-left has-text-white">
             <i className="fas fa-lock"></i>
           </span>
-          <span
-            className="icon is-small is-right has-text-white"
-            style={{ cursor: 'pointer' }}
+          <button
+            type="button"
+            className="button is-small is-right has-text-white"
             onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+            style={{ position: 'absolute', right: '10px', top: '5px', backgroundColor: 'green', color: 'black' }}
           >
-            <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
-          </span>
+            {showConfirmPassword ? 'Ocultar' : 'Mostrar'}
+          </button>
         </div>
       </div>
       <div className="field">
@@ -222,6 +252,10 @@ const RecuperarContrasena = () => {
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
+      backgroundImage: `url(${backgrounds[backgroundIndex]})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      transition: 'background-image 1s ease-in-out',
       minHeight: '100vh',
       position: 'relative'
     }}>

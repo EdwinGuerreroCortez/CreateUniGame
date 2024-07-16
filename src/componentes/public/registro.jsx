@@ -340,7 +340,7 @@ const FormRegistro = () => {
 
                 alert('Registro completado!');
                 setTimeout(() => {
-                    window.location.href = '/public/login';
+                    window.location.href = '/studyweb/public/login';
                 }, 2000);
             }
         } catch (error) {
