@@ -1,5 +1,10 @@
 /* adminForms.css */
 
+.input::placeholder,
+.textarea::placeholder {
+  color: #ffffff; /* Color del texto del placeholder */
+}
+
 .box {
   background-color: #1f1f1f;
   color: white;

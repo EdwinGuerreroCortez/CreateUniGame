@@ -1,3 +1,8 @@
+input::placeholder,
+textarea::placeholder {
+  color: #888; /* Color del texto del placeholder */
+}
+
 #contact{
   box-shadow: 0 0 15px 5px rgba(72, 199, 142, 0.5);
 
