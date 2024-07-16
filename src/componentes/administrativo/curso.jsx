@@ -22,7 +22,7 @@ const CrearCurso = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/curso', {
+      const response = await axios.post('http://172.16.19.1:3001/api/curso', {
         nombre: nombreCurso,
       });
 
