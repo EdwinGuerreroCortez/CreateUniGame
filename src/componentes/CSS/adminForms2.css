@@ -2,7 +2,7 @@
 
 .input::placeholder,
 .textarea::placeholder {
-  color: #ffffff; /* Color del texto del placeholder */
+  color: #888; /* Color del texto del placeholder */
 }
 
 .box {
