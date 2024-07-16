@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import 'bulma/css/bulma.min.css';
 import '../CSS/style.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const RecuperarContrasena = () => {
   const [email, setEmail] = useState('');
@@ -12,6 +14,8 @@ const RecuperarContrasena = () => {
   const [emailValid, setEmailValid] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -162,19 +166,45 @@ const RecuperarContrasena = () => {
     <form onSubmit={handleContrasenaSubmit}>
       <div className="field">
         <label className="label has-text-white">Nueva Contraseña</label>
-        <div className="control has-icons-left">
-          <input className="input is-black" type="password" placeholder="********" value={nuevaContrasena} onChange={e => setNuevaContrasena(e.target.value)} />
+        <div className="control has-icons-left has-icons-right">
+          <input
+            className="input is-black"
+            type={showPassword ? 'text' : 'password'}
+            placeholder="********"
+            value={nuevaContrasena}
+            onChange={e => setNuevaContrasena(e.target.value)}
+          />
           <span className="icon is-small is-left has-text-white">
             <i className="fas fa-lock"></i>
+          </span>
+          <span
+            className="icon is-small is-right has-text-white"
+            style={{ cursor: 'pointer' }}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
           </span>
         </div>
       </div>
       <div className="field">
         <label className="label has-text-white">Confirmar Nueva Contraseña</label>
-        <div className="control has-icons-left">
-          <input className="input is-black" type="password" placeholder="********" value={confirmarContrasena} onChange={e => setConfirmarContrasena(e.target.value)} />
+        <div className="control has-icons-left has-icons-right">
+          <input
+            className="input is-black"
+            type={showConfirmPassword ? 'text' : 'password'}
+            placeholder="********"
+            value={confirmarContrasena}
+            onChange={e => setConfirmarContrasena(e.target.value)}
+          />
           <span className="icon is-small is-left has-text-white">
             <i className="fas fa-lock"></i>
+          </span>
+          <span
+            className="icon is-small is-right has-text-white"
+            style={{ cursor: 'pointer' }}
+            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+          >
+            <FontAwesomeIcon icon={showConfirmPassword ? faEyeSlash : faEye} />
           </span>
         </div>
       </div>
