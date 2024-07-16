@@ -1,3 +1,6 @@
+/* src/CSS/style2.css */
+
+/* Fondo negro para la barra de navegación */
 .navbar {
   background-color: #090A0C !important;
 }
@@ -5,17 +8,58 @@
 .has-background-black {
   background-color: #090A0C !important;
 }
-  
+
+/* Fondo negro para los submenús */
+.navbar-dropdown {
+  background-color: rgb(20, 22, 26) !important;
+  color: #48C78E !important;
+}
+
+/* Fondo negro para los elementos del submenú */
+.navbar-dropdown .navbar-item {
+  background-color: rgb(20, 22, 26) !important;
+  color: #48C78E !important;
+}
+
+/* Cambia el fondo a verde claro cuando se pasa el ratón sobre los elementos del submenú */
+.navbar-dropdown .navbar-item:hover {
+  background-color: rgba(72, 199, 142, 0.1) !important;
+  color: #48C78E !important;
+}
+
+/* Fondo negro para el enlace del submenú */
+.navbar-dropdown .navbar-link {
+  background-color: #090A0C !important;
+  color: #48C78E !important;
+}
+
+/* Cambia el fondo a verde claro cuando se pasa el ratón sobre el enlace del submenú */
+.navbar-dropdown .navbar-link:hover {
+  background-color: rgba(72, 199, 142, 0.1) !important;
+  color: #48C78E !important;
+}
+
+/* Fondo negro para el menú principal (desplegable) */
+.navbar-link {
+  background-color: #090A0C !important;
+  color: #48C78E !important;
+}
+
+/* Cambia el fondo a verde claro cuando se pasa el ratón sobre el menú principal (desplegable) */
+.navbar-link:hover {
+  background-color: rgba(72, 199, 142, 0.1) !important;
+  color: #48C78E !important;
+}
 
 @keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.5); }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.5); }
 }
 
 .animated-letter {
-    display: inline-block;
-    animation: pulse 2s infinite; 
-    margin-right: 5px;  
+  display: inline-block;
+  animation: pulse 2s infinite; 
+  margin-right: 5px;  
 }
 
 .animated-letter:nth-child(1) { animation-delay: 0s; }
@@ -26,64 +70,61 @@
 .animated-letter:nth-child(6) { animation-delay: 1s; }
 .animated-letter:nth-child(7) { animation-delay: 1.2s; }
 
-/* src/CSS/style2.css */
-
 .navbar {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .navbar-item {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 500;
-  }
-  
-  .navbar-item:hover {
-    background-color: rgba(72, 199, 142, 0.1);
-  }
-  
-  .animated-letters {
-    display: flex;
-    align-items: center;
-  }
-  
-  .animated-letter {
-    display: inline-block;
-    transition: transform 0.3s ease-in-out;
-  }
-  
-  .animated-letter:hover {
-    transform: translateY(-5px);
-    color: #48C78E;
-  }
-  
-  .navbar-burger span {
-    background-color: #48C78E;
-  }
-  
-  .button.is-success {
-    background-color: #48C78E;
-    border-color: #48C78E;
-  }
-  
-  .button.is-success:hover {
-    background-color: #3AAE71;
-    border-color: #3AAE71;
-  }
-  
-  .button.is-primary {
-    background-color: #3273DC;
-    border-color: #3273DC;
-  }
-  
-  .button.is-primary:hover {
-    background-color: #275fbd;
-    border-color: #275fbd;
-  }
-  .imagen-perfil {
-    width: 48px !important;
-    height: 48px !important;
-    max-height: none !important;
-  }
-  
-  
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-item {
+  font-family: 'Poppins', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.navbar-item:hover {
+  background-color: rgba(72, 199, 142, 0.1);
+}
+
+.animated-letters {
+  display: flex;
+  align-items: center;
+}
+
+.animated-letter {
+  display: inline-block;
+  transition: transform 0.3s ease-in-out;
+}
+
+.animated-letter:hover {
+  transform: translateY(-5px);
+  color: #48C78E;
+}
+
+.navbar-burger span {
+  background-color: #48C78E;
+}
+
+.button.is-success {
+  background-color: #48C78E;
+  border-color: #48C78E;
+}
+
+.button.is-success:hover {
+  background-color: #3AAE71;
+  border-color: #3AAE71;
+}
+
+.button.is-primary {
+  background-color: #3273DC;
+  border-color: #3273DC;
+}
+
+.button.is-primary:hover {
+  background-color: #275fbd;
+  border-color: #275fbd;
+}
+
+.imagen-perfil {
+  width: 48px !important;
+  height: 48px !important;
+  max-height: none !important;
+}
