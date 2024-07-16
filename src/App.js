@@ -11,6 +11,7 @@ import Extra from './componentes/public/extra';
 import Fqs from './componentes/public/faqs';
 import Acerca from './componentes/public/acerca';
 import Contactanos from './componentes/public/contactanos';
+import RecuperarContrasena from './componentes/public/recuperar';
 
 // Componentes de Usuario
 import LayoutEncabeUser from './componentes/usuario/layoutEncabeUser';
@@ -60,6 +61,7 @@ const App = () => {
         <Route path="/public/paginaPrincipal" element={<LayoutConEncab><PaginaPrincipal /></LayoutConEncab>} />
         <Route path="/public/acerca" element={<LayoutConEncab><Acerca /></LayoutConEncab>} />
         <Route path="/public/contactanos" element={<LayoutConEncab><Contactanos /></LayoutConEncab>} />
+        <Route path="/public/recuperar" element={<RecuperarContrasena />} />
 
         {/* Rutas de Usuario */}
         <Route path="/user/bienvenida" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Bienvenida /><CursosDisponibles/></LayoutEncabeUser></RutaPrivada>} />

@@ -186,6 +186,7 @@ const FormRegistro = () => {
           </form>
           <div className="has-text-centered" style={{ marginTop: '10px' }}>
             <p className="has-text-white" style={{ fontSize: '15px' }}>¿No tienes cuenta? <a href="/studyweb/public/registro" className="has-text-link" style={{ fontSize: '15px' }}>Regístrate</a></p>
+            <p className="has-text-white" style={{ fontSize: '15px', marginTop: '10px' }}>¿Olvidaste tu contraseña? <a href="/studyweb/public/recuperar" className="has-text-link" style={{ fontSize: '15px' }}>Recuperar Contraseña</a></p>
           </div>
         </div>
       </div>
