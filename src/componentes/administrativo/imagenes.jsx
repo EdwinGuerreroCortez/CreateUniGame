@@ -103,23 +103,25 @@ const SubirImagenes = () => {
           <div className="column is-full-mobile is-half-tablet is-one-third-desktop">
             <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#021929' }}>
               <h1 className="title has-text-white has-text-centered">Subir Imágenes</h1>
-              <div className="file has-name is-fullwidth" style={{ marginBottom: '1rem' }}>
-                <label className="file-label">
-                  <input className="file-input" type="file" multiple onChange={handleFileChange} />
-                  <span className="file-cta">
-                    <span className="file-icon">
-                      <i className="fas fa-upload"></i>
+              <div className="file-upload-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', marginBottom: '1rem' }}>
+                <div className="file has-name is-centered" style={{ border: '2px dashed #ddd', borderRadius: '8px', padding: '20px', backgroundColor: '#212121', textAlign: 'center', cursor: 'pointer' }}>
+                  <label className="file-label" style={{ display: 'block', color: '#ffffff' }}>
+                    <input className="file-input" type="file" multiple onChange={handleFileChange} style={{ display: 'none' }} />
+                    <span className="file-cta">
+                      <span className="file-icon">
+                        <i className="fas fa-upload" style={{ fontSize: '24px', marginBottom: '10px' }}></i>
+                      </span>
+                      <span className="file-label">Seleccionar archivos...</span>
                     </span>
-                    <span className="file-label">Seleccionar archivos...</span>
-                  </span>
-                  {selectedFiles.length > 0 && (
-                    <span className="file-name">
-                      {Array.from(selectedFiles).map(file => file.name).join(', ')}
-                    </span>
-                  )}
-                </label>
+                    {selectedFiles.length > 0 && (
+                      <span className="file-name">
+                        {Array.from(selectedFiles).map(file => file.name).join(', ')}
+                      </span>
+                    )}
+                  </label>
+                </div>
               </div>
-              <div className="has-text-centered">
+              <div className="has-text-centered" style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
                 <button
                   className="button is-dark is-medium"
                   style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}
