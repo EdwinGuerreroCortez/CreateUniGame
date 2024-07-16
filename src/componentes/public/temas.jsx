@@ -11,8 +11,12 @@ const Temas = () => {
       try {
         const response = await axios.get('http://localhost:3001/api/cursos');
         const cursosConTemas = response.data.filter(curso => curso.temas && curso.temas.length > 0);
-        const cursosAleatorios = cursosConTemas.sort(() => 0.5 - Math.random()).slice(0, 12);
-        setCursos(cursosAleatorios);
+        const cursosAleatorios = cursosConTemas.sort(() => 0.5 - Math.random()).slice(0, 8);
+        const cursosConTemasLimitados = cursosAleatorios.map(curso => ({
+          ...curso,
+          temas: curso.temas.slice(0, 5) // Limitar a 5 temas
+        }));
+        setCursos(cursosConTemasLimitados);
       } catch (error) {
         console.error('Error al obtener los cursos', error);
       }
@@ -46,7 +50,7 @@ const Temas = () => {
             {cursoActivo === curso._id && (
               <div className="temas-modal" style={{ border: '1px solid #4CAF50' }}>
                 <div className="temas-modal-content">
-                  <p><strong>Temas aprender:</strong></p>
+                  <p><strong>Temas a aprender:</strong></p>
                   <ul className="temas-list">
                     {curso.temas.map((tema, index) => (
                       <li key={index}>{tema.titulo}</li>

@@ -81,6 +81,14 @@ const RecuperarContrasena = () => {
       setErrorMessage('Las contraseñas no coinciden.');
       return;
     }
+
+    // Validar la nueva contraseña
+    const contrasenaRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!contrasenaRegex.test(nuevaContrasena)) {
+      setErrorMessage('La contraseña debe tener al menos 8 caracteres, incluir una letra mayúscula, una letra minúscula, un número y un carácter especial.');
+      return;
+    }
+
     try {
       const response = await fetch('http://localhost:3001/api/cambiar-contrasena', {
         method: 'POST',
