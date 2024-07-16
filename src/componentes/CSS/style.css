@@ -269,3 +269,7 @@
 .color-change {
   animation: colorChange 5s infinite;
 }
+.input::placeholder,
+.textarea::placeholder {
+  color: #888; /* Color del texto del placeholder */
+}
