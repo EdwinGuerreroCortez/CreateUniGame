@@ -26,7 +26,7 @@ const Curso = () => {
   const fetchCursosSuscritos = async () => {
     const userId = localStorage.getItem("userId");
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}/cursos-suscritos`);
+      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/cursos-suscritos`);
       const data = await response.json();
        // Línea de depuración
       setCursos(data.cursos); // Asegúrate de que el backend devuelve un objeto con una propiedad 'cursos'
@@ -42,7 +42,7 @@ const Curso = () => {
   // Función para obtener los temas del curso seleccionado
   const fetchTemasDelCurso = async (cursoId) => {
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/cursos/${cursoId}/temas`);
+      const response = await fetch(`http://localhost:3001/api/cursos/${cursoId}/temas`);
       const data = await response.json();
       setTemas(data);
     } catch (error) {
@@ -62,7 +62,7 @@ const Curso = () => {
 
   const verificarEvaluacion = async (temaId) => {
     try {
-      const evaluacionResponse = await fetch(`http://172.16.19.1:3001/api/tema-evaluacion/${temaId}`);
+      const evaluacionResponse = await fetch(`http://localhost:3001/api/tema-evaluacion/${temaId}`);
       const evaluacionData = await evaluacionResponse.json();
 
       if (evaluacionData && evaluacionData.evaluacion_habilitada !== undefined) {
@@ -134,7 +134,7 @@ const Curso = () => {
   const handleEvaluationClick = async () => {
     const userId = localStorage.getItem("userId");
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}`);
+      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}`);
       const userData = await response.json();
       const evaluacionRealizada = userData.evaluaciones_realizadas.find(
         (evaluacion) => evaluacion.tema_id === temaSeleccionado._id

@@ -23,13 +23,13 @@ const EvaluacionesDocente = () => {
     const fetchEvaluaciones = async () => {
       try {
         const userId = localStorage.getItem('userId');
-        const response = await fetch(`http://172.16.19.1:3001/api/usuario/${userId}/temasbuscar`);
+        const response = await fetch(`http://localhost:3001/api/usuario/${userId}/temasbuscar`);
         const data = await response.json();
 
         const examenesIds = data.examenes.map(examen => examen._id);
 
         const examenesDetalles = await Promise.all(examenesIds.map(async (id) => {
-          const response = await fetch(`http://172.16.19.1:3001/api/examenes/${id}`);
+          const response = await fetch(`http://localhost:3001/api/examenes/${id}`);
           return response.json();
         }));
 
@@ -62,7 +62,7 @@ const EvaluacionesDocente = () => {
 
   const toggleExamenPermitido = async (examen) => {
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/examenes/${examen._id}/toggle`, {
+      const response = await fetch(`http://localhost:3001/api/examenes/${examen._id}/toggle`, {
         method: 'PUT',
       });
       if (response.ok) {

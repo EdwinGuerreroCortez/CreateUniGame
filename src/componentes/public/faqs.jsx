@@ -10,7 +10,7 @@ const FAQ = () => {
   useEffect(() => {
     const fetchFaqs = async () => {
       try {
-        const response = await axios.get('http://172.16.19.1:3001/api/contact/messages/questions');
+        const response = await axios.get('http://localhost:3001/api/contact/messages/questions');
         // Filtrar las FAQs para mostrar solo las que tienen respuesta
         const faqsWithAnswer = response.data.filter(faq => faq.respuesta);
         // Seleccionar 10 preguntas aleatorias

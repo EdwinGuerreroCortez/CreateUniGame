@@ -281,7 +281,7 @@ const FormRegistro = () => {
     const finishRegistration = async () => {
         try {
             
-            const response = await fetch('http://172.16.19.1:3001/api/verificar', {
+            const response = await fetch('http://localhost:3001/api/verificar', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -307,7 +307,7 @@ const FormRegistro = () => {
             }
 
             if (data.message === 'Usuario no encontrado.') {
-                const registro = await fetch('http://172.16.19.1:3001/api/usuarios', {
+                const registro = await fetch('http://localhost:3001/api/usuarios', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
