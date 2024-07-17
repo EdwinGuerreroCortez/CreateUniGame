@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import 'bulma/css/bulma.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import * as XLSX from 'sheetjs-style'; // Usamos sheetjs-style en lugar de xlsx
+import * as XLSX from 'sheetjs-style';
 import { saveAs } from 'file-saver';
 
 const Evaluaciones = () => {
@@ -98,8 +98,10 @@ const Evaluaciones = () => {
       (curso === '' || evaluacion.nombreCurso === curso) &&
       (date === '' || new Date(evaluacion.fechaUltimoIntento) >= new Date(date))
     ).reduce((acc, evaluacion) => {
-      const matricula = evaluacion.usuarioId.datos_personales.matricula;
-      const nombreCompleto = `${evaluacion.usuarioId.datos_personales.nombre} ${evaluacion.usuarioId.datos_personales.apellido_paterno} ${evaluacion.usuarioId.datos_personales.apellido_materno}`;
+      const matricula = evaluacion.usuarioId?.datos_personales?.matricula || 'Matrícula no disponible';
+      const nombreCompleto = evaluacion.usuarioId?.datos_personales 
+        ? `${evaluacion.usuarioId.datos_personales.nombre} ${evaluacion.usuarioId.datos_personales.apellido_paterno} ${evaluacion.usuarioId.datos_personales.apellido_materno}` 
+        : 'Nombre no disponible';
       if (!acc[matricula]) {
         acc[matricula] = { matricula, nombreCompleto, calificaciones: [] };
       }
@@ -142,7 +144,6 @@ const Evaluaciones = () => {
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
 
-    // Aplicar estilos para todo el documento
     const range = XLSX.utils.decode_range(worksheet['!ref']);
     worksheet['!cols'] = [
       { wch: 5 },  // NO.
@@ -152,21 +153,19 @@ const Evaluaciones = () => {
       { wch: 10 }  // Promedio
     ];
 
-    // Combinar celdas para "Datos del Concentrado"
     worksheet['!merges'] = [
-      { s: { r: 1, c: 1 }, e: { r: 1, c: 4 } }, // Combina celdas B2 a E2
-      { s: { r: 2, c: 1 }, e: { r: 2, c: 4 } }, // Combina celdas B3 a E3
-      { s: { r: 3, c: 1 }, e: { r: 3, c: 4 } }  // Combina celdas B4 a E4
+      { s: { r: 1, c: 1 }, e: { r: 1, c: 4 } },
+      { s: { r: 2, c: 1 }, e: { r: 2, c: 4 } },
+      { s: { r: 3, c: 1 }, e: { r: 3, c: 4 } }
     ];
 
-    // Estilo para la sección "Datos del Concentrado"
     for (let R = 1; R <= 3; ++R) {
       for (let C = 1; C <= 4; ++C) {
         const cellAddress = { c: C, r: R };
         const cellRef = XLSX.utils.encode_cell(cellAddress);
         if (worksheet[cellRef]) {
           worksheet[cellRef].s = {
-            fill: { fgColor: { rgb: "CCFFCC" } }, // Fondo verde claro
+            fill: { fgColor: { rgb: "CCFFCC" } },
             font: { bold: true },
             alignment: { horizontal: "center", vertical: "center" }
           };
@@ -174,16 +173,15 @@ const Evaluaciones = () => {
       }
     }
 
-    // Estilo para la tabla de evaluaciones
     for (let R = 5; R <= range.e.r; ++R) {
       for (let C = 0; C <= range.e.c; ++C) {
         const cellAddress = { c: C, r: R };
         const cellRef = XLSX.utils.encode_cell(cellAddress);
         if (worksheet[cellRef]) {
-          if (R === 5) { // Encabezados
+          if (R === 5) {
             worksheet[cellRef].s = {
               font: { bold: true, color: { rgb: "000000" } },
-              fill: { fgColor: { rgb: "FFD700" } }, // Fondo amarillo dorado
+              fill: { fgColor: { rgb: "FFD700" } },
               alignment: { horizontal: "center", vertical: "center" },
               border: {
                 top: { style: "thin", color: { rgb: "000000" } },
@@ -192,7 +190,7 @@ const Evaluaciones = () => {
                 right: { style: "thin", color: { rgb: "000000" } }
               }
             };
-          } else { // Datos
+          } else {
             worksheet[cellRef].s = {
               alignment: { horizontal: "center", vertical: "center" },
               border: {
@@ -202,12 +200,12 @@ const Evaluaciones = () => {
                 right: { style: "thin", color: { rgb: "000000" } }
               }
             };
-            if (C === 0) { // Columna de NO.
-              worksheet[cellRef].s.fill = { fgColor: { rgb: "FFA500" } }; // Fondo anaranjado
+            if (C === 0) {
+              worksheet[cellRef].s.fill = { fgColor: { rgb: "FFA500" } };
               worksheet[cellRef].s.font = { bold: true, color: { rgb: "000000" } };
             }
             if (worksheet[cellRef].v === 'N/P') {
-              worksheet[cellRef].s.fill = { fgColor: { rgb: "FF0000" } }; // Fondo rojo claro para 'N/P'
+              worksheet[cellRef].s.fill = { fgColor: { rgb: "FF0000" } };
             }
           }
         }
@@ -295,12 +293,12 @@ const Evaluaciones = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {filteredEvaluaciones.map((item, index) => (
+                  {evaluaciones.map((item, index) => (
                     <tr key={index}>
-                      <td className="has-text-white">{item.usuarioId.datos_personales.matricula}</td>
-                      <td className="has-text-white">{item.tituloTema}</td>
-                      <td className="has-text-white">{item.nombreCurso}</td>
-                      <td className="has-text-white">{new Date(item.fechaUltimoIntento).toLocaleDateString()}</td>
+                      <td className="has-text-white">{item.usuarioId?.datos_personales?.matricula || 'Matrícula no disponible'}</td>
+                      <td className="has-text-white">{item.tituloTema || 'Tema no disponible'}</td>
+                      <td className="has-text-white">{item.nombreCurso || 'Curso no disponible'}</td>
+                      <td className="has-text-white">{item.fechaUltimoIntento ? new Date(item.fechaUltimoIntento).toLocaleDateString() : 'Fecha no disponible'}</td>
                       <td className="has-text-white">
                         <button
                           className="button is-small is-info"
@@ -310,7 +308,7 @@ const Evaluaciones = () => {
                         </button>
                       </td>
                       <td className="has-text-white">{item.intentos}</td>
-                      <td className="has-text-white">{item.preguntasRespondidas[item.preguntasRespondidas.length - 1].porcentaje}%</td>
+                      <td className="has-text-white">{item.preguntasRespondidas.length > 0 ? item.preguntasRespondidas[item.preguntasRespondidas.length - 1].porcentaje + '%' : 'Calificación no disponible'}</td>
                       <td className="has-text-white">
                         <div className="tooltip" data-tooltip={item.examenPermitido ? 'No permitir examen' : 'Permitir examen'}>
                           <button
