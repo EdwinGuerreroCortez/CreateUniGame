@@ -128,3 +128,18 @@
   height: 48px !important;
   max-height: none !important;
 }
+
+/* Estilo base para el submenú */
+.navbar-item.has-dropdown.is-hoverable .navbar-dropdown.is-right {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-top: 0;
+  margin-left: 0;
+}
+
+/* Mostrar el submenú cuando el elemento padre está en hover */
+.navbar-item.has-dropdown.is-hoverable:hover .navbar-dropdown.is-right {
+  display: block;
+}

@@ -33,6 +33,7 @@ const FormRegistro = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [imagesPreloaded, setImagesPreloaded] = useState(false);
+  const [visitorCount, setVisitorCount] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -59,6 +60,28 @@ const FormRegistro = () => {
     }
   }, [imagesPreloaded]);
 
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage('');
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  useEffect(() => {
+    const fetchVisitorCount = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/total-visitas');
+        const data = await response.json();
+        setVisitorCount(data.totalVisitas);
+      } catch (error) {
+        console.error('Error fetching visitor count:', error);
+      }
+    };
+    fetchVisitorCount();
+  }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (emailValid && password) {
@@ -77,8 +100,6 @@ const FormRegistro = () => {
         }
 
         const data = await response.json();
-        
-
         const userId = data.userId;
         const userType = data.tipo;
 
@@ -91,10 +112,9 @@ const FormRegistro = () => {
             navigate('/user/bienvenida');
           } else if (userType === 'administrador') {
             navigate('/admin/bienvenida');
-          } else if(userType === 'docente'){
+          } else if (userType === 'docente') {
             navigate('/docente/bienvenida');
-          }else
-          {
+          } else {
             throw new Error('Tipo de usuario desconocido');
           }
         } else {
@@ -189,6 +209,21 @@ const FormRegistro = () => {
             <p className="has-text-white" style={{ fontSize: '15px', marginTop: '10px' }}>¿Olvidaste tu contraseña? <a href="/studyweb/public/recuperar" className="has-text-link" style={{ fontSize: '15px' }}>Recuperar Contraseña</a></p>
           </div>
         </div>
+      </div>
+
+      <div style={{
+        position: 'absolute',
+        top: '10px',
+        right: '10px',
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        color: 'white',
+        padding: '10px',
+        borderRadius: '10px',
+        textAlign: 'center'
+      }}>
+        <p style={{ margin: 0 }}>Eres el visitante número:</p>
+        <p style={{ fontSize: '24px', margin: 0 }}>{visitorCount}</p>
+        <p style={{ margin: 0 }}>Contador inicializado el 17/07/2024</p>
       </div>
     </div>
   );

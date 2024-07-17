@@ -152,13 +152,14 @@ const CursosDisponibles = () => {
           {cursosMostrados.map((curso) => (
             <div key={curso._id} className="column is-3">
               <div className={`box curso-card ${cursoSeleccionado && cursoSeleccionado._id === curso._id ? "selected" : ""}`} onClick={() => seleccionarCurso(curso)}>
-                <div className="has-text-white" style={{ cursor: "pointer", padding: "20px" }}>
+                <div className="has-text-white" style={{ cursor: "pointer" }}>
                   <span className="title is-4 has-text-white" style={{ fontSize: curso.nombre.length > 10 ? '1rem' : '1.5rem' }}>
                     {curso.nombre}
                   </span>
                   {cursoSeleccionado && cursoSeleccionado._id === curso._id && (
                     <div className="temas-container" style={{ marginTop: "10px" }}>
-                      <p>Temas a aprender:</p>
+                      <p>Aquí Aprenderas:</p>
+                      <br />
                       <ul>
                         {temas[curso._id] && temas[curso._id].map((tema) => (
                           <li key={tema._id} className="has-text-white">

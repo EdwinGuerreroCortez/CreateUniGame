@@ -38,8 +38,9 @@ const BarraNavAdmin = () => {
                         <a className="navbar-link has-text-success">Administración</a>
                         <div className="navbar-dropdown">
                             <Link className="navbar-item" to="/admin/usuarios">Usuarios</Link>
+                            <Link className="navbar-item" to="/admin/usuarios/entradas">Entradas</Link>
                             <Link className="navbar-item" to="/admin/informacion/buzon">Bandeja de Entrada</Link>
-                            <Link className="navbar-item" to="/admin/informacion/mv">Misión visión</Link>
+                            <Link className="navbar-item" to="/admin/informacion/mv">Misión y Visión</Link>
                         </div>
                     </div>
 
@@ -70,7 +71,7 @@ const BarraNavAdmin = () => {
                             <Link className="navbar-item" to="/admin/alumnos-suscritos">Alumnos suscritos</Link>
                         </div>
                     </div>
-                    
+
                     {/* Enlace a Imágenes */}
                     <Link className="navbar-item has-text-success" to="/admin/imagenes">Imágenes</Link>
                 </div>
