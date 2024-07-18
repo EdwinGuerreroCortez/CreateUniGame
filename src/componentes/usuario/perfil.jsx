@@ -76,18 +76,20 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
     formData.append('imagen', imagenFile);
 
     try {
-      const response = await axios.post('https://gamebackend-1.onrender.com/api/imagenes/upload', formData, {
+      const response = await axios.post('http://localhost:3001/api/imagenes/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
       });
+      
 
       const imageUrl = response.data.url;
       const userId = localStorage.getItem('userId');
 
-      await axios.put(`https://gamebackend-1.onrender.com/api/usuarios/${userId}/imagen`, {
+      await axios.put(`http://localhost:3001/api/usuarios/${userId}/imagen`, {
         imagenPerfil: imageUrl
       });
+      
 
       setUsuario({
         ...usuario,
@@ -131,7 +133,7 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
     setCargando(true);
     try {
       const userId = localStorage.getItem('userId');
-      await axios.put(`https://gamebackend-1.onrender.com/api/usuarios/${userId}`, {
+      await axios.put(`http://localhost:3001/api/usuarios/${userId}`, {
         username: usuario.nombreUsuario,
         datos_personales: {
           nombre: usuario.nombre,
@@ -144,6 +146,7 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
         imagenPerfil: usuario.imagen,
         ...(usuario.contrasena && { password: usuario.contrasena })
       });
+      
       setCargando(false);
       setEditando(false);
       setMensajeExito('¡Datos actualizados correctamente!');

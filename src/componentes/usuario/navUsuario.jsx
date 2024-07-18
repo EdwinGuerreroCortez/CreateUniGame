@@ -20,7 +20,7 @@ const BarraNav = () => {
       const userId = localStorage.getItem('userId');
       if (userId) {
         try {
-          const response = await axios.get(`https://gamebackend-1.onrender.com/api/usuarios/${userId}`);
+          const response = await axios.get(`http://localhost:3001/api/usuarios/${userId}`);
           const data = response.data;
           setUsuario(data);
         } catch (error) {
@@ -32,9 +32,10 @@ const BarraNav = () => {
         setCargandoUsuario(false); // Desactivar indicador de carga si no hay userId
       }
     };
-
+  
     fetchUserData();
   }, []);
+  
 
   const alternarMenuBurger = () => {
     setEstaActivo(!estaActivo);

@@ -88,7 +88,7 @@ const AlumnosSubcritosAdmi = () => {
                         <td className="has-text-white">
                           {sub.usuario && sub.usuario.datos_personales && (
                             <>
-                              {sub.usuario.datos_personales.nombre} {sub.usuario.datos_personales.apellido_paterno}
+                              {sub.usuario.datos_personales.nombre} {sub.usuario.datos_personales.apellido_paterno} {sub.usuario.datos_personales.apellido_materno} 
                             </>
                           )}
                         </td>
