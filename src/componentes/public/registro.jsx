@@ -341,7 +341,7 @@ const FormRegistro = () => {
                 alert('Registro completado!');
                 setTimeout(() => {
                     window.location.href = '/studyweb/public/login';
-                }, 2000);
+                }, 1000);
             }
         } catch (error) {
             alert('Hubo un problema al registrar el usuario: ' + error.message);
