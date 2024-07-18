@@ -456,7 +456,7 @@ const Evaluacion = () => {
         </div>
       </div>
 
-      {/* Botones de zoom */}
+      {/* Botones de zoom. */}
       <div className="has-text-centered mt-3">
         <button className="button is-primary is-small mr-2" onClick={zoomIn}>
           <span className="icon">
