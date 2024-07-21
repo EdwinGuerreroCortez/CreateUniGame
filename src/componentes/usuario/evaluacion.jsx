@@ -16,7 +16,7 @@ const Evaluacion = () => {
   const [examenRealizado, setExamenRealizado] = useState(false);
   const [zoomFactor, setZoomFactor] = useState(1.0); // Estado para controlar el factor de zoom de la imagen
   const [offsetX, setOffsetX] = useState(0); // Estado para controlar el desplazamiento X de la imagen
-  const [offsetY, setOffsetY] = useState(0); // Estado para controlar el desplazamiento Y de la imagen
+  const [offsetY, setOffsetY] = useState(0); // Estado para controlar el desplazamiento Y de la imagen.
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
