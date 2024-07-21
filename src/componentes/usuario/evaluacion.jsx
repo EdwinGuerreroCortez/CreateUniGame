@@ -28,19 +28,17 @@ const Evaluacion = () => {
   const userId = localStorage.getItem('userId');
 
   useEffect(() => {
-    const storedPreguntas = JSON.parse(localStorage.getItem(`preguntas-${temaId}`));
-    const storedNumeroPregunta = parseInt(localStorage.getItem(`numeroPregunta-${temaId}`));
-    const storedRespuestas = JSON.parse(localStorage.getItem(`respuestas-${temaId}`));
-    const storedTiempoRestante = parseInt(localStorage.getItem(`tiempoRestante-${temaId}`));
-    const startTime = localStorage.getItem(`startTime-${temaId}`);
+    const storedPreguntas = JSON.parse(localStorage.getItem(`preguntas-${userId}-${temaId}`));
+    const storedNumeroPregunta = parseInt(localStorage.getItem(`numeroPregunta-${userId}-${temaId}`));
+    const storedRespuestas = JSON.parse(localStorage.getItem(`respuestas-${userId}-${temaId}`));
+    const storedTiempoRestante = parseInt(localStorage.getItem(`tiempoRestante-${userId}-${temaId}`));
+    const startTime = localStorage.getItem(`startTime-${userId}-${temaId}`);
 
     const fetchEvaluacion = async () => {
       try {
         const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${temaId}`);
         if (examenResponse.status === 200) {
           const examenData = await examenResponse.json();
-          
-
           if (examenData.examenPermitido) {
             setExamenPermitido(true);
           } else {
@@ -75,7 +73,7 @@ const Evaluacion = () => {
               const preguntasAleatorias = data.evaluacion.sort(() => 0.5 - Math.random()).slice(0, 10);
               setPreguntas(preguntasAleatorias);
               setPreguntaActual(preguntasAleatorias[0]);
-              localStorage.setItem(`preguntas-${temaId}`, JSON.stringify(preguntasAleatorias));
+              localStorage.setItem(`preguntas-${userId}-${temaId}`, JSON.stringify(preguntasAleatorias));
             }
           }
         }
@@ -90,8 +88,8 @@ const Evaluacion = () => {
     if (tiempoRestante > 0) {
       const timer = setTimeout(() => {
         setTiempoRestante(tiempoRestante - 1);
-        localStorage.setItem(`tiempoRestante-${temaId}`, tiempoRestante - 1);
-        localStorage.setItem(`startTime-${temaId}`, new Date().toISOString());
+        localStorage.setItem(`tiempoRestante-${userId}-${temaId}`, tiempoRestante - 1);
+        localStorage.setItem(`startTime-${userId}-${temaId}`, new Date().toISOString());
       }, 1000);
 
       return () => clearTimeout(timer);
@@ -123,8 +121,8 @@ const Evaluacion = () => {
       finalizarExamen(nuevasRespuestas);
     }
 
-    localStorage.setItem(`respuestas-${temaId}`, JSON.stringify(nuevasRespuestas));
-    localStorage.setItem(`numeroPregunta-${temaId}`, numeroPregunta + 1);
+    localStorage.setItem(`respuestas-${userId}-${temaId}`, JSON.stringify(nuevasRespuestas));
+    localStorage.setItem(`numeroPregunta-${userId}-${temaId}`, numeroPregunta + 1);
   };
 
   const resetZoomAndOffset = () => {
@@ -187,11 +185,11 @@ const Evaluacion = () => {
       });
 
       
-      localStorage.removeItem(`preguntas-${temaId}`);
-      localStorage.removeItem(`numeroPregunta-${temaId}`);
-      localStorage.removeItem(`respuestas-${temaId}`);
-      localStorage.removeItem(`tiempoRestante-${temaId}`);
-      localStorage.removeItem(`startTime-${temaId}`);
+      localStorage.removeItem(`preguntas-${userId}-${temaId}`);
+      localStorage.removeItem(`numeroPregunta-${userId}-${temaId}`);
+      localStorage.removeItem(`respuestas-${userId}-${temaId}`);
+      localStorage.removeItem(`tiempoRestante-${userId}-${temaId}`);
+      localStorage.removeItem(`startTime-${userId}-${temaId}`);
     } catch (error) {
       console.error('Error al guardar los resultados:', error);
     }
