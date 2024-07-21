@@ -28,12 +28,6 @@ const Evaluacion = () => {
   const userId = localStorage.getItem('userId');
 
   useEffect(() => {
-    const storedPreguntas = JSON.parse(localStorage.getItem(`preguntas-${userId}-${temaId}`));
-    const storedNumeroPregunta = parseInt(localStorage.getItem(`numeroPregunta-${userId}-${temaId}`));
-    const storedRespuestas = JSON.parse(localStorage.getItem(`respuestas-${userId}-${temaId}`));
-    const storedTiempoRestante = parseInt(localStorage.getItem(`tiempoRestante-${userId}-${temaId}`));
-    const startTime = localStorage.getItem(`startTime-${userId}-${temaId}`);
-
     const fetchEvaluacion = async () => {
       try {
         const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${temaId}`);
@@ -52,20 +46,14 @@ const Evaluacion = () => {
         }
 
         if (examenPermitido) {
-          if (storedPreguntas) {
-            setPreguntas(storedPreguntas);
-            setPreguntaActual(storedPreguntas[storedNumeroPregunta || 0]);
-            if (storedNumeroPregunta) {
-              setNumeroPregunta(storedNumeroPregunta);
-            }
-            if (storedRespuestas) {
-              setRespuestas(storedRespuestas);
-            }
-            if (storedTiempoRestante && startTime) {
-              const elapsedTime = Math.floor((Date.now() - new Date(startTime)) / 1000);
-              const newTiempoRestante = storedTiempoRestante - elapsedTime;
-              setTiempoRestante(newTiempoRestante > 0 ? newTiempoRestante : 0);
-            }
+          const progresoResponse = await fetch(`http://localhost:3001/api/evaluacion/progreso/${userId}/${temaId}`);
+          if (progresoResponse.status === 200) {
+            const progresoData = await progresoResponse.json();
+            setPreguntas(progresoData.preguntas);
+            setPreguntaActual(progresoData.preguntas[progresoData.numeroPregunta]);
+            setNumeroPregunta(progresoData.numeroPregunta);
+            setRespuestas(progresoData.preguntas.map(p => ({ pregunta: p.pregunta, respuesta: p.respuesta_seleccionada, correcta: p.respuesta_correcta === p.respuesta_seleccionada })));
+            setTiempoRestante(progresoData.tiempoRestante);
           } else {
             const response = await fetch(`http://localhost:3001/api/evaluaciones/${temaId}?limit=10`);
             const data = await response.json();
@@ -73,7 +61,6 @@ const Evaluacion = () => {
               const preguntasAleatorias = data.evaluacion.sort(() => 0.5 - Math.random()).slice(0, 10);
               setPreguntas(preguntasAleatorias);
               setPreguntaActual(preguntasAleatorias[0]);
-              localStorage.setItem(`preguntas-${userId}-${temaId}`, JSON.stringify(preguntasAleatorias));
             }
           }
         }
@@ -88,8 +75,7 @@ const Evaluacion = () => {
     if (tiempoRestante > 0) {
       const timer = setTimeout(() => {
         setTiempoRestante(tiempoRestante - 1);
-        localStorage.setItem(`tiempoRestante-${userId}-${temaId}`, tiempoRestante - 1);
-        localStorage.setItem(`startTime-${userId}-${temaId}`, new Date().toISOString());
+        guardarProgreso(); // Guardar el progreso cada segundo
       }, 1000);
 
       return () => clearTimeout(timer);
@@ -97,6 +83,29 @@ const Evaluacion = () => {
       finalizarExamen();
     }
   }, [tiempoRestante]);
+
+  const guardarProgreso = async () => {
+    try {
+      await fetch(`http://localhost:3001/api/evaluacion/progreso`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          usuarioId: userId,
+          temaId,
+          preguntas: preguntas.map((p, index) => ({
+            ...p,
+            respuesta_seleccionada: respuestas[index]?.respuesta || null
+          })),
+          tiempoRestante,
+          numeroPregunta
+        }),
+      });
+    } catch (error) {
+      console.error('Error al guardar el progreso:', error);
+    }
+  };
 
   const handleOptionChange = (opcion) => {
     setRespuestaSeleccionada(opcion);
@@ -121,8 +130,7 @@ const Evaluacion = () => {
       finalizarExamen(nuevasRespuestas);
     }
 
-    localStorage.setItem(`respuestas-${userId}-${temaId}`, JSON.stringify(nuevasRespuestas));
-    localStorage.setItem(`numeroPregunta-${userId}-${temaId}`, numeroPregunta + 1);
+    guardarProgreso(); // Guardar el progreso después de cada respuesta
   };
 
   const resetZoomAndOffset = () => {
@@ -150,7 +158,6 @@ const Evaluacion = () => {
 
   const guardarResultados = async (respuestas) => {
     const porcentaje = (respuestas.filter(respuesta => respuesta.correcta).length / preguntas.length) * 100;
-    
 
     try {
       const examenResponse = await fetch(`http://localhost:3001/api/examenes`, {
@@ -184,12 +191,15 @@ const Evaluacion = () => {
         }),
       });
 
-      
-      localStorage.removeItem(`preguntas-${userId}-${temaId}`);
-      localStorage.removeItem(`numeroPregunta-${userId}-${temaId}`);
-      localStorage.removeItem(`respuestas-${userId}-${temaId}`);
-      localStorage.removeItem(`tiempoRestante-${userId}-${temaId}`);
-      localStorage.removeItem(`startTime-${userId}-${temaId}`);
+      // Limpiar progreso después de guardar los resultados
+      try {
+        await fetch(`http://localhost:3001/api/evaluacion/progreso/${userId}/${temaId}`, {
+          method: 'DELETE',
+        });
+      } catch (error) {
+        console.error('Error al limpiar el progreso:', error);
+      }
+
     } catch (error) {
       console.error('Error al guardar los resultados:', error);
     }
