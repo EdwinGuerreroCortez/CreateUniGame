@@ -28,7 +28,8 @@ const Curso = () => {
     try {
       const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/cursos-suscritos`);
       const data = await response.json();
-       // Línea de depuración
+      // Línea de depuración
+      console.log("Cursos suscritos:", data.cursos);
       setCursos(data.cursos); // Asegúrate de que el backend devuelve un objeto con una propiedad 'cursos'
     } catch (error) {
       console.error("Error al cargar los cursos suscritos:", error);
@@ -44,6 +45,7 @@ const Curso = () => {
     try {
       const response = await fetch(`http://localhost:3001/api/cursos/${cursoId}/temas`);
       const data = await response.json();
+      console.log("Temas del curso:", data);
       setTemas(data);
     } catch (error) {
       console.error("Error al cargar los temas del curso:", error);
@@ -63,11 +65,13 @@ const Curso = () => {
   const verificarEvaluacion = async (temaId) => {
     try {
       const evaluacionResponse = await fetch(`http://localhost:3001/api/tema-evaluacion/${temaId}`);
+      if (!evaluacionResponse.ok) {
+        throw new Error(`HTTP error! status: ${evaluacionResponse.status}`);
+      }
       const evaluacionData = await evaluacionResponse.json();
-
+      console.log("Evaluacion data:", evaluacionData);
+  
       if (evaluacionData && evaluacionData.evaluacion_habilitada !== undefined) {
-        
-
         if (temaId === evaluacionData._id) {
           setEvaluacionHabilitada(evaluacionData.evaluacion_habilitada);
         }
@@ -78,7 +82,7 @@ const Curso = () => {
       console.error("Error al verificar la evaluación:", error);
     }
   };
-
+  
   useEffect(() => {
     let intervalId;
     if (temaSeleccionado) {
@@ -90,7 +94,7 @@ const Curso = () => {
       setEvaluacionHabilitada(false);
     }
     return () => clearInterval(intervalId); // Limpiar el intervalo cuando el componente se desmonte o temaSeleccionado cambie
-  }, [temaSeleccionado]);
+  }, [temaSeleccionado]);  
 
   const cambiarPaginaTemas = (numeroPagina) => {
     setPaginaActualTemas(numeroPagina);
@@ -282,7 +286,6 @@ const Curso = () => {
                     position: "relative",
                   }}
                 >
-                  
                   <button
                     className="button is-link"
                     onClick={subtemaSeleccionado ? regresarATemas : regresarACursos}
@@ -292,8 +295,6 @@ const Curso = () => {
                     <i className="fas fa-arrow-left"></i>
                   </button>
                   <h2 className="title is-4 has-text-white is-centered">Temas</h2>
-                  
-                  
                   {!temaSeleccionado ? (
                     temasActuales.map((tema) => (
                       <div
