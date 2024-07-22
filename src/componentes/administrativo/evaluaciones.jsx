@@ -78,7 +78,7 @@ const Evaluaciones = () => {
     item.usuarioId && item.usuarioId.datos_personales &&
     item.usuarioId.datos_personales.matricula.includes(searchTerm) &&
     (selectedCurso === '' || item.nombreCurso === selectedCurso) &&
-    (selectedDate === '' || new Date(item.fechaUltimoIntento) >= new Date(selectedDate))
+    (selectedDate === '' || new Date(item.fechaUltimoIntento).setHours(0, 0, 0, 0) >= new Date(selectedDate).setHours(0, 0, 0, 0))
   );
 
   const handleGenerateConcentrado = () => {
@@ -88,6 +88,8 @@ const Evaluaciones = () => {
 
   const handleFilterConcentrado = (curso, date) => {
     setSelectedCurso(curso);
+    setConcentradoDate(date);
+
     if (!curso && !date) {
       setFilteredConcentrado([]);
       setMaxEvaluaciones(0);
@@ -226,6 +228,15 @@ const Evaluaciones = () => {
     saveAs(blob, fileName);
   };
 
+  const getLastAttempt = (preguntasRespondidas) => {
+    if (preguntasRespondidas.length === 0) {
+      return null;
+    }
+    return preguntasRespondidas.reduce((lastAttempt, currentAttempt) => {
+      return currentAttempt.intento > lastAttempt.intento ? currentAttempt : lastAttempt;
+    });
+  };
+  
   return (
     <div className='has-background-black-bis'>
       <section className="section">
@@ -293,7 +304,7 @@ const Evaluaciones = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {evaluaciones.map((item, index) => (
+                  {filteredEvaluaciones.map((item, index) => (
                     <tr key={index}>
                       <td className="has-text-white">{item.usuarioId?.datos_personales?.matricula || 'Matrícula no disponible'}</td>
                       <td className="has-text-white">{item.tituloTema || 'Tema no disponible'}</td>
@@ -308,7 +319,12 @@ const Evaluaciones = () => {
                         </button>
                       </td>
                       <td className="has-text-white">{item.intentos}</td>
-                      <td className="has-text-white">{item.preguntasRespondidas.length > 0 ? item.preguntasRespondidas[item.preguntasRespondidas.length - 1].porcentaje + '%' : 'Calificación no disponible'}</td>
+                      <td className="has-text-white">
+                        {(() => {
+                          const lastAttempt = getLastAttempt(item.preguntasRespondidas);
+                          return lastAttempt ? lastAttempt.porcentaje + '%' : 'Calificación no disponible';
+                        })()}
+                      </td>
                       <td className="has-text-white">
                         <div className="tooltip" data-tooltip={item.examenPermitido ? 'No permitir examen' : 'Permitir examen'}>
                           <button
@@ -447,7 +463,7 @@ const Evaluaciones = () => {
                         {item.calificaciones.map((calificacion, i) => (
                           <td key={i} className="has-text-white" style={{ backgroundColor: calificacion === 'N/P' ? '#FF0000' : 'transparent' }}>{calificacion !== 'N/P' ? calificacion : 'N/P'}</td>
                         ))}
-                        <td className="has-text-white">{item.promedio !== 'N/P' ? item.promedio : 'N/P'}</td>
+                        <td className="has-text-white">{item.promedio}</td>
                       </tr>
                     ))}
                   </tbody>

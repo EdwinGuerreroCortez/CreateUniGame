@@ -24,6 +24,8 @@ const Evaluacion = () => {
   const [inspeccionando, setInspeccionando] = useState(false);
   const [respuestasAnteriores, setRespuestasAnteriores] = useState([]); // Estado para las respuestas anteriores
   const [tiempoRestante, setTiempoRestante] = useState(7200); // Tiempo inicial de 2 horas (7200 segundos)
+  const [progresoId, setProgresoId] = useState(localStorage.getItem('progresoId')); // Estado para almacenar el ID del documento de progreso
+  const [temporizadorIniciado, setTemporizadorIniciado] = useState(false); // Estado para controlar el inicio del temporizador
 
   const userId = localStorage.getItem('userId');
 
@@ -54,6 +56,10 @@ const Evaluacion = () => {
             setNumeroPregunta(progresoData.numeroPregunta);
             setRespuestas(progresoData.preguntas.map(p => ({ pregunta: p.pregunta, respuesta: p.respuesta_seleccionada, correcta: p.respuesta_correcta === p.respuesta_seleccionada })));
             setTiempoRestante(progresoData.tiempoRestante);
+            setProgresoId(progresoData._id); // Almacenar el ID del progreso
+            localStorage.setItem('progresoId', progresoData._id); // Guardar el ID en localStorage
+            console.log(`Progreso ID: ${progresoData._id}`);
+            iniciarTemporizador(); // Iniciar el temporizador si ya hay progreso
           } else {
             const response = await fetch(`http://localhost:3001/api/evaluaciones/${temaId}?limit=10`);
             const data = await response.json();
@@ -61,6 +67,8 @@ const Evaluacion = () => {
               const preguntasAleatorias = data.evaluacion.sort(() => 0.5 - Math.random()).slice(0, 10);
               setPreguntas(preguntasAleatorias);
               setPreguntaActual(preguntasAleatorias[0]);
+              await guardarProgresoInicial(preguntasAleatorias); // Guardar las preguntas iniciales en el progreso
+              iniciarTemporizador(); // Iniciar el temporizador después de guardar las preguntas
             }
           }
         }
@@ -72,21 +80,25 @@ const Evaluacion = () => {
   }, [temaId, userId, examenPermitido]);
 
   useEffect(() => {
-    if (tiempoRestante > 0) {
+    if (tiempoRestante > 0 && !mostrarResultados && temporizadorIniciado) {
       const timer = setTimeout(() => {
         setTiempoRestante(tiempoRestante - 1);
-        guardarProgreso(); // Guardar el progreso cada segundo
+        guardarProgreso(); // Guardar el progreso cada segundo si el examen no ha terminado
       }, 1000);
 
       return () => clearTimeout(timer);
-    } else if (!mostrarResultados) {
+    } else if (tiempoRestante === 0 && !mostrarResultados) {
       finalizarExamen();
     }
-  }, [tiempoRestante]);
+  }, [tiempoRestante, mostrarResultados, temporizadorIniciado]);
 
-  const guardarProgreso = async () => {
+  const iniciarTemporizador = () => {
+    setTemporizadorIniciado(true);
+  };
+
+  const guardarProgresoInicial = async (preguntasIniciales) => {
     try {
-      await fetch(`http://localhost:3001/api/evaluacion/progreso`, {
+      const response = await fetch(`http://localhost:3001/api/evaluacion/progreso`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -94,16 +106,63 @@ const Evaluacion = () => {
         body: JSON.stringify({
           usuarioId: userId,
           temaId,
-          preguntas: preguntas.map((p, index) => ({
+          preguntas: preguntasIniciales.map((p) => ({
             ...p,
-            respuesta_seleccionada: respuestas[index]?.respuesta || null
+            respuesta_seleccionada: null
           })),
           tiempoRestante,
           numeroPregunta
         }),
       });
+      const data = await response.json();
+      setProgresoId(data._id); // Almacenar el ID del progreso al crear
+      localStorage.setItem('progresoId', data._id); // Guardar el ID en localStorage
+      console.log(`Progreso ID: ${data._id}`);
+    } catch (error) {
+      console.error('Error al guardar el progreso inicial:', error);
+    }
+  };
+
+  const guardarProgreso = async () => {
+    try {
+      if (!mostrarResultados) { // Solo guardar progreso si el examen no ha terminado
+        const response = await fetch(`http://localhost:3001/api/evaluacion/progreso`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            usuarioId: userId,
+            temaId,
+            preguntas: preguntas.map((p, index) => ({
+              ...p,
+              respuesta_seleccionada: respuestas[index]?.respuesta || null
+            })),
+            tiempoRestante,
+            numeroPregunta
+          }),
+        });
+        const data = await response.json();
+        setProgresoId(data._id); // Almacenar el ID del progreso al crear
+        localStorage.setItem('progresoId', data._id); // Guardar el ID en localStorage
+        console.log(`Progreso ID: ${data._id}`);
+      }
     } catch (error) {
       console.error('Error al guardar el progreso:', error);
+    }
+  };
+
+  const eliminarProgreso = async () => {
+    try {
+      if (progresoId) {
+        await fetch(`http://localhost:3001/api/evaluacion/progreso/${progresoId}`, {
+          method: 'DELETE',
+        });
+        console.log(`Progreso eliminado: ${progresoId}`);
+        localStorage.removeItem('progresoId'); // Eliminar el ID del progreso de localStorage
+      }
+    } catch (error) {
+      console.error('Error al eliminar el progreso:', error);
     }
   };
 
@@ -113,11 +172,12 @@ const Evaluacion = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const nuevasRespuestas = [...respuestas, {
+    const nuevasRespuestas = [...respuestas];
+    nuevasRespuestas[numeroPregunta] = {
       pregunta: preguntaActual.pregunta,
       respuesta: respuestaSeleccionada,
       correcta: respuestaSeleccionada === preguntaActual.respuesta_correcta,
-    }];
+    };
     setRespuestas(nuevasRespuestas);
 
     if (numeroPregunta < preguntas.length - 1) {
@@ -130,7 +190,7 @@ const Evaluacion = () => {
       finalizarExamen(nuevasRespuestas);
     }
 
-    guardarProgreso(); // Guardar el progreso después de cada respuesta
+    guardarProgreso(); // Guardar el progreso después de cada respuesta si el examen no ha terminado
   };
 
   const resetZoomAndOffset = () => {
@@ -192,14 +252,9 @@ const Evaluacion = () => {
       });
 
       // Limpiar progreso después de guardar los resultados
-      try {
-        await fetch(`http://localhost:3001/api/evaluacion/progreso/${userId}/${temaId}`, {
-          method: 'DELETE',
-        });
-      } catch (error) {
-        console.error('Error al limpiar el progreso:', error);
-      }
+      await eliminarProgreso();
 
+      setMostrarResultados(true);
     } catch (error) {
       console.error('Error al guardar los resultados:', error);
     }
@@ -210,7 +265,7 @@ const Evaluacion = () => {
       const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${temaId}/ultimo`);
       if (examenResponse.ok) {
         const examenData = await examenResponse.json();
-        
+
         const ultimaRespuesta = examenData.preguntasRespondidas[0]; // Obtener el primer elemento del arreglo ordenado
         setRespuestasAnteriores(ultimaRespuesta.respuestas); // Guardar las respuestas del último intento en el estado
         setModalActivo(true); // Mostrar el modal con las respuestas
