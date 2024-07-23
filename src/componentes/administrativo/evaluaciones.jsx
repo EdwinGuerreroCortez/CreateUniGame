@@ -297,24 +297,26 @@ const Evaluaciones = () => {
               </div>
             </div>
             <div className="table-container">
-              <h2 className="title is-4 has-text-centered has-text-white">Calificaciones</h2>
+              <h2 className="title is-4 has-text-centered has-text-white">Registro</h2>
               <table className="table is-fullwidth is-striped is-hoverable">
                 <thead>
                   <tr>
+                    <th className="has-text-white">No.</th>
                     <th className="has-text-white">Matrícula</th>
-                    <th className="has-text-white">Nombre</th>
+                    <th className="has-text-white">Alumno</th>
                     <th className="has-text-white">Examen</th>
                     <th className="has-text-white">Curso</th>
-                    <th className="has-text-white">Fecha del Último Intento</th>
-                    <th className="has-text-white">Datos del Examen</th>
+                    <th className="has-text-white">Último Intento</th>
                     <th className="has-text-white">Intentos</th>
+                    <th className="has-text-white">Detalles</th>
                     <th className="has-text-white">Calificación</th>
-                    <th className="has-text-white">Acciones</th>
+                    <th className="has-text-white">+ intentos</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredEvaluaciones.map((item, index) => (
                     <tr key={index}>
+                      <td className="has-text-white">{index + 1}</td>
                       <td className="has-text-white">
                         {!item.usuarioId && <span style={{ color: 'red' }}>● </span>}
                         {item.matricula}
@@ -329,6 +331,7 @@ const Evaluaciones = () => {
                       </td>
                       <td className="has-text-white">{item.nombreCurso}</td>
                       <td className="has-text-white">{item.fechaUltimoIntento ? new Date(item.fechaUltimoIntento).toLocaleDateString() : 'Fecha no disponible'}</td>
+                      <td className="has-text-white">{item.intentos}</td>
                       <td className="has-text-white">
                         <button
                           className="button is-small is-info"
@@ -337,7 +340,6 @@ const Evaluaciones = () => {
                           Ver
                         </button>
                       </td>
-                      <td className="has-text-white">{item.intentos}</td>
                       <td className="has-text-white">
                         {(() => {
                           const lastAttempt = getLastAttempt(item.preguntasRespondidas);

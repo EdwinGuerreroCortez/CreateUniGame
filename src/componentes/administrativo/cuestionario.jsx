@@ -300,7 +300,7 @@ const CuestionariosForm = () => {
             <label className="label has-text-white">Tema</label>
             <div className="control">
               <div className="select">
-              <select value={tema} onChange={(e) => setTema(e.target.value)} required>
+                <select value={tema} onChange={(e) => setTema(e.target.value)} required>
                   <option value="" disabled>Selecciona un tema</option>
                   {temas.map((tema) => (
                     <option key={tema._id} value={tema._id}>{tema.titulo}</option>

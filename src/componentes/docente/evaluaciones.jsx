@@ -87,7 +87,7 @@ const EvaluacionesDocente = () => {
     item.usuarioId && item.usuarioId.datos_personales &&
     item.usuarioId.datos_personales.matricula.includes(searchTerm) &&
     (selectedCurso === '' || item.nombreCurso === selectedCurso) &&
-    (selectedDate === '' || new Date(item.fechaUltimoIntento) >= new Date(selectedDate))
+    (selectedDate === '' || new Date(item.fechaUltimoIntento).setHours(0, 0, 0, 0) >= new Date(selectedDate).setHours(0, 0, 0, 0))
   );
 
   const handleGenerateConcentrado = () => {
@@ -287,16 +287,18 @@ const EvaluacionesDocente = () => {
               </div>
             </div>
             <div className="table-container">
-              <h2 className="title is-4 has-text-centered has-text-white">Calificaciones</h2>
+              <h2 className="title is-4 has-text-centered has-text-white">Registro</h2>
               <table className="table is-fullwidth is-striped is-hoverable">
                 <thead>
                   <tr>
+                    <th className="has-text-white">No.</th>
                     <th className="has-text-white">Matrícula</th>
+                    <th className="has-text-white">Alumno</th>
                     <th className="has-text-white">Examen</th>
                     <th className="has-text-white">Curso</th>
-                    <th className="has-text-white">Fecha del Último Intento</th>
-                    <th className="has-text-white">Datos del Examen</th>
-                    <th className="has-text-white">Número de Intentos</th>
+                    <th className="has-text-white">Último Intento</th>
+                    <th className="has-text-white">Intentos</th>
+                    <th className="has-text-white">Detalles</th>
                     <th className="has-text-white">Calificación</th>
                     <th className="has-text-white">Acciones</th>
                   </tr>
@@ -304,10 +306,13 @@ const EvaluacionesDocente = () => {
                 <tbody>
                   {filteredEvaluaciones.map((item, index) => (
                     <tr key={index}>
+                      <td className="has-text-white">{index + 1}</td>
                       <td className="has-text-white">{item.usuarioId.datos_personales.matricula}</td>
+                      <td className="has-text-white">{`${item.usuarioId.datos_personales.nombre} ${item.usuarioId.datos_personales.apellido_paterno} ${item.usuarioId.datos_personales.apellido_materno}`}</td>
                       <td className="has-text-white">{item.tituloTema}</td>
                       <td className="has-text-white">{item.nombreCurso}</td>
                       <td className="has-text-white">{new Date(item.fechaUltimoIntento).toLocaleDateString()}</td>
+                      <td className="has-text-white">{item.intentos}</td>
                       <td className="has-text-white">
                         <button
                           className="button is-small is-info"
@@ -316,7 +321,6 @@ const EvaluacionesDocente = () => {
                           Ver
                         </button>
                       </td>
-                      <td className="has-text-white">{item.intentos}</td>
                       <td className="has-text-white">{item.preguntasRespondidas[item.preguntasRespondidas.length - 1].porcentaje}%</td>
                       <td className="has-text-white">
                         <div className="tooltip" data-tooltip={item.examenPermitido ? 'No permitir examen' : 'Permitir examen'}>

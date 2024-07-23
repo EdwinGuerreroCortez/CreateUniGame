@@ -20,6 +20,7 @@ const GestionUsuariosForm = () => {
   const [notification, setNotification] = useState({ message: '', type: '' });
   const [isModalActive, setIsModalActive] = useState(false); // Estado para el modal
   const [confirmDelete, setConfirmDelete] = useState({ active: false, index: null, id: null }); // Estado para confirmación de eliminación
+  const [filter, setFilter] = useState('all'); // Estado para el filtro de usuarios
 
   useEffect(() => {
     obtenerUsuarios();
@@ -41,7 +42,8 @@ const GestionUsuariosForm = () => {
   const obtenerUsuarios = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/usuarios');
-      setUsuarios(response.data);
+      const sortedUsuarios = response.data.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)); // Ordenar por fecha de creación (último primero)
+      setUsuarios(sortedUsuarios);
     } catch (error) {
       console.error('Error al obtener usuarios:', error);
     }
@@ -82,8 +84,6 @@ const GestionUsuariosForm = () => {
     const generoConvertido = usuario.genero === 'Masculino' ? 'M' : 'F';
     const usuarioConGeneroConvertido = { ...usuario, genero: generoConvertido };
 
-     // Línea de debug
-
     try {
       await axios.post(endpoint, { ...usuarioConGeneroConvertido });
       obtenerUsuarios();
@@ -109,7 +109,6 @@ const GestionUsuariosForm = () => {
       setIsModalActive(false); // Cerrar el modal en caso de error también
     }
   };
-
 
   const handleEliminarUsuario = async (index, id) => {
     setConfirmDelete({ active: true, index, id });
@@ -145,9 +144,26 @@ const GestionUsuariosForm = () => {
     }
   };
 
+  const handleAutorizarTodos = async () => {
+    try {
+      await axios.put('http://localhost:3001/api/usuarios/autorizarTodos');
+      const updatedUsuarios = usuarios.map(usuario => ({ ...usuario, autorizacion: true }));
+      setUsuarios(updatedUsuarios);
+      setNotification({ message: 'Todos los usuarios autorizados con éxito.', type: 'is-success' });
+    } catch (error) {
+      console.error('Error al autorizar todos los usuarios:', error);
+      setNotification({ message: 'Error al autorizar todos los usuarios. Intente de nuevo.', type: 'is-danger' });
+    }
+  };
+
+  const filteredUsuarios = usuarios.filter((usuario) => {
+    if (filter === 'autorizados') return usuario.autorizacion;
+    if (filter === 'noAutorizados') return !usuario.autorizacion;
+    return true;
+  });
+
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
-      <h1 className="title has-text-centered has-text-white">Gestión de Usuarios</h1>
       {notification.message && (
         <div className={`notification ${notification.type}`}>
           <button className="delete" onClick={() => setNotification({ message: '', type: '' })}></button>
@@ -163,13 +179,33 @@ const GestionUsuariosForm = () => {
             </span>
             <span>Agregar Usuario</span>
           </button>
+          <button className="button is-info" onClick={handleAutorizarTodos} style={{marginLeft:'10px'}}>
+            <span className="icon">
+              <i className="fas fa-check"></i>
+            </span>
+            <span>Permitir Todos</span>
+          </button>
         </div>
-        <h2 className="title is-4 has-text-centered has-text-white">Lista de Usuarios Registrados</h2>
+        <div className="control is-pulled-left">
+          <div className="select is-info">
+            <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+              <option value="all">Todos</option>
+              <option value="autorizados">Autorizados</option>
+              <option value="noAutorizados">No Autorizados</option>
+            </select>
+          </div>
+        </div>
+        <br />
+        <div className="control">
+
+        </div>
+        <h2 className="title is-4 has-text-centered has-text-white">Registro de Usuarios</h2>
 
         <div className="table-container">
           <table className="table is-fullwidth is-striped is-hoverable" style={{ backgroundColor: '#090A0C' }}>
             <thead>
               <tr>
+                <th className="has-text-white">No.</th>
                 <th className="has-text-white">Nombre</th>
                 <th className="has-text-white">Apellido Paterno</th>
                 <th className="has-text-white">Apellido Materno</th>
@@ -181,8 +217,9 @@ const GestionUsuariosForm = () => {
               </tr>
             </thead>
             <tbody>
-              {usuarios.map((u, index) => (
+              {filteredUsuarios.map((u, index) => (
                 <tr key={index} style={{ color: 'white' }}>
+                  <td className="has-text-white">{index + 1}</td>
                   <td className="has-text-white">{u.datos_personales.nombre}</td>
                   <td className="has-text-white">{u.datos_personales.apellido_paterno}</td>
                   <td className="has-text-white">{u.datos_personales.apellido_materno}</td>
