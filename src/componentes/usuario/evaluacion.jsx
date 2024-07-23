@@ -26,6 +26,7 @@ const Evaluacion = () => {
   const [tiempoRestante, setTiempoRestante] = useState(7200); // Tiempo inicial de 2 horas (7200 segundos)
   const [progresoId, setProgresoId] = useState(localStorage.getItem('progresoId')); // Estado para almacenar el ID del documento de progreso
   const [temporizadorIniciado, setTemporizadorIniciado] = useState(false); // Estado para controlar el inicio del temporizador
+  const [lastUpdateTime, setLastUpdateTime] = useState(Date.now()); // Tiempo de la última actualización
 
   const userId = localStorage.getItem('userId');
 
@@ -55,7 +56,7 @@ const Evaluacion = () => {
             setPreguntaActual(progresoData.preguntas[progresoData.numeroPregunta]);
             setNumeroPregunta(progresoData.numeroPregunta);
             setRespuestas(progresoData.preguntas.map(p => ({ pregunta: p.pregunta, respuesta: p.respuesta_seleccionada, correcta: p.respuesta_correcta === p.respuesta_seleccionada })));
-            setTiempoRestante(progresoData.tiempoRestante);
+            setTiempoRestante(calcularTiempoRestante(progresoData.fechaFin));
             setProgresoId(progresoData._id); // Almacenar el ID del progreso
             localStorage.setItem('progresoId', progresoData._id); // Guardar el ID en localStorage
             console.log(`Progreso ID: ${progresoData._id}`);
@@ -67,7 +68,8 @@ const Evaluacion = () => {
               const preguntasAleatorias = data.evaluacion.sort(() => 0.5 - Math.random()).slice(0, 10);
               setPreguntas(preguntasAleatorias);
               setPreguntaActual(preguntasAleatorias[0]);
-              await guardarProgresoInicial(preguntasAleatorias); // Guardar las preguntas iniciales en el progreso
+              const fechaFin = new Date(Date.now() + 7200 * 1000); // Fecha de fin en 2 horas
+              await guardarProgresoInicial(preguntasAleatorias, fechaFin); // Guardar las preguntas iniciales en el progreso con la fecha de fin
               iniciarTemporizador(); // Iniciar el temporizador después de guardar las preguntas
             }
           }
@@ -80,9 +82,29 @@ const Evaluacion = () => {
   }, [temaId, userId, examenPermitido]);
 
   useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        setLastUpdateTime(Date.now());
+      } else {
+        const now = Date.now();
+        const timeElapsed = (now - lastUpdateTime) / 1000; // Tiempo transcurrido en segundos
+        setTiempoRestante(prev => Math.max(prev - timeElapsed, 0));
+        setLastUpdateTime(now);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [lastUpdateTime]);
+
+  useEffect(() => {
     if (tiempoRestante > 0 && !mostrarResultados && temporizadorIniciado) {
       const timer = setTimeout(() => {
-        setTiempoRestante(tiempoRestante - 1);
+        setTiempoRestante(prev => Math.max(prev - 1, 0));
+        setLastUpdateTime(Date.now());
         guardarProgreso(); // Guardar el progreso cada segundo si el examen no ha terminado
       }, 1000);
 
@@ -96,7 +118,13 @@ const Evaluacion = () => {
     setTemporizadorIniciado(true);
   };
 
-  const guardarProgresoInicial = async (preguntasIniciales) => {
+  const calcularTiempoRestante = (fechaFin) => {
+    const now = new Date();
+    const diff = (new Date(fechaFin) - now) / 1000;
+    return diff > 0 ? diff : 0;
+  };
+
+  const guardarProgresoInicial = async (preguntasIniciales, fechaFin) => {
     try {
       const response = await fetch(`http://localhost:3001/api/evaluacion/progreso`, {
         method: 'POST',
@@ -111,7 +139,8 @@ const Evaluacion = () => {
             respuesta_seleccionada: null
           })),
           tiempoRestante,
-          numeroPregunta
+          numeroPregunta,
+          fechaFin
         }),
       });
       const data = await response.json();
@@ -139,7 +168,8 @@ const Evaluacion = () => {
               respuesta_seleccionada: respuestas[index]?.respuesta || null
             })),
             tiempoRestante,
-            numeroPregunta
+            numeroPregunta,
+            fechaFin: new Date(Date.now() + tiempoRestante * 1000) // Fecha de fin recalculada
           }),
         });
         const data = await response.json();
@@ -378,7 +408,7 @@ const Evaluacion = () => {
   const formatTime = (seconds) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
-    const s = seconds % 60;
+    const s = Math.floor(seconds % 60); // Asegúrate de usar Math.floor aquí también
     return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   };
 
