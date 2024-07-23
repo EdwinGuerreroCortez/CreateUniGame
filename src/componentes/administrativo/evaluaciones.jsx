@@ -24,9 +24,19 @@ const Evaluaciones = () => {
       try {
         const response = await fetch('http://localhost:3001/api/examenes');
         const data = await response.json();
-        setEvaluaciones(data);
 
-        const cursosUnicos = Array.from(new Set(data.map(examen => examen.nombreCurso)));
+        const evaluacionesConNombres = data.map(examen => ({
+          ...examen,
+          nombreUsuario: examen.usuarioId ? examen.nombreCompleto : examen.nombreCompleto || 'Desconocido',
+          nombreTema: examen.temaId ? examen.tituloTema : 'Tema no disponible',
+          matricula: examen.usuarioId ? examen.matricula : examen.matricula || 'Desconocido',
+          usuarioId: examen.usuarioId ? examen.usuarioId : null,
+          temaId: examen.temaId ? examen.temaId : null
+        }));
+
+        setEvaluaciones(evaluacionesConNombres);
+
+        const cursosUnicos = Array.from(new Set(evaluacionesConNombres.map(examen => examen.nombreCurso)));
         setCursos(cursosUnicos);
       } catch (error) {
         console.error('Error al obtener las evaluaciones:', error);
@@ -75,8 +85,8 @@ const Evaluaciones = () => {
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   const filteredEvaluaciones = evaluaciones.filter(item =>
-    item.usuarioId && item.usuarioId.datos_personales &&
-    item.usuarioId.datos_personales.matricula.includes(searchTerm) &&
+    item.matricula &&
+    item.matricula.includes(searchTerm) &&
     (selectedCurso === '' || item.nombreCurso === selectedCurso) &&
     (selectedDate === '' || new Date(item.fechaUltimoIntento).setHours(0, 0, 0, 0) >= new Date(selectedDate).setHours(0, 0, 0, 0))
   );
@@ -100,10 +110,8 @@ const Evaluaciones = () => {
       (curso === '' || evaluacion.nombreCurso === curso) &&
       (date === '' || new Date(evaluacion.fechaUltimoIntento) >= new Date(date))
     ).reduce((acc, evaluacion) => {
-      const matricula = evaluacion.usuarioId?.datos_personales?.matricula || 'Matrícula no disponible';
-      const nombreCompleto = evaluacion.usuarioId?.datos_personales 
-        ? `${evaluacion.usuarioId.datos_personales.nombre} ${evaluacion.usuarioId.datos_personales.apellido_paterno} ${evaluacion.usuarioId.datos_personales.apellido_materno}` 
-        : 'Nombre no disponible';
+      const matricula = evaluacion.matricula || 'Matrícula no disponible';
+      const nombreCompleto = evaluacion.nombreUsuario || 'Nombre no disponible';
       if (!acc[matricula]) {
         acc[matricula] = { matricula, nombreCompleto, calificaciones: [] };
       }
@@ -236,7 +244,7 @@ const Evaluaciones = () => {
       return currentAttempt.intento > lastAttempt.intento ? currentAttempt : lastAttempt;
     });
   };
-  
+
   return (
     <div className='has-background-black-bis'>
       <section className="section">
@@ -294,11 +302,12 @@ const Evaluaciones = () => {
                 <thead>
                   <tr>
                     <th className="has-text-white">Matrícula</th>
+                    <th className="has-text-white">Nombre</th>
                     <th className="has-text-white">Examen</th>
                     <th className="has-text-white">Curso</th>
                     <th className="has-text-white">Fecha del Último Intento</th>
                     <th className="has-text-white">Datos del Examen</th>
-                    <th className="has-text-white">Número de Intentos</th>
+                    <th className="has-text-white">Intentos</th>
                     <th className="has-text-white">Calificación</th>
                     <th className="has-text-white">Acciones</th>
                   </tr>
@@ -306,9 +315,19 @@ const Evaluaciones = () => {
                 <tbody>
                   {filteredEvaluaciones.map((item, index) => (
                     <tr key={index}>
-                      <td className="has-text-white">{item.usuarioId?.datos_personales?.matricula || 'Matrícula no disponible'}</td>
-                      <td className="has-text-white">{item.tituloTema || 'Tema no disponible'}</td>
-                      <td className="has-text-white">{item.nombreCurso || 'Curso no disponible'}</td>
+                      <td className="has-text-white">
+                        {!item.usuarioId && <span style={{ color: 'red' }}>● </span>}
+                        {item.matricula}
+                      </td>
+                      <td className="has-text-white">
+                        {!item.usuarioId && <span style={{ color: 'red' }}>● </span>}
+                        {item.nombreUsuario}
+                      </td>
+                      <td className="has-text-white">
+                        {!item.temaId && <span style={{ color: 'red' }}>● </span>}
+                        {item.nombreTema}
+                      </td>
+                      <td className="has-text-white">{item.nombreCurso}</td>
                       <td className="has-text-white">{item.fechaUltimoIntento ? new Date(item.fechaUltimoIntento).toLocaleDateString() : 'Fecha no disponible'}</td>
                       <td className="has-text-white">
                         <button
