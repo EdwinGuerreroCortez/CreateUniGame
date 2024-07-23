@@ -6,6 +6,8 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Contenidos = () => {
   const [temas, setTemas] = useState([]);
+  const [cursos, setCursos] = useState([]); // Estado para almacenar los cursos
+  const [selectedCurso, setSelectedCurso] = useState(""); // Estado para el curso seleccionado
   const [alert, setAlert] = useState({ type: "", message: "" });
   const [editMode, setEditMode] = useState(false);
   const [editTema, setEditTema] = useState(null);
@@ -26,7 +28,7 @@ const Contenidos = () => {
   const [videoLink, setVideoLink] = useState("");
   const [uploadMethod, setUploadMethod] = useState("upload");
   const [subtemaUploadMethod, setSubtemaUploadMethod] = useState("upload");
-  const [subtemaVideoLink, setSubtemaVideoLink] = useState({}); // Estado para el link del video de subtema
+  const [subtemaVideoLink, setSubtemaVideoLink] = useState({});
 
   const videoInputRef = useRef(null);
 
@@ -37,6 +39,11 @@ const Contenidos = () => {
         .then((response) => response.json())
         .then((data) => setTemas(data))
         .catch((error) => console.error("Error fetching temas:", error));
+      
+      fetch(`http://localhost:3001/api/usuario/${userId}/cursos`)
+        .then((response) => response.json())
+        .then((data) => setCursos(data))
+        .catch((error) => console.error("Error fetching cursos:", error));
     } else {
       console.error("No userId found in localStorage");
     }
@@ -101,7 +108,7 @@ const Contenidos = () => {
   const handleEdit = (tema) => {
     setEditMode(true);
     setEditTema(tema);
-    setCurrentPage(1); // Reset page to 1 when editing a new tema
+    setCurrentPage(1);
   };
 
   const handleModalClose = () => {
@@ -170,7 +177,6 @@ const Contenidos = () => {
           setTemas(temas.map((t) => (t._id === data._id ? data : t)));
           setAlert({ type: "success", message: "Tema actualizado con éxito." });
           setValidationErrors([]);
-          // No cerrar el modal de edición
         }
       })
       .catch((error) => {
@@ -205,7 +211,7 @@ const Contenidos = () => {
     setSubtemaUploadMethod("upload");
     setSubtemaVideoLink("");
     if (videoInputRef.current) {
-      videoInputRef.current.value = null; // Reset the file input value
+      videoInputRef.current.value = null;
     }
     if (subtemaModalOpen) {
       videoInputRef.current.click();
@@ -459,6 +465,16 @@ const Contenidos = () => {
     setSubtemaModalOpen(true);
   };
 
+  // Función para manejar el cambio del curso seleccionado
+  const handleCursoChange = (event) => {
+    setSelectedCurso(event.target.value);
+  };
+
+  // Función para filtrar los temas según el curso seleccionado
+  const filteredTemas = temas.filter(
+    (tema) => selectedCurso === "" || tema.curso === selectedCurso
+  );
+
   return (
     <div
       style={{
@@ -490,6 +506,22 @@ const Contenidos = () => {
           </Link>
         </div>
 
+        <div className="field">
+          <label className="label has-text-white">Filtrar por curso</label>
+          <div className="control">
+            <div className="select is-fullwidth">
+              <select value={selectedCurso} onChange={handleCursoChange}>
+                <option value="">Todos los cursos</option>
+                {cursos.map((curso) => (
+                  <option key={curso._id} value={curso._id}>
+                    {curso.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+
         <div className="box" style={{ backgroundColor: "#090A0C" }}>
           <div className="table-container">
             <table className="table is-fullwidth is-striped is-hoverable">
@@ -506,8 +538,8 @@ const Contenidos = () => {
                 </tr>
               </thead>
               <tbody>
-                {temas && temas.length > 0 ? (
-                  temas.map((tema) => {
+                {filteredTemas && filteredTemas.length > 0 ? (
+                  filteredTemas.map((tema) => {
                     const allFieldsFilled = validateTemaFields(tema);
                     return (
                       <tr key={tema._id}>

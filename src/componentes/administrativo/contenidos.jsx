@@ -6,6 +6,8 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Contenidos = () => {
   const [temas, setTemas] = useState([]);
+  const [cursos, setCursos] = useState([]);
+  const [selectedCurso, setSelectedCurso] = useState("");
   const [alert, setAlert] = useState({ type: "", message: "" });
   const [editMode, setEditMode] = useState(false);
   const [editTema, setEditTema] = useState(null);
@@ -31,11 +33,25 @@ const Contenidos = () => {
   const videoInputRef = useRef(null);
 
   useEffect(() => {
-    fetch("http://localhost:3001/api/temas")
+    fetch("http://localhost:3001/api/cursos")
       .then((response) => response.json())
-      .then((data) => setTemas(data))
-      .catch((error) => console.error("Error fetching temas:", error));
+      .then((data) => setCursos(data))
+      .catch((error) => console.error("Error fetching cursos:", error));
   }, []);
+
+  useEffect(() => {
+    if (selectedCurso) {
+      fetch(`http://localhost:3001/api/temas/curso/${selectedCurso}`)
+        .then((response) => response.json())
+        .then((data) => setTemas(data))
+        .catch((error) => console.error("Error fetching temas:", error));
+    } else {
+      fetch("http://localhost:3001/api/temas")
+        .then((response) => response.json())
+        .then((data) => setTemas(data))
+        .catch((error) => console.error("Error fetching temas:", error));
+    }
+  }, [selectedCurso]);
 
   useEffect(() => {
     if (alert.message) {
@@ -218,12 +234,12 @@ const Contenidos = () => {
         });
         return;
       }
-  
+
       setUploadingVideo(true);
-  
+
       const formData = new FormData();
       formData.append("video", videoFile);
-  
+
       fetch(`http://localhost:3001/api/upload-video/${currentTemaId}`, {
         method: "POST",
         body: formData,
@@ -261,7 +277,7 @@ const Contenidos = () => {
         });
         return;
       }
-  
+
       fetch(`http://localhost:3001/api/upload-video-link/${currentTemaId}`, {
         method: "POST",
         headers: {
@@ -298,7 +314,6 @@ const Contenidos = () => {
         });
     }
   };
-  
 
   const handleConfirmSubtemaUpload = (subtemaId) => {
     if (subtemaUploadMethod === "upload") {
@@ -471,9 +486,7 @@ const Contenidos = () => {
       }}
     >
       <div className="container">
-        <h1 className="title has-text-centered has-text-white">
-          Lista de Temas
-        </h1>
+        <h1 className="title has-text-centered has-text-white">Lista de Temas</h1>
 
         {alert.message && (
           <div
@@ -485,12 +498,27 @@ const Contenidos = () => {
             {alert.message}
           </div>
         )}
+
         <div className="control is-pulled-right" style={{ margin: "10px" }}>
           <Link to="/admin/temas" className="button is-primary" data-tooltip="Agregar tema">
             <span className="icon">
               <i className="fas fa-plus"></i>
             </span>
           </Link>
+        </div>
+
+        <div className="select is-fullwidth" style={{ marginBottom: "20px" }}>
+          <select
+            value={selectedCurso}
+            onChange={(e) => setSelectedCurso(e.target.value)}
+          >
+            <option value="">Todos los cursos</option>
+            {cursos.map((curso) => (
+              <option key={curso._id} value={curso._id}>
+                {curso.nombre}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className="box" style={{ backgroundColor: "#090A0C" }}>
