@@ -89,11 +89,11 @@ const TemaForm = () => {
       const firstSheetName = workbook.SheetNames[0];
       const worksheet = workbook.Sheets[firstSheetName];
       const json = XLSX.utils.sheet_to_json(worksheet, { defval: "" });
-  
+
       let temas = [];
       let currentTema = null;
       let errors = [];
-  
+
       json.forEach((row, index) => {
         const rowIndex = index + 2; // Índice de fila Excel (1-based)
         if (row["titulo"]) {
@@ -108,7 +108,7 @@ const TemaForm = () => {
             pasos: [],
             subtemas: [],
           };
-  
+
           // Validaciones del tema
           if (!currentTema.descripcion.trim()) {
             errors.push(`La descripción del tema en la fila ${rowIndex} está vacía.`);
@@ -120,7 +120,7 @@ const TemaForm = () => {
             errors.push(`La bibliografía del tema en la fila ${rowIndex} está vacía.`);
           }
         }
-  
+
         if (currentTema) {
           if (row["pasos"] || row["Descripcion"]) {
             if (!row["pasos"].trim()) {
@@ -134,7 +134,7 @@ const TemaForm = () => {
               Descripcion: row["Descripcion"],
             });
           }
-  
+
           if (row["subtema"] || row["descripcionSubtema"]) {
             if (!row["subtema"].trim()) {
               errors.push(`El título del subtema en la fila ${rowIndex} está vacío.`);
@@ -152,11 +152,11 @@ const TemaForm = () => {
           }
         }
       });
-  
+
       if (currentTema) {
         temas.push(currentTema);
       }
-  
+
       if (errors.length > 0) {
         setAlert({ type: "error", message: errors.join(", ") });
       } else {
@@ -165,8 +165,8 @@ const TemaForm = () => {
     };
     reader.readAsArrayBuffer(file);
   };
-  
-  
+
+
   const handleVideoFileChange = (e) => {
     setVideoFile(e.target.files[0]);
   };
@@ -389,9 +389,8 @@ const TemaForm = () => {
 
         {alert.message && (
           <div
-            className={`notification ${
-              alert.type === "success" ? "is-success" : "is-danger"
-            }`}
+            className={`notification ${alert.type === "success" ? "is-success" : "is-danger"
+              }`}
           >
             <button className="delete" onClick={handleCloseAlert}></button>
             {alert.message}
@@ -432,6 +431,25 @@ const TemaForm = () => {
                   </label>
                 </div>
               </div>
+              <br />
+              <div className="field">
+                <label className="label has-text-white">Seleccionar Curso:</label>
+                <div className="control">
+                  <div className="select is-fullwidth">
+                    <select
+                      value={cursoSeleccionado}
+                      onChange={(e) => setCursoSeleccionado(e.target.value)}
+                    >
+                      <option value="">Selecciona un curso</option>
+                      {cursos.map((curso) => (
+                        <option key={curso._id} value={curso._id}>
+                          {curso.nombre}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div className="field is-grouped is-grouped-right">
@@ -454,24 +472,7 @@ const TemaForm = () => {
           </div>
         </div>
 
-        <div className="field">
-          <label className="label has-text-white">Seleccionar Curso:</label>
-          <div className="control">
-            <div className="select is-fullwidth">
-              <select
-                value={cursoSeleccionado}
-                onChange={(e) => setCursoSeleccionado(e.target.value)}
-              >
-                <option value="">Selecciona un curso</option>
-                {cursos.map((curso) => (
-                  <option key={curso._id} value={curso._id}>
-                    {curso.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
+
 
         {temas.length > 0 && (
           <div
@@ -518,9 +519,8 @@ const TemaForm = () => {
             >
               <div className="control">
                 <button
-                  className={`button is-primary ${
-                    isLoading ? "is-loading" : ""
-                  }`}
+                  className={`button is-primary ${isLoading ? "is-loading" : ""
+                    }`}
                   onClick={handleSubirTemas}
                 >
                   Subir Todos los Temas

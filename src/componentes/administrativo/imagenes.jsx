@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import "bulma/css/bulma.min.css";
+import "../CSS/customStyles.css"; // Archivo CSS adicional para estilos específicos
 
 const SubirImagenes = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -11,6 +12,15 @@ const SubirImagenes = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [alertType, setAlertType] = useState('');
+
+  useEffect(() => {
+    if (alertMessage) {
+      const timer = setTimeout(() => {
+        setAlertMessage('');
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [alertMessage]);
 
   const allowedExtensions = ['jpeg', 'jpg', 'png', 'gif'];
 
@@ -48,6 +58,14 @@ const SubirImagenes = () => {
   };
 
   const handleUpload = async () => {
+    const invalidNames = fileDetails.filter(file => file.newName.trim() === '').map(file => file.name);
+    if (invalidNames.length > 0) {
+      setAlertMessage(`Los siguientes archivos tienen nombres inválidos: ${invalidNames.join(', ')}`);
+      setAlertType('is-danger');
+      setShowFileDetails(false);
+      return;
+    }
+
     const formData = new FormData();
     for (let i = 0; i < selectedFiles.length; i++) {
       const newName = `${fileDetails[i].newName}.${fileDetails[i].extension}`;
@@ -91,7 +109,7 @@ const SubirImagenes = () => {
   };
 
   return (
-    <div className="section" style={{ minHeight: '100vh', backgroundColor: '#14161A' }}>
+    <div className="section" style={{ minHeight: '60vh', backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <div className="container">
         {alertMessage && (
           <div className={`notification ${alertType}`}>
@@ -101,15 +119,15 @@ const SubirImagenes = () => {
         )}
         <div className="columns is-centered">
           <div className="column is-full-mobile is-half-tablet is-one-third-desktop">
-            <div className="box" style={{ padding: '2rem', boxShadow: '0px 0px 10px 0px rgba(0, 255, 0, 0.5)', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid', backgroundColor: '#021929' }}>
+            <div className="box custom-box">
               <h1 className="title has-text-white has-text-centered">Subir Imágenes</h1>
-              <div className="file-upload-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', marginBottom: '1rem' }}>
-                <div className="file has-name is-centered" style={{ border: '2px dashed #ddd', borderRadius: '8px', padding: '20px', backgroundColor: '#212121', textAlign: 'center', cursor: 'pointer' }}>
-                  <label className="file-label" style={{ display: 'block', color: '#ffffff' }}>
-                    <input className="file-input" type="file" multiple onChange={handleFileChange} style={{ display: 'none' }} />
+              <div className="file-upload-container">
+                <div className="file has-name is-centered custom-file-box">
+                  <label className="file-label">
+                    <input className="file-input" type="file" multiple onChange={handleFileChange} />
                     <span className="file-cta">
                       <span className="file-icon">
-                        <i className="fas fa-upload" style={{ fontSize: '24px', marginBottom: '10px' }}></i>
+                        <i className="fas fa-upload"></i>
                       </span>
                       <span className="file-label">Seleccionar archivos...</span>
                     </span>
@@ -121,10 +139,9 @@ const SubirImagenes = () => {
                   </label>
                 </div>
               </div>
-              <div className="has-text-centered" style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+              <div className="has-text-centered" style={{ marginTop: '1rem' }}>
                 <button
-                  className="button is-dark is-medium"
-                  style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }}
+                  className="button is-dark is-medium custom-button"
                   onClick={() => setShowFileDetails(true)}
                   disabled={selectedFiles.length === 0}
                 >
@@ -152,8 +169,9 @@ const SubirImagenes = () => {
               <h2 className="subtitle">Archivos Seleccionados:</h2>
               <ul>
                 {fileDetails.map((file, index) => (
-                  <li key={index}>
+                  <li key={index} style={{ marginBottom: '1rem' }}>
                     {file.name} ({file.type})<br />
+                    <label className="label">Renombrar:</label>
                     <input
                       className="input"
                       type="text"

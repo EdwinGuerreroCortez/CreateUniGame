@@ -1,0 +1,79 @@
+/* Archivo: customStyles.css */
+
+body {
+    background-color: #14161A;
+  }
+  
+  .custom-box {
+    padding: 2rem;
+    background-color: #1F1F1F;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  .custom-file-box {
+    border: 2px dashed #3E3E3E;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #2C2C2C;
+    text-align: center;
+    cursor: pointer;
+  }
+  
+  .custom-file-box .file-label {
+    color: #FFFFFF;
+  }
+  
+  .custom-file-box .file-name {
+    margin-top: 10px;
+    display: block;
+    color: #B0B0B0;
+  }
+  
+  .custom-button {
+    background-color: #3E3E3E;
+    color: #FFFFFF;
+    margin: 10px;
+  }
+  
+  .progress-container {
+    margin-top: 1rem;
+  }
+  
+  .modal-card {
+    background-color: #1F1F1F;
+  }
+  
+  .modal-card-head {
+    background-color: #1F1F1F;
+    border-bottom: none;
+  }
+  
+  .modal-card-title {
+    color: #FFFFFF;
+  }
+  
+  .modal-card-body {
+    color: #FFFFFF;
+  }
+  
+  .modal-card-body .subtitle {
+    color: #FFFFFF;
+  }
+  
+  .modal-card-foot {
+    background-color: #1F1F1F;
+    border-top: none;
+  }
+  
+  .modal-card-foot .button {
+    margin-right: 10px;
+  }
+  
+  .input {
+    background-color: #2C2C2C;
+    color: #FFFFFF;
+    border: 1px solid #3E3E3E;
+  }
+  
+  

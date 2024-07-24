@@ -8,8 +8,10 @@ const CuestionariosForm = () => {
   const [newFile, setNewFile] = useState(null);
   const [editFile, setEditFile] = useState(null);
   const [tema, setTema] = useState('');
+  const [curso, setCurso] = useState(''); // Estado para curso seleccionado
   const [temas, setTemas] = useState([]);
   const [evaluaciones, setEvaluaciones] = useState([]);
+  const [cursos, setCursos] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [modalAlert, setModalAlert] = useState({ type: '', message: '' });
@@ -38,8 +40,22 @@ const CuestionariosForm = () => {
       }
     };
 
+    const fetchCursos = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/cursos');
+        const cursosMap = response.data.reduce((acc, curso) => {
+          acc[curso._id] = curso.nombre;
+          return acc;
+        }, {});
+        setCursos(cursosMap);
+      } catch (error) {
+        console.error('Error al obtener los cursos:', error);
+      }
+    };
+
     fetchTemas();
     fetchEvaluaciones();
+    fetchCursos();
   }, []);
 
   const handleToggleHabilitado = async (evaluacionId, habilitado) => {
@@ -262,6 +278,13 @@ const CuestionariosForm = () => {
 
   const totalPages = Math.ceil(editEvaluacion ? editEvaluacion.evaluacion.length / itemsPerPage : 1);
 
+  const filteredEvaluaciones = evaluaciones.filter(evaluacion => {
+    if (curso === '') {
+      return true;
+    }
+    return evaluacion.tema_id.curso === curso;
+  });
+
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <div className="container">
@@ -309,6 +332,7 @@ const CuestionariosForm = () => {
               </div>
             </div>
           </div>
+        
           <div className="field is-grouped is-grouped-right">
             <div className="control">
               <button
@@ -350,22 +374,40 @@ const CuestionariosForm = () => {
 
         <div className="box" style={{ backgroundColor: '#090A0C' }}>
           <h2 className="title is-4 has-text-centered has-text-white">Lista de Evaluaciones</h2>
+          <div className="field">
+            <label className="label has-text-white">Filtrar por Curso</label>
+            <div className="control">
+              <div className="select">
+                <select value={curso} onChange={(e) => setCurso(e.target.value)}>
+                  <option value="">Todos los cursos</option>
+                  {Object.keys(cursos).map((cursoId) => (
+                    <option key={cursoId} value={cursoId}>{cursos[cursoId]}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
           <table className="table is-fullwidth is-striped is-hoverable">
             <thead>
               <tr>
                 <th className="has-text-white">Tema</th>
+                <th className="has-text-white">Curso</th>
                 <th className="has-text-white">Número de Preguntas</th>
                 <th className="has-text-centered has-text-white">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {evaluaciones && evaluaciones.length > 0 ? (
-                evaluaciones.map((evaluacion) => {
+              {filteredEvaluaciones && filteredEvaluaciones.length > 0 ? (
+                filteredEvaluaciones.map((evaluacion) => {
                   const { tema_id, evaluacion: preguntas, habilitado } = evaluacion;
+                  const cursoNombre = cursos[tema_id.curso];
                   return (
                     <tr key={evaluacion._id}>
                       <td className="has-text-white" style={{ verticalAlign: 'middle' }}>
                         {tema_id ? tema_id.titulo : 'Tema no disponible'}
+                      </td>
+                      <td className="has-text-white" style={{ verticalAlign: 'middle' }}>
+                        {cursoNombre || 'Curso no disponible'}
                       </td>
                       <td className="has-text-white" style={{ verticalAlign: 'middle' }}>{preguntas.length} preguntas</td>
                       <td className="has-text-centered has-text-white" style={{ verticalAlign: 'middle' }}>
@@ -401,7 +443,7 @@ const CuestionariosForm = () => {
                 })
               ) : (
                 <tr>
-                  <td className="has-text-white" colSpan="3">No hay evaluaciones disponibles.</td>
+                  <td className="has-text-white" colSpan="4">No hay evaluaciones disponibles.</td>
                 </tr>
               )}
             </tbody>

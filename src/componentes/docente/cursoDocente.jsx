@@ -4,6 +4,7 @@ import "bulma/css/bulma.min.css";
 
 const CrearCursoDocente = () => {
   const [nombreCurso, setNombreCurso] = useState('');
+  const [cursos, setCursos] = useState([]);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [usuarioId, setUsuarioId] = useState('');
@@ -15,6 +16,18 @@ const CrearCursoDocente = () => {
     } else {
       setError('No se encontró el ID del usuario en la sesión.');
     }
+
+    // Fetch the list of created courses
+    const fetchCursos = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/api/cursos');
+        setCursos(response.data);
+      } catch (error) {
+        console.error('Error al cargar los cursos:', error);
+      }
+    };
+
+    fetchCursos();
   }, []);
 
   const handleNombreCursoChange = (event) => {
@@ -43,6 +56,7 @@ const CrearCursoDocente = () => {
       });
 
       setSuccessMessage('¡Curso creado y asignado exitosamente!');
+      setCursos([...cursos, response.data]);
       setNombreCurso('');
       setError('');
     } catch (error) {
@@ -103,6 +117,30 @@ const CrearCursoDocente = () => {
               </form>
             </div>
           </div>
+        </div>
+
+        <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '10px', marginTop: '20px' }}>
+          <h2 className="subtitle has-text-centered has-text-white">Cursos Creados</h2>
+          <table className="table is-fullwidth is-striped is-hoverable">
+            <thead>
+              <tr>
+                <th className="has-text-white">Nombre del Curso</th>
+              </tr>
+            </thead>
+            <tbody>
+              {cursos.length > 0 ? (
+                cursos.map((curso) => (
+                  <tr key={curso._id}>
+                    <td className="has-text-white">{curso.nombre}</td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td className="has-text-white" colSpan="1">No hay cursos disponibles.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
