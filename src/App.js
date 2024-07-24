@@ -49,6 +49,7 @@ import EvaluacionesDocen from './componentes/docente/evaluaciones';
 import CrearCursoDocente from './componentes/docente/cursoDocente';
 import AlumnosSubcritos from './componentes/docente/alumnosSubcritos';
 import Entradas from './componentes/administrativo/entradas'
+import RecursosTemasDocete from './componentes/docente/recursosTemas';
 
 // Proteccion de rutas
 import RutaPrivada from './componentes/contextos/ContextoAutenticacion';
@@ -100,6 +101,7 @@ const App = () => {
         <Route path="/docente/evaluaciones" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><EvaluacionesDocen /></LayoutEncabeDocen></RutaPrivada>} />
         <Route path="/docente/crearcurso" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><CrearCursoDocente /></LayoutEncabeDocen></RutaPrivada>} />
         <Route path="/docente/alumnos-suscritos" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><AlumnosSubcritos/></LayoutEncabeDocen></RutaPrivada>} />
+        <Route path="/docente/recursos" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeAdmin><RecursosTemasDocete/></LayoutEncabeAdmin></RutaPrivada>} />
 
       </Routes>
     </Router>
