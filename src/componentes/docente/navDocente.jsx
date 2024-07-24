@@ -66,6 +66,7 @@ const BarraNavDocen = () => {
                             <Link className="navbar-item" to="/docente/temas">Agregar Temas</Link>
                             <Link className="navbar-item" to="/docente/subirtema">Subir un Tema</Link>
                             <Link className="navbar-item" to="/docente/temas/contenidos">Administrar Contenidos</Link>
+                            <Link className="navbar-item" to="/docente/recursos">Subir Recursos</Link>
                         </div>
                     </div>
 
