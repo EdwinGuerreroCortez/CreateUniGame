@@ -17,7 +17,7 @@ const Curso = () => {
   const cursosPorPagina = 2; // Ajusta este valor según la cantidad de cursos que quieras mostrar por página
   const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
   const [subtemaSeleccionado, setSubtemaSeleccionado] = useState(null); // Estado para el subtema seleccionado
-  const [recursoSeleccionado, setRecursoSeleccionado] = useState(null); // Estado para el recurso seleccionado
+  const [mostrarRecursos, setMostrarRecursos] = useState(false); // Estado para mostrar los recursos
   const [showSubscriptionPrompt, setShowSubscriptionPrompt] = useState(false);
   const [subscriptionMessage, setSubscriptionMessage] = useState("");
   const [isBanned, setIsBanned] = useState(false); // Estado para verificar si el usuario está baneado
@@ -80,13 +80,13 @@ const Curso = () => {
     setCursoSeleccionado(null);
     setTemaSeleccionado(null);
     setSubtemaSeleccionado(null);
-    setRecursoSeleccionado(null);
+    setMostrarRecursos(false);
     setSubscriptionMessage(""); // Clear the subscription message when returning to the courses
   };
 
   const regresarATemas = () => {
     setSubtemaSeleccionado(null);
-    setRecursoSeleccionado(null);
+    setMostrarRecursos(false);
   };
 
   const verificarEvaluacion = async (temaId) => {
@@ -97,7 +97,7 @@ const Curso = () => {
       }
       const evaluacionData = await evaluacionResponse.json();
       console.log("Evaluacion data:", evaluacionData);
-  
+
       if (evaluacionData && evaluacionData.evaluacion_habilitada !== undefined) {
         if (temaId === evaluacionData._id) {
           setEvaluacionHabilitada(evaluacionData.evaluacion_habilitada);
@@ -109,7 +109,7 @@ const Curso = () => {
       console.error("Error al verificar la evaluación:", error);
     }
   };
-  
+
   useEffect(() => {
     let intervalId;
     if (temaSeleccionado) {
@@ -121,13 +121,13 @@ const Curso = () => {
       setEvaluacionHabilitada(false);
     }
     return () => clearInterval(intervalId); // Limpiar el intervalo cuando el componente se desmonte o temaSeleccionado cambie
-  }, [temaSeleccionado]);  
+  }, [temaSeleccionado]);
 
   const cambiarPaginaTemas = (numeroPagina) => {
     setPaginaActualTemas(numeroPagina);
     setTemaSeleccionado(null);
     setSubtemaSeleccionado(null);
-    setRecursoSeleccionado(null);
+    setMostrarRecursos(false);
   };
 
   const cambiarPaginaCursos = (numeroPagina) => {
@@ -135,7 +135,7 @@ const Curso = () => {
     setCursoSeleccionado(null);
     setTemaSeleccionado(null);
     setSubtemaSeleccionado(null);
-    setRecursoSeleccionado(null);
+    setMostrarRecursos(false);
   };
 
   const seleccionarTema = (tema) => {
@@ -144,16 +144,16 @@ const Curso = () => {
     setCursoFinalizado(false);
     setMostrarTemas(false);
     setSubtemaSeleccionado(null);
-    setRecursoSeleccionado(null);
+    setMostrarRecursos(false);
   };
 
   const seleccionarSubtema = (subtema) => {
     setSubtemaSeleccionado(subtema);
-    setRecursoSeleccionado(null);
+    setMostrarRecursos(false);
   };
 
-  const seleccionarRecurso = (recurso) => {
-    setRecursoSeleccionado(recurso);
+  const mostrarRecursosDelTema = () => {
+    setMostrarRecursos(true);
     setSubtemaSeleccionado(null);
   };
 
@@ -167,7 +167,7 @@ const Curso = () => {
 
   const pasoAnterior = () => {
     if (pasoActual > -1) {
-      setPasoActual(pasoAnterior - 1);
+      setPasoActual(pasoActual - 1);
     }
   };
 
@@ -324,7 +324,7 @@ const Curso = () => {
                 >
                   <button
                     className="button is-link"
-                    onClick={subtemaSeleccionado || recursoSeleccionado ? regresarATemas : regresarACursos}
+                    onClick={subtemaSeleccionado || mostrarRecursos ? regresarATemas : regresarACursos}
                     style={{ position: "absolute", top: "10px", left: "10px" }}
                     data-tooltip="Regresar"
                   >
@@ -393,25 +393,23 @@ const Curso = () => {
                       )}
                       {temaSeleccionado.recursos.length > 0 && (
                         <div>
-                          <h3 className="title is-6 has-text-white">Recursos:</h3>
-                          {temaSeleccionado.recursos.map((recurso) => (
-                            <div
-                              key={recurso._id}
-                              className="card"
-                              style={{
-                                cursor: "pointer",
-                                marginBottom: "0.5rem",
-                                backgroundColor: recursoSeleccionado && recursoSeleccionado._id === recurso._id ? "blue" : "navy",
-                                opacity: recursoSeleccionado && recursoSeleccionado._id === recurso._id ? 0.5 : 1,
-                                padding: "2px",
-                              }}
-                              onClick={() => seleccionarRecurso(recurso)}
-                            >
-                              <div className="card-content" style={{ padding: "0.4rem" }}>
-                                <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>{recurso.titulo}</p>
-                              </div>
+                          <br />
+                          <h3 className="title is-6 has-text-white">Enlaces de Recursos:</h3>
+                          <div
+                            className="card"
+                            style={{
+                              cursor: "pointer",
+                              marginBottom: "0.5rem",
+                              backgroundColor: mostrarRecursos ? "blue" : "navy",
+                              opacity: mostrarRecursos ? 0.5 : 1,
+                              padding: "2px",
+                            }}
+                            onClick={mostrarRecursosDelTema}
+                          >
+                            <div className="card-content" style={{ padding: "0.4rem" }}>
+                              <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>Recursos</p>
                             </div>
-                          ))}
+                          </div>
                         </div>
                       )}
                     </div>
@@ -485,7 +483,7 @@ const Curso = () => {
               </div>
               <h3
                 className="title is-6 has-text-white"
-                style={{ textAlign: "center", marginTop:"10px" }}
+                style={{ textAlign: "center", marginTop: "10px" }}
               >
                 Si no encuentra ningún curso, inscribase a nuestros diversos cursos
               </h3>
@@ -514,7 +512,7 @@ const Curso = () => {
                   marginTop: "20px",
                 }}
               >
-                {!subtemaSeleccionado && !recursoSeleccionado ? (
+                {!subtemaSeleccionado && !mostrarRecursos ? (
                   <>
                     <h2 className="title is-4 has-text-white">{temaSeleccionado.titulo}</h2>
                     <p className="is-size-6">Autor: {temaSeleccionado.responsable}</p>
@@ -531,13 +529,28 @@ const Curso = () => {
                     <p>{subtemaSeleccionado.descripcion}</p>
                     {renderVideo(subtemaSeleccionado.video)}
                   </>
-                ) : recursoSeleccionado && (
+                ) : mostrarRecursos && (
                   <>
-                    <h2 className="title is-4 has-text-centered has-text-white">{recursoSeleccionado.titulo}</h2>
-                    <p>Enlace: <a href={recursoSeleccionado.enlace} target="_blank" rel="noopener noreferrer" className="has-text-link">{recursoSeleccionado.enlace}</a></p>
+                    <h2 className="title is-4 has-text-centered has-text-white">Enlaces de Recursos:</h2>
+                    <ul>
+                      {temaSeleccionado.recursos.map((recurso) => (
+                        <li key={recurso._id} style={{ marginBottom: "0.5rem" }}>
+                          <p className="title is-6 has-text-white">· {recurso.titulo}</p>
+                          <a
+                            href={recurso.enlace}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="has-text-link"
+                          >
+                            {recurso.enlace}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
                   </>
+
                 )}
-                {!subtemaSeleccionado && !recursoSeleccionado && (
+                {!subtemaSeleccionado && !mostrarRecursos && (
                   <>
                     {pasoActual === -1 ? (
                       <div className="has-text-centered" style={{ marginTop: "20px" }}>
