@@ -8,10 +8,10 @@ const CuestionariosForm = () => {
   const [newFile, setNewFile] = useState(null);
   const [editFile, setEditFile] = useState(null);
   const [tema, setTema] = useState('');
+  const [curso, setCurso] = useState(''); // Estado para curso seleccionado
   const [temas, setTemas] = useState([]);
   const [evaluaciones, setEvaluaciones] = useState([]);
-  const [docentes, setDocentes] = useState([]);
-  const [selectedDocente, setSelectedDocente] = useState('');
+  const [cursos, setCursos] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [modalAlert, setModalAlert] = useState({ type: '', message: '' });
@@ -39,7 +39,7 @@ const CuestionariosForm = () => {
           const evaluacionesResponse = response.data.map(te => ({
             ...te.evaluacion,
             tema_titulo: te.tema.titulo,
-            docente_id: te.tema.docente_id
+            curso_nombre: te.tema.curso && te.tema.curso.nombre ? te.tema.curso.nombre : 'Curso no disponible'
           }));
           setEvaluaciones(evaluacionesResponse);
         } catch (error) {
@@ -47,18 +47,22 @@ const CuestionariosForm = () => {
         }
       };
 
-      const fetchDocentes = async () => {
+      const fetchCursos = async () => {
         try {
-          const response = await axios.get(`http://localhost:3001/api/docentes`);
-          setDocentes(response.data);
+          const response = await axios.get('http://localhost:3001/api/cursos');
+          const cursosMap = response.data.reduce((acc, curso) => {
+            acc[curso._id] = curso.nombre;
+            return acc;
+          }, {});
+          setCursos(cursosMap);
         } catch (error) {
-          console.error('Error al obtener los docentes:', error);
+          console.error('Error al obtener los cursos:', error);
         }
       };
 
       fetchTemas();
       fetchTemasEvaluaciones();
-      fetchDocentes();
+      fetchCursos();
     } else {
       console.error("No userId found in localStorage");
     }
@@ -295,10 +299,10 @@ const CuestionariosForm = () => {
   const totalPages = Math.ceil(editEvaluacion ? editEvaluacion.evaluacion.length / itemsPerPage : 1);
 
   const filteredEvaluaciones = evaluaciones.filter(evaluacion => {
-    if (selectedDocente === '') {
+    if (curso === '') {
       return true;
     }
-    return evaluacion.docente_id === selectedDocente;
+    return evaluacion.tema_id.curso === curso;
   });
 
   return (
@@ -348,19 +352,6 @@ const CuestionariosForm = () => {
               </div>
             </div>
           </div>
-          <div className="field">
-            <label className="label has-text-white">Docente</label>
-            <div className="control">
-              <div className="select">
-                <select value={selectedDocente} onChange={(e) => setSelectedDocente(e.target.value)}>
-                  <option value="">Todos los docentes</option>
-                  {docentes.map((docente) => (
-                    <option key={docente._id} value={docente._id}>{docente.nombre}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-          </div>
           <div className="field is-grouped is-grouped-right">
             <div className="control">
               <button
@@ -402,10 +393,24 @@ const CuestionariosForm = () => {
 
         <div className="box" style={{ backgroundColor: '#090A0C' }}>
           <h2 className="title is-4 has-text-centered has-text-white">Lista de Evaluaciones</h2>
+          <div className="field">
+            <label className="label has-text-white">Filtrar por Curso</label>
+            <div className="control">
+              <div className="select">
+                <select value={curso} onChange={(e) => setCurso(e.target.value)}>
+                  <option value="">Todos los cursos</option>
+                  {Object.keys(cursos).map((cursoId) => (
+                    <option key={cursoId} value={cursoId}>{cursos[cursoId]}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
           <table className="table is-fullwidth is-striped is-hoverable">
             <thead>
               <tr>
                 <th className="has-text-white">Tema</th>
+                <th className="has-text-white">Curso</th>
                 <th className="has-text-white">Número de Preguntas</th>
                 <th className="has-text-centered has-text-white">Acciones</th>
               </tr>
@@ -413,11 +418,14 @@ const CuestionariosForm = () => {
             <tbody>
               {filteredEvaluaciones && filteredEvaluaciones.length > 0 ? (
                 filteredEvaluaciones.map((evaluacion) => {
-                  const { tema_titulo, evaluacion: preguntas, habilitado } = evaluacion;
+                  const { tema_titulo, curso_nombre, evaluacion: preguntas, habilitado } = evaluacion;
                   return (
                     <tr key={evaluacion._id}>
                       <td className="has-text-white" style={{ verticalAlign: 'middle' }}>
                         {tema_titulo ? tema_titulo : 'Tema no disponible'}
+                      </td>
+                      <td className="has-text-white" style={{ verticalAlign: 'middle' }}>
+                        {curso_nombre}
                       </td>
                       <td className="has-text-white" style={{ verticalAlign: 'middle' }}>{preguntas.length} preguntas</td>
                       <td className="has-text-centered has-text-white" style={{ verticalAlign: 'middle' }}>
@@ -453,7 +461,7 @@ const CuestionariosForm = () => {
                 })
               ) : (
                 <tr>
-                  <td className="has-text-white" colSpan="3">No hay evaluaciones disponibles.</td>
+                  <td className="has-text-white" colSpan="4">No hay evaluaciones disponibles.</td>
                 </tr>
               )}
             </tbody>
