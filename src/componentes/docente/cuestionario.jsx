@@ -10,6 +10,8 @@ const CuestionariosForm = () => {
   const [tema, setTema] = useState('');
   const [temas, setTemas] = useState([]);
   const [evaluaciones, setEvaluaciones] = useState([]);
+  const [docentes, setDocentes] = useState([]);
+  const [selectedDocente, setSelectedDocente] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [alert, setAlert] = useState({ type: '', message: '' });
   const [modalAlert, setModalAlert] = useState({ type: '', message: '' });
@@ -36,7 +38,8 @@ const CuestionariosForm = () => {
           const response = await axios.get(`http://localhost:3001/api/usuario/${userId}/temas-evaluaciones`);
           const evaluacionesResponse = response.data.map(te => ({
             ...te.evaluacion,
-            tema_titulo: te.tema.titulo
+            tema_titulo: te.tema.titulo,
+            docente_id: te.tema.docente_id
           }));
           setEvaluaciones(evaluacionesResponse);
         } catch (error) {
@@ -44,8 +47,18 @@ const CuestionariosForm = () => {
         }
       };
 
+      const fetchDocentes = async () => {
+        try {
+          const response = await axios.get(`http://localhost:3001/api/docentes`);
+          setDocentes(response.data);
+        } catch (error) {
+          console.error('Error al obtener los docentes:', error);
+        }
+      };
+
       fetchTemas();
       fetchTemasEvaluaciones();
+      fetchDocentes();
     } else {
       console.error("No userId found in localStorage");
     }
@@ -81,37 +94,37 @@ const CuestionariosForm = () => {
     setEditFile(e.target.files[0]);
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (newFile && tema.trim()) {
-    setIsLoading(true);
-    setAlert({ type: '', message: '' });
-    const formData = new FormData();
-    formData.append('file', newFile);
-    formData.append('tema', tema);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (newFile && tema.trim()) {
+      setIsLoading(true);
+      setAlert({ type: '', message: '' });
+      const formData = new FormData();
+      formData.append('file', newFile);
+      formData.append('tema', tema);
 
-    try {
-      const response = await axios.post('http://localhost:3001/api/evaluaciones/upload', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
-      setAlert({ type: 'success', message: 'Archivo subido exitosamente' });
-      setNewFile(null);
-      setTema('');
-      setEvaluaciones([...evaluaciones, response.data.evaluacion]);
-      window.location.reload(); // Recargar la página
-    } catch (error) {
-      console.error('Error al subir archivo:', error);
-      const errorMessage = error.response && error.response.data && Array.isArray(error.response.data.details)
-        ? error.response.data.details.join(', ')
-        : 'Error al subir archivo';
-      setAlert({ type: 'error', message: errorMessage });
-    } finally {
-      setIsLoading(false);
+      try {
+        const response = await axios.post('http://localhost:3001/api/evaluaciones/upload', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        });
+        setAlert({ type: 'success', message: 'Archivo subido exitosamente' });
+        setNewFile(null);
+        setTema('');
+        setEvaluaciones([...evaluaciones, response.data.evaluacion]);
+        window.location.reload(); // Recargar la página
+      } catch (error) {
+        console.error('Error al subir archivo:', error);
+        const errorMessage = error.response && error.response.data && Array.isArray(error.response.data.details)
+          ? error.response.data.details.join(', ')
+          : 'Error al subir archivo';
+        setAlert({ type: 'error', message: errorMessage });
+      } finally {
+        setIsLoading(false);
+      }
     }
-  }
-};
+  };
 
   const handleEdit = (evaluacion) => {
     setEditMode(true);
@@ -281,6 +294,13 @@ const handleSubmit = async (e) => {
 
   const totalPages = Math.ceil(editEvaluacion ? editEvaluacion.evaluacion.length / itemsPerPage : 1);
 
+  const filteredEvaluaciones = evaluaciones.filter(evaluacion => {
+    if (selectedDocente === '') {
+      return true;
+    }
+    return evaluacion.docente_id === selectedDocente;
+  });
+
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <div className="container">
@@ -323,6 +343,19 @@ const handleSubmit = async (e) => {
                   <option value="" disabled>Selecciona un tema</option>
                   {temas.map((tema) => (
                     <option key={tema._id} value={tema._id}>{tema.titulo}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
+          <div className="field">
+            <label className="label has-text-white">Docente</label>
+            <div className="control">
+              <div className="select">
+                <select value={selectedDocente} onChange={(e) => setSelectedDocente(e.target.value)}>
+                  <option value="">Todos los docentes</option>
+                  {docentes.map((docente) => (
+                    <option key={docente._id} value={docente._id}>{docente.nombre}</option>
                   ))}
                 </select>
               </div>
@@ -378,8 +411,8 @@ const handleSubmit = async (e) => {
               </tr>
             </thead>
             <tbody>
-              {evaluaciones && evaluaciones.length > 0 ? (
-                evaluaciones.map((evaluacion) => {
+              {filteredEvaluaciones && filteredEvaluaciones.length > 0 ? (
+                filteredEvaluaciones.map((evaluacion) => {
                   const { tema_titulo, evaluacion: preguntas, habilitado } = evaluacion;
                   return (
                     <tr key={evaluacion._id}>

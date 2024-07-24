@@ -8,6 +8,7 @@ const CuestionariosForm = () => {
   const [newFile, setNewFile] = useState(null);
   const [editFile, setEditFile] = useState(null);
   const [tema, setTema] = useState('');
+  const [curso, setCurso] = useState(''); // Estado para curso seleccionado
   const [temas, setTemas] = useState([]);
   const [evaluaciones, setEvaluaciones] = useState([]);
   const [cursos, setCursos] = useState({});
@@ -277,6 +278,13 @@ const CuestionariosForm = () => {
 
   const totalPages = Math.ceil(editEvaluacion ? editEvaluacion.evaluacion.length / itemsPerPage : 1);
 
+  const filteredEvaluaciones = evaluaciones.filter(evaluacion => {
+    if (curso === '') {
+      return true;
+    }
+    return evaluacion.tema_id.curso === curso;
+  });
+
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
       <div className="container">
@@ -324,6 +332,7 @@ const CuestionariosForm = () => {
               </div>
             </div>
           </div>
+        
           <div className="field is-grouped is-grouped-right">
             <div className="control">
               <button
@@ -365,6 +374,19 @@ const CuestionariosForm = () => {
 
         <div className="box" style={{ backgroundColor: '#090A0C' }}>
           <h2 className="title is-4 has-text-centered has-text-white">Lista de Evaluaciones</h2>
+          <div className="field">
+            <label className="label has-text-white">Filtrar por Curso</label>
+            <div className="control">
+              <div className="select">
+                <select value={curso} onChange={(e) => setCurso(e.target.value)}>
+                  <option value="">Todos los cursos</option>
+                  {Object.keys(cursos).map((cursoId) => (
+                    <option key={cursoId} value={cursoId}>{cursos[cursoId]}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          </div>
           <table className="table is-fullwidth is-striped is-hoverable">
             <thead>
               <tr>
@@ -375,8 +397,8 @@ const CuestionariosForm = () => {
               </tr>
             </thead>
             <tbody>
-              {evaluaciones && evaluaciones.length > 0 ? (
-                evaluaciones.map((evaluacion) => {
+              {filteredEvaluaciones && filteredEvaluaciones.length > 0 ? (
+                filteredEvaluaciones.map((evaluacion) => {
                   const { tema_id, evaluacion: preguntas, habilitado } = evaluacion;
                   const cursoNombre = cursos[tema_id.curso];
                   return (
