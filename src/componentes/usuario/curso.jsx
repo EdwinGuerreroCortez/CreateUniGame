@@ -17,6 +17,7 @@ const Curso = () => {
   const cursosPorPagina = 2; // Ajusta este valor según la cantidad de cursos que quieras mostrar por página
   const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
   const [subtemaSeleccionado, setSubtemaSeleccionado] = useState(null); // Estado para el subtema seleccionado
+  const [recursoSeleccionado, setRecursoSeleccionado] = useState(null); // Estado para el recurso seleccionado
   const [showSubscriptionPrompt, setShowSubscriptionPrompt] = useState(false);
   const [subscriptionMessage, setSubscriptionMessage] = useState("");
   const [isBanned, setIsBanned] = useState(false); // Estado para verificar si el usuario está baneado
@@ -79,11 +80,13 @@ const Curso = () => {
     setCursoSeleccionado(null);
     setTemaSeleccionado(null);
     setSubtemaSeleccionado(null);
+    setRecursoSeleccionado(null);
     setSubscriptionMessage(""); // Clear the subscription message when returning to the courses
   };
 
   const regresarATemas = () => {
     setSubtemaSeleccionado(null);
+    setRecursoSeleccionado(null);
   };
 
   const verificarEvaluacion = async (temaId) => {
@@ -124,6 +127,7 @@ const Curso = () => {
     setPaginaActualTemas(numeroPagina);
     setTemaSeleccionado(null);
     setSubtemaSeleccionado(null);
+    setRecursoSeleccionado(null);
   };
 
   const cambiarPaginaCursos = (numeroPagina) => {
@@ -131,6 +135,7 @@ const Curso = () => {
     setCursoSeleccionado(null);
     setTemaSeleccionado(null);
     setSubtemaSeleccionado(null);
+    setRecursoSeleccionado(null);
   };
 
   const seleccionarTema = (tema) => {
@@ -139,10 +144,17 @@ const Curso = () => {
     setCursoFinalizado(false);
     setMostrarTemas(false);
     setSubtemaSeleccionado(null);
+    setRecursoSeleccionado(null);
   };
 
   const seleccionarSubtema = (subtema) => {
     setSubtemaSeleccionado(subtema);
+    setRecursoSeleccionado(null);
+  };
+
+  const seleccionarRecurso = (recurso) => {
+    setRecursoSeleccionado(recurso);
+    setSubtemaSeleccionado(null);
   };
 
   const siguientePaso = () => {
@@ -312,7 +324,7 @@ const Curso = () => {
                 >
                   <button
                     className="button is-link"
-                    onClick={subtemaSeleccionado ? regresarATemas : regresarACursos}
+                    onClick={subtemaSeleccionado || recursoSeleccionado ? regresarATemas : regresarACursos}
                     style={{ position: "absolute", top: "10px", left: "10px" }}
                     data-tooltip="Regresar"
                   >
@@ -374,6 +386,29 @@ const Curso = () => {
                             >
                               <div className="card-content" style={{ padding: "0.4rem" }}>
                                 <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>{subtema.titulo}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {temaSeleccionado.recursos.length > 0 && (
+                        <div>
+                          <h3 className="title is-6 has-text-white">Recursos:</h3>
+                          {temaSeleccionado.recursos.map((recurso) => (
+                            <div
+                              key={recurso._id}
+                              className="card"
+                              style={{
+                                cursor: "pointer",
+                                marginBottom: "0.5rem",
+                                backgroundColor: recursoSeleccionado && recursoSeleccionado._id === recurso._id ? "blue" : "navy",
+                                opacity: recursoSeleccionado && recursoSeleccionado._id === recurso._id ? 0.5 : 1,
+                                padding: "2px",
+                              }}
+                              onClick={() => seleccionarRecurso(recurso)}
+                            >
+                              <div className="card-content" style={{ padding: "0.4rem" }}>
+                                <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>{recurso.titulo}</p>
                               </div>
                             </div>
                           ))}
@@ -479,7 +514,7 @@ const Curso = () => {
                   marginTop: "20px",
                 }}
               >
-                {!subtemaSeleccionado ? (
+                {!subtemaSeleccionado && !recursoSeleccionado ? (
                   <>
                     <h2 className="title is-4 has-text-white">{temaSeleccionado.titulo}</h2>
                     <p className="is-size-6">Autor: {temaSeleccionado.responsable}</p>
@@ -490,14 +525,19 @@ const Curso = () => {
                     <h2 className="title is-3 has-text-centered has-text-white">Descripción</h2>
                     <p>{temaSeleccionado.descripcion}</p>
                   </>
-                ) : (
+                ) : subtemaSeleccionado ? (
                   <>
                     <h2 className="title is-4 has-text-centered has-text-white">{subtemaSeleccionado.titulo}</h2>
                     <p>{subtemaSeleccionado.descripcion}</p>
                     {renderVideo(subtemaSeleccionado.video)}
                   </>
+                ) : recursoSeleccionado && (
+                  <>
+                    <h2 className="title is-4 has-text-centered has-text-white">{recursoSeleccionado.titulo}</h2>
+                    <p>Enlace: <a href={recursoSeleccionado.enlace} target="_blank" rel="noopener noreferrer" className="has-text-link">{recursoSeleccionado.enlace}</a></p>
+                  </>
                 )}
-                {!subtemaSeleccionado && (
+                {!subtemaSeleccionado && !recursoSeleccionado && (
                   <>
                     {pasoActual === -1 ? (
                       <div className="has-text-centered" style={{ marginTop: "20px" }}>
