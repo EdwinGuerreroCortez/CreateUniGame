@@ -60,6 +60,7 @@ const BarraNavAdmin = () => {
                             <Link className="navbar-item" to="/admin/temas">Agregar Temas</Link>
                             <Link className="navbar-item" to="/admin/subirtema">Subir un Tema</Link>
                             <Link className="navbar-item" to="/admin/temas/contenidos">Administrar Contenidos</Link>
+                            <Link className="navbar-item" to="/admin/recursos">Subir Recursos</Link>
                         </div>
                     </div>
 

@@ -29,6 +29,8 @@ const Contenidos = () => {
   const [uploadMethod, setUploadMethod] = useState("upload");
   const [subtemaUploadMethod, setSubtemaUploadMethod] = useState("upload");
   const [subtemaVideoLink, setSubtemaVideoLink] = useState({});
+  const [expandedDescriptions, setExpandedDescriptions] = useState({});
+
 
   const videoInputRef = useRef(null);
 
@@ -538,116 +540,128 @@ const Contenidos = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredTemas && filteredTemas.length > 0 ? (
-                  filteredTemas.map((tema) => {
-                    const allFieldsFilled = validateTemaFields(tema);
-                    return (
-                      <tr key={tema._id}>
-                        <td className="has-text-white">{tema.titulo}</td>
-                        <td className="has-text-white">{tema.responsable}</td>
-                        <td className="has-text-white">
-                          {new Date(tema.fecha_creacion).toLocaleDateString()}
-                        </td>
-                        <td className="has-text-white">{tema.descripcion}</td>
-                        <td className="has-text-white">
-                          {tema.pasos ? tema.pasos.length : 0} pasos
-                        </td>
-                        <td className="has-text-white">
-                          <button
-                            className="button is-small is-info button-tooltip"
-                            onClick={() => showSubtemas(tema.subtemas, tema._id)}
-                            data-tooltip="Mostrar Subtemas"
-                          >
-                            {tema.subtemas.length} subtemas
-                          </button>
-                        </td>
-                        <td className="has-text-white">
-                          {tema.video ? (
-                            <a
-                              className="has-text-link"
-                              href={tema.video}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              Ver Video
-                            </a>
-                          ) : (
-                            <div>
-                              <span
-                                className="icon has-text-link is-large button-tooltip "
-                                onClick={() => handleUploadVideo(tema._id)}
-                                data-tooltip="Subir video"
-                              >
-                                <i className="fas fa-upload fa-lg"></i>
-                              </span>
-                            </div>
-                          )}
-                        </td>
+  {temas && temas.length > 0 ? (
+    temas.map((tema) => {
+      const allFieldsFilled = validateTemaFields(tema);
+      const isExpanded = expandedDescriptions[tema._id];
+      const descripcion = tema.descripcion;
 
-                        <td className="has-text-centered has-text-white">
-                          <div className="buttons is-centered is-grouped">
-                            <button
-                              className="button is-small is-info button-tooltip"
-                              onClick={() => handleEdit(tema)}
-                              data-tooltip="Editar"
-                            >
-                              <span className="icon">
-                                <i className="fas fa-edit"></i>
-                              </span>
-                            </button>
+      return (
+        <tr key={tema._id}>
+          <td className="has-text-white">{tema.titulo}</td>
+          <td className="has-text-white">{tema.responsable}</td>
+          <td className="has-text-white">
+            {new Date(tema.fecha_creacion).toLocaleDateString()}
+          </td>
+          <td className="has-text-white">
+            {isExpanded ? descripcion : `${descripcion.substring(0, 100)}...`}
+            {descripcion.length > 100 && (
+              <button
+                className="button is-text"
+                onClick={() =>
+                  setExpandedDescriptions((prev) => ({
+                    ...prev,
+                    [tema._id]: !isExpanded,
+                  }))
+                }
+              >
+                {isExpanded ? "Ver menos" : "Ver más"}
+              </button>
+            )}
+          </td>
+          <td className="has-text-white">{tema.pasos ? tema.pasos.length : 0} pasos</td>
+          <td className="has-text-white">
+            <button
+              className="button is-small is-info button-tooltip"
+              onClick={() => showSubtemas(tema.subtemas, tema._id)}
+              data-tooltip="Mostrar Subtemas"
+            >
+              {tema.subtemas.length} subtemas
+            </button>
+          </td>
+          <td className="has-text-white">
+            {tema.video ? (
+              <a
+                className="has-text-link"
+                href={tema.video}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Ver Video
+              </a>
+            ) : (
+              <div>
+                <span
+                  className="icon has-text-link is-large button-tooltip "
+                  onClick={() => handleUploadVideo(tema._id)}
+                  data-tooltip="Subir video"
+                >
+                  <i className="fas fa-upload fa-lg"></i>
+                </span>
+              </div>
+            )}
+          </td>
+          <td className="has-text-centered has-text-white">
+            <div className="buttons is-centered is-grouped">
+              <button
+                className="button is-small is-info button-tooltip"
+                onClick={() => handleEdit(tema)}
+                data-tooltip="Editar"
+              >
+                <span className="icon">
+                  <i className="fas fa-edit"></i>
+                </span>
+              </button>
+              <button
+                className="button is-small is-danger button-tooltip"
+                onClick={() => confirmDelete(tema._id)}
+                data-tooltip="Eliminar"
+              >
+                <span className="icon">
+                  <i className="fas fa-trash"></i>
+                </span>
+              </button>
+              <button
+                className="button is-small is-warning button-tooltip"
+                onClick={() => handleDownloadTema(tema._id)}
+                data-tooltip="Descargar Excel"
+              >
+                <span className="icon">
+                  <i className="fas fa-file-download"></i>
+                </span>
+              </button>
+              <button
+                className={`button is-small ${
+                  tema.habilitado ? "is-success" : "is-light"
+                }`}
+                onClick={() => handleToggleHabilitar(tema._id)}
+                data-tooltip={
+                  tema.habilitado ? "Deshabilitar tema" : "Habilitar tema"
+                }
+                disabled={!allFieldsFilled}
+              >
+                <span className="icon">
+                  <i
+                    className={`fas ${
+                      tema.habilitado ? "fa-eye-slash" : "fa-eye"
+                    }`}
+                  ></i>
+                </span>
+              </button>
+            </div>
+          </td>
+        </tr>
+      );
+    })
+  ) : (
+    <tr>
+      <td className="has-text-white" colSpan="8">
+        No hay temas disponibles.
+      </td>
+    </tr>
+  )}
+</tbody>
 
-                            <button
-                              className="button is-small is-danger button-tooltip"
-                              onClick={() => confirmDelete(tema._id)}
-                              data-tooltip="Eliminar"
-                            >
-                              <span className="icon">
-                                <i className="fas fa-trash"></i>
-                              </span>
-                            </button>
-
-                            <button
-                              className="button is-small is-warning button-tooltip"
-                              onClick={() => handleDownloadTema(tema._id)}
-                              data-tooltip="Descargar Excel"
-                            >
-                              <span className="icon">
-                                <i className="fas fa-file-download"></i>
-                              </span>
-                            </button>
-                            <button
-                              className={`button is-small ${
-                                tema.habilitado ? "is-success" : "is-light"
-                              }`}
-                              onClick={() => handleToggleHabilitar(tema._id)}
-                              data-tooltip={
-                                tema.habilitado
-                                  ? "Deshabilitar tema"
-                                  : "Habilitar tema"
-                              }
-                              disabled={!allFieldsFilled}
-                            >
-                              <span className="icon">
-                                <i
-                                  className={`fas ${
-                                    tema.habilitado ? "fa-eye-slash" : "fa-eye"
-                                  }`}
-                                ></i>
-                              </span>
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                ) : (
-                  <tr>
-                    <td className="has-text-white" colSpan="8">
-                      No hay temas disponibles.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
             </table>
           </div>
         </div>

@@ -343,7 +343,7 @@ const Evaluaciones = () => {
                       <td className="has-text-white">
                         {(() => {
                           const lastAttempt = getLastAttempt(item.preguntasRespondidas);
-                          return lastAttempt ? lastAttempt.porcentaje + '%' : 'Calificación no disponible';
+                          return lastAttempt ? lastAttempt.porcentaje + '' : 'Calificación no disponible';
                         })()}
                       </td>
                       <td className="has-text-white">
@@ -381,7 +381,7 @@ const Evaluaciones = () => {
                   <div key={index} className="box" style={{ backgroundColor: '#14161A', border: '2px solid #48C78E', marginBottom: '1rem' }}>
                     <h3 className="subtitle has-text-white">Intento {intento.intento}</h3>
                     <p className="has-text-white"><strong>Fecha:</strong> {new Date(intento.fecha).toLocaleString()}</p>
-                    <p className="has-text-white"><strong>Calificación:</strong> {intento.porcentaje}%</p>
+                    <p className="has-text-white"><strong>Calificación:</strong> {intento.porcentaje}</p>
                     {intento.respuestas.map((respuesta, i) => (
                       <div
                         key={i}

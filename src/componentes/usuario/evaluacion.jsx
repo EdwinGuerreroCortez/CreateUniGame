@@ -247,7 +247,7 @@ const Evaluacion = () => {
   };
 
   const guardarResultados = async (respuestas) => {
-    const porcentaje = (respuestas.filter(respuesta => respuesta.correcta).length / preguntas.length) * 100;
+    const porcentaje = (respuestas.filter(respuesta => respuesta.correcta).length / preguntas.length) * 10;
 
     try {
       const examenResponse = await fetch(`http://localhost:3001/api/examenes`, {
@@ -342,7 +342,7 @@ const Evaluacion = () => {
       <div className="box" style={{ backgroundColor: '#14161A', borderColor: 'green', borderWidth: '1px', borderStyle: 'solid' }}>
         <h2 className="subtitle has-text-white has-text-centered">Resultados</h2>
         <p className="has-text-white has-text-centered">Has acertado {calcularResultados()} de {preguntas.length} preguntas.</p>
-        <p className="has-text-white has-text-centered">Porcentaje de aciertos: {(calcularResultados() / preguntas.length * 100).toFixed(2)}%</p>
+        <p className="has-text-white has-text-centered">Tu calificación es: {(calcularResultados() / preguntas.length * 10)}</p>
         <div className="has-text-centered" style={{ marginTop: '1rem' }}>
           <button className="button is-dark is-medium" style={{ backgroundColor: '#224df7', borderColor: 'green', borderWidth: '2px', borderStyle: 'solid' }} onClick={cargarUltimasRespuestas}>
             Inspeccionar

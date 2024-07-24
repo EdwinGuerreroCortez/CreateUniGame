@@ -19,18 +19,18 @@ const Curso = () => {
   const [subtemaSeleccionado, setSubtemaSeleccionado] = useState(null); // Estado para el subtema seleccionado
   const [showSubscriptionPrompt, setShowSubscriptionPrompt] = useState(false);
   const [subscriptionMessage, setSubscriptionMessage] = useState("");
+  const [isBanned, setIsBanned] = useState(false); // Estado para verificar si el usuario está baneado
 
   const navigate = useNavigate();
 
-  // Función para obtener los cursos suscritos desde el backend
+  const userId = localStorage.getItem("userId");
+
   const fetchCursosSuscritos = async () => {
-    const userId = localStorage.getItem("userId");
     try {
       const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/cursos-suscritos`);
       const data = await response.json();
-      // Línea de depuración
       console.log("Cursos suscritos:", data.cursos);
-      setCursos(data.cursos); // Asegúrate de que el backend devuelve un objeto con una propiedad 'cursos'
+      setCursos(data.cursos);
     } catch (error) {
       console.error("Error al cargar los cursos suscritos:", error);
     }
@@ -40,8 +40,31 @@ const Curso = () => {
     fetchCursosSuscritos();
   }, []);
 
-  // Función para obtener los temas del curso seleccionado
+  const verificarSiBaneado = async (cursoId) => {
+    try {
+      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/verificar-suscripcion/${cursoId}`, {
+        method: 'POST'
+      });
+      const data = await response.json();
+      if (response.status === 403) {
+        setIsBanned(true);
+        setSubscriptionMessage(data.message);
+        return true; // Usuario baneado
+      } else {
+        setIsBanned(false);
+        setSubscriptionMessage(data.message);
+        return false; // Usuario no baneado
+      }
+    } catch (error) {
+      console.error("Error al verificar suscripción y baneo:", error);
+      return true; // En caso de error, asumimos que el usuario no puede acceder
+    }
+  };
+
   const fetchTemasDelCurso = async (cursoId) => {
+    const isUserBanned = await verificarSiBaneado(cursoId);
+    if (isUserBanned) return; // No continuar si el usuario está baneado
+
     try {
       const response = await fetch(`http://localhost:3001/api/cursos/${cursoId}/temas`);
       const data = await response.json();
@@ -55,11 +78,12 @@ const Curso = () => {
   const regresarACursos = () => {
     setCursoSeleccionado(null);
     setTemaSeleccionado(null);
-    setSubtemaSeleccionado(null); // Limpiar el subtema seleccionado al regresar
+    setSubtemaSeleccionado(null);
+    setSubscriptionMessage(""); // Clear the subscription message when returning to the courses
   };
 
   const regresarATemas = () => {
-    setSubtemaSeleccionado(null); // Limpiar solo el subtema seleccionado al regresar
+    setSubtemaSeleccionado(null);
   };
 
   const verificarEvaluacion = async (temaId) => {
@@ -99,22 +123,22 @@ const Curso = () => {
   const cambiarPaginaTemas = (numeroPagina) => {
     setPaginaActualTemas(numeroPagina);
     setTemaSeleccionado(null);
-    setSubtemaSeleccionado(null); // Limpiar el subtema seleccionado al cambiar de página
+    setSubtemaSeleccionado(null);
   };
 
   const cambiarPaginaCursos = (numeroPagina) => {
     setPaginaActualCursos(numeroPagina);
     setCursoSeleccionado(null);
     setTemaSeleccionado(null);
-    setSubtemaSeleccionado(null); // Limpiar el subtema seleccionado al cambiar de página
+    setSubtemaSeleccionado(null);
   };
 
   const seleccionarTema = (tema) => {
     setTemaSeleccionado(tema);
     setPasoActual(-1);
     setCursoFinalizado(false);
-    setMostrarTemas(false); // Ocultar el panel de temas en móviles al seleccionar un tema
-    setSubtemaSeleccionado(null); // Limpiar el subtema seleccionado al seleccionar un tema
+    setMostrarTemas(false);
+    setSubtemaSeleccionado(null);
   };
 
   const seleccionarSubtema = (subtema) => {
@@ -131,7 +155,7 @@ const Curso = () => {
 
   const pasoAnterior = () => {
     if (pasoActual > -1) {
-      setPasoActual(pasoActual - 1);
+      setPasoActual(pasoAnterior - 1);
     }
   };
 
@@ -161,7 +185,7 @@ const Curso = () => {
 
   const renderVideo = (videoUrl) => {
     if (!videoUrl) {
-      return <p>No hay video disponible.</p>; // Mensaje opcional si no hay video disponible
+      return <p>No hay video disponible.</p>;
     }
 
     const youtubeRegex =
@@ -172,7 +196,7 @@ const Curso = () => {
       const videoId = match[1];
       return (
         <iframe
-          key={videoId} // Añade una clave única basada en el ID del video
+          key={videoId}
           width="100%"
           height="400"
           src={`https://www.youtube.com/embed/${videoId}`}
@@ -205,7 +229,7 @@ const Curso = () => {
 
   const indiceUltimoCurso = paginaActualCursos * cursosPorPagina;
   const indicePrimerCurso = indiceUltimoCurso - cursosPorPagina;
-  const cursosActuales = cursos.slice(indicePrimerCurso, indiceUltimoCurso); // Utiliza cursos obtenidos del backend
+  const cursosActuales = cursos.slice(indicePrimerCurso, indiceUltimoCurso);
   const totalPaginasCursos = Math.ceil(cursos.length / cursosPorPagina);
 
   return (
@@ -324,9 +348,9 @@ const Curso = () => {
                           marginTop: "20px",
                           backgroundColor: "navy",
                           opacity: 1,
-                          padding: "5px", // Hacer la tarjeta de tema más pequeña
+                          padding: "5px",
                         }}
-                        onClick={() => seleccionarTema(temaSeleccionado)} // Permitir volver a seleccionar el tema
+                        onClick={() => seleccionarTema(temaSeleccionado)}
                       >
                         <div className="card-content" style={{ padding: "0.5rem" }}>
                           <p className="title is-5 has-text-white">{temaSeleccionado.titulo}</p>
@@ -344,11 +368,11 @@ const Curso = () => {
                                 marginBottom: "0.5rem",
                                 backgroundColor: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id ? "blue" : "navy",
                                 opacity: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id ? 0.5 : 1,
-                                padding: "2px", // Hacer las tarjetas de subtemas más pequeñas
+                                padding: "2px",
                               }}
                               onClick={() => seleccionarSubtema(subtema)}
                             >
-                              <div className="card-content" style={{ padding: "0.4rem" }}> {/* Ajustar el padding para hacer la tarjeta más pequeña */}
+                              <div className="card-content" style={{ padding: "0.4rem" }}>
                                 <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>{subtema.titulo}</p>
                               </div>
                             </div>
@@ -432,7 +456,20 @@ const Curso = () => {
               </h3>
             </div>
           )}
-          {cursoSeleccionado && temaSeleccionado && (
+          {cursoSeleccionado && isBanned && (
+            <div className="column is-three-quarters">
+              <div
+                className="notification is-danger"
+                style={{
+                  marginTop: "20px",
+                }}
+              >
+                <button className="delete" onClick={() => setIsBanned(false)}></button>
+                {subscriptionMessage}
+              </div>
+            </div>
+          )}
+          {cursoSeleccionado && !isBanned && temaSeleccionado && (
             <div className="column is-three-quarters">
               <div
                 className="box has-text-white"

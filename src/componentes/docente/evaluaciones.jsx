@@ -321,7 +321,7 @@ const EvaluacionesDocente = () => {
                           Ver
                         </button>
                       </td>
-                      <td className="has-text-white">{item.preguntasRespondidas[item.preguntasRespondidas.length - 1].porcentaje}%</td>
+                      <td className="has-text-white">{item.preguntasRespondidas[item.preguntasRespondidas.length - 1].porcentaje}</td>
                       <td className="has-text-white">
                         <div className="tooltip" data-tooltip={item.examenPermitido ? 'No permitir examen' : 'Permitir examen'}>
                           <button
@@ -357,7 +357,7 @@ const EvaluacionesDocente = () => {
                   <div key={index} className="box" style={{ backgroundColor: '#14161A', border: '2px solid #48C78E', marginBottom: '1rem' }}>
                     <h3 className="subtitle has-text-white">Intento {intento.intento}</h3>
                     <p className="has-text-white"><strong>Fecha:</strong> {new Date(intento.fecha).toLocaleString()}</p>
-                    <p className="has-text-white"><strong>Calificación:</strong> {intento.porcentaje}%</p>
+                    <p className="has-text-white"><strong>Calificación:</strong> {intento.porcentaje}</p>
                     {intento.respuestas.map((respuesta, i) => (
                       <div
                         key={i}
