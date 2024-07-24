@@ -39,10 +39,6 @@ const validateStepTwo = (formData) => {
         alert("El teléfono debe contener exactamente 10 dígitos.");
         return false;
     }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correoElectronico)) {
-        alert("Correo electrónico no válido.");
-        return false;
-    }
     const validGrades = ['Primaria', 'Secundaria', 'Preparatoria', 'Universidad', 'Ninguna'];
     if (!validGrades.includes(gradoEstudio)) {
         alert("Seleccione un nivel de estudios válido.");
@@ -77,7 +73,7 @@ const inputStyle = { marginBottom: '15px' };
 
 const StepIndicator = ({ step }) => (
     <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
-        {[1, 2, 3, 4].map((s) => (
+        {[1, 2, 3, 4, 5].map((s) => (
             <div
                 key={s}
                 style={{
@@ -92,12 +88,86 @@ const StepIndicator = ({ step }) => (
     </div>
 );
 
+const StepEmailVerification = ({ formData, setFormData, nextStep }) => {
+    const [code, setCode] = useState('');
+    const [emailSent, setEmailSent] = useState(false);
+
+    const sendVerificationEmail = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/enviar-codigo-registro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: formData.correoElectronico }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert('Código de verificación enviado a tu correo electrónico.');
+                setEmailSent(true);
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            alert('Hubo un problema al enviar el código de verificación.');
+            console.error('Error al enviar el código de verificación:', error);
+        }
+    };
+
+    const verifyCode = async () => {
+        try {
+            const response = await fetch('http://localhost:3001/api/verificar-codigo-registro', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: formData.correoElectronico, code }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert('Código de verificación correcto.');
+                nextStep();
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            alert('Hubo un problema al verificar el código de verificación.');
+            console.error('Error al verificar el código de verificación:', error);
+        }
+    };
+
+    return (
+        <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
+            <div className="card has-background-black has-text-white" style={{ maxWidth: '420px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+                <div className="card-content">
+                    <h2 className="title has-text-centered has-text-white">Verificación de Correo</h2>
+                    <StepIndicator step={1} />
+                    <div className="field">
+                        <input className="input is-black" type="email" placeholder="Correo Electrónico" name="correoElectronico" value={formData.correoElectronico} onChange={handleChange(formData, setFormData)} style={{ marginBottom: '15px' }} />
+                        {!emailSent && (
+                            <button className="button is-link is-fullwidth" onClick={sendVerificationEmail} style={{ marginBottom: '10px' }}>Enviar Código</button>
+                        )}
+                        {emailSent && (
+                            <div className="field">
+                                <input className="input is-black" type="text" placeholder="Código de Verificación" value={code} onChange={(e) => setCode(e.target.value)} style={{ marginBottom: '15px' }} />
+                                <button className="button is-link is-fullwidth" onClick={verifyCode} style={{ marginBottom: '10px' }}>Verificar Código</button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const StepOne = ({ formData, setFormData, nextStep }) => (
-<div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
-<div className="card has-background-black has-text-white" style={{ maxWidth: '420px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
+    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
+        <div className="card has-background-black has-text-white" style={{ maxWidth: '420px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
             <div className="card-content">
                 <h2 className="title has-text-centered has-text-white">Registro - Paso 1</h2>
-                <StepIndicator step={1} />
+                <StepIndicator step={2} />
                 <div className="field">
                     <input className="input is-black" type="text" placeholder="Nombre" name="nombre" value={formData.nombre} onChange={handleChange(formData, setFormData)} style={inputStyle} />
                     <input className="input is-black" type="text" placeholder="Apellido Paterno" name="apellidoPaterno" value={formData.apellidoPaterno} onChange={handleChange(formData, setFormData)} style={inputStyle} />
@@ -118,14 +188,14 @@ const StepOne = ({ formData, setFormData, nextStep }) => (
 );
 
 const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
-<div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
+    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
         <div className="card has-background-black has-text-white" style={{ maxWidth: '420px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
             <div className="card-content">
                 <h2 className="title has-text-centered has-text-white">Registro - Paso 2</h2>
-                <StepIndicator step={2} />
+                <StepIndicator step={3} />
                 <div className="field">
                     <input className="input is-black" type="text" placeholder="Teléfono" name="telefono" value={formData.telefono} onChange={handleChange(formData, setFormData)} style={inputStyle} />
-                    <input className="input is-black" type="email" placeholder="Correo Electrónico" name="correoElectronico" value={formData.correoElectronico} onChange={handleChange(formData, setFormData)} style={inputStyle} />
+                    <input className="input is-black" type="email" placeholder="Correo Electrónico" name="correoElectronico" value={formData.correoElectronico} readOnly style={inputStyle} />
                     <div className="select is-fullwidth" style={inputStyle}>
                         <select name="gradoEstudio" value={formData.gradoEstudio} onChange={handleChange(formData, setFormData)}>
                             <option value="">Selecciona el Nivel de Estudios</option>
@@ -150,11 +220,11 @@ const StepThree = ({ formData, setFormData, prevStep, nextStep }) => {
     const [showPassword2, setShowPassword2] = useState(false);
 
     return (
-    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
+        <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
             <div className="card has-background-black has-text-white" style={{ maxWidth: '420px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
                 <div className="card-content">
                     <h2 className="title has-text-centered has-text-white">Registro - Paso 3</h2>
-                    <StepIndicator step={3} />
+                    <StepIndicator step={4} />
                     <div className="field">
                         <input className="input is-black" type="text" placeholder="Usuario" name="usuario" value={formData.usuario} onChange={handleChange(formData, setFormData)} style={inputStyle} />
                         <div className="field has-addons" style={{ marginBottom: '15px', alignItems: 'center' }}>
@@ -193,11 +263,11 @@ const handleChangeLenguajes = (formData, setFormData, value) => {
 };
 
 const StepFour = ({ formData, setFormData, prevStep, finishRegistration }) => (
-<div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
+    <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
         <div className="card has-background-black has-text-white" style={{ maxWidth: '600px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
             <div className="card-content">
                 <h2 className="title has-text-centered has-text-white">Experiencia - Paso 4</h2>
-                <StepIndicator step={4} />
+                <StepIndicator step={5} />
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', marginBottom: '20px' }}>
                     <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center' }}>
                         {['Python', 'JavaScript', 'C#', 'C++', 'Java', 'HTML5', 'Swift', 'Ruby', 'PHP'].map((lang) => (
@@ -280,7 +350,6 @@ const FormRegistro = () => {
 
     const finishRegistration = async () => {
         try {
-            
             const response = await fetch('http://localhost:3001/api/verificar', {
                 method: 'POST',
                 headers: {
@@ -351,10 +420,11 @@ const FormRegistro = () => {
 
     return (
         <div>
-            {step === 1 && <StepOne formData={formData} setFormData={setFormData} nextStep={nextStep} />}
-            {step === 2 && <StepTwo formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />}
-            {step === 3 && <StepThree formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />}
-            {step === 4 && <StepFour formData={formData} setFormData={setFormData} prevStep={prevStep} finishRegistration={finishRegistration} />}
+            {step === 1 && <StepEmailVerification formData={formData} setFormData={setFormData} nextStep={nextStep} />}
+            {step === 2 && <StepOne formData={formData} setFormData={setFormData} nextStep={nextStep} />}
+            {step === 3 && <StepTwo formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />}
+            {step === 4 && <StepThree formData={formData} setFormData={setFormData} nextStep={nextStep} prevStep={prevStep} />}
+            {step === 5 && <StepFour formData={formData} setFormData={setFormData} prevStep={prevStep} finishRegistration={finishRegistration} />}
         </div>
     );
 };
