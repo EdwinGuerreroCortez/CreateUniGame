@@ -498,11 +498,18 @@ const Contenidos = () => {
             {alert.message}
           </div>
         )}
-        <div className="control is-pulled-right" style={{ margin: "10px" }}>
-          <Link to="/docente/subirtema" className="button is-primary" data-tooltip="Agregar tema">
+         <div className="buttons is-right">
+          <Link to="/docente/temas" className="button is-primary" data-tooltip="Agregar tema">
             <span className="icon">
               <i className="fas fa-plus"></i>
             </span>
+            
+          </Link>
+          <Link to="/docente/recursos" className="button is-link" data-tooltip="Agregar recurso">
+            <span className="icon">
+              <i className="fas fa-folder-plus"></i>
+            </span>
+            
           </Link>
         </div>
 
