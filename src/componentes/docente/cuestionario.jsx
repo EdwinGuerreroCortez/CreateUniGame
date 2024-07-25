@@ -39,7 +39,8 @@ const CuestionariosForm = () => {
           const evaluacionesResponse = response.data.map(te => ({
             ...te.evaluacion,
             tema_titulo: te.tema.titulo,
-            curso_nombre: te.tema.curso && te.tema.curso.nombre ? te.tema.curso.nombre : 'Curso no disponible'
+            curso_nombre: te.cursoNombre, // Obtener el nombre del curso
+            cursoId: te.cursoId // Obtener el ID del curso
           }));
           setEvaluaciones(evaluacionesResponse);
         } catch (error) {
@@ -49,7 +50,7 @@ const CuestionariosForm = () => {
 
       const fetchCursos = async () => {
         try {
-          const response = await axios.get('http://localhost:3001/api/cursos');
+          const response = await axios.get(`http://localhost:3001/api/usuario/${userId}/cursos`);
           const cursosMap = response.data.reduce((acc, curso) => {
             acc[curso._id] = curso.nombre;
             return acc;
@@ -302,7 +303,7 @@ const CuestionariosForm = () => {
     if (curso === '') {
       return true;
     }
-    return evaluacion.tema_id.curso === curso;
+    return evaluacion.cursoId === curso; // Compara con el cursoId del evaluacion
   });
 
   return (
