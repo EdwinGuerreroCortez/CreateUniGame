@@ -40,11 +40,11 @@ const ContactForm = () => {
       }
     }
 
-    let apiUrl = 'http://localhost:3001/api/contact/messages/faqs';
+    let apiUrl = 'http://172.16.19.1:3001/api/contact/messages/faqs';
     if (formData.tipoMensaje === 'Sugerencia') {
-      apiUrl = 'http://localhost:3001/api/contact/messages/suggestions';
+      apiUrl = 'http://172.16.19.1:3001/api/contact/messages/suggestions';
     } else if (formData.tipoMensaje === 'Queja') {
-      apiUrl = 'http://localhost:3001/api/contact/messages/complaints';
+      apiUrl = 'http://172.16.19.1:3001/api/contact/messages/complaints';
     }
 
     try {

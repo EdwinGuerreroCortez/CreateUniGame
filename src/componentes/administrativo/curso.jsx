@@ -12,8 +12,21 @@ const CursosForm = () => {
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/cursos");
-        setCursos(response.data);
+        const response = await axios.get("http://172.16.19.1:3001/api/cursos");
+        const cursosConUsuarios = await Promise.all(response.data.map(async curso => {
+          if (curso.usuario) {
+            try {
+              const usuarioResponse = await axios.get(`http://172.16.19.1:3001/api/usuarios/${curso.usuario}`);
+              return { ...curso, usuarioNombre: usuarioResponse.data.datos_personales.nombre };
+            } catch (error) {
+              console.error(`Error al obtener el usuario para el curso ${curso.nombre}:`, error);
+              return { ...curso, usuarioNombre: "Desconocido" };
+            }
+          } else {
+            return { ...curso, usuarioNombre: "Admin" };
+          }
+        }));
+        setCursos(cursosConUsuarios);
       } catch (error) {
         console.error("Error al cargar los cursos:", error);
       }
@@ -33,10 +46,21 @@ const CursosForm = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3001/api/curso", { nombre });
+      const response = await axios.post("http://172.16.19.1:3001/api/curso", { nombre });
 
       if (response.status === 201) {
-        setCursos([...cursos, response.data]);
+        const nuevoCurso = response.data;
+        if (nuevoCurso.usuario) {
+          try {
+            const usuarioResponse = await axios.get(`http://172.16.19.1:3001/api/usuarios/${nuevoCurso.usuario}`);
+            nuevoCurso.usuarioNombre = usuarioResponse.data.datos_personales.nombre;
+          } catch (error) {
+            nuevoCurso.usuarioNombre = "Desconocido";
+          }
+        } else {
+          nuevoCurso.usuarioNombre = "Admin";
+        }
+        setCursos([...cursos, nuevoCurso]);
         setAlert({ type: "success", message: "Curso creado exitosamente." });
         setNombre("");
       }
@@ -100,6 +124,7 @@ const CursosForm = () => {
             <thead>
               <tr>
                 <th className="has-text-white">Nombre del Curso</th>
+                <th className="has-text-white">Creado por</th>
               </tr>
             </thead>
             <tbody>
@@ -107,11 +132,12 @@ const CursosForm = () => {
                 cursos.map((curso) => (
                   <tr key={curso._id}>
                     <td className="has-text-white">{curso.nombre}</td>
+                    <td className="has-text-white">{curso.usuarioNombre}</td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td className="has-text-white" colSpan="1">No hay cursos disponibles.</td>
+                  <td className="has-text-white" colSpan="2">No hay cursos disponibles.</td>
                 </tr>
               )}
             </tbody>

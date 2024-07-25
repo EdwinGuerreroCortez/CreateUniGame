@@ -41,7 +41,7 @@ const GestionUsuariosForm = () => {
 
   const obtenerUsuarios = async () => {
     try {
-      const response = await axios.get('http://localhost:3001/api/usuarios');
+      const response = await axios.get('http://172.16.19.1:3001/api/usuarios');
       const sortedUsuarios = response.data.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion)); // Ordenar por fecha de creación (último primero)
       setUsuarios(sortedUsuarios);
     } catch (error) {
@@ -78,7 +78,7 @@ const GestionUsuariosForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validarFormulario()) return;
-    const endpoint = 'http://localhost:3001/api/usuarios/admin';
+    const endpoint = 'http://172.16.19.1:3001/api/usuarios/admin';
 
     // Convertir género a "M" o "F"
     const generoConvertido = usuario.genero === 'Masculino' ? 'M' : 'F';
@@ -117,7 +117,7 @@ const GestionUsuariosForm = () => {
   const confirmarEliminarUsuario = async () => {
     const { index, id } = confirmDelete;
     try {
-      await axios.delete(`http://localhost:3001/api/usuarios/${id}`);
+      await axios.delete(`http://172.16.19.1:3001/api/usuarios/${id}`);
       setUsuarios(usuarios.filter((_, i) => i !== index));
       setNotification({ message: 'Usuario eliminado con éxito.', type: 'is-success' });
     } catch (error) {
@@ -133,7 +133,7 @@ const GestionUsuariosForm = () => {
 
   const handleAutorizarUsuario = async (index, id, autorizacion) => {
     try {
-      await axios.put(`http://localhost:3001/api/usuarios/${id}/autorizar`, { autorizacion });
+      await axios.put(`http://172.16.19.1:3001/api/usuarios/${id}/autorizar`, { autorizacion });
       const updatedUsuarios = [...usuarios];
       updatedUsuarios[index].autorizacion = autorizacion;
       setUsuarios(updatedUsuarios);
@@ -146,7 +146,7 @@ const GestionUsuariosForm = () => {
 
   const handleAutorizarTodos = async () => {
     try {
-      await axios.put('http://localhost:3001/api/usuarios/autorizarTodos');
+      await axios.put('http://172.16.19.1:3001/api/usuarios/autorizarTodos');
       const updatedUsuarios = usuarios.map(usuario => ({ ...usuario, autorizacion: true }));
       setUsuarios(updatedUsuarios);
       setNotification({ message: 'Todos los usuarios autorizados con éxito.', type: 'is-success' });

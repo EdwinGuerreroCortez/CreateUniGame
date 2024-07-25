@@ -61,7 +61,7 @@ const RecuperarContrasena = () => {
     event.preventDefault();
     if (emailValid) {
       try {
-        const response = await fetch('http://localhost:3001/api/recuperar-contrasena', {
+        const response = await fetch('http://172.16.19.1:3001/api/recuperar-contrasena', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ const RecuperarContrasena = () => {
   const handleCodigoSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:3001/api/verificar-codigo', {
+      const response = await fetch('http://172.16.19.1:3001/api/verificar-codigo', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ const RecuperarContrasena = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/cambiar-contrasena', {
+      const response = await fetch('http://172.16.19.1:3001/api/cambiar-contrasena', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

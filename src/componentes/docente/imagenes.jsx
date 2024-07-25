@@ -73,7 +73,7 @@ const SubirImagenes = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/imagenesReact/upload', formData, {
+      const response = await axios.post('http://172.16.19.1:3001/api/imagenesReact/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },
@@ -138,15 +138,6 @@ const SubirImagenes = () => {
                     )}
                   </label>
                 </div>
-              </div>
-              <div className="has-text-centered" style={{ marginTop: '1rem' }}>
-                <button
-                  className="button is-dark is-medium custom-button"
-                  onClick={() => setShowFileDetails(true)}
-                  disabled={selectedFiles.length === 0}
-                >
-                  Subir
-                </button>
               </div>
               {uploadProgress !== null && (
                 <div className="progress-container" style={{ marginTop: '1rem' }}>

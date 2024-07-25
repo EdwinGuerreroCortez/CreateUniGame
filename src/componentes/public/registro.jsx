@@ -48,8 +48,8 @@ const validateStepTwo = (formData) => {
         return false;
     }
 
-    if (!/^\d{10}$/.test(matricula)) {
-        alert("La matrícula debe contener exactamente 10 dígitos.");
+    if (!/^\d{1,10}$/.test(matricula)) {
+        alert("La matrícula debe contener entre 1 y 10 dígitos.");
         return false;
     }
 
@@ -99,7 +99,7 @@ const StepEmailVerification = ({ formData, setFormData, nextStep }) => {
 
     const sendVerificationEmail = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/enviar-codigo-registro', {
+            const response = await fetch('http://172.16.19.1:3001/api/enviar-codigo-registro', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -122,7 +122,7 @@ const StepEmailVerification = ({ formData, setFormData, nextStep }) => {
 
     const verifyCode = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/verificar-codigo-registro', {
+            const response = await fetch('http://172.16.19.1:3001/api/verificar-codigo-registro', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -200,6 +200,16 @@ const StepOne = ({ formData, setFormData, nextStep }) => (
     </div>
 );
 
+const   warningStyle = {
+    backgroundColor: '#ffdd57',
+    color: '#0a0a0a',
+    padding: '10px',
+    borderRadius: '5px',
+    textAlign: 'center',
+    marginTop: '10px',
+    fontSize: '0.9rem',
+};
+
 const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
     <div style={{ backgroundColor: '#14161A', display: 'flex', justifyContent: 'center', alignItems: 'center', background: 'linear-gradient(1deg, #40c489, #101216)' }}>
         <div className="card has-background-black has-text-white" style={{ maxWidth: '420px', margin: '40px auto', padding: '20px', boxShadow: '0px 0px 10px 0px rgba(255,255,255,0.5)' }}>
@@ -219,6 +229,10 @@ const StepTwo = ({ formData, setFormData, nextStep, prevStep }) => (
                             <option value="Ninguna">Ninguna</option>
                         </select>
                     </div>
+                    <div style={warningStyle}>
+                        Nota: Si eres alumno, debes ingresar una matrícula válida, ya que se utilizará para registrar tus calificaciones.
+                    </div>
+                    <br />
                     <input className="input is-black" type="text" placeholder="Matrícula" name="matricula" value={formData.matricula} onChange={handleChange(formData, setFormData)} style={inputStyle} />
                 </div>
                 <button className="button is-link is-fullwidth" style={{ marginTop: '10px' }} onClick={prevStep}>Anterior</button>
@@ -363,7 +377,7 @@ const FormRegistro = () => {
 
     const finishRegistration = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/verificar', {
+            const response = await fetch('http://172.16.19.1:3001/api/verificar', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -389,7 +403,7 @@ const FormRegistro = () => {
             }
 
             if (data.message === 'Usuario no encontrado.') {
-                const registro = await fetch('http://localhost:3001/api/usuarios', {
+                const registro = await fetch('http://172.16.19.1:3001/api/usuarios', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

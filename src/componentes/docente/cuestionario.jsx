@@ -25,7 +25,7 @@ const CuestionariosForm = () => {
     if (userId) {
       const fetchTemas = async () => {
         try {
-          const response = await axios.get(`http://localhost:3001/api/usuario/${userId}/temas`);
+          const response = await axios.get(`http://172.16.19.1:3001/api/usuario/${userId}/temas`);
           const filteredTemas = response.data.filter(tema => !tema.evaluacion_id);
           setTemas(filteredTemas);
         } catch (error) {
@@ -35,7 +35,7 @@ const CuestionariosForm = () => {
 
       const fetchTemasEvaluaciones = async () => {
         try {
-          const response = await axios.get(`http://localhost:3001/api/usuario/${userId}/temas-evaluaciones`);
+          const response = await axios.get(`http://172.16.19.1:3001/api/usuario/${userId}/temas-evaluaciones`);
           const evaluacionesResponse = response.data.map(te => ({
             ...te.evaluacion,
             tema_titulo: te.tema.titulo,
@@ -50,7 +50,7 @@ const CuestionariosForm = () => {
 
       const fetchCursos = async () => {
         try {
-          const response = await axios.get(`http://localhost:3001/api/usuario/${userId}/cursos`);
+          const response = await axios.get(`http://172.16.19.1:3001/api/usuario/${userId}/cursos`);
           const cursosMap = response.data.reduce((acc, curso) => {
             acc[curso._id] = curso.nombre;
             return acc;
@@ -80,7 +80,7 @@ const CuestionariosForm = () => {
 
   const handleToggleHabilitado = async (evaluacionId, habilitado) => {
     try {
-      const response = await axios.put(`http://localhost:3001/api/evaluaciones/${evaluacionId}/habilitar`, { habilitado });
+      const response = await axios.put(`http://172.16.19.1:3001/api/evaluaciones/${evaluacionId}/habilitar`, { habilitado });
       setEvaluaciones(evaluaciones.map(evaluacion => 
         evaluacion._id === evaluacionId ? { ...evaluacion, habilitado: response.data.evaluacion.habilitado } : evaluacion
       ));
@@ -109,7 +109,7 @@ const CuestionariosForm = () => {
       formData.append('tema', tema);
 
       try {
-        const response = await axios.post('http://localhost:3001/api/evaluaciones/upload', formData, {
+        const response = await axios.post('http://172.16.19.1:3001/api/evaluaciones/upload', formData, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
@@ -139,7 +139,7 @@ const CuestionariosForm = () => {
 
   const handleDelete = async (evaluacionId) => {
     try {
-      await axios.delete(`http://localhost:3001/api/evaluaciones/${evaluacionId}`);
+      await axios.delete(`http://172.16.19.1:3001/api/evaluaciones/${evaluacionId}`);
       setEvaluaciones(evaluaciones.filter(evaluacion => evaluacion._id !== evaluacionId));
       setAlert({ type: 'success', message: 'Evaluación eliminada exitosamente' });
     } catch (error) {
@@ -210,7 +210,7 @@ const CuestionariosForm = () => {
       formData.append('tema', tema);
       formData.append('evaluacion', JSON.stringify(editEvaluacion.evaluacion));
 
-      const response = await axios.put(`http://localhost:3001/api/evaluaciones/${editEvaluacion._id}`, formData, {
+      const response = await axios.put(`http://172.16.19.1:3001/api/evaluaciones/${editEvaluacion._id}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -254,7 +254,7 @@ const CuestionariosForm = () => {
   };
 
   const handleDownloadEvaluacion = (evaluacionId) => {
-    axios.get(`http://localhost:3001/api/evaluaciones/${evaluacionId}/download`, { responseType: 'blob' })
+    axios.get(`http://172.16.19.1:3001/api/evaluaciones/${evaluacionId}/download`, { responseType: 'blob' })
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
@@ -271,7 +271,7 @@ const CuestionariosForm = () => {
   };
 
   const handleDownloadPlantilla = () => {
-    axios.get('http://localhost:3001/api/evaluaciones/plantilla', { responseType: 'blob' })
+    axios.get('http://172.16.19.1:3001/api/evaluaciones/plantilla', { responseType: 'blob' })
       .then((response) => {
         const url = window.URL.createObjectURL(new Blob([response.data]));
         const link = document.createElement('a');
