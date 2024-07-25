@@ -256,7 +256,7 @@ const GestionUsuariosForm = () => {
         </div>
       </div>
 
-      {/* Modal para agregar usuario */}
+      {}
       <div className={`modal ${isModalActive ? 'is-active' : ''}`}>
         <div className="modal-background" onClick={() => setIsModalActive(false)}></div>
         <div className="modal-content">
@@ -358,7 +358,7 @@ const GestionUsuariosForm = () => {
         <button className="modal-close is-large" aria-label="close" onClick={() => setIsModalActive(false)}></button>
       </div>
 
-      {/* Modal de confirmación de eliminación */}
+      {}
       {confirmDelete.active && (
         <div className={`modal ${confirmDelete.active ? "is-active" : ""}`}>
           <div className="modal-background"></div>

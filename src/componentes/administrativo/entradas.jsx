@@ -15,8 +15,7 @@ const Entradas = () => {
         const sortedEntradas = response.data.sort((a, b) => b.visitas - a.visitas); // Ordenar en orden descendente
         setEntradas(sortedEntradas);
 
-        // Calcular el total de visitas
-        const total = sortedEntradas.reduce((sum, entrada) => sum + entrada.visitas, 0);
+                const total = sortedEntradas.reduce((sum, entrada) => sum + entrada.visitas, 0);
         setTotalVisitas(total);
       } catch (error) {
         console.error('Error al obtener las entradas:', error);

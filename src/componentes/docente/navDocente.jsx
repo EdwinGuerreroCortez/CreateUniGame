@@ -11,12 +11,10 @@ const BarraNavDocen = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Obtener la información del usuario desde localStorage
-        const userData = JSON.parse(localStorage.getItem('usuario'));
+                const userData = JSON.parse(localStorage.getItem('usuario'));
         if (userData) {
             setUserType(userData.tipo); // Establecer el tipo de usuario en el estado
-             // Depuración en consola
-        }
+                     }
     }, []);
 
     const toggleBurgerMenu = () => {
@@ -29,8 +27,7 @@ const BarraNavDocen = () => {
         navigate('/'); // Redirigir al usuario a la página de inicio de sesión
     };
 
-    // Función para envolver cada letra en un span
-    const renderAnimatedLetters = (word) => {
+        const renderAnimatedLetters = (word) => {
         return word.split('').map((char, index) => (
             <span key={index} className="animated-letter">{char}</span>
         ));

@@ -467,13 +467,11 @@ const Contenidos = () => {
     setSubtemaModalOpen(true);
   };
 
-  // Función para manejar el cambio del curso seleccionado
-  const handleCursoChange = (event) => {
+    const handleCursoChange = (event) => {
     setSelectedCurso(event.target.value);
   };
 
-  // Función para filtrar los temas según el curso seleccionado
-  const filteredTemas = temas.filter(
+    const filteredTemas = temas.filter(
     (tema) => selectedCurso === "" || tema.curso === selectedCurso
   );
 

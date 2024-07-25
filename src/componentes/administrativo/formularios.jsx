@@ -10,30 +10,25 @@ function Formularios() {
   const [autor, setAutor] = useState('');
   const [editIndex, setEditIndex] = useState(null); // Para rastrear el índice del formulario en edición
 
-  // Maneja el envío del formulario
-  const manejarSubmit = (e) => {
+    const manejarSubmit = (e) => {
     e.preventDefault();
     const fecha = new Date().toLocaleString();
     if (editIndex !== null) {
-      // Si hay un índice de edición, actualiza el formulario existente
-      const nuevosFormularios = [...formularios];
+            const nuevosFormularios = [...formularios];
       nuevosFormularios[editIndex] = { titulo, url, comentario, autor, fecha };
       setFormularios(nuevosFormularios);
       setEditIndex(null);
     } else {
-      // Si no hay índice de edición, agrega un nuevo formulario
-      const nuevoFormulario = { titulo, url, comentario, autor, fecha };
+            const nuevoFormulario = { titulo, url, comentario, autor, fecha };
       setFormularios([...formularios, nuevoFormulario]);
     }
-    // Restablecer los campos del formulario
-    setTitulo('');
+        setTitulo('');
     setUrl('');
     setComentario('');
     setAutor('');
   };
 
-  // Maneja la edición de un formulario
-  const manejarEditar = (index) => {
+    const manejarEditar = (index) => {
     const formularioAEditar = formularios[index];
     setTitulo(formularioAEditar.titulo);
     setUrl(formularioAEditar.url);
@@ -42,8 +37,7 @@ function Formularios() {
     setEditIndex(index);
   };
 
-  // Maneja la eliminación de un formulario
-  const manejarEliminar = (index) => {
+    const manejarEliminar = (index) => {
     const nuevosFormularios = [...formularios];
     nuevosFormularios.splice(index, 1);
     setFormularios(nuevosFormularios);
@@ -52,7 +46,7 @@ function Formularios() {
   return (
     <div className="container">
       <div className="columns is-multiline">
-        {/* Tarjeta para agregar formulario */}
+        {}
         <div className="column is-full">
           <div className="box">
             <div className="card-content">
@@ -112,7 +106,7 @@ function Formularios() {
           </div>
         </div>
 
-        {/* Tarjeta para mostrar formularios guardados */}
+        {}
         <div className="column is-full">
           <div className="box">
             <div className="card-content">

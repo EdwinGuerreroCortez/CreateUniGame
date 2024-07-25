@@ -10,14 +10,14 @@ const Recursos = () => {
       <style>
         {`
           .custom-card {
-            background-color: #001f3f; /* Azul marino */
-            border: 2px solid #3273dc; /* Azul Bulma */
-            border-radius: 8px; /* Bordes redondeados */
-            box-shadow: 0 4px 8px rgba(50, 115, 220, 0.5); /* Sombra azul */
-            color: #ffffff; /* Texto blanco */
+            background-color: #001f3f; 
+            border: 2px solid #3273dc; 
+            border-radius: 8px; 
+            box-shadow: 0 4px 8px rgba(50, 115, 220, 0.5); 
+            color: #ffffff; 
           }
           .has-text-white {
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); /* Borde luminoso */
+            text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); 
           }
           .title, .subtitle {
             margin-bottom: 1.5rem;

@@ -1,19 +1,19 @@
 body {
-    background-color: #000000; /* Negro */
-    color: #ffffff; /* Blanco */
+    background-color: #000000; 
+    color: #ffffff; 
   }
   
   a {
-    color: #2980b9; /* Azul */
+    color: #2980b9; 
   }
   
   .card, .box {
-    background-color: #242424; /* black-bis color */
+    background-color: #242424; 
     color: #ffffff;
   }
   
   .input, .textarea, .button {
-    background-color: #3c3c3c; /* Ligeramente más claro que la tarjeta */
+    background-color: #3c3c3c; 
     color: #ffffff;
     border: none;
   }

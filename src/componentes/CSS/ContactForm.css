@@ -1,6 +1,6 @@
 input::placeholder,
 textarea::placeholder {
-  color: #888; /* Color del texto del placeholder */
+  color: #888; 
 }
 
 #contact{
@@ -82,11 +82,11 @@ textarea::placeholder {
   }
   
   .contact-title {
-    font-size: 10px; /* Ajuste del tamaño de la fuente */
+    font-size: 10px; 
   }
   #titlee{
     margin-top: 10px;
-    font-size: 25px; /* Ajuste del tamaño de la fuente */
+    font-size: 25px; 
 
   }
   .image-container, .contact-box {

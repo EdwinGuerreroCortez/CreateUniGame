@@ -27,8 +27,7 @@ const Recursos = () => {
         console.error("Error al obtener cursos:", error);
       });
 
-    // Obtener temas del usuario
-    axios.get(`http://localhost:3001/api/usuario/${userId}/temas`)
+        axios.get(`http://localhost:3001/api/usuario/${userId}/temas`)
       .then(response => {
         setTemas(response.data);
       })

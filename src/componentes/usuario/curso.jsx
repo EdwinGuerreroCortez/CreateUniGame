@@ -30,7 +30,7 @@ const Curso = () => {
     try {
       const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/cursos-suscritos`);
       const data = await response.json();
-      console.log("Cursos suscritos:", data.cursos);
+      
       setCursos(data.cursos);
     } catch (error) {
       console.error("Error al cargar los cursos suscritos:", error);
@@ -69,7 +69,7 @@ const Curso = () => {
     try {
       const response = await fetch(`http://localhost:3001/api/cursos/${cursoId}/temas`);
       const data = await response.json();
-      console.log("Temas del curso:", data);
+      
       setTemas(data);
     } catch (error) {
       console.error("Error al cargar los temas del curso:", error);
@@ -96,7 +96,7 @@ const Curso = () => {
         throw new Error(`HTTP error! status: ${evaluacionResponse.status}`);
       }
       const evaluacionData = await evaluacionResponse.json();
-      console.log("Evaluacion data:", evaluacionData);
+      
 
       if (evaluacionData && evaluacionData.evaluacion_habilitada !== undefined) {
         if (temaId === evaluacionData._id) {

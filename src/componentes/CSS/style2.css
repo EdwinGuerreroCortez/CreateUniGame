@@ -1,6 +1,6 @@
-/* src/CSS/style2.css */
 
-/* Fondo negro para la barra de navegación */
+
+
 .navbar {
   background-color: #090A0C !important;
 }
@@ -9,43 +9,43 @@
   background-color: #090A0C !important;
 }
 
-/* Fondo negro para los submenús */
+
 .navbar-dropdown {
   background-color: rgb(20, 22, 26) !important;
   color: #48C78E !important;
 }
 
-/* Fondo negro para los elementos del submenú */
+
 .navbar-dropdown .navbar-item {
   background-color: rgb(20, 22, 26) !important;
   color: #48C78E !important;
 }
 
-/* Cambia el fondo a verde claro cuando se pasa el ratón sobre los elementos del submenú */
+
 .navbar-dropdown .navbar-item:hover {
   background-color: rgba(72, 199, 142, 0.1) !important;
   color: #48C78E !important;
 }
 
-/* Fondo negro para el enlace del submenú */
+
 .navbar-dropdown .navbar-link {
   background-color: #090A0C !important;
   color: #48C78E !important;
 }
 
-/* Cambia el fondo a verde claro cuando se pasa el ratón sobre el enlace del submenú */
+
 .navbar-dropdown .navbar-link:hover {
   background-color: rgba(72, 199, 142, 0.1) !important;
   color: #48C78E !important;
 }
 
-/* Fondo negro para el menú principal (desplegable) */
+
 .navbar-link {
   background-color: #090A0C !important;
   color: #48C78E !important;
 }
 
-/* Cambia el fondo a verde claro cuando se pasa el ratón sobre el menú principal (desplegable) */
+
 .navbar-link:hover {
   background-color: rgba(72, 199, 142, 0.1) !important;
   color: #48C78E !important;
@@ -129,7 +129,7 @@
   max-height: none !important;
 }
 
-/* Estilo base para el submenú */
+
 .navbar-item.has-dropdown.is-hoverable .navbar-dropdown.is-right {
   display: none;
   position: absolute;
@@ -139,7 +139,7 @@
   margin-left: 0;
 }
 
-/* Mostrar el submenú cuando el elemento padre está en hover */
+
 .navbar-item.has-dropdown.is-hoverable:hover .navbar-dropdown.is-right {
   display: block;
 }

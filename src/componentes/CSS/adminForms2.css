@@ -1,8 +1,8 @@
-/* adminForms.css */
+
 
 .input::placeholder,
 .textarea::placeholder {
-  color: #888; /* Color del texto del placeholder */
+  color: #888; 
 }
 
 .box {
@@ -85,7 +85,7 @@
   }
 }
 
-/* adminForms2.css */
+
 .table {
   background-color: #090a0c;
 }
@@ -96,7 +96,7 @@
   background-color: #090a0c;
 }
 
-/* Desactivar las rayas alternas de Bulma */
+
 .table.is-striped tbody tr:nth-child(odd) {
   background-color: #090a0c;
 }
@@ -105,7 +105,7 @@
   background-color: #090a0c;
 }
 
-/* Tooltips */
+
 .button-tooltip {
   position: relative;
   display: inline-block;
@@ -117,30 +117,30 @@
   
 }
 
-/* Botones y Iconos */
+
 .buttons.is-grouped {
-  text-align: center; /* Alinea los botones horizontalmente en el centro */
+  text-align: center; 
 }
 
 .buttons.is-grouped .button {
-  margin: 0; /* Elimina cualquier margen entre los botones */
-  vertical-align: middle; /* Alinea verticalmente los botones */
-  display: inline-block; /* Asegura que los botones estén en línea */
+  margin: 0; 
+  vertical-align: middle; 
+  display: inline-block; 
 }
 
 .buttons.is-grouped .button .icon {
-  display: flex; /* Usa flexbox para alinear los iconos */
-  align-items: center; /* Alinea verticalmente los iconos */
-  justify-content: center; /* Alinea horizontalmente los iconos */
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
 }
 
 .buttons.is-grouped .button .icon i {
-  display: inline-block; /* Asegura que el icono sea inline-block */
+  display: inline-block; 
 }
 
 .button.is-small {
-  padding: 3px 7px; /* Ajusta el padding para hacer los botones más pequeños */
-  font-size: 12px; /* Ajusta el tamaño de la fuente */
+  padding: 3px 7px; 
+  font-size: 12px; 
 }
 .is-centered {
   display: flex;

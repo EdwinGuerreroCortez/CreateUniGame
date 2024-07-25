@@ -8,15 +8,13 @@ import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'; // Icono para 
 const BarraNavAdmin = () => {
     const navigate = useNavigate();
 
-    // Función para manejar el cierre de sesión
-    const handleLogout = () => {
+        const handleLogout = () => {
         localStorage.removeItem('userId'); // Eliminar la sesión de localStorage
         localStorage.removeItem('usuario'); // Eliminar los datos del usuario de localStorage si están almacenados
         navigate('/'); // Redirigir al usuario a la página de inicio de sesión
     };
 
-    // Función para envolver cada letra en un span
-    const renderAnimatedLetters = (word) => {
+        const renderAnimatedLetters = (word) => {
         return word.split('').map((char, index) => (
             <span key={index} className="animated-letter">{char}</span>
         ));
@@ -33,7 +31,7 @@ const BarraNavAdmin = () => {
 
             <div className="navbar-menu">
                 <div className="navbar-start">
-                    {/* Menú de Administración */}
+                    {}
                     <div className="navbar-item has-dropdown is-hoverable">
                         <a className="navbar-link has-text-success">Administración</a>
                         <div className="navbar-dropdown">
@@ -44,7 +42,7 @@ const BarraNavAdmin = () => {
                         </div>
                     </div>
 
-                    {/* Menú de Gestión de Exámenes */}
+                    {}
                     <div className="navbar-item has-dropdown is-hoverable">
                         <a className="navbar-link has-text-success">Gestión de Cuestionarios</a>
                         <div className="navbar-dropdown">
@@ -53,7 +51,7 @@ const BarraNavAdmin = () => {
                         </div>
                     </div>
 
-                    {/* Menú de Temas */}
+                    {}
                     <div className="navbar-item has-dropdown is-hoverable">
                         <a className="navbar-link has-text-success">Temas</a>
                         <div className="navbar-dropdown">
@@ -64,7 +62,7 @@ const BarraNavAdmin = () => {
                         </div>
                     </div>
 
-                    {/* Menú de Gestión de Curso */}
+                    {}
                     <div className="navbar-item has-dropdown is-hoverable">
                         <a className="navbar-link has-text-success">Gestión de Curso</a>
                         <div className="navbar-dropdown">
@@ -73,11 +71,11 @@ const BarraNavAdmin = () => {
                         </div>
                     </div>
 
-                    {/* Enlace a Imágenes */}
+                    {}
                     <Link className="navbar-item has-text-success" to="/admin/imagenes">Imágenes</Link>
                 </div>
 
-                {/* Botón de Cerrar Sesión */}
+                {}
                 <div className="navbar-end">
                     <div className="navbar-item">
                         <button className="button is-primary" onClick={handleLogout}>

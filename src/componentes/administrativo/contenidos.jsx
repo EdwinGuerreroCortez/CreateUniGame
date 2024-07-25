@@ -183,8 +183,7 @@ const Contenidos = () => {
           setTemas(temas.map((t) => (t._id === data._id ? data : t)));
           setAlert({ type: "success", message: "Tema actualizado con éxito." });
           setValidationErrors([]);
-          // No cerrar el modal de edición
-        }
+                  }
       })
       .catch((error) => {
         console.error("Error actualizando el tema:", error);

@@ -17,8 +17,7 @@ const Recursos = () => {
   const [expandedTema, setExpandedTema] = useState(null);
 
   useEffect(() => {
-    // Obtener cursos
-    axios.get("http://localhost:3001/api/cursos")
+        axios.get("http://localhost:3001/api/cursos")
       .then(response => {
         setCursos(response.data);
       })
@@ -26,8 +25,7 @@ const Recursos = () => {
         console.error("Error al obtener cursos:", error);
       });
 
-    // Obtener temas
-    axios.get("http://localhost:3001/api/temas")
+        axios.get("http://localhost:3001/api/temas")
       .then(response => {
         setTemas(response.data);
       })

@@ -109,8 +109,7 @@ const TemaForm = () => {
             subtemas: [],
           };
 
-          // Validaciones del tema
-          if (!currentTema.descripcion.trim()) {
+                    if (!currentTema.descripcion.trim()) {
             errors.push(`La descripción del tema en la fila ${rowIndex} está vacía.`);
           }
           if (!currentTema.responsable.trim()) {
@@ -362,8 +361,7 @@ const TemaForm = () => {
           setTemas(temas.map((t) => (t._id === data._id ? data : t)));
           setAlert({ type: "success", message: "Tema actualizado con éxito." });
           setValidationErrors([]);
-          // No cerrar el modal de edición
-        }
+                  }
       })
       .catch((error) => {
         console.error("Error actualizando el tema:", error);

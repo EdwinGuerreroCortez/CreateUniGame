@@ -1,8 +1,8 @@
 .full-screen-container {
-    height: 100vh; /* Cubre toda la altura de la pantalla */
-    width: 100%; /* Cubre todo el ancho de la pantalla */
-    background-color: #000000; /* Color de fondo negro */
-    overflow: auto; /* Añade scroll si el contenido excede*/
+    height: 100vh; 
+    width: 100%; 
+    background-color: #000000; 
+    overflow: auto; 
 }  
 .loading-overlay {
     position: fixed;
@@ -83,20 +83,20 @@
   top: -30px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8); /* Fondo semi-transparente */
+  background-color: rgba(0, 0, 0, 0.8); 
   color: white;
-  padding: 6px 12px; /* Espaciado interno */
+  padding: 6px 12px; 
   border-radius: 3px;
   font-size: 12px;
   font-weight: 500;
   text-align: center;
   white-space: nowrap;
-  visibility: hidden; /* Inicialmente oculto */
-  opacity: 0; /* Transparencia inicial */
-  transition: opacity 0.2s ease, visibility 0s linear 0.2s; /* Transición y retraso */
+  visibility: hidden; 
+  opacity: 0; 
+  transition: opacity 0.2s ease, visibility 0s linear 0.2s; 
 }
 
 .button.tooltip:hover::after {
-  visibility: visible; /* Hacer visible al hacer hover */
-  opacity: 1; /* Opacidad completa */
+  visibility: visible; 
+  opacity: 1; 
 }

@@ -59,7 +59,7 @@ const Evaluacion = () => {
             setTiempoRestante(calcularTiempoRestante(progresoData.fechaFin));
             setProgresoId(progresoData._id); // Almacenar el ID del progreso
             localStorage.setItem('progresoId', progresoData._id); // Guardar el ID en localStorage
-            console.log(`Progreso ID: ${progresoData._id}`);
+            
             iniciarTemporizador(); // Iniciar el temporizador si ya hay progreso
           } else {
             const response = await fetch(`http://localhost:3001/api/evaluaciones/${temaId}?limit=10`);
@@ -146,7 +146,7 @@ const Evaluacion = () => {
       const data = await response.json();
       setProgresoId(data._id); // Almacenar el ID del progreso al crear
       localStorage.setItem('progresoId', data._id); // Guardar el ID en localStorage
-      console.log(`Progreso ID: ${data._id}`);
+      
     } catch (error) {
       console.error('Error al guardar el progreso inicial:', error);
     }
@@ -175,7 +175,7 @@ const Evaluacion = () => {
         const data = await response.json();
         setProgresoId(data._id); // Almacenar el ID del progreso al crear
         localStorage.setItem('progresoId', data._id); // Guardar el ID en localStorage
-        console.log(`Progreso ID: ${data._id}`);
+        
       }
     } catch (error) {
       console.error('Error al guardar el progreso:', error);
@@ -188,7 +188,7 @@ const Evaluacion = () => {
         await fetch(`http://localhost:3001/api/evaluacion/progreso/${progresoId}`, {
           method: 'DELETE',
         });
-        console.log(`Progreso eliminado: ${progresoId}`);
+        
         localStorage.removeItem('progresoId'); // Eliminar el ID del progreso de localStorage
       }
     } catch (error) {
@@ -281,8 +281,7 @@ const Evaluacion = () => {
         }),
       });
 
-      // Limpiar progreso después de guardar los resultados
-      await eliminarProgreso();
+            await eliminarProgreso();
 
       setMostrarResultados(true);
     } catch (error) {
@@ -321,16 +320,14 @@ const Evaluacion = () => {
     return `${process.env.PUBLIC_URL}/imagenes/${imagen}`;
   };
 
-  // Función para hacer zoom in en la imagen
-  const zoomIn = () => {
+    const zoomIn = () => {
     const maxZoom = 5; // Máximo factor de zoom permitido
     if (zoomFactor < maxZoom) {
       setZoomFactor(prevZoom => prevZoom * 1.2); // Aumenta el factor de zoom en un 20%
     }
   };
 
-  // Función para hacer zoom out en la imagen
-  const zoomOut = () => {
+    const zoomOut = () => {
     const minZoom = 0.5; // Mínimo factor de zoom permitido
     if (zoomFactor > minZoom) {
       setZoomFactor(prevZoom => prevZoom / 1.2); // Reduce el factor de zoom en un 20%
@@ -404,8 +401,7 @@ const Evaluacion = () => {
     setModalActivo(!modalActivo);
   };
 
-  // Función para formatear el tiempo en hh:mm:ss
-  const formatTime = (seconds) => {
+    const formatTime = (seconds) => {
     const h = Math.floor(seconds / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = Math.floor(seconds % 60); // Asegúrate de usar Math.floor aquí también
@@ -549,7 +545,7 @@ const Evaluacion = () => {
         </div>
       </div>
 
-      {/* Botones de zoom. */}
+      {}
       <div className="has-text-centered mt-3">
         <button className="button is-primary is-small mr-2" onClick={zoomIn}>
           <span className="icon">

@@ -37,8 +37,8 @@
     color: white;
     padding: 10px;
     border-radius: 5px;
-    word-wrap: break-word; /* For older browsers */
-    overflow-wrap: break-word; /* Standard property */
+    word-wrap: break-word; 
+    overflow-wrap: break-word; 
   }
   
   .message-text {

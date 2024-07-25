@@ -9,8 +9,7 @@ const MisionVisionForm = () => {
   const [items, setItems] = useState([]);
   const [alert, setAlert] = useState({ type: '', message: '' });
 
-  // Función para cargar los datos desde la API
-  const fetchMisionVision = async () => {
+    const fetchMisionVision = async () => {
     try {
       const response = await axios.get('http://localhost:3001/api/misionVision');
       setItems(response.data);
@@ -20,8 +19,7 @@ const MisionVisionForm = () => {
     }
   };
 
-  // Cargar los datos al montar el componente
-  useEffect(() => {
+    useEffect(() => {
     fetchMisionVision();
   }, []);
 

@@ -1,4 +1,4 @@
-/* src/CSS/adminForms.css */
+
 
 .container {
   background-color: #14161A;
@@ -85,13 +85,13 @@
   }
 }
 
-/* Tooltip container */
+
 [data-tooltip] {
   position: relative;
   cursor: pointer;
 }
 
-/* Tooltip text */
+
 [data-tooltip]:before {
   content: attr(data-tooltip);
   position: absolute;
@@ -107,7 +107,7 @@
   z-index: 1000;
 }
 
-/* Tooltip position */
+
 [data-tooltip]:hover:before {
   opacity: 1;
   transform: translateY(-20px);
