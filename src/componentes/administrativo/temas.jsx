@@ -469,10 +469,12 @@ const TemaForm = () => {
             </div>
           </div>
         </div>
+        <br />
 
 
 
         {temas.length > 0 && (
+          
           <div
             className="box"
             style={{

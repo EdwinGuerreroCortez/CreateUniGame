@@ -300,7 +300,7 @@ const EvaluacionesDocente = () => {
                     <th className="has-text-white">Intentos</th>
                     <th className="has-text-white">Detalles</th>
                     <th className="has-text-white">Calificación</th>
-                    <th className="has-text-white">Acciones</th>
+                    <th className="has-text-white">+ intentos</th>
                   </tr>
                 </thead>
                 <tbody>

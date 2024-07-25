@@ -30,8 +30,8 @@ const validateStepOne = (formData) => {
 };
 
 const validateStepTwo = (formData) => {
-    const { telefono, correoElectronico, gradoEstudio, matricula } = formData;
-    if (!telefono || !correoElectronico || !gradoEstudio || !matricula) {
+    const { telefono, correoElectronico, gradoEstudio } = formData;
+    if (!telefono || !correoElectronico || !gradoEstudio) {
         alert("Todos los campos deben ser completados.");
         return false;
     }
@@ -42,10 +42,6 @@ const validateStepTwo = (formData) => {
     const validGrades = ['Primaria', 'Secundaria', 'Preparatoria', 'Universidad', 'Ninguna'];
     if (!validGrades.includes(gradoEstudio)) {
         alert("Seleccione un nivel de estudios válido.");
-        return false;
-    }
-    if (!/^[20]\d{7}$/.test(matricula)) {
-        alert("Por favor verifique que su matricula sea valido");
         return false;
     }
 
@@ -145,12 +141,19 @@ const StepEmailVerification = ({ formData, setFormData, nextStep }) => {
                     <h2 className="title has-text-centered has-text-white">Verificación de Correo</h2>
                     <StepIndicator step={1} />
                     <div className="field">
+                        <p style={{ color: '#FFFFFF', marginBottom: '10px', fontSize: '16px' }}>
+                            Ingresa el correo electronico valido
+                        </p>
                         <input className="input is-black" type="email" placeholder="Correo Electrónico" name="correoElectronico" value={formData.correoElectronico} onChange={handleChange(formData, setFormData)} style={{ marginBottom: '15px' }} />
                         {!emailSent && (
                             <button className="button is-link is-fullwidth" onClick={sendVerificationEmail} style={{ marginBottom: '10px' }}>Enviar Código</button>
                         )}
                         {emailSent && (
                             <div className="field">
+                                <br />
+                                <p style={{ color: '#FFFFFF', marginBottom: '10px', fontSize: '14px' }}>
+                                    Ingresa el codigo de verificación que se le envió
+                                </p>
                                 <input className="input is-black" type="text" placeholder="Código de Verificación" value={code} onChange={(e) => setCode(e.target.value)} style={{ marginBottom: '15px' }} />
                                 <button className="button is-link is-fullwidth" onClick={verifyCode} style={{ marginBottom: '10px' }}>Verificar Código</button>
                             </div>
