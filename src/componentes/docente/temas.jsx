@@ -417,6 +417,25 @@ const TemaFormDocente = () => {
               </div>
             </div>
           </div>
+          <div className="field">
+          <label className="label has-text-white">Seleccionar Curso:</label>
+          <div className="control">
+            <div className="select is-fullwidth">
+              <select
+                value={selectedCourse}
+                onChange={(e) => setSelectedCourse(e.target.value)}
+              >
+                <option value="">Selecciona un curso</option>
+                {userCourses.map((curso) => (
+                  <option key={curso._id} value={curso._id}>
+                    {curso.nombre}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+          <br />
           <div className="field is-grouped is-grouped-right">
             <div className="control">
               <Link to="/docente/temas/contenidos" className="button is-primary">
@@ -437,24 +456,7 @@ const TemaFormDocente = () => {
           </div>
         </div>
 
-        <div className="field">
-          <label className="label has-text-white">Seleccionar Curso:</label>
-          <div className="control">
-            <div className="select is-fullwidth">
-              <select
-                value={selectedCourse}
-                onChange={(e) => setSelectedCourse(e.target.value)}
-              >
-                <option value="">Selecciona un curso</option>
-                {userCourses.map((curso) => (
-                  <option key={curso._id} value={curso._id}>
-                    {curso.nombre}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        </div>
+       
 
         {temas.length > 0 && (
           <div
