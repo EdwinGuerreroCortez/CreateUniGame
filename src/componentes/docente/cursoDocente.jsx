@@ -20,7 +20,7 @@ const CrearCursoDocente = () => {
     // Fetch the list of created courses
     const fetchCursos = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/cursos');
+        const response = await axios.get(`http://localhost:3001/api/usuario/${storedUserId}/cursos`);
         setCursos(response.data);
       } catch (error) {
         console.error('Error al cargar los cursos:', error);
