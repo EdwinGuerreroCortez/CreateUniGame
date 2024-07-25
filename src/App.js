@@ -101,7 +101,7 @@ const App = () => {
         <Route path="/docente/evaluaciones" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><EvaluacionesDocen /></LayoutEncabeDocen></RutaPrivada>} />
         <Route path="/docente/crearcurso" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><CrearCursoDocente /></LayoutEncabeDocen></RutaPrivada>} />
         <Route path="/docente/alumnos-suscritos" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><AlumnosSubcritos/></LayoutEncabeDocen></RutaPrivada>} />
-        <Route path="/docente/recursos" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeAdmin><RecursosTemasDocete/></LayoutEncabeAdmin></RutaPrivada>} />
+        <Route path="/docente/recursos" element={<RutaPrivada rolesPermitidos={['docente']}><LayoutEncabeDocen><RecursosTemasDocete/></LayoutEncabeDocen></RutaPrivada>} />
 
       </Routes>
     </Router>
