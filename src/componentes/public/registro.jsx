@@ -30,23 +30,32 @@ const validateStepOne = (formData) => {
 };
 
 const validateStepTwo = (formData) => {
-    const { telefono, correoElectronico, gradoEstudio } = formData;
-    if (!telefono || !correoElectronico || !gradoEstudio) {
+    const { telefono, correoElectronico, gradoEstudio, matricula } = formData;
+
+    if (!telefono || !correoElectronico || !gradoEstudio || !matricula) {
         alert("Todos los campos deben ser completados.");
         return false;
     }
+
     if (!/^\d{10}$/.test(telefono)) {
         alert("El teléfono debe contener exactamente 10 dígitos.");
         return false;
     }
+
     const validGrades = ['Primaria', 'Secundaria', 'Preparatoria', 'Universidad', 'Ninguna'];
     if (!validGrades.includes(gradoEstudio)) {
         alert("Seleccione un nivel de estudios válido.");
         return false;
     }
 
+    if (!/^\d{10}$/.test(matricula)) {
+        alert("La matrícula debe contener exactamente 10 dígitos.");
+        return false;
+    }
+
     return true;
 };
+
 
 const validateStepThree = (formData) => {
     const { usuario, contrasena, confirmarContrasena } = formData;
@@ -142,7 +151,7 @@ const StepEmailVerification = ({ formData, setFormData, nextStep }) => {
                     <StepIndicator step={1} />
                     <div className="field">
                         <p style={{ color: '#FFFFFF', marginBottom: '10px', fontSize: '16px' }}>
-                            Ingresa el correo electronico valido
+                            Ingresa un correo electrónico válido
                         </p>
                         <input className="input is-black" type="email" placeholder="Correo Electrónico" name="correoElectronico" value={formData.correoElectronico} onChange={handleChange(formData, setFormData)} style={{ marginBottom: '15px' }} />
                         {!emailSent && (
@@ -152,7 +161,7 @@ const StepEmailVerification = ({ formData, setFormData, nextStep }) => {
                             <div className="field">
                                 <br />
                                 <p style={{ color: '#FFFFFF', marginBottom: '10px', fontSize: '14px' }}>
-                                    Ingresa el codigo de verificación que se le envió
+                                    Ingresa el código de verificación que se te envió
                                 </p>
                                 <input className="input is-black" type="text" placeholder="Código de Verificación" value={code} onChange={(e) => setCode(e.target.value)} style={{ marginBottom: '15px' }} />
                                 <button className="button is-link is-fullwidth" onClick={verifyCode} style={{ marginBottom: '10px' }}>Verificar Código</button>
@@ -162,6 +171,7 @@ const StepEmailVerification = ({ formData, setFormData, nextStep }) => {
                 </div>
             </div>
         </div>
+
     );
 };
 
