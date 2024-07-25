@@ -24,6 +24,7 @@ const Buzon = () => {
 
     fetchMessages();
   }, []);
+
   useEffect(() => {
     const fetchLatestMessage = async () => {
       try {
@@ -39,18 +40,19 @@ const Buzon = () => {
 
   useEffect(() => {
     if (messages.length > 0) {
-      const sortedMessages = [...messages].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+      const sortedMessages = [...messages].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setLatestMessage(sortedMessages[0]);
     }
   }, [messages]);
 
   const handleSelectMessage = (messageId) => {
     setSelectedMessage(messageId);
-    const message = messages.find(message => message._id === messageId);
+    const message = messages.find((message) => message._id === messageId);
     if (message) {
       setResponse(message.respuesta || '');
     }
   };
+
   useEffect(() => {
     if (latestMessage) {
       const timer = setTimeout(() => {
@@ -60,13 +62,12 @@ const Buzon = () => {
       return () => clearTimeout(timer); // Cleanup the timer if the component unmounts or latestMessage changes
     }
   }, [latestMessage]);
+
   const handleRespondMessage = async () => {
     if (selectedMessage && response) {
       try {
-         // Añadido para depuración
-         // Añadido para depuración
         const res = await axios.put(`http://172.16.19.1:3001/api/contact/messages/questions/${selectedMessage}`, { respuesta: response });
-        const updatedMessages = messages.map(message => message._id === selectedMessage ? res.data : message);
+        const updatedMessages = messages.map((message) => (message._id === selectedMessage ? res.data : message));
         setMessages(updatedMessages);
         setSelectedMessage('');
         setResponse('');
@@ -95,7 +96,7 @@ const Buzon = () => {
   const handleEliminarMessage = async (id) => {
     try {
       await axios.delete(`http://172.16.19.1:3001/api/contact/messages/${id}`);
-      setMessages(messages.filter(message => message._id !== id));
+      setMessages(messages.filter((message) => message._id !== id));
       setSuccessMessage('Mensaje eliminado exitosamente.');
       setErrorMessage('');
       setTimeout(() => {
@@ -110,9 +111,16 @@ const Buzon = () => {
     }
   };
 
-  const filteredMessages = messages.filter(message => {
+  const filteredMessagesForCombo = messages.filter((message) => {
     if (tab === 'preguntas') {
-      return message.tipoMensaje === 'Pregunta';
+      return message.tipoMensaje === 'Pregunta' && !message.respuesta; // Filtrar solo preguntas sin respuesta
+    }
+    return false; // No filtrar para otras tabs
+  });
+
+  const filteredMessagesForTable = messages.filter((message) => {
+    if (tab === 'preguntas') {
+      return message.tipoMensaje === 'Pregunta' && message.respuesta; // Filtrar solo preguntas con respuesta
     } else if (tab === 'quejas') {
       return message.tipoMensaje === 'Queja';
     } else if (tab === 'sugerencias') {
@@ -179,7 +187,7 @@ const Buzon = () => {
                       <div className="select is-fullwidth">
                         <select value={selectedMessage} onChange={(e) => handleSelectMessage(e.target.value)}>
                           <option value="">Selecciona un mensaje</option>
-                          {filteredMessages.map(message => (
+                          {filteredMessagesForCombo.map((message) => (
                             <option key={message._id} value={message._id}>
                               {message.correo} - {message.mensaje}
                             </option>
@@ -220,7 +228,7 @@ const Buzon = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {filteredMessages.map(message => (
+                        {filteredMessagesForTable.map((message) => (
                           <tr key={message._id} style={{ backgroundColor: '#2C2F33' }}>
                             <td>{message.correo}</td>
                             <td>{message.mensaje}</td>
@@ -255,7 +263,7 @@ const Buzon = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredMessages.map(message => (
+                {filteredMessagesForTable.map((message) => (
                   <tr key={message._id} style={{ backgroundColor: '#2C2F33' }}>
                     <td>{message.correo}</td>
                     <td>{message.mensaje}</td>
