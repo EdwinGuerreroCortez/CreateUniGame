@@ -71,6 +71,7 @@ const Curso = () => {
       const data = await response.json();
       
       setTemas(data);
+      setCursoSeleccionado(cursos.find(curso => curso._id === cursoId)); // Seleccionar el curso
     } catch (error) {
       console.error("Error al cargar los temas del curso:", error);
     }
@@ -269,10 +270,7 @@ const Curso = () => {
                         backgroundColor: "navy",
                         marginTop: "20px",
                       }}
-                      onClick={() => {
-                        setCursoSeleccionado(curso);
-                        fetchTemasDelCurso(curso._id);
-                      }}
+                      onClick={() => fetchTemasDelCurso(curso._id)}
                     >
                       <div className="menu-label has-text-white" style={{ cursor: "pointer" }}>
                         <span className="title has-text-white is-size-6">{curso.nombre}</span>
@@ -487,6 +485,12 @@ const Curso = () => {
               >
                 Si no encuentra ningún curso, inscribase a nuestros diversos cursos
               </h3>
+              {isBanned && (
+                <div className="notification is-danger" style={{ marginTop: "20px" }}>
+                  <button className="delete" onClick={() => setIsBanned(false)}></button>
+                  {subscriptionMessage}
+                </div>
+              )}
             </div>
           )}
           {cursoSeleccionado && isBanned && (
