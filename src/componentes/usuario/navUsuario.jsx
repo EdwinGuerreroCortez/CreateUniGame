@@ -91,9 +91,11 @@ const BarraNav = () => {
               <Link className="navbar-item has-text-success" to="/user/acerca">
                 Acerca de StudyWeb
               </Link>
-              <Link className="navbar-item has-text-success" to="/user/contacto">
-                Contáctanos
-              </Link>
+              {usuario && (
+                <Link className="navbar-item has-text-success" to={`/user/contacto/${usuario._id}`}>
+                  Contáctanos
+                </Link>
+              )}
             </div>
           </div>
           <Link className="navbar-item has-text-success" to="/user/curso">
@@ -110,7 +112,7 @@ const BarraNav = () => {
           <div className="navbar-item">
             <div className="buttons">
               {cargandoUsuario ? (
-                <div className="button is-loading">Cargando...</div> 
+                <div className="button is-loading">Cargando...</div>
               ) : (
                 usuario && (
                   <figure className="image is-48x48" style={{ cursor: 'pointer' }} onClick={alternarModalPerfil}>
@@ -118,7 +120,7 @@ const BarraNav = () => {
                   </figure>
                 )
               )}
-              <button className="button is-primary" onClick={handleLogout} style={{marginTop:'1px'}}>
+              <button className="button is-primary" onClick={handleLogout} style={{ marginTop: '1px' }}>
                 <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: '5px' }} />
                 Cerrar sesión
               </button>
