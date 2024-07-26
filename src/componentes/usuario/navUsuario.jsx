@@ -35,8 +35,7 @@ const BarraNav = () => {
     };
 
     fetchUserData();
-  }, []);
-  
+  }, [updateKey]);
 
   const alternarMenuBurger = () => {
     setEstaActivo(!estaActivo);
@@ -92,7 +91,7 @@ const BarraNav = () => {
               <Link className="navbar-item has-text-success" to="/user/acerca">
                 Acerca de StudyWeb
               </Link>
-              <Link className="navbar-item has-text-success" to={usuario ? `/user/contacto/${usuario._id}` : '/user/contacto'}>
+              <Link className="navbar-item has-text-success" to="/user/contacto">
                 Contáctanos
               </Link>
             </div>
@@ -111,7 +110,7 @@ const BarraNav = () => {
           <div className="navbar-item">
             <div className="buttons">
               {cargandoUsuario ? (
-                <div className="button is-loading">Cargando...</div>
+                <div className="button is-loading">Cargando...</div> 
               ) : (
                 usuario && (
                   <figure className="image is-48x48" style={{ cursor: 'pointer' }} onClick={alternarModalPerfil}>
@@ -119,7 +118,7 @@ const BarraNav = () => {
                   </figure>
                 )
               )}
-              <button className="button is-primary" onClick={handleLogout} style={{ marginTop: '1px' }}>
+              <button className="button is-primary" onClick={handleLogout} style={{marginTop:'1px'}}>
                 <FontAwesomeIcon icon={faSignOutAlt} style={{ marginRight: '5px' }} />
                 Cerrar sesión
               </button>

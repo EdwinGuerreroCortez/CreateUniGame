@@ -267,7 +267,7 @@ const Perfil = ({ estaAbierto, alCerrar, actualizarPerfil }) => {
                   <div className="field">
                     <label className="label" id='ww'><FontAwesomeIcon icon={faKey} style={{ marginRight: '5px' }} /> Contraseña</label>
                     <div className="control has-icons-left">
-                      <input className="input inputperfil" type="password" name="contrasena" value={usuario.contrasena} disabled placeholder="••••••••" />
+                      <input className="input inputperfil" type="password" name="contrasena" value={usuario.contrasena} onChange={handleChange} disabled={!editando} placeholder="••••••••" />
                       <span className="icon is-small is-left"></span>
                     </div>
                   </div>
