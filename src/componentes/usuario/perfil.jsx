@@ -253,7 +253,7 @@ const Perfil = ({ estaAbierto, alCerrar, actualizarPerfil }) => {
                   <div className="field">
                     <label className="label" id='ww'><FontAwesomeIcon icon={faEnvelope} style={{ marginRight: '5px' }} /> Correo</label>
                     <div className="control has-icons-left">
-                      <input className="input inputperfil" type="email" name="correo" value={usuario.correo} onChange={handleChange} disabled={!editando} />
+                      <input className="input inputperfil" type="email" name="correo" value={usuario.correo} disabled />
                       <span className="icon is-small is-left"></span>
                     </div>
                   </div>
