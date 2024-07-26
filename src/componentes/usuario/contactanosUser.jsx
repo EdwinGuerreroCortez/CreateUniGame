@@ -18,7 +18,7 @@ const ContactFormUser = () => {
   useEffect(() => {
     const fetchUserEmail = async () => {
       try {
-        const response = await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}`);
+        const response = await fetch(`http://localhost:3001/api/usuarios/${userId}`);
         if (response.ok) {
           const data = await response.json();
           setFormData(prevFormData => ({
@@ -58,7 +58,7 @@ const ContactFormUser = () => {
 
   const validateEmail = async (email) => {
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/usuarios/validarCorreo`, {
+      const response = await fetch(`http://localhost:3001/api/usuarios/validarCorreo`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -121,11 +121,11 @@ const ContactFormUser = () => {
     }
 
     // Determinar URL del endpoint basado en el tipo de mensaje
-    let apiUrl = 'http://172.16.19.1:3001/api/contact/messages/faqs';
+    let apiUrl = 'http://localhost:3001/api/contact/messages/faqs';
     if (formData.tipoMensaje === 'Sugerencia') {
-      apiUrl = 'http://172.16.19.1:3001/api/contact/messages/suggestions';
+      apiUrl = 'http://localhost:3001/api/contact/messages/suggestions';
     } else if (formData.tipoMensaje === 'Queja') {
-      apiUrl = 'http://172.16.19.1:3001/api/contact/messages/complaints';
+      apiUrl = 'http://localhost:3001/api/contact/messages/complaints';
     }
 
     try {

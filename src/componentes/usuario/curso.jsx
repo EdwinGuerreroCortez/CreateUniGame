@@ -28,7 +28,7 @@ const Curso = () => {
 
   const fetchCursosSuscritos = async () => {
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}/cursos-suscritos`);
+      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/cursos-suscritos`);
       const data = await response.json();
       
       setCursos(data.cursos);
@@ -43,7 +43,7 @@ const Curso = () => {
 
   const verificarSiBaneado = async (cursoId) => {
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}/verificar-suscripcion/${cursoId}`, {
+      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/verificar-suscripcion/${cursoId}`, {
         method: 'POST'
       });
       const data = await response.json();
@@ -67,7 +67,7 @@ const Curso = () => {
     if (isUserBanned) return; // No continuar si el usuario está baneado
 
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/cursos/${cursoId}/temas`);
+      const response = await fetch(`http://localhost:3001/api/cursos/${cursoId}/temas`);
       const data = await response.json();
       
       setTemas(data);
@@ -92,7 +92,7 @@ const Curso = () => {
 
   const verificarEvaluacion = async (temaId) => {
     try {
-      const evaluacionResponse = await fetch(`http://172.16.19.1:3001/api/tema-evaluacion/${temaId}`);
+      const evaluacionResponse = await fetch(`http://localhost:3001/api/tema-evaluacion/${temaId}`);
       if (!evaluacionResponse.ok) {
         throw new Error(`HTTP error! status: ${evaluacionResponse.status}`);
       }
@@ -175,7 +175,7 @@ const Curso = () => {
   const handleEvaluationClick = async () => {
     const userId = localStorage.getItem("userId");
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}`);
+      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}`);
       const userData = await response.json();
       const evaluacionRealizada = userData.evaluaciones_realizadas.find(
         (evaluacion) => evaluacion.tema_id === temaSeleccionado._id
