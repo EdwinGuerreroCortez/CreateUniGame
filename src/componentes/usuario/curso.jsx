@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "bulma/css/bulma.min.css";
 import "../CSS/carga.css";
+import base64 from 'base-64';
 import { useNavigate } from "react-router-dom";
 
 const Curso = () => {
@@ -180,15 +181,17 @@ const Curso = () => {
       const evaluacionRealizada = userData.evaluaciones_realizadas.find(
         (evaluacion) => evaluacion.tema_id === temaSeleccionado._id
       );
-
+  
+      const encodedTemaId = base64.encode(temaSeleccionado._id);
+  
       if (evaluacionRealizada) {
-        navigate(`/user/evaluacion/${temaSeleccionado._id}`, {
+        navigate(`/user/evaluacion/${encodedTemaId}`, {
           state: { mostrarResultados: true },
         });
       } else {
         const userConfirmed = window.confirm("¿Desea responder la siguiente evaluación?");
         if (userConfirmed) {
-          navigate(`/user/evaluacion/${temaSeleccionado._id}`);
+          navigate(`/user/evaluacion/${encodedTemaId}`);
         }
       }
     } catch (error) {

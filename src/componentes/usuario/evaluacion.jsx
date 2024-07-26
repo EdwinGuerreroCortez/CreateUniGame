@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import "bulma/css/bulma.min.css";
 import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome
+import base64 from 'base-64';
 
 const Evaluacion = () => {
   const { temaId } = useParams();
+  const decodedTemaId = base64.decode(temaId); // Decodificar el ID
   const navigate = useNavigate();
   const [preguntas, setPreguntas] = useState([]);
   const [preguntaActual, setPreguntaActual] = useState(null);
@@ -33,7 +35,7 @@ const Evaluacion = () => {
   useEffect(() => {
     const fetchEvaluacion = async () => {
       try {
-        const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${temaId}`);
+        const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${decodedTemaId}`);
         if (examenResponse.status === 200) {
           const examenData = await examenResponse.json();
           if (examenData.examenPermitido) {
@@ -49,7 +51,7 @@ const Evaluacion = () => {
         }
 
         if (examenPermitido) {
-          const progresoResponse = await fetch(`http://localhost:3001/api/evaluacion/progreso/${userId}/${temaId}`);
+          const progresoResponse = await fetch(`http://localhost:3001/api/evaluacion/progreso/${userId}/${decodedTemaId}`);
           if (progresoResponse.status === 200) {
             const progresoData = await progresoResponse.json();
             setPreguntas(progresoData.preguntas);
@@ -62,7 +64,7 @@ const Evaluacion = () => {
             
             iniciarTemporizador(); // Iniciar el temporizador si ya hay progreso
           } else {
-            const response = await fetch(`http://localhost:3001/api/evaluaciones/${temaId}?limit=10`);
+            const response = await fetch(`http://localhost:3001/api/evaluaciones/${decodedTemaId}?limit=10`);
             const data = await response.json();
             if (data.evaluacion) {
               const preguntasAleatorias = data.evaluacion.sort(() => 0.5 - Math.random()).slice(0, 10);
@@ -133,7 +135,7 @@ const Evaluacion = () => {
         },
         body: JSON.stringify({
           usuarioId: userId,
-          temaId,
+          temaId: decodedTemaId,
           preguntas: preguntasIniciales.map((p) => ({
             ...p,
             respuesta_seleccionada: null
@@ -162,7 +164,7 @@ const Evaluacion = () => {
           },
           body: JSON.stringify({
             usuarioId: userId,
-            temaId,
+            temaId: decodedTemaId,
             preguntas: preguntas.map((p, index) => ({
               ...p,
               respuesta_seleccionada: respuestas[index]?.respuesta || null
@@ -257,7 +259,7 @@ const Evaluacion = () => {
         },
         body: JSON.stringify({
           usuarioId: userId,
-          temaId,
+          temaId: decodedTemaId,
           porcentaje,
           preguntasRespondidas: respuestas,
           fecha: new Date() // Enviar la fecha actual
@@ -291,7 +293,7 @@ const Evaluacion = () => {
 
   const cargarUltimasRespuestas = async () => {
     try {
-      const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${temaId}/ultimo`);
+      const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${decodedTemaId}/ultimo`);
       if (examenResponse.ok) {
         const examenData = await examenResponse.json();
 
