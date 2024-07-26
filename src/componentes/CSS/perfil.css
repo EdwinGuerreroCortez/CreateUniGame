@@ -1,6 +1,7 @@
-#ww{
+#ww {
     color: white;
 }
+
 .perfil-box {
     background-color: #1f1f1f;
     color: white;
@@ -12,7 +13,17 @@
 .perfil-imagen {
     margin: 0 auto;
     box-shadow: 0 0 15px 5px rgba(72, 199, 142, 0.5); 
-    border-radius: 100px;
+    border-radius: 50%; /* Asegura que el contenedor tenga bordes redondeados */
+    overflow: hidden; /* Asegura que la imagen no se salga del contenedor */
+    width: 128px; /* Tamaño fijo para el contenedor */
+    height: 128px; /* Tamaño fijo para el contenedor */
+}
+
+.perfil-imagen img {
+    object-fit: cover; /* Asegura que la imagen se recorte para llenar el contenedor */
+    width: 100%; /* Asegura que la imagen ocupe todo el ancho del contenedor */
+    height: 100%; /* Asegura que la imagen ocupe toda la altura del contenedor */
+    border-radius: 50%; /* Asegura que la imagen tenga bordes redondeados para parecer un círculo */
 }
 
 .inputperfil {

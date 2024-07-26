@@ -12,7 +12,8 @@ const BarraNav = () => {
   const [estaActivo, setEstaActivo] = useState(false);
   const [estaPerfilAbierto, setEstaPerfilAbierto] = useState(false);
   const [usuario, setUsuario] = useState(null);
-  const [cargandoUsuario, setCargandoUsuario] = useState(true); // Nuevo estado para indicador de carga
+  const [cargandoUsuario, setCargandoUsuario] = useState(true);
+  const [updateKey, setUpdateKey] = useState(Date.now());
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -26,16 +27,15 @@ const BarraNav = () => {
         } catch (error) {
           console.error('Error al obtener los datos del usuario', error);
         } finally {
-          setCargandoUsuario(false); // Desactivar indicador de carga
+          setCargandoUsuario(false);
         }
       } else {
-        setCargandoUsuario(false); // Desactivar indicador de carga si no hay userId
+        setCargandoUsuario(false);
       }
     };
-  
+
     fetchUserData();
-  }, []);
-  
+  }, [updateKey]);
 
   const alternarMenuBurger = () => {
     setEstaActivo(!estaActivo);
@@ -56,6 +56,10 @@ const BarraNav = () => {
     localStorage.removeItem('userData');
     localStorage.removeItem('usuario');
     navigate('/');
+  };
+
+  const handleProfileUpdate = () => {
+    setUpdateKey(Date.now());
   };
 
   return (
@@ -110,7 +114,7 @@ const BarraNav = () => {
               ) : (
                 usuario && (
                   <figure className="image is-48x48" style={{ cursor: 'pointer' }} onClick={alternarModalPerfil}>
-                    <img className="is-rounded imagen-perfil" src={usuario.imagenPerfil || 'https://via.placeholder.com/48'} alt="Perfil" />
+                    <img key={updateKey} className="is-rounded imagen-perfil" src={usuario.imagenPerfil || 'https://via.placeholder.com/48'} alt="Perfil" />
                   </figure>
                 )
               )}
@@ -123,7 +127,7 @@ const BarraNav = () => {
         </div>
       </div>
 
-      <Perfil estaAbierto={estaPerfilAbierto} alCerrar={alternarModalPerfil} />
+      <Perfil estaAbierto={estaPerfilAbierto} alCerrar={alternarModalPerfil} actualizarPerfil={handleProfileUpdate} />
     </nav>
   );
 };
