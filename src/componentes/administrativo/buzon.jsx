@@ -16,7 +16,9 @@ const Buzon = () => {
     const fetchMessages = async () => {
       try {
         const response = await axios.get('http://172.16.19.1:3001/api/contact/messages');
-        setMessages(response.data);
+        const sortedMessages = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        setMessages(sortedMessages);
+        setLatestMessage(sortedMessages[0] || null); // Actualizar el último mensaje
       } catch (error) {
         console.error('Error al obtener los mensajes:', error);
       }
@@ -24,25 +26,6 @@ const Buzon = () => {
 
     fetchMessages();
   }, []);
-  useEffect(() => {
-    const fetchLatestMessage = async () => {
-      try {
-        const response = await axios.get('http://172.16.19.1:3001/api/contact/latest');
-        setLatestMessage(response.data);
-      } catch (error) {
-        console.error('Error al obtener el último mensaje:', error);
-      }
-    };
-
-    fetchLatestMessage();
-  }, []);
-
-  useEffect(() => {
-    if (messages.length > 0) {
-      const sortedMessages = [...messages].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-      setLatestMessage(sortedMessages[0]);
-    }
-  }, [messages]);
 
   const handleSelectMessage = (messageId) => {
     setSelectedMessage(messageId);
@@ -51,20 +34,20 @@ const Buzon = () => {
       setResponse(message.respuesta || '');
     }
   };
+
   useEffect(() => {
     if (latestMessage) {
       const timer = setTimeout(() => {
         setLatestMessage(null);
-      }, 5000);
+      }, 10000); // Cambiar a 8 segundos
 
       return () => clearTimeout(timer); // Cleanup the timer if the component unmounts or latestMessage changes
     }
   }, [latestMessage]);
+
   const handleRespondMessage = async () => {
     if (selectedMessage && response) {
       try {
-         // Añadido para depuración
-         // Añadido para depuración
         const res = await axios.put(`http://172.16.19.1:3001/api/contact/messages/questions/${selectedMessage}`, { respuesta: response });
         const updatedMessages = messages.map(message => message._id === selectedMessage ? res.data : message);
         setMessages(updatedMessages);
@@ -74,56 +57,65 @@ const Buzon = () => {
         setErrorMessage('');
         setTimeout(() => {
           setSuccessMessage('');
-        }, 3000); // Ocultar alerta después de 3 segundos
+        }, 4000); // Ocultar alerta después de 4 segundos
       } catch (error) {
-        console.error('Error al enviar la respuesta:', error); // Añadido para depuración
+        console.error('Error al enviar la respuesta:', error);
         setErrorMessage('Error al enviar la respuesta.');
         setSuccessMessage('');
         setTimeout(() => {
           setErrorMessage('');
-        }, 3000); // Ocultar alerta después de 3 segundos
+        }, 4000); // Ocultar alerta después de 4 segundos
       }
     } else {
       setErrorMessage('Por favor, seleccione un mensaje y complete la respuesta.');
       setSuccessMessage('');
       setTimeout(() => {
         setErrorMessage('');
-      }, 3000); // Ocultar alerta después de 3 segundos
+      }, 4000); // Ocultar alerta después de 4 segundos
     }
   };
 
   const handleEliminarMessage = async (id) => {
     try {
       await axios.delete(`http://172.16.19.1:3001/api/contact/messages/${id}`);
-      setMessages(messages.filter(message => message._id !== id));
+      const updatedMessages = messages.filter(message => message._id !== id);
+      setMessages(updatedMessages);
+      setLatestMessage(updatedMessages[0] || null); // Actualizar el último mensaje
       setSuccessMessage('Mensaje eliminado exitosamente.');
       setErrorMessage('');
       setTimeout(() => {
         setSuccessMessage('');
-      }, 3000); // Ocultar alerta después de 3 segundos
+      }, 4000); // Ocultar alerta después de 4 segundos
     } catch (error) {
       setErrorMessage('Error al eliminar el mensaje.');
       setSuccessMessage('');
       setTimeout(() => {
         setErrorMessage('');
-      }, 3000); // Ocultar alerta después de 3 segundos
+      }, 4000); // Ocultar alerta después de 4 segundos
     }
   };
 
   const filteredMessages = messages.filter(message => {
-    if (tab === 'preguntas') {
-      return message.tipoMensaje === 'Pregunta';
-    } else if (tab === 'quejas') {
-      return message.tipoMensaje === 'Queja';
-    } else if (tab === 'sugerencias') {
-      return message.tipoMensaje === 'Sugerencia';
+    switch (tab) {
+      case 'preguntas':
+        return message.tipoMensaje === 'Pregunta';
+      case 'quejas':
+        return message.tipoMensaje === 'Queja';
+      case 'sugerencias':
+        return message.tipoMensaje === 'Sugerencia';
+      default:
+        return true;
     }
-    return true;
   });
+
+  const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
 
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
-      <div className="container">
+      <div className="container" style={{ maxWidth: '1450px', margin: '0 auto' }}> {/* Aumenta el tamaño del contenedor */}
         <h1 className="title has-text-centered has-text-white">Buzón de Contacto</h1>
 
         {successMessage && (
@@ -156,13 +148,13 @@ const Buzon = () => {
 
         <div className="box" style={{ backgroundColor: '#1F1F1F', borderRadius: '20px' }}>
           {latestMessage && (
-            <div className="message is-info" style={{ display: 'flex', alignItems: 'center', fontSize: '1.1em', padding: '0.5em' }}>
+            <div className="message is-info" style={{ display: 'flex', alignItems: 'center', fontSize: '0.9em', padding: '0.5em' }}>
               <div className="message-header" style={{ borderTopLeftRadius: '20px', borderBottomLeftRadius: '20px', padding: '0.5em 1em' }}>
                 <p className="is-size-6">Último mensaje:</p>
               </div>
               <div className="message-body" style={{ flex: '1', borderTopRightRadius: '20px', borderBottomRightRadius: '20px', padding: '0.5em 1em' }}>
                 <p className="is-size-6">
-                  <strong>{latestMessage.correo}</strong> - {latestMessage.tipoMensaje}: {latestMessage.mensaje}
+                  <strong>Correo: {latestMessage.correo}</strong> Tipo: {latestMessage.tipoMensaje} {latestMessage.mensaje}    fecha: {formatDate(latestMessage.createdAt)}
                 </p>
               </div>
             </div>
@@ -171,7 +163,7 @@ const Buzon = () => {
           <div className="column is-half">
             {tab === 'preguntas' && (
               <div className="columns">
-                <div className="column is-half is-full-mobile" style={{ width: '80%' }}>
+                <div className="column is-half is-full-mobile" style={{ width: '100%' }}>
                   <h2 className="title is-4 has-text-centered has-text-white">Responder Mensajes de Contacto</h2>
                   <div className="field">
                     <label className="label has-text-white">Seleccionar Mensaje</label>
@@ -197,6 +189,7 @@ const Buzon = () => {
                         onChange={(e) => setResponse(e.target.value)}
                         placeholder="Escribe la respuesta"
                         required
+                        style={{ fontSize: '1em' }} // Reducir tamaño de la fuente
                       />
                     </div>
                   </div>
@@ -208,9 +201,9 @@ const Buzon = () => {
                     </div>
                   </div>
                 </div>
-                <div className="column is-half is-full-mobile" style={{ width: '120%' }}>
+                <div className="column is-half is-full-mobile" style={{ width: '100%' }}>
                   <div className="table-container">
-                    <table className="table is-fullwidth is-striped is-hoverable" style={{ fontSize: '1.2em' }}>
+                    <table className="table is-fullwidth is-striped is-hoverable" style={{ fontSize: '1em' }}> {/* Reducir tamaño de la fuente */}
                       <thead>
                         <tr>
                           <th className="has-text-white">Correo</th>
@@ -224,7 +217,9 @@ const Buzon = () => {
                           <tr key={message._id} style={{ backgroundColor: '#2C2F33' }}>
                             <td>{message.correo}</td>
                             <td>{message.mensaje}</td>
-                            <td>{message.respuesta || 'Sin respuesta'}</td>
+                            <td>
+                              {message.respuesta || <span className="tag is-danger">Sin respuesta</span>} {/* Indicador para sin respuesta */}
+                            </td>
                             <td>
                               <button
                                 className="button is-danger"
@@ -246,7 +241,7 @@ const Buzon = () => {
             )}
           </div>
           {(tab === 'quejas' || tab === 'sugerencias') && (
-            <table className="table is-fullwidth is-striped is-hoverable" style={{ fontSize: '1.2em', width: '100%' }}>
+            <table className="table is-fullwidth is-striped is-hoverable" style={{ fontSize: '0.9em', width: '100%' }}> {/* Reducir tamaño de la fuente */}
               <thead>
                 <tr>
                   <th className="has-text-white">Correo</th>

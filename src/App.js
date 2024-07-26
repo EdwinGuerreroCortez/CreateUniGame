@@ -20,6 +20,7 @@ import Recursos from './componentes/usuario/recursos';
 import Curso from './componentes/usuario/curso';
 import Evaluacion from './componentes/usuario/evaluacion';
 import CursosDisponibles from './componentes/usuario/cursosDisponibles';
+import Contactos from './componentes/usuario/contactanosUser';
 
 // Componentes Administrativos
 import LayoutEncabeAdmin from './componentes/administrativo/LayoutEncabeAdmin';
@@ -72,7 +73,7 @@ const App = () => {
         <Route path="/user/recursos" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Recursos /></LayoutEncabeUser></RutaPrivada>} />
         <Route path="/user/acerca" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Acerca /></LayoutEncabeUser></RutaPrivada>} />
         <Route path="/user/curso" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Curso /></LayoutEncabeUser></RutaPrivada>} />
-        <Route path="/user/contacto" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Contactanos /></LayoutEncabeUser></RutaPrivada>} />
+        <Route path="/user/contacto/:userId" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Contactos /></LayoutEncabeUser></RutaPrivada>} />
         <Route path="/user/evaluacion/:temaId" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Evaluacion /></LayoutEncabeUser></RutaPrivada>} />
 
         {/* Rutas Administrativas */}

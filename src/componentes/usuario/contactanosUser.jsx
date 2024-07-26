@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom'; // Import useParams for accessing URL parameters
 import contactImage from '../img/contactanos.webp';
 import 'bulma/css/bulma.min.css';
 import '../CSS/ContactForm.css';
 
-const ContactForm = () => {
+const ContactFormUser = () => {
+  const { userId } = useParams(); // Get userId from URL parameters
   const [formData, setFormData] = useState({
     tipoMensaje: 'Pregunta',
     correo: '',
@@ -14,7 +16,30 @@ const ContactForm = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // Limpiar el temporizador si el componente se desmonta
+    const fetchUserEmail = async () => {
+      try {
+        const response = await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setFormData(prevFormData => ({
+            ...prevFormData,
+            correo: data.datos_personales.correo // Update the correo field with the user's email
+          }));
+        } else {
+          throw new Error('Error fetching user data');
+        }
+      } catch (error) {
+        console.error('Error fetching user email:', error);
+        setAlert({ type: 'is-danger', message: 'Error al obtener el correo electrónico del usuario.' });
+      }
+    };
+
+    if (userId) {
+      fetchUserEmail();
+    }
+  }, [userId]);
+
+  useEffect(() => {
     let timer;
     if (alert) {
       timer = setTimeout(() => {
@@ -128,7 +153,7 @@ const ContactForm = () => {
         setAlert({ type: 'is-success', message: successMessage });
         setFormData({
           tipoMensaje: 'Pregunta',
-          correo: '',
+          correo: formData.correo, // Mantener el correo en el estado
           mensaje: '',
           preguntaEspecifica: '',
         });
@@ -179,25 +204,8 @@ const ContactForm = () => {
                   </div>
                 </div>
                 <div className="field">
-                  <label className="label contact-label">Correo Electrónico</label>
-                  <div className="control has-icons-left">
-                    <input
-                      className="input contact-input"
-                      type="email"
-                      name="correo"
-                      value={formData.correo}
-                      onChange={handleChange}
-                      required
-                      placeholder="ej. alex@example.com"
-                    />
-                    <span className="icon is-small is-left">
-                      <i className="fas fa-envelope"></i>
-                    </span>
-                  </div>
-                </div>
-                {formData.tipoMensaje === 'Pregunta' ? (
-                  <div className="field">
-                    <label className="label contact-label">¿Cuál es su pregunta específica?</label>
+                  <label className="label contact-label">Mensaje</label>
+                  {formData.tipoMensaje === 'Pregunta' ? (
                     <div className="control has-icons-left">
                       <input
                         className="input contact-input"
@@ -211,10 +219,7 @@ const ContactForm = () => {
                         <i className="fas fa-question-circle"></i>
                       </span>
                     </div>
-                  </div>
-                ) : (
-                  <div className="field">
-                    <label className="label contact-label">Mensaje</label>
+                  ) : (
                     <div className="control has-icons-left">
                       <textarea
                         className="textarea contact-textarea"
@@ -228,8 +233,8 @@ const ContactForm = () => {
                         <i className="fas fa-comment-dots"></i>
                       </span>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
                 <div className="field">
                   <div className="control">
                     <button className="button is-primary contact-button" type="submit" disabled={isLoading}>
@@ -253,6 +258,6 @@ const ContactForm = () => {
       </div>
     </section>
   );
-}
+};
 
-export default ContactForm;
+export default ContactFormUser;

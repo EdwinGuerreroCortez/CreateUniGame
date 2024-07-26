@@ -254,7 +254,7 @@ const Curso = () => {
               <div
                 className="box tema-panel"
                 style={{
-                  background: "rgb(2, 25, 41)",
+                  background: "rgb(4 18 28)",
                   boxShadow: "0px 0px 10px 0px rgba(255,255,255,0.5)",
                   marginTop: "20px",
                 }}
@@ -314,7 +314,7 @@ const Curso = () => {
                 <div
                   className={`box tema-panel ${mostrarTemas ? "is-active" : ""}`}
                   style={{
-                    background: "rgb(2, 25, 41)",
+                    background: "rgb(4 18 28)",
                     boxShadow: "0px 0px 10px 0px rgba(255,255,255,0.5)",
                     marginTop: "20px",
                     position: "relative",
@@ -344,7 +344,7 @@ const Curso = () => {
                         onClick={() => seleccionarTema(tema)}
                       >
                         <div className="card-content">
-                          <p className="title is-5 has-text-white">{tema.titulo}</p>
+                          <p className="title is-5 has-text-white" style={{fontSize:'1rem'}}>{tema.titulo}</p>
                         </div>
                       </div>
                     ))
@@ -383,7 +383,7 @@ const Curso = () => {
                               onClick={() => seleccionarSubtema(subtema)}
                             >
                               <div className="card-content" style={{ padding: "0.4rem" }}>
-                                <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>{subtema.titulo}</p>
+                                <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}> {subtema.titulo}</p>
                               </div>
                             </div>
                           ))}
@@ -436,7 +436,7 @@ const Curso = () => {
             <div
               className="box has-text-white"
               style={{
-                background: "rgb(2, 25, 41)",
+                background: "rgb(4 18 28)",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
@@ -511,7 +511,7 @@ const Curso = () => {
               <div
                 className="box has-text-white"
                 style={{
-                  background: "rgb(2, 25, 41)",
+                  background: "rgb(4 18 28)",
                   boxShadow: "0px 0px 10px 0px rgba(255,255,255,0.5)",
                   marginTop: "20px",
                 }}
@@ -523,6 +523,7 @@ const Curso = () => {
                     <p className="is-size-6">
                       Fecha: {new Date(temaSeleccionado.fecha_creacion).toLocaleDateString()}
                     </p>
+                    <br />
                     {renderVideo(temaSeleccionado.video)}
                     <h2 className="title is-3 has-text-centered has-text-white">Descripción</h2>
                     <p>{temaSeleccionado.descripcion}</p>
