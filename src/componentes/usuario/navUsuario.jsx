@@ -37,6 +37,10 @@ const BarraNav = () => {
     fetchUserData();
   }, [updateKey]);
 
+  const encodeUserId = (userId) => {
+    return btoa(userId);
+  };
+
   const alternarMenuBurger = () => {
     setEstaActivo(!estaActivo);
   };
@@ -92,7 +96,7 @@ const BarraNav = () => {
                 Acerca de StudyWeb
               </Link>
               {usuario && (
-                <Link className="navbar-item has-text-success" to={`/user/contacto/${usuario._id}`}>
+                <Link className="navbar-item has-text-success" to={`/user/contacto/${encodeUserId(usuario._id)}`}>
                   Contáctanos
                 </Link>
               )}

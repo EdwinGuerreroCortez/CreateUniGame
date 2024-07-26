@@ -5,7 +5,8 @@ import 'bulma/css/bulma.min.css';
 import '../CSS/ContactForm.css';
 
 const ContactFormUser = () => {
-  const { userId } = useParams(); // Get userId from URL parameters
+  const { userId } = useParams(); 
+  const decodedUserId = atob(userId);
   const [formData, setFormData] = useState({
     tipoMensaje: 'Pregunta',
     correo: '',
@@ -18,7 +19,7 @@ const ContactFormUser = () => {
   useEffect(() => {
     const fetchUserEmail = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/api/usuarios/${userId}`);
+        const response = await fetch(`http://localhost:3001/api/usuarios/${decodedUserId}`);
         if (response.ok) {
           const data = await response.json();
           setFormData(prevFormData => ({
@@ -33,11 +34,10 @@ const ContactFormUser = () => {
         setAlert({ type: 'is-danger', message: 'Error al obtener el correo electrónico del usuario.' });
       }
     };
-
-    if (userId) {
+    if (decodedUserId) {
       fetchUserEmail();
     }
-  }, [userId]);
+  }, [decodedUserId]);
 
   useEffect(() => {
     let timer;
