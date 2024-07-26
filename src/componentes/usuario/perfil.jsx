@@ -5,7 +5,7 @@ import '../CSS/perfil.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faUserTie, faUserGraduate, faBirthdayCake, faPhone, faEnvelope, faKey, faSave, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 
-const Perfil = ({ estaAbierto, alCerrar }) => {
+const Perfil = ({ estaAbierto, alCerrar, actualizarPerfil }) => {
   const [usuario, setUsuario] = useState({
     nombreUsuario: '',
     nombre: '',
@@ -98,6 +98,7 @@ const Perfil = ({ estaAbierto, alCerrar }) => {
       setImagenTemporal('');
       setImagenFile(null);
       setMensajeExito('¡Imagen actualizada correctamente!');
+      actualizarPerfil();  // Notifica a BarraNav que la imagen se ha actualizado
       setTimeout(() => setMensajeExito(''), 3000);
     } catch (error) {
       console.error('Error al subir la imagen a Cloudinary', error);
