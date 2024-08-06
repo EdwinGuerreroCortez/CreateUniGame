@@ -73,7 +73,7 @@ const SubirImagenes = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3001/api/imagenesReact/upload', formData, {
+      const response = await axios.post('http://172.16.19.1:3001/api/imagenesReact/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         },

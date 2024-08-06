@@ -31,7 +31,7 @@ const Perfil = ({ estaAbierto, alCerrar, actualizarPerfil }) => {
       const userId = localStorage.getItem('userId');
       if (userId) {
         try {
-          const response = await axios.get(`http://localhost:3001/api/usuarios/${userId}`);
+          const response = await axios.get(`http://172.16.19.1:3001/api/usuarios/${userId}`);
           const data = response.data;
           setUsuario({
             nombreUsuario: data.username,
@@ -76,7 +76,7 @@ const Perfil = ({ estaAbierto, alCerrar, actualizarPerfil }) => {
     formData.append('imagen', imagenFile);
 
     try {
-      const response = await axios.post('http://localhost:3001/api/imagenes/upload', formData, {
+      const response = await axios.post('http://172.16.19.1:3001/api/imagenes/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -86,7 +86,7 @@ const Perfil = ({ estaAbierto, alCerrar, actualizarPerfil }) => {
       const imageUrl = response.data.url;
       const userId = localStorage.getItem('userId');
 
-      await axios.put(`http://localhost:3001/api/usuarios/${userId}/imagen`, {
+      await axios.put(`http://172.16.19.1:3001/api/usuarios/${userId}/imagen`, {
         imagenPerfil: imageUrl
       });
       
@@ -134,7 +134,7 @@ const Perfil = ({ estaAbierto, alCerrar, actualizarPerfil }) => {
     setCargando(true);
     try {
       const userId = localStorage.getItem('userId');
-      await axios.put(`http://localhost:3001/api/usuarios/${userId}`, {
+      await axios.put(`http://172.16.19.1:3001/api/usuarios/${userId}`, {
         username: usuario.nombreUsuario,
         datos_personales: {
           nombre: usuario.nombre,

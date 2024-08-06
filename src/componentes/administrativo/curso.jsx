@@ -12,11 +12,11 @@ const CursosForm = () => {
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const response = await axios.get("http://localhost:3001/api/cursos");
+        const response = await axios.get("http://172.16.19.1:3001/api/cursos");
         const cursosConUsuarios = await Promise.all(response.data.map(async curso => {
           if (curso.usuario) {
             try {
-              const usuarioResponse = await axios.get(`http://localhost:3001/api/usuarios/${curso.usuario}`);
+              const usuarioResponse = await axios.get(`http://172.16.19.1:3001/api/usuarios/${curso.usuario}`);
               return { ...curso, usuarioNombre: usuarioResponse.data.datos_personales.nombre };
             } catch (error) {
               console.error(`Error al obtener el usuario para el curso ${curso.nombre}:`, error);
@@ -46,13 +46,13 @@ const CursosForm = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3001/api/curso", { nombre });
+      const response = await axios.post("http://172.16.19.1:3001/api/curso", { nombre });
 
       if (response.status === 201) {
         const nuevoCurso = response.data;
         if (nuevoCurso.usuario) {
           try {
-            const usuarioResponse = await axios.get(`http://localhost:3001/api/usuarios/${nuevoCurso.usuario}`);
+            const usuarioResponse = await axios.get(`http://172.16.19.1:3001/api/usuarios/${nuevoCurso.usuario}`);
             nuevoCurso.usuarioNombre = usuarioResponse.data.datos_personales.nombre;
           } catch (error) {
             nuevoCurso.usuarioNombre = "Desconocido";
