@@ -109,21 +109,14 @@ const EvaluacionesDocente = () => {
       (curso === '' || evaluacion.nombreCurso === curso) &&
       (date === '' || new Date(evaluacion.fechaUltimoIntento) >= new Date(date))
     ).reduce((acc, evaluacion) => {
-      const matricula = evaluacion.matricula || 'Matrícula no disponible';
-      const nombreCompleto = evaluacion.nombreUsuario || 'Nombre no disponible';
-      
-      const lastAttempt = getLastAttempt(evaluacion.preguntasRespondidas);
-  
+      const matricula = evaluacion.usuarioId.datos_personales.matricula;
+      const nombreCompleto = `${evaluacion.usuarioId.datos_personales.nombre} ${evaluacion.usuarioId.datos_personales.apellido_paterno} ${evaluacion.usuarioId.datos_personales.apellido_materno}`;
       if (!acc[matricula]) {
         acc[matricula] = { matricula, nombreCompleto, calificaciones: [] };
       }
-  
-      if (lastAttempt) {
-        acc[matricula].calificaciones.push(lastAttempt.porcentaje);
-      } else {
-        acc[matricula].calificaciones.push('N/P');
-      }
-  
+      const lastAttempt = getLastAttempt(evaluacion.preguntasRespondidas);
+      const lastScore = lastAttempt ? lastAttempt.porcentaje : 'N/P';
+      acc[matricula].calificaciones.push(lastScore);
       return acc;
     }, {});
   
@@ -144,6 +137,16 @@ const EvaluacionesDocente = () => {
   
     setFilteredConcentrado(concentradoCompleto);
   };
+  
+  const getLastAttempt = (preguntasRespondidas) => {
+    if (preguntasRespondidas.length === 0) {
+      return null;
+    }
+    return preguntasRespondidas.reduce((lastAttempt, currentAttempt) => {
+      return currentAttempt.intento > lastAttempt.intento ? currentAttempt : lastAttempt;
+    });
+  };
+  
 
   const handleDownloadConcentrado = () => {
     const worksheetData = [
