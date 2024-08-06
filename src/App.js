@@ -16,7 +16,6 @@ import RecuperarContrasena from './componentes/public/recuperar';
 // Componentes de Usuario
 import LayoutEncabeUser from './componentes/usuario/layoutEncabeUser';
 import Bienvenida from './componentes/usuario/bienvenida';
-import Recursos from './componentes/usuario/recursos';
 import Curso from './componentes/usuario/curso';
 import Evaluacion from './componentes/usuario/evaluacion';
 import CursosDisponibles from './componentes/usuario/cursosDisponibles';
@@ -70,7 +69,6 @@ const App = () => {
 
         {/* Rutas de Usuario */}
         <Route path="/user/bienvenida" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Bienvenida /><CursosDisponibles/></LayoutEncabeUser></RutaPrivada>} />
-        <Route path="/user/recursos" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Recursos /></LayoutEncabeUser></RutaPrivada>} />
         <Route path="/user/acerca" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Acerca /></LayoutEncabeUser></RutaPrivada>} />
         <Route path="/user/curso" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Curso /></LayoutEncabeUser></RutaPrivada>} />
         <Route path="/user/contacto/:userId" element={<RutaPrivada rolesPermitidos={['cliente']}><LayoutEncabeUser><Contactos /></LayoutEncabeUser></RutaPrivada>} />
