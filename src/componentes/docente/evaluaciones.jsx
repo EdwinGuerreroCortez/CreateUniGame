@@ -98,33 +98,42 @@ const EvaluacionesDocente = () => {
   const handleFilterConcentrado = (curso, date) => {
     setSelectedCurso(curso);
     setConcentradoDate(date);
-
+  
     if (!curso && !date) {
       setFilteredConcentrado([]);
       setMaxEvaluaciones(0);
       return;
     }
-
+  
     const concentrado = evaluaciones.filter(evaluacion =>
       (curso === '' || evaluacion.nombreCurso === curso) &&
       (date === '' || new Date(evaluacion.fechaUltimoIntento) >= new Date(date))
     ).reduce((acc, evaluacion) => {
-      const matricula = evaluacion.usuarioId.datos_personales.matricula;
-      const nombreCompleto = `${evaluacion.usuarioId.datos_personales.nombre} ${evaluacion.usuarioId.datos_personales.apellido_paterno} ${evaluacion.usuarioId.datos_personales.apellido_materno}`;
+      const matricula = evaluacion.matricula || 'Matrícula no disponible';
+      const nombreCompleto = evaluacion.nombreUsuario || 'Nombre no disponible';
+      
+      const lastAttempt = getLastAttempt(evaluacion.preguntasRespondidas);
+  
       if (!acc[matricula]) {
         acc[matricula] = { matricula, nombreCompleto, calificaciones: [] };
       }
-      acc[matricula].calificaciones.push(evaluacion.preguntasRespondidas[evaluacion.preguntasRespondidas.length - 1].porcentaje);
+  
+      if (lastAttempt) {
+        acc[matricula].calificaciones.push(lastAttempt.porcentaje);
+      } else {
+        acc[matricula].calificaciones.push('N/P');
+      }
+  
       return acc;
     }, {});
-
+  
     const maxEval = Math.max(...Object.values(concentrado).map(item => item.calificaciones.length), 0);
     setMaxEvaluaciones(maxEval);
-
+  
     const concentradoCompleto = Object.values(concentrado).map(item => {
       const calificacionesCompletas = [...item.calificaciones, ...Array(Math.max(0, maxEval - item.calificaciones.length)).fill('N/P')];
       const sum = calificacionesCompletas.reduce((acc, cal) => acc + (cal !== 'N/P' ? cal : 0), 0);
-      const promedio = (sum / (calificacionesCompletas.length || 1)).toFixed(2);
+      const promedio = (sum / maxEval).toFixed(2);
       return {
         matricula: item.matricula,
         nombreCompleto: item.nombreCompleto,
@@ -132,7 +141,7 @@ const EvaluacionesDocente = () => {
         promedio: promedio
       };
     });
-
+  
     setFilteredConcentrado(concentradoCompleto);
   };
 
