@@ -15,7 +15,7 @@ const Buzon = () => {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get('http://172.16.19.1:3001/api/contact/messages');
+        const response = await axios.get('http://localhost:3001/api/contact/messages');
         const sortedMessages = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
         setMessages(sortedMessages);
         setLatestMessage(sortedMessages[0] || null); // Actualizar el último mensaje
@@ -48,7 +48,7 @@ const Buzon = () => {
   const handleRespondMessage = async () => {
     if (selectedMessage && response) {
       try {
-        const res = await axios.put(`http://172.16.19.1:3001/api/contact/messages/questions/${selectedMessage}`, { respuesta: response });
+        const res = await axios.put(`http://localhost:3001/api/contact/messages/questions/${selectedMessage}`, { respuesta: response });
         const updatedMessages = messages.map(message => message._id === selectedMessage ? res.data : message);
         setMessages(updatedMessages);
         setSelectedMessage('');
@@ -77,7 +77,7 @@ const Buzon = () => {
 
   const handleEliminarMessage = async (id) => {
     try {
-      await axios.delete(`http://172.16.19.1:3001/api/contact/messages/${id}`);
+      await axios.delete(`http://localhost:3001/api/contact/messages/${id}`);
       const updatedMessages = messages.filter(message => message._id !== id);
       setMessages(updatedMessages);
       setLatestMessage(updatedMessages[0] || null); // Actualizar el último mensaje

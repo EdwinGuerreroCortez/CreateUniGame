@@ -21,7 +21,7 @@ const CrearCursoDocente = () => {
 
     const fetchCursos = async () => {
       try {
-        const response = await axios.get(`http://172.16.19.1:3001/api/usuario/${storedUserId}/cursos`);
+        const response = await axios.get(`http://localhost:3001/api/usuario/${storedUserId}/cursos`);
         setCursos(response.data);
       } catch (error) {
         console.error('Error al cargar los cursos:', error);
@@ -52,7 +52,7 @@ const CrearCursoDocente = () => {
 
     setIsLoading(true);
     try {
-      const response = await axios.post('http://172.16.19.1:3001/api/crearCursoAsignarUsuario', {
+      const response = await axios.post('http://localhost:3001/api/crearCursoAsignarUsuario', {
         nombre: nombreCurso,
         usuarioId
       });
