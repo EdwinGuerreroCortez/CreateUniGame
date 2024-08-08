@@ -8,8 +8,8 @@ const SubirTemaDocente = () => {
   const [descripcion, setDescripcion] = useState("");
   const [responsable, setResponsable] = useState("");
   const [bibliografia, setBibliografia] = useState("");
-  const [curso, setCurso] = useState(""); 
-  const [cursos, setCursos] = useState([]); 
+  const [curso, setCurso] = useState("");
+  const [cursos, setCursos] = useState([]);
   const [pasos, setPasos] = useState([{ Titulo: "", Descripcion: "" }]);
   const [videoFile, setVideoFile] = useState(null);
   const [alert, setAlert] = useState({ type: "", message: "" });
@@ -17,6 +17,7 @@ const SubirTemaDocente = () => {
   const [paginaActual, setPaginaActual] = useState(0);
   const pasosPorPagina = 1;
   const [subtemas, setSubtemas] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (alert.message) {
@@ -75,7 +76,7 @@ const SubirTemaDocente = () => {
 
   const handleAgregarPaso = () => {
     setPasos([...pasos, { Titulo: "", Descripcion: "" }]);
-    setPaginaActual(paginaActual + 1); 
+    setPaginaActual(paginaActual + 1);
   };
 
   const handleEliminarPaso = (index) => {
@@ -92,12 +93,24 @@ const SubirTemaDocente = () => {
   };
 
   const handleFileChange = (e) => {
-    setVideoFile(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 100 * 1024 * 1024) { // 100MB en bytes
+        setErrorMessage("El archivo no debe pesar más de 100MB.");
+        setVideoFile(null);
+      } else if (file.type !== "video/mp4") {
+        setErrorMessage("Solo se acepta el formato de video MP4.");
+        setVideoFile(null);
+      } else {
+        setErrorMessage("");
+        setVideoFile(file);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (
       !titulo ||
       !descripcion ||
@@ -113,7 +126,7 @@ const SubirTemaDocente = () => {
       });
       return;
     }
-  
+
     setIsLoading(true);
     const formData = new FormData();
     formData.append("titulo", titulo);
@@ -126,19 +139,19 @@ const SubirTemaDocente = () => {
     }
     formData.append("pasos", JSON.stringify(pasos));
     formData.append("subtemas", JSON.stringify(subtemas));
-  
+
     try {
       const response = await fetch("http://localhost:3001/api/subirTema", {
         method: "POST",
         body: formData,
       });
-  
+
       if (!response.ok) {
         throw new Error(
           "Error al crear el tema. Código de estado: " + response.status
         );
       }
-  
+
       const data = await response.json();
       if (data.error) {
         setAlert({ type: "error", message: data.error });
@@ -169,7 +182,7 @@ const SubirTemaDocente = () => {
   const endIndex = startIndex + pasosPorPagina;
 
   return (
-    <div style={{ minHeight: "100vh", background: '#14161A', paddingTop:'30px'}}>
+    <div style={{ minHeight: "100vh", background: '#14161A', paddingTop: '30px' }}>
       {isLoading && (
         <div className="loading-overlay">
           <div className="loading-circle"></div>
@@ -271,7 +284,7 @@ const SubirTemaDocente = () => {
                     <input
                       className="file-input"
                       type="file"
-                      accept="video/*"
+                      accept="video/mp4"
                       onChange={handleFileChange}
                     />
                     <span className="file-cta">
@@ -285,6 +298,12 @@ const SubirTemaDocente = () => {
                     )}
                   </label>
                 </div>
+                {errorMessage && (
+                  <p className="help is-danger">{errorMessage}</p>
+                )}
+                <p className="help is-info">
+                  Solo se aceptan archivos MP4 de hasta 100 MB.
+                </p>
               </div>
 
               <div className="field">
