@@ -16,6 +16,8 @@ const SubirTema = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [paginaActual, setPaginaActual] = useState(0);
   const pasosPorPagina = 1;
+  const [errorMessage, setErrorMessage] = useState("");
+
 
   const [subtemas, setSubtemas] = useState([]);
 
@@ -92,7 +94,19 @@ const SubirTema = () => {
   };
 
   const handleFileChange = (e) => {
-    setVideoFile(e.target.files[0]);
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 100 * 1024 * 1024) { // 100MB en bytes
+        setErrorMessage("El archivo no debe pesar más de 100MB.");
+        setVideoFile(null);
+      } else if (file.type !== "video/mp4") {
+        setErrorMessage("Solo se acepta el formato de video MP4.");
+        setVideoFile(null);
+      } else {
+        setErrorMessage("");
+        setVideoFile(file);
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -169,7 +183,7 @@ const SubirTema = () => {
   const endIndex = startIndex + pasosPorPagina;
 
   return (
-    <div style={{ minHeight: "100vh", background: '#14161A', paddingTop:'20px' }}>
+    <div style={{ minHeight: "100vh", background: '#14161A', paddingTop: '20px' }}>
       {isLoading && (
         <div className="loading-overlay">
           <div className="loading-circle"></div>
@@ -271,7 +285,7 @@ const SubirTema = () => {
                     <input
                       className="file-input"
                       type="file"
-                      accept="video/*"
+                      accept="video/mp4"
                       onChange={handleFileChange}
                     />
                     <span className="file-cta">
@@ -285,8 +299,13 @@ const SubirTema = () => {
                     )}
                   </label>
                 </div>
+                {errorMessage && (
+                  <p className="help is-danger">{errorMessage}</p>
+                )}
+                <p className="help is-info">
+                  Solo se aceptan archivos MP4 de hasta 100 MB.
+                </p>
               </div>
-
               <div className="field">
                 <label className="label has-text-white">Pasos</label>
                 {pasos.slice(startIndex, endIndex).map((paso, index) => (

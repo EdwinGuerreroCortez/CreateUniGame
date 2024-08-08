@@ -213,7 +213,7 @@ const Contenidos = () => {
         setVideoFile(file);
       }
     }
-  }  
+  }
 
   const handleUploadVideo = (id) => {
     setCurrentTemaId(id);
@@ -244,7 +244,7 @@ const Contenidos = () => {
         });
         return;
       }
-  
+
       // Validar archivo nuevamente antes de subir
       if (videoFile.size > 100 * 1024 * 1024) {
         setAlert({
@@ -260,12 +260,12 @@ const Contenidos = () => {
         });
         return;
       }
-  
+
       setUploadingVideo(true);
-  
+
       const formData = new FormData();
       formData.append("video", videoFile);
-  
+
       fetch(`http://localhost:3001/api/upload-video/${currentTemaId}`, {
         method: "POST",
         body: formData,
@@ -303,7 +303,7 @@ const Contenidos = () => {
         });
         return;
       }
-  
+
       fetch(`http://localhost:3001/api/upload-video-link/${currentTemaId}`, {
         method: "POST",
         headers: {
@@ -339,7 +339,7 @@ const Contenidos = () => {
           setVideoModalOpen(false);
         });
     }
-  }  
+  }
 
   const handleConfirmSubtemaUpload = (subtemaId) => {
     if (subtemaUploadMethod === "upload") {
@@ -1056,9 +1056,7 @@ const Contenidos = () => {
             <div className="modal-content">
               <div className="box">
                 <header className="modal-card-head">
-                  <p className="modal-card-title has-text-centered">
-                    Subtemas
-                  </p>
+                  <p className="modal-card-title has-text-centered">Subtemas</p>
                   <button
                     className="delete"
                     aria-label="close"
@@ -1066,6 +1064,11 @@ const Contenidos = () => {
                   ></button>
                 </header>
                 <section className="modal-card-body">
+                  {errorMessage && (
+                    <div className="notification is-danger">
+                      {errorMessage}
+                    </div>
+                  )}
                   {subtemas.map((subtema) => (
                     <div key={subtema._id} className="box">
                       <h3 className="title is-4">{subtema.titulo}</h3>
@@ -1082,7 +1085,13 @@ const Contenidos = () => {
                       ) : (
                         <>
                           <div className="field">
-                            <label className="label">Método de subida</label>
+                            <br />
+                            <label className="label" style={{
+                              color: 'white',        // Texto en color blanco
+                              textAlign: 'center',
+                              marginTop:'20px'     // Texto centrado
+                            }}>
+                              Método de subida</label>
                             <div className="control">
                               <div className="select is-fullwidth">
                                 <select
@@ -1096,30 +1105,48 @@ const Contenidos = () => {
                             </div>
                           </div>
                           {subtemaUploadMethod === "upload" ? (
-                            <div className="file has-name is-boxed is-centered">
-                              <label className="file-label">
-                                <input
-                                  className="file-input"
-                                  type="file"
-                                  accept="video/*"
-                                  ref={videoInputRef}
-                                  onChange={(e) => {
-                                    setSubtemaVideoFile(e.target.files[0]);
-                                    setCurrentSubtemaId(subtema._id);
-                                  }}
-                                />
-                                <span className="file-cta">
-                                  <span className="file-icon">
-                                    <i className="fas fa-upload"></i>
+                            <div className="file has-name is-boxed is-centered" style={{ display: 'grid' }}>
+                              <div className="file-label-container">
+                                <label className="file-label">
+                                  <input
+                                    className="file-input"
+                                    type="file"
+                                    accept="video/mp4"
+                                    ref={videoInputRef}
+                                    onChange={(e) => {
+                                      const file = e.target.files[0];
+                                      if (file) {
+                                        if (file.size > 100 * 1024 * 1024) { // 100MB en bytes
+                                          setErrorMessage("El archivo no debe pesar más de 100MB.");
+                                        } else if (file.type !== "video/mp4") {
+                                          setErrorMessage("Solo se acepta el formato de video MP4.");
+                                        } else {
+                                          setErrorMessage(""); // Limpia cualquier mensaje de error previo
+                                          setSubtemaVideoFile(file);
+                                          setCurrentSubtemaId(subtema._id);
+                                        }
+                                      }
+                                    }}
+                                  />
+                                  <span className="file-cta">
+                                    <span className="file-icon">
+                                      <i className="fas fa-upload"></i>
+                                    </span>
+                                    <span className="file-label">Subir video</span>
                                   </span>
-                                  <span className="file-label">Subir video</span>
-                                </span>
-                                <span className="file-name">
-                                  {subtemaVideoFile && subtema._id === currentSubtemaId
-                                    ? subtemaVideoFile.name
-                                    : "Ningún archivo seleccionado"}
-                                </span>
-                              </label>
+                                  <span className="file-name">
+                                    {subtemaVideoFile && subtema._id === currentSubtemaId
+                                      ? subtemaVideoFile.name
+                                      : "Ningún archivo seleccionado"}
+                                  </span>
+                                </label>
+                              </div>
+                              <br />
+                              <div className="help-container">
+                                <p className="help is-info">
+                                  Solo se aceptan archivos MP4 de hasta 100 MB.
+                                </p>
+                              </div>
                             </div>
                           ) : (
                             <div className="field">
@@ -1142,8 +1169,7 @@ const Contenidos = () => {
                           )}
                           <div className="buttons is-centered">
                             <button
-                              className={`button is-success ${subtemaUploadingVideo ? "is-loading" : ""
-                                }`}
+                              className={`button is-success ${subtemaUploadingVideo ? "is-loading" : ""}`}
                               onClick={() => handleConfirmSubtemaUpload(subtema._id)}
                               disabled={
                                 (subtemaUploadMethod === "upload" && !subtemaVideoFile) ||
@@ -1169,6 +1195,7 @@ const Contenidos = () => {
             </div>
           </div>
         )}
+
       </div>
     </div>
   );
