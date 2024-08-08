@@ -3,7 +3,7 @@ import axios from 'axios';
 import 'bulma/css/bulma.min.css'; // Importa Bulma CSS
 import '../CSS/perfil.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faUserTie, faUserGraduate, faBirthdayCake, faPhone, faEnvelope, faKey, faSave, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faUserTie, faBirthdayCake, faPhone, faEnvelope, faKey, faSave, faEdit, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 const Perfil = ({ estaAbierto, alCerrar, actualizarPerfil }) => {
   const [usuario, setUsuario] = useState({

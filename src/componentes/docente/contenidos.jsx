@@ -30,6 +30,7 @@ const Contenidos = () => {
   const [subtemaUploadMethod, setSubtemaUploadMethod] = useState("upload");
   const [subtemaVideoLink, setSubtemaVideoLink] = useState({});
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
+  const [errorMessage, setErrorMessage] = useState("");
 
 
   const videoInputRef = useRef(null);
@@ -41,7 +42,7 @@ const Contenidos = () => {
         .then((response) => response.json())
         .then((data) => setTemas(data))
         .catch((error) => console.error("Error fetching temas:", error));
-      
+
       fetch(`http://localhost:3001/api/usuario/${userId}/cursos`)
         .then((response) => response.json())
         .then((data) => setCursos(data))
@@ -199,8 +200,20 @@ const Contenidos = () => {
   };
 
   const handleVideoChange = (e) => {
-    setVideoFile(e.target.files[0]);
-  };
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 100 * 1024 * 1024) { // 100MB en bytes
+        setErrorMessage("El archivo no debe pesar más de 100MB.");
+        setVideoFile(null); // Limpiar archivo si no cumple con los requisitos
+      } else if (file.type !== "video/mp4") {
+        setErrorMessage("Solo se acepta el formato de video MP4.");
+        setVideoFile(null); // Limpiar archivo si no cumple con los requisitos
+      } else {
+        setErrorMessage("");
+        setVideoFile(file);
+      }
+    }
+  }  
 
   const handleUploadVideo = (id) => {
     setCurrentTemaId(id);
@@ -228,6 +241,22 @@ const Contenidos = () => {
         setAlert({
           type: "error",
           message: "Por favor, selecciona un archivo de video.",
+        });
+        return;
+      }
+  
+      // Validar archivo nuevamente antes de subir
+      if (videoFile.size > 100 * 1024 * 1024) {
+        setAlert({
+          type: "error",
+          message: "El archivo no debe pesar más de 100MB.",
+        });
+        return;
+      }
+      if (videoFile.type !== "video/mp4") {
+        setAlert({
+          type: "error",
+          message: "Solo se acepta el formato de video MP4.",
         });
         return;
       }
@@ -310,8 +339,7 @@ const Contenidos = () => {
           setVideoModalOpen(false);
         });
     }
-  };
-  
+  }  
 
   const handleConfirmSubtemaUpload = (subtemaId) => {
     if (subtemaUploadMethod === "upload") {
@@ -322,12 +350,12 @@ const Contenidos = () => {
         });
         return;
       }
-  
+
       setSubtemaUploadingVideo(true);
-  
+
       const formData = new FormData();
       formData.append("video", subtemaVideoFile);
-  
+
       fetch(`http://localhost:3001/api/upload-subtema-video/${currentTemaId}/${subtemaId}`, {
         method: "POST",
         body: formData,
@@ -370,7 +398,7 @@ const Contenidos = () => {
         });
         return;
       }
-  
+
       fetch(`http://localhost:3001/api/upload-subtema-video/${currentTemaId}/${subtemaId}`, {
         method: "POST",
         headers: {
@@ -411,7 +439,7 @@ const Contenidos = () => {
         });
     }
   };
-  
+
 
   const handleCancelUpload = () => {
     setVideoFile(null);
@@ -422,6 +450,34 @@ const Contenidos = () => {
     setSubtemaVideoFile(null);
     setSubtemaUploadingVideo(false);
     setCurrentSubtemaId(null);
+  };
+  const VideoUploadModal = ({
+    videoModalOpen,
+    handleCancelUpload,
+    handleConfirmUpload,
+    uploadMethod,
+    setUploadMethod,
+    videoFile,
+    setVideoFile,
+    videoLink,
+    setVideoLink,
+    uploadingVideo
+  }) => {
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const handleVideoChange = (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        if (file.size > 100 * 1024 * 1024) { // 100MB en bytes
+          setErrorMessage("El archivo no debe pesar más de 100MB.");
+        } else if (file.type !== "video/mp4") {
+          setErrorMessage("Solo se acepta el formato de video MP4.");
+        } else {
+          setErrorMessage("");
+          setVideoFile(file);
+        }
+      }
+    }
   };
 
   const validateTemaFields = (tema) => {
@@ -467,11 +523,11 @@ const Contenidos = () => {
     setSubtemaModalOpen(true);
   };
 
-    const handleCursoChange = (event) => {
+  const handleCursoChange = (event) => {
     setSelectedCurso(event.target.value);
   };
 
-    const filteredTemas = temas.filter(
+  const filteredTemas = temas.filter(
     (tema) => selectedCurso === "" || tema.curso === selectedCurso
   );
 
@@ -490,26 +546,25 @@ const Contenidos = () => {
 
         {alert.message && (
           <div
-            className={`notification ${
-              alert.type === "success" ? "is-success" : "is-danger"
-            }`}
+            className={`notification ${alert.type === "success" ? "is-success" : "is-danger"
+              }`}
           >
             <button className="delete" onClick={handleCloseAlert}></button>
             {alert.message}
           </div>
         )}
-         <div className="buttons is-right">
+        <div className="buttons is-right">
           <Link to="/docente/temas" className="button is-primary" data-tooltip="Agregar tema">
             <span className="icon">
               <i className="fas fa-plus"></i>
             </span>
-            
+
           </Link>
           <Link to="/docente/recursos" className="button is-link" data-tooltip="Agregar recurso">
             <span className="icon">
               <i className="fas fa-folder-plus"></i>
             </span>
-            
+
           </Link>
         </div>
 
@@ -545,127 +600,125 @@ const Contenidos = () => {
                 </tr>
               </thead>
               <tbody>
-  {temas && temas.length > 0 ? (
-    temas.map((tema) => {
-      const allFieldsFilled = validateTemaFields(tema);
-      const isExpanded = expandedDescriptions[tema._id];
-      const descripcion = tema.descripcion;
+                {temas && temas.length > 0 ? (
+                  temas.map((tema) => {
+                    const allFieldsFilled = validateTemaFields(tema);
+                    const isExpanded = expandedDescriptions[tema._id];
+                    const descripcion = tema.descripcion;
 
-      return (
-        <tr key={tema._id}>
-          <td className="has-text-white">{tema.titulo}</td>
-          <td className="has-text-white">{tema.responsable}</td>
-          <td className="has-text-white">
-            {new Date(tema.fecha_creacion).toLocaleDateString()}
-          </td>
-          <td className="has-text-white">
-            {isExpanded ? descripcion : `${descripcion.substring(0, 100)}...`}
-            {descripcion.length > 100 && (
-              <button
-                className="button is-text"
-                onClick={() =>
-                  setExpandedDescriptions((prev) => ({
-                    ...prev,
-                    [tema._id]: !isExpanded,
-                  }))
-                }
-              >
-                {isExpanded ? "Ver menos" : "Ver más"}
-              </button>
-            )}
-          </td>
-          <td className="has-text-white">{tema.pasos ? tema.pasos.length : 0} pasos</td>
-          <td className="has-text-white">
-            <button
-              className="button is-small is-info button-tooltip"
-              onClick={() => showSubtemas(tema.subtemas, tema._id)}
-              data-tooltip="Mostrar Subtemas"
-            >
-              {tema.subtemas.length} subtemas
-            </button>
-          </td>
-          <td className="has-text-white">
-            {tema.video ? (
-              <a
-                className="has-text-link"
-                href={tema.video}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Ver Video
-              </a>
-            ) : (
-              <div>
-                <span
-                  className="icon has-text-link is-large button-tooltip "
-                  onClick={() => handleUploadVideo(tema._id)}
-                  data-tooltip="Subir video"
-                >
-                  <i className="fas fa-upload fa-lg"></i>
-                </span>
-              </div>
-            )}
-          </td>
-          <td className="has-text-centered has-text-white">
-            <div className="buttons is-centered is-grouped">
-              <button
-                className="button is-small is-info button-tooltip"
-                onClick={() => handleEdit(tema)}
-                data-tooltip="Editar"
-              >
-                <span className="icon">
-                  <i className="fas fa-edit"></i>
-                </span>
-              </button>
-              <button
-                className="button is-small is-danger button-tooltip"
-                onClick={() => confirmDelete(tema._id)}
-                data-tooltip="Eliminar"
-              >
-                <span className="icon">
-                  <i className="fas fa-trash"></i>
-                </span>
-              </button>
-              <button
-                className="button is-small is-warning button-tooltip"
-                onClick={() => handleDownloadTema(tema._id)}
-                data-tooltip="Descargar Excel"
-              >
-                <span className="icon">
-                  <i className="fas fa-file-download"></i>
-                </span>
-              </button>
-              <button
-                className={`button is-small ${
-                  tema.habilitado ? "is-success" : "is-light"
-                }`}
-                onClick={() => handleToggleHabilitar(tema._id)}
-                data-tooltip={
-                  tema.habilitado ? "Deshabilitar tema" : "Habilitar tema"
-                }
-                disabled={!allFieldsFilled}
-              >
-                <span className="icon">
-                  <i
-                    className={`fas ${
-                      tema.habilitado ? "fa-eye-slash" : "fa-eye"
-                    }`}
-                  ></i>
-                </span>
-              </button>
-            </div>
-          </td>
-        </tr>
-      );
-    })
-  ) : (
-    <tr>
-      <td className="has-text-white" colSpan="8">
-        No hay temas disponibles.
-      </td>
-    </tr>
-  )}
-</tbody>
+                    return (
+                      <tr key={tema._id}>
+                        <td className="has-text-white">{tema.titulo}</td>
+                        <td className="has-text-white">{tema.responsable}</td>
+                        <td className="has-text-white">
+                          {new Date(tema.fecha_creacion).toLocaleDateString()}
+                        </td>
+                        <td className="has-text-white">
+                          {isExpanded ? descripcion : `${descripcion.substring(0, 100)}...`}
+                          {descripcion.length > 100 && (
+                            <button
+                              className="button is-text"
+                              onClick={() =>
+                                setExpandedDescriptions((prev) => ({
+                                  ...prev,
+                                  [tema._id]: !isExpanded,
+                                }))
+                              }
+                            >
+                              {isExpanded ? "Ver menos" : "Ver más"}
+                            </button>
+                          )}
+                        </td>
+                        <td className="has-text-white">{tema.pasos ? tema.pasos.length : 0} pasos</td>
+                        <td className="has-text-white">
+                          <button
+                            className="button is-small is-info button-tooltip"
+                            onClick={() => showSubtemas(tema.subtemas, tema._id)}
+                            data-tooltip="Mostrar Subtemas"
+                          >
+                            {tema.subtemas.length} subtemas
+                          </button>
+                        </td>
+                        <td className="has-text-white">
+                          {tema.video ? (
+                            <a
+                              className="has-text-link"
+                              href={tema.video}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              Ver Video
+                            </a>
+                          ) : (
+                            <div>
+                              <span
+                                className="icon has-text-link is-large button-tooltip "
+                                onClick={() => handleUploadVideo(tema._id)}
+                                data-tooltip="Subir video"
+                              >
+                                <i className="fas fa-upload fa-lg"></i>
+                              </span>
+                            </div>
+                          )}
+                        </td>
+                        <td className="has-text-centered has-text-white">
+                          <div className="buttons is-centered is-grouped">
+                            <button
+                              className="button is-small is-info button-tooltip"
+                              onClick={() => handleEdit(tema)}
+                              data-tooltip="Editar"
+                            >
+                              <span className="icon">
+                                <i className="fas fa-edit"></i>
+                              </span>
+                            </button>
+                            <button
+                              className="button is-small is-danger button-tooltip"
+                              onClick={() => confirmDelete(tema._id)}
+                              data-tooltip="Eliminar"
+                            >
+                              <span className="icon">
+                                <i className="fas fa-trash"></i>
+                              </span>
+                            </button>
+                            <button
+                              className="button is-small is-warning button-tooltip"
+                              onClick={() => handleDownloadTema(tema._id)}
+                              data-tooltip="Descargar Excel"
+                            >
+                              <span className="icon">
+                                <i className="fas fa-file-download"></i>
+                              </span>
+                            </button>
+                            <button
+                              className={`button is-small ${tema.habilitado ? "is-success" : "is-light"
+                                }`}
+                              onClick={() => handleToggleHabilitar(tema._id)}
+                              data-tooltip={
+                                tema.habilitado ? "Deshabilitar tema" : "Habilitar tema"
+                              }
+                              disabled={!allFieldsFilled}
+                            >
+                              <span className="icon">
+                                <i
+                                  className={`fas ${tema.habilitado ? "fa-eye-slash" : "fa-eye"
+                                    }`}
+                                ></i>
+                              </span>
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })
+                ) : (
+                  <tr>
+                    <td className="has-text-white" colSpan="8">
+                      No hay temas disponibles.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
 
             </table>
           </div>
@@ -728,9 +781,8 @@ const Contenidos = () => {
               <section className="modal-card-body has-background-black-bis">
                 {alert.message && (
                   <div
-                    className={`notification ${
-                      alert.type === "success" ? "is-success" : "is-danger"
-                    }`}
+                    className={`notification ${alert.type === "success" ? "is-success" : "is-danger"
+                      }`}
                   >
                     <button
                       className="delete"
@@ -878,9 +930,8 @@ const Contenidos = () => {
                     {Array.from({ length: totalPages }, (_, i) => (
                       <li key={i}>
                         <button
-                          className={`pagination-link ${
-                            currentPage === i + 1 ? "is-current" : ""
-                          }`}
+                          className={`pagination-link ${currentPage === i + 1 ? "is-current" : ""
+                            }`}
                           onClick={() => handlePageChange(i + 1)}
                         >
                           {i + 1}
@@ -907,9 +958,7 @@ const Contenidos = () => {
             <div className="modal-content">
               <div className="modal-card">
                 <header className="modal-card-head">
-                  <p className="modal-card-title has-text-centered">
-                    Subir Video
-                  </p>
+                  <p className="modal-card-title has-text-centered">Subir Video</p>
                   <button
                     className="delete"
                     aria-label="close"
@@ -917,6 +966,9 @@ const Contenidos = () => {
                   ></button>
                 </header>
                 <section className="modal-card-body has-text-centered">
+                  {errorMessage && (
+                    <div className="notification is-danger">{errorMessage}</div>
+                  )}
                   <div className="field">
                     <label className="label">Método de subida</label>
                     <div className="control">
@@ -932,27 +984,34 @@ const Contenidos = () => {
                     </div>
                   </div>
                   {uploadMethod === "upload" ? (
-                    <div className="file has-name is-boxed is-centered">
-                      <label className="file-label">
-                        <input
-                          className="file-input"
-                          type="file"
-                          accept="video/*"
-                          onChange={handleVideoChange}
-                        />
-                        <span className="file-cta">
-                          <span className="file-icon">
-                            <i className="fas fa-upload"></i>
+                    <div className="file has-name is-boxed is-centered" style={{ display: 'grid' }}>
+                      <div className="file-label-container">
+                        <label className="file-label">
+                          <input
+                            className="file-input"
+                            type="file"
+                            accept="video/mp4"
+                            onChange={handleVideoChange}
+                          />
+                          <span className="file-cta">
+                            <span className="file-icon">
+                              <i className="fas fa-upload"></i>
+                            </span>
+                            <span className="file-label">Subir video</span>
                           </span>
-                          <span className="file-label">Subir video</span>
-                        </span>
-                        <span className="file-name">
-                          {videoFile
-                            ? videoFile.name
-                            : "Ningún archivo seleccionado"}
-                        </span>
-                      </label>
+                          <span className="file-name">
+                            {videoFile ? videoFile.name : "Ningún archivo seleccionado"}
+                          </span>
+                        </label>
+                      </div>
+                      <br />
+                      <div className="help-container">
+                        <p className="help is-info">
+                          Solo se aceptan archivos MP4 de hasta 100 MB.
+                        </p>
+                      </div>
                     </div>
+
                   ) : (
                     <div className="field">
                       <label className="label">Link del video</label>
@@ -971,9 +1030,8 @@ const Contenidos = () => {
                 <footer className="modal-card-foot is-centered">
                   <div className="buttons">
                     <button
-                      className={`button is-success mr-4 ${
-                        uploadingVideo ? "is-loading" : ""
-                      }`}
+                      className={`button is-success mr-4 ${uploadingVideo ? "is-loading" : ""
+                        }`}
                       onClick={handleConfirmUpload}
                       disabled={
                         (uploadMethod === "upload" && !videoFile) ||
@@ -1084,9 +1142,8 @@ const Contenidos = () => {
                           )}
                           <div className="buttons is-centered">
                             <button
-                              className={`button is-success ${
-                                subtemaUploadingVideo ? "is-loading" : ""
-                              }`}
+                              className={`button is-success ${subtemaUploadingVideo ? "is-loading" : ""
+                                }`}
                               onClick={() => handleConfirmSubtemaUpload(subtema._id)}
                               disabled={
                                 (subtemaUploadMethod === "upload" && !subtemaVideoFile) ||

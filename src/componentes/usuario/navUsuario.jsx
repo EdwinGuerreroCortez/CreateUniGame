@@ -6,7 +6,7 @@ import '../CSS/style2.css';
 import logo from '../img/logo_Study.png';
 import Perfil from '../usuario/perfil';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHome, faCompass, faBook, faFolderOpen, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faCompass, faBook, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 const BarraNav = () => {
   const [estaActivo, setEstaActivo] = useState(false);
