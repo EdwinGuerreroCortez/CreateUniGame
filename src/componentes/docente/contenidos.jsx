@@ -1087,9 +1087,9 @@ const Contenidos = () => {
                           <div className="field">
                             <br />
                             <label className="label" style={{
-                              color: 'white',        // Texto en color blanco
+                              color: 'white',        
                               textAlign: 'center',
-                              marginTop:'20px'     // Texto centrado
+                              marginTop:'20px'    
                             }}>
                               Método de subida</label>
                             <div className="control">
