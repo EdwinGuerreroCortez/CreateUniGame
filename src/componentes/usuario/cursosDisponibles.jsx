@@ -14,6 +14,7 @@ const CursosDisponibles = () => {
   const [mostrarTodos, setMostrarTodos] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [cursoParaSuscribir, setCursoParaSuscribir] = useState(null);
+  const [busqueda, setBusqueda] = useState(""); // Estado para el término de búsqueda
   const navigate = useNavigate();
 
   const fetchCursos = async () => {
@@ -126,6 +127,14 @@ const CursosDisponibles = () => {
     closeModal();
   };
 
+  const handleBusqueda = (e) => {
+    setBusqueda(e.target.value);
+    const cursosFiltrados = cursos.filter(curso => 
+      curso.nombre.toLowerCase().includes(e.target.value.toLowerCase())
+    );
+    setCursosMostrados(cursosFiltrados.slice(0, mostrarTodos ? cursosFiltrados.length : 4));
+  };
+
   useEffect(() => {
     const interval = setInterval(() => {
       const cursosElementos = document.querySelectorAll('.curso-card');
@@ -148,6 +157,17 @@ const CursosDisponibles = () => {
         <h2 className="title is-3 has-text-white has-text-centered">Cursos Disponibles</h2>
         <p className="has-text-centered has-text-grey-light">Pulse para más información</p>
         <br />
+        <div className="field">
+          <div className="control">
+            <input
+              className="input"
+              type="text"
+              value={busqueda}
+              onChange={handleBusqueda}
+              placeholder="Buscar curso..."
+            />
+          </div>
+          </div>
         <div className="columns is-multiline is-centered">
           {cursosMostrados.map((curso) => (
             <div key={curso._id} className="column is-3">

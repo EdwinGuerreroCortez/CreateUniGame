@@ -10,28 +10,29 @@ const Curso = () => {
   const [temaSeleccionado, setTemaSeleccionado] = useState(null);
   const [mostrarTemas, setMostrarTemas] = useState(false);
   const [temas, setTemas] = useState([]);
-  const [pasoActual, setPasoActual] = useState(-1); // -1 para la introducción
+  const [pasoActual, setPasoActual] = useState(-1);
   const [cursoFinalizado, setCursoFinalizado] = useState(false);
-  const [evaluacionHabilitada, setEvaluacionHabilitada] = useState(false); // Estado para la habilitación de la evaluación
-  const [cursos, setCursos] = useState([]); // Estado para almacenar los cursos desde el backend
+  const [evaluacionHabilitada, setEvaluacionHabilitada] = useState(false);
+  const [cursos, setCursos] = useState([]); // Cursos obtenidos del backend
   const temasPorPagina = 6;
-  const cursosPorPagina = 2; // Ajusta este valor según la cantidad de cursos que quieras mostrar por página
+  const cursosPorPagina = 2;
   const [cursoSeleccionado, setCursoSeleccionado] = useState(null);
-  const [subtemaSeleccionado, setSubtemaSeleccionado] = useState(null); // Estado para el subtema seleccionado
-  const [mostrarRecursos, setMostrarRecursos] = useState(false); // Estado para mostrar los recursos
+  const [subtemaSeleccionado, setSubtemaSeleccionado] = useState(null);
+  const [mostrarRecursos, setMostrarRecursos] = useState(false);
   const [showSubscriptionPrompt, setShowSubscriptionPrompt] = useState(false);
   const [subscriptionMessage, setSubscriptionMessage] = useState("");
-  const [isBanned, setIsBanned] = useState(false); // Estado para verificar si el usuario está baneado
+  const [isBanned, setIsBanned] = useState(false);
+  const [busqueda, setBusqueda] = useState(""); // Término de búsqueda
+  const [isLoadingTemas, setIsLoadingTemas] = useState(false);
+  const [cargandoTemas, setCargandoTemas] = useState(false);
 
   const navigate = useNavigate();
-
   const userId = localStorage.getItem("userId");
 
   const fetchCursosSuscritos = async () => {
     try {
       const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/cursos-suscritos`);
       const data = await response.json();
-      
       setCursos(data.cursos);
     } catch (error) {
       console.error("Error al cargar los cursos suscritos:", error);
@@ -41,6 +42,15 @@ const Curso = () => {
   useEffect(() => {
     fetchCursosSuscritos();
   }, []);
+
+
+  const handleBusqueda = (e) => {
+    setBusqueda(e.target.value);
+  };
+
+  const cursosFiltrados = cursos.filter(curso =>
+    curso.nombre.toLowerCase().includes(busqueda.toLowerCase())
+  );
 
   const verificarSiBaneado = async (cursoId) => {
     try {
@@ -63,21 +73,27 @@ const Curso = () => {
     }
   };
 
-  const fetchTemasDelCurso = async (cursoId) => {
-    const isUserBanned = await verificarSiBaneado(cursoId);
-    if (isUserBanned) return; // No continuar si el usuario está baneado
+// Función para obtener los temas del curso
+const fetchTemasDelCurso = async (cursoId) => {
+  const isUserBanned = await verificarSiBaneado(cursoId);
+  if (isUserBanned) return; // No continuar si el usuario está baneado
 
-    try {
-      const response = await fetch(`http://localhost:3001/api/cursos/${cursoId}/temas`);
-      const data = await response.json();
-      
-      setTemas(data);
-      setCursoSeleccionado(cursos.find(curso => curso._id === cursoId)); // Seleccionar el curso
-    } catch (error) {
-      console.error("Error al cargar los temas del curso:", error);
-    }
-  };
-
+  setCargandoTemas(true); // Activar estado de carga
+  const delay = new Promise(resolve => setTimeout(resolve, 2000));
+  try {
+    const response = await fetch(`http://localhost:3001/api/cursos/${cursoId}/temas`);
+    const data = await response.json();
+    setTemas(data);
+    setCursoSeleccionado(cursos.find(curso => curso._id === cursoId)); // Seleccionar el curso
+  } catch (error) {
+    console.error("Error al cargar los temas del curso:", error);
+  } finally {
+    // Esperar a que pasen 2 segundos antes de desactivar el estado de carga
+    await delay;
+    setCargandoTemas(false); // Desactivar estado de carga
+  }
+};
+  
   const regresarACursos = () => {
     setCursoSeleccionado(null);
     setTemaSeleccionado(null);
@@ -98,7 +114,7 @@ const Curso = () => {
         throw new Error(`HTTP error! status: ${evaluacionResponse.status}`);
       }
       const evaluacionData = await evaluacionResponse.json();
-      
+
 
       if (evaluacionData && evaluacionData.evaluacion_habilitada !== undefined) {
         if (temaId === evaluacionData._id) {
@@ -181,9 +197,9 @@ const Curso = () => {
       const evaluacionRealizada = userData.evaluaciones_realizadas.find(
         (evaluacion) => evaluacion.tema_id === temaSeleccionado._id
       );
-  
+
       const encodedTemaId = base64.encode(temaSeleccionado._id);
-  
+
       if (evaluacionRealizada) {
         navigate(`/user/evaluacion/${encodedTemaId}`, {
           state: { mostrarResultados: true },
@@ -245,195 +261,223 @@ const Curso = () => {
 
   const indiceUltimoCurso = paginaActualCursos * cursosPorPagina;
   const indicePrimerCurso = indiceUltimoCurso - cursosPorPagina;
-  const cursosActuales = cursos.slice(indicePrimerCurso, indiceUltimoCurso);
-  const totalPaginasCursos = Math.ceil(cursos.length / cursosPorPagina);
+  const cursosActuales = cursosFiltrados.slice(indicePrimerCurso, indiceUltimoCurso);
+  const totalPaginasCursos = Math.ceil(cursosFiltrados.length / cursosPorPagina);
+
 
   return (
     <div className="section has-background-black-bis">
       <div className="container">
         <div className="columns">
           <div className="column is-one-quarter">
-            {!cursoSeleccionado ? (
-              <div
-                className="box tema-panel"
-                style={{
-                  background: "rgb(4 18 28)",
-                  boxShadow: "0px 0px 10px 0px rgba(255,255,255,0.5)",
-                  marginTop: "20px",
-                }}
-              >
-                <h2 className="title is-4 has-text-white is-centered">Cursos Suscritos</h2>
-                <div>
-                  {cursosActuales.map((curso) => (
-                    <div
-                      key={curso._id}
-                      className="box"
-                      style={{
-                        cursor: "pointer",
-                        backgroundColor: "navy",
-                        marginTop: "20px",
-                      }}
-                      onClick={() => fetchTemasDelCurso(curso._id)}
-                    >
-                      <div className="menu-label has-text-white" style={{ cursor: "pointer" }}>
-                        <span className="title has-text-white is-size-6">{curso.nombre}</span>
-                      </div>
-                    </div>
-                  ))}
-                  <nav className="pagination is-centered" role="navigation" aria-label="pagination">
-                    <ul className="pagination-list">
-                      {[...Array(totalPaginasCursos)].map((_, i) => (
-                        <li key={i}>
-                          <a
-                            className={`pagination-link ${paginaActualCursos === i + 1 ? "is-current" : ""}`}
-                            onClick={() => cambiarPaginaCursos(i + 1)}
-                          >
-                            {i + 1}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </nav>
-                </div>
+          {!cursoSeleccionado ? (
+    <div
+      className="box tema-panel"
+      style={{
+        background: "rgb(4 18 28)",
+        boxShadow: "0px 0px 10px 0px rgba(255,255,255,0.5)",
+        marginTop: "20px",
+      }}
+    >
+      <h2 className="title is-4 has-text-white is-centered">Cursos Suscritos</h2>
+
+      {/* Campo de búsqueda */}
+      <div className="field">
+        <div className="control has-icons-left">
+          <input
+            className="input is-small is-primary"
+            type="text"
+            value={busqueda}
+            onChange={handleBusqueda}
+            placeholder="Buscar curso..."
+            style={{
+              background: "rgb(4 18 28)",
+              color: "white",
+              borderColor: "rgba(255, 255, 255, 0.3)",
+            }}
+          />
+          <span className="icon is-small is-left">
+            <i className="fas fa-search"></i>
+          </span>
+        </div>
+      </div>
+      <div>
+        {cursosActuales.map((curso) => (
+          <div
+            key={curso._id}
+            className="box"
+            style={{
+              cursor: "pointer",
+              backgroundColor: "navy",
+              marginTop: "20px",
+            }}
+            onClick={() => fetchTemasDelCurso(curso._id)}
+          >
+            <div className="menu-label has-text-white" style={{ cursor: "pointer" }}>
+              <span className="title has-text-white is-size-6">{curso.nombre}</span>
+            </div>
+          </div>
+        ))}
+        <nav className="pagination is-centered" role="navigation" aria-label="pagination">
+          <ul className="pagination-list">
+            {[...Array(totalPaginasCursos)].map((_, i) => (
+              <li key={i}>
+                <a
+                  className={`pagination-link ${paginaActualCursos === i + 1 ? "is-current" : ""}`}
+                  onClick={() => cambiarPaginaCursos(i + 1)}
+                >
+                  {i + 1}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </div>
+  ) : (
+    <div>
+      <button
+        className="button is-primary tema-panel-button"
+        onClick={() => setMostrarTemas(!mostrarTemas)}
+      >
+        {mostrarTemas ? (
+          <span>
+            <i className="fas fa-chevron-left" style={{ marginRight: "8px" }}></i>
+            Ocultar Temas
+          </span>
+        ) : (
+          <span>
+            <i className="fas fa-chevron-right" style={{ marginRight: "8px" }}></i>
+            Mostrar Temas
+          </span>
+        )}
+      </button>
+      <div
+        className={`box tema-panel ${mostrarTemas ? "is-active" : ""}`}
+        style={{
+          background: "rgb(4 18 28)",
+          boxShadow: "0px 0px 10px 0px rgba(255,255,255,0.5)",
+          marginTop: "20px",
+          position: "relative",
+          minHeight: "200px", // Asegura que haya espacio para el mensaje de carga
+        }}
+      >
+        <button
+          className="button is-link"
+          onClick={subtemaSeleccionado || mostrarRecursos ? regresarATemas : regresarACursos}
+          style={{ position: "absolute", top: "10px", left: "10px" }}
+          data-tooltip="Regresar"
+        >
+          <i className="fas fa-arrow-left"></i>
+        </button>
+        <h2 className="title is-4 has-text-white is-centered">Temas</h2>
+        {cargandoTemas ? (
+          <div className="has-text-centered" style={{ paddingTop: "20px" }}>
+            <p className="title is-5 has-text-white">Cargando temas...</p>
+          </div>
+        ) : !temaSeleccionado ? (
+          temasActuales.map((tema) => (
+            <div
+              key={tema._id}
+              className="card"
+              style={{
+                cursor: "pointer",
+                marginBottom: "1rem",
+                marginTop: "20px",
+                backgroundColor: "navy",
+                opacity: 1,
+              }}
+              onClick={() => seleccionarTema(tema)}
+            >
+              <div className="card-content">
+                <p className="title is-5 has-text-white" style={{ fontSize: '1rem' }}>{tema.titulo}</p>
               </div>
-            ) : (
+            </div>
+          ))
+        ) : (
+          <div>
+            <div
+              className="card"
+              style={{
+                cursor: "pointer",
+                marginBottom: "1rem",
+                marginTop: "20px",
+                backgroundColor: "navy",
+                opacity: 1,
+                padding: "5px",
+              }}
+              onClick={() => seleccionarTema(temaSeleccionado)}
+            >
+              <div className="card-content" style={{ padding: "0.5rem" }}>
+                <p className="title is-5 has-text-white">{temaSeleccionado.titulo}</p>
+              </div>
+            </div>
+            {temaSeleccionado.subtemas.length > 0 && (
               <div>
-                <button
-                  className="button is-primary tema-panel-button"
-                  onClick={() => setMostrarTemas(!mostrarTemas)}
-                >
-                  {mostrarTemas ? (
-                    <span>
-                      <i className="fas fa-chevron-left" style={{ marginRight: "8px" }}></i>
-                      Ocultar Temas
-                    </span>
-                  ) : (
-                    <span>
-                      <i className="fas fa-chevron-right" style={{ marginRight: "8px" }}></i>
-                      Mostrar Temas
-                    </span>
-                  )}
-                </button>
-                <div
-                  className={`box tema-panel ${mostrarTemas ? "is-active" : ""}`}
-                  style={{
-                    background: "rgb(4 18 28)",
-                    boxShadow: "0px 0px 10px 0px rgba(255,255,255,0.5)",
-                    marginTop: "20px",
-                    position: "relative",
-                  }}
-                >
-                  <button
-                    className="button is-link"
-                    onClick={subtemaSeleccionado || mostrarRecursos ? regresarATemas : regresarACursos}
-                    style={{ position: "absolute", top: "10px", left: "10px" }}
-                    data-tooltip="Regresar"
+                <h3 className="title is-6 has-text-white">Subtemas:</h3>
+                {temaSeleccionado.subtemas.map((subtema) => (
+                  <div
+                    key={subtema._id}
+                    className="card"
+                    style={{
+                      cursor: "pointer",
+                      marginBottom: "0.5rem",
+                      backgroundColor: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id ? "blue" : "navy",
+                      opacity: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id ? 0.5 : 1,
+                      padding: "2px",
+                    }}
+                    onClick={() => seleccionarSubtema(subtema)}
                   >
-                    <i className="fas fa-arrow-left"></i>
-                  </button>
-                  <h2 className="title is-4 has-text-white is-centered">Temas</h2>
-                  {!temaSeleccionado ? (
-                    temasActuales.map((tema) => (
-                      <div
-                        key={tema._id}
-                        className="card"
-                        style={{
-                          cursor: "pointer",
-                          marginBottom: "1rem",
-                          marginTop: "20px",
-                          backgroundColor: "navy",
-                          opacity: 1,
-                        }}
-                        onClick={() => seleccionarTema(tema)}
-                      >
-                        <div className="card-content">
-                          <p className="title is-5 has-text-white" style={{fontSize:'1rem'}}>{tema.titulo}</p>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div>
-                      <div
-                        className="card"
-                        style={{
-                          cursor: "pointer",
-                          marginBottom: "1rem",
-                          marginTop: "20px",
-                          backgroundColor: "navy",
-                          opacity: 1,
-                          padding: "5px",
-                        }}
-                        onClick={() => seleccionarTema(temaSeleccionado)}
-                      >
-                        <div className="card-content" style={{ padding: "0.5rem" }}>
-                          <p className="title is-5 has-text-white">{temaSeleccionado.titulo}</p>
-                        </div>
-                      </div>
-                      {temaSeleccionado.subtemas.length > 0 && (
-                        <div>
-                          <h3 className="title is-6 has-text-white">Subtemas:</h3>
-                          {temaSeleccionado.subtemas.map((subtema) => (
-                            <div
-                              key={subtema._id}
-                              className="card"
-                              style={{
-                                cursor: "pointer",
-                                marginBottom: "0.5rem",
-                                backgroundColor: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id ? "blue" : "navy",
-                                opacity: subtemaSeleccionado && subtemaSeleccionado._id === subtema._id ? 0.5 : 1,
-                                padding: "2px",
-                              }}
-                              onClick={() => seleccionarSubtema(subtema)}
-                            >
-                              <div className="card-content" style={{ padding: "0.4rem" }}>
-                                <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}> {subtema.titulo}</p>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      )}
-                      {temaSeleccionado.recursos.length > 0 && (
-                        <div>
-                          <br />
-                          <h3 className="title is-6 has-text-white">Enlaces de Recursos:</h3>
-                          <div
-                            className="card"
-                            style={{
-                              cursor: "pointer",
-                              marginBottom: "0.5rem",
-                              backgroundColor: mostrarRecursos ? "blue" : "navy",
-                              opacity: mostrarRecursos ? 0.5 : 1,
-                              padding: "2px",
-                            }}
-                            onClick={mostrarRecursosDelTema}
-                          >
-                            <div className="card-content" style={{ padding: "0.4rem" }}>
-                              <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>Recursos</p>
-                            </div>
-                          </div>
-                        </div>
-                      )}
+                    <div className="card-content" style={{ padding: "0.4rem" }}>
+                      <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>{subtema.titulo}</p>
                     </div>
-                  )}
-                  {!temaSeleccionado && (
-                    <nav className="pagination is-centered" role="navigation" aria-label="pagination">
-                      <ul className="pagination-list">
-                        {[...Array(totalPaginasTemas)].map((_, i) => (
-                          <li key={i}>
-                            <a
-                              className={`pagination-link ${paginaActualTemas === i + 1 ? "is-current" : ""}`}
-                              onClick={() => cambiarPaginaTemas(i + 1)}
-                            >
-                              {i + 1}
-                            </a>
-                          </li>
-                        ))}
-                      </ul>
-                    </nav>
-                  )}
+                  </div>
+                ))}
+              </div>
+            )}
+            {temaSeleccionado.recursos.length > 0 && (
+              <div>
+                <br />
+                <h3 className="title is-6 has-text-white">Enlaces de Recursos:</h3>
+                <div
+                  className="card"
+                  style={{
+                    cursor: "pointer",
+                    marginBottom: "0.5rem",
+                    backgroundColor: mostrarRecursos ? "blue" : "navy",
+                    opacity: mostrarRecursos ? 0.5 : 1,
+                    padding: "2px",
+                  }}
+                  onClick={mostrarRecursosDelTema}
+                >
+                  <div className="card-content" style={{ padding: "0.4rem" }}>
+                    <p className="title is-6 has-text-white" style={{ fontSize: "0.8rem" }}>Recursos</p>
+                  </div>
                 </div>
               </div>
             )}
+          </div>
+        )}
+        {!temaSeleccionado && (
+          <nav className="pagination is-centered" role="navigation" aria-label="pagination">
+            <ul className="pagination-list">
+              {[...Array(totalPaginasTemas)].map((_, i) => (
+                <li key={i}>
+                  <a
+                    className={`pagination-link ${paginaActualTemas === i + 1 ? "is-current" : ""}`}
+                    onClick={() => cambiarPaginaTemas(i + 1)}
+                  >
+                    {i + 1}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+      </div>
+    </div>
+  )}
+
           </div>
           {!cursoSeleccionado && (
             <div
