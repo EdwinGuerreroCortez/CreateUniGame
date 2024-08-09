@@ -350,30 +350,30 @@ const GestionUsuariosForm = () => {
                     </div>
                   </div>
                   <div className="field">
-  <label className="label has-text-white">Contraseña</label>
-  <div className="control has-icons-right">
-    <input
-      className="input"
-      type={showPassword ? 'text' : 'password'}
-      name="contrasena"
-      value={usuario.contrasena}
-      onChange={(e) => validatePassword(e.target.value)}
-      placeholder="Contraseña"
-      required
-    />
-    <button 
-      type="button" 
-      className="button is-small is-ghost is-right" 
-      onClick={toggleShowPassword} 
-      style={{ cursor: 'pointer', border: 'none', backgroundColor: 'transparent', position: 'absolute', right: '10px', top: '27%', transform: 'translateY(-50%)', height:'20px', width:'20px' }}
-    >
-      <span className="icon">
-        <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
-      </span>
-    </button>
-  </div>
-  {passwordError && <p className="help is-danger">{passwordError}</p>}
-</div>
+                    <label className="label has-text-white">Contraseña</label>
+                    <div className="control has-icons-right">
+                      <input
+                        className="input"
+                        type={showPassword ? 'text' : 'password'}
+                        name="contrasena"
+                        value={usuario.contrasena}
+                        onChange={(e) => validatePassword(e.target.value)}
+                        placeholder="Contraseña"
+                        required
+                      />
+                      <button
+                        type="button"
+                        className="button is-small is-ghost is-right"
+                        onClick={toggleShowPassword}
+                        style={{ cursor: 'pointer', border: 'none', backgroundColor: 'transparent', position: 'absolute', right: '10px', top: '27%', transform: 'translateY(-50%)', height: '20px', width: '20px' }}
+                      >
+                        <span className="icon">
+                          <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+                        </span>
+                      </button>
+                    </div>
+                    {passwordError && <p className="help is-danger">{passwordError}</p>}
+                  </div>
 
                   <div className="field">
                     <label className="label has-text-white">Género</label>
