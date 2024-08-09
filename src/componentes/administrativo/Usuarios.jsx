@@ -22,6 +22,9 @@ const GestionUsuariosForm = () => {
   const [confirmDelete, setConfirmDelete] = useState({ active: false, index: null, id: null }); // Estado para confirmación de eliminación
   const [filter, setFilter] = useState('all'); // Estado para el filtro de usuarios
   const [filterTipo, setFilterTipo] = useState('all');
+  const [showPassword, setShowPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+
 
 
   useEffect(() => {
@@ -156,6 +159,21 @@ const GestionUsuariosForm = () => {
       console.error('Error al autorizar todos los usuarios:', error);
       setNotification({ message: 'Error al autorizar todos los usuarios. Intente de nuevo.', type: 'is-danger' });
     }
+  };
+
+  // Función para alternar la visibilidad de la contraseña
+  const toggleShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    if (!regex.test(password)) {
+      setPasswordError('La contraseña debe tener al menos 8 caracteres, una mayúscula, un número, y un signo especial.');
+    } else {
+      setPasswordError('');
+    }
+    handleChange({ target: { name: 'contrasena', value: password } });
   };
 
   const filteredUsuarios = usuarios.filter((usuario) => {
@@ -332,11 +350,31 @@ const GestionUsuariosForm = () => {
                     </div>
                   </div>
                   <div className="field">
-                    <label className="label has-text-white">Contraseña</label>
-                    <div className="control">
-                      <input className="input" type="password" name="contrasena" value={usuario.contrasena} onChange={handleChange} placeholder="Contraseña" required />
-                    </div>
-                  </div>
+  <label className="label has-text-white">Contraseña</label>
+  <div className="control has-icons-right">
+    <input
+      className="input"
+      type={showPassword ? 'text' : 'password'}
+      name="contrasena"
+      value={usuario.contrasena}
+      onChange={(e) => validatePassword(e.target.value)}
+      placeholder="Contraseña"
+      required
+    />
+    <button 
+      type="button" 
+      className="button is-small is-ghost is-right" 
+      onClick={toggleShowPassword} 
+      style={{ cursor: 'pointer', border: 'none', backgroundColor: 'transparent', position: 'absolute', right: '10px', top: '27%', transform: 'translateY(-50%)', height:'20px', width:'20px' }}
+    >
+      <span className="icon">
+        <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
+      </span>
+    </button>
+  </div>
+  {passwordError && <p className="help is-danger">{passwordError}</p>}
+</div>
+
                   <div className="field">
                     <label className="label has-text-white">Género</label>
                     <div className="control">
