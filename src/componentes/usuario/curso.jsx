@@ -375,6 +375,10 @@ const fetchTemasDelCurso = async (cursoId) => {
           <div className="has-text-centered" style={{ paddingTop: "20px" }}>
             <p className="title is-5 has-text-white">Cargando temas...</p>
           </div>
+        ) : temas.length === 0 ? (
+          <div className="has-text-centered" style={{ paddingTop: "20px" }}>
+            <p className="title is-5 has-text-white">Temas no disponibles, comuníquese con su docente.</p>
+          </div>
         ) : !temaSeleccionado ? (
           temasActuales.map((tema) => (
             <div
