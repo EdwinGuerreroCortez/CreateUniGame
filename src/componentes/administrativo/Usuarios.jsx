@@ -21,6 +21,8 @@ const GestionUsuariosForm = () => {
   const [isModalActive, setIsModalActive] = useState(false); // Estado para el modal
   const [confirmDelete, setConfirmDelete] = useState({ active: false, index: null, id: null }); // Estado para confirmación de eliminación
   const [filter, setFilter] = useState('all'); // Estado para el filtro de usuarios
+  const [filterTipo, setFilterTipo] = useState('all');
+
 
   useEffect(() => {
     obtenerUsuarios();
@@ -161,6 +163,12 @@ const GestionUsuariosForm = () => {
     if (filter === 'noAutorizados') return !usuario.autorizacion;
     return true;
   });
+  const filteredUsuariosPorTipo = filteredUsuarios.filter((u) => {
+    if (filterTipo === 'all') return true;
+    if (filterTipo === 'cliente') return u.tipo === 'cliente' || u.tipo === 'alumno';
+    return u.tipo === filterTipo;
+  });
+
 
   return (
     <div style={{ backgroundColor: '#14161A', minHeight: '100vh', padding: '20px' }}>
@@ -179,23 +187,37 @@ const GestionUsuariosForm = () => {
             </span>
             <span>Agregar Usuario</span>
           </button>
-          <button className="button is-info" onClick={handleAutorizarTodos} style={{marginLeft:'10px'}}>
+          <button className="button is-info" onClick={handleAutorizarTodos} style={{ marginLeft: '10px' }}>
             <span className="icon">
               <i className="fas fa-check"></i>
             </span>
             <span>Permitir Todos</span>
           </button>
         </div>
-        <div className="control is-pulled-left">
-          <div className="select is-info">
-            <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-              <option value="all">Todos</option>
-              <option value="autorizados">Autorizados</option>
-              <option value="noAutorizados">No Autorizados</option>
-            </select>
+        <div style={{ display: 'inline-flex', alignItems: 'center' }}>
+          <div className="control" style={{ marginRight: '20px' }}>
+            <p className="has-text-white" style={{ marginBottom: '5px' }}>Acceso:</p>
+            <div className="select is-info">
+              <select value={filter} onChange={(e) => setFilter(e.target.value)}>
+                <option value="all">Todos</option>
+                <option value="autorizados">Autorizados</option>
+                <option value="noAutorizados">No Autorizados</option>
+              </select>
+            </div>
+          </div>
+          <div className="control">
+            <p className="has-text-white" style={{ marginBottom: '5px' }}>Tipo:</p>
+            <div className="select is-info">
+              <select value={filterTipo} onChange={(e) => setFilterTipo(e.target.value)}>
+                <option value="all">Todos</option>
+                <option value="administrador">Administrador</option>
+                <option value="cliente">Alumno</option>
+                <option value="docente">Docente</option>
+              </select>
+            </div>
           </div>
         </div>
-        <br />
+
         <div className="control">
 
         </div>
@@ -217,7 +239,7 @@ const GestionUsuariosForm = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredUsuarios.map((u, index) => (
+              {filteredUsuariosPorTipo.map((u, index) => (
                 <tr key={index} style={{ color: 'white' }}>
                   <td className="has-text-white">{index + 1}</td>
                   <td className="has-text-white">{u.datos_personales.nombre}</td>
@@ -226,7 +248,7 @@ const GestionUsuariosForm = () => {
                   <td className="has-text-white">{u.username}</td>
                   <td className="has-text-white">{u.datos_personales.correo}</td>
                   <td className="has-text-white">{u.datos_personales.telefono}</td>
-                  <td className="has-text-white">{u.tipo}</td>
+                  <td className="has-text-white">{u.tipo === 'cliente' ? 'alumno' : u.tipo}</td>
                   <td>
                     <div className="buttons is-centered is-grouped">
                       <button
@@ -252,11 +274,12 @@ const GestionUsuariosForm = () => {
                 </tr>
               ))}
             </tbody>
+
           </table>
         </div>
       </div>
 
-      {}
+      { }
       <div className={`modal ${isModalActive ? 'is-active' : ''}`}>
         <div className="modal-background" onClick={() => setIsModalActive(false)}></div>
         <div className="modal-content">
@@ -358,7 +381,7 @@ const GestionUsuariosForm = () => {
         <button className="modal-close is-large" aria-label="close" onClick={() => setIsModalActive(false)}></button>
       </div>
 
-      {}
+      { }
       {confirmDelete.active && (
         <div className={`modal ${confirmDelete.active ? "is-active" : ""}`}>
           <div className="modal-background"></div>
