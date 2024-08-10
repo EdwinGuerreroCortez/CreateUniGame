@@ -13,7 +13,7 @@ const PieDePaginaUser = () => {
         <div style={{ marginTop: '20px' }}>
           <p>Síguenos en nuestras redes sociales:</p>
           <div className="buttons is-centered">
-            <a className="button is-light" href="https://facebook.com" aria-label="Facebook">
+            <a className="button is-light" href="https://www.facebook.com/share/fpDSm77DTmYnd8AA/?mibextid=qi2Omg" aria-label="Facebook">
               <i className="fab fa-facebook-f"></i>
             </a>
             <a className="button is-light" href="https://twitter.com" aria-label="Twitter">

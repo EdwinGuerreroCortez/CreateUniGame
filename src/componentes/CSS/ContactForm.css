@@ -9,9 +9,9 @@ textarea::placeholder {
 }
 .contact-section {
   background-color: #14161A;
-  color: white;
   padding: 40px 20px;
   font-family: 'Poppins', sans-serif;
+  color: white;
 }
 
 .image-container {
@@ -39,6 +39,8 @@ textarea::placeholder {
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   text-align: center;
   margin-bottom: 20px;
+  color: white;
+
 }
 
 .contact-description {

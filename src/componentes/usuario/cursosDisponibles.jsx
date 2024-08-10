@@ -16,6 +16,7 @@ const CursosDisponibles = () => {
   const [cursoParaSuscribir, setCursoParaSuscribir] = useState(null);
   const [busqueda, setBusqueda] = useState(""); // Estado para el término de búsqueda
   const navigate = useNavigate();
+  const [mensajeInscrito, setMensajeInscrito] = useState(false);
 
   const fetchCursos = async () => {
     try {
@@ -115,6 +116,11 @@ const CursosDisponibles = () => {
   const openModal = (curso) => {
     setCursoParaSuscribir(curso);
     setShowModal(true);
+    if (estaSuscrito(curso._id)) {
+      setMensajeInscrito(true);
+    } else {
+      setMensajeInscrito(false);
+    }
   };
 
   const closeModal = () => {
@@ -129,11 +135,12 @@ const CursosDisponibles = () => {
 
   const handleBusqueda = (e) => {
     setBusqueda(e.target.value);
-    const cursosFiltrados = cursos.filter(curso => 
+    const cursosFiltrados = cursos.filter(curso =>
       curso.nombre.toLowerCase().includes(e.target.value.toLowerCase())
     );
     setCursosMostrados(cursosFiltrados.slice(0, mostrarTodos ? cursosFiltrados.length : 4));
   };
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -167,7 +174,7 @@ const CursosDisponibles = () => {
               placeholder="Buscar curso..."
             />
           </div>
-          </div>
+        </div>
         <div className="columns is-multiline is-centered">
           {cursosMostrados.map((curso) => (
             <div key={curso._id} className="column is-3">
@@ -178,27 +185,41 @@ const CursosDisponibles = () => {
                   </span>
                   {cursoSeleccionado && cursoSeleccionado._id === curso._id && (
                     <div className="temas-container" style={{ marginTop: "10px" }}>
-                      <p>Aquí Aprenderas:</p>
-                      <br />
-                      <ul>
-                        {temas[curso._id] && temas[curso._id].map((tema) => (
-                          <li key={tema._id} className="has-text-white">
-                            ⊳ {tema.titulo}
-                          </li>
-                        ))}
-                      </ul>
+                      {temas[curso._id] && temas[curso._id].length > 0 ? (
+                        <>
+                          <p>Aquí aprenderás:</p>
+                          <br />
+                          <ul>
+                            {temas[curso._id].map((tema) => (
+                              <li key={tema._id} className="has-text-white">
+                                ⊳ {tema.titulo}
+                              </li>
+                            ))}
+                          </ul>
+                        </>
+                      ) : (
+                        <p>Temas no disponibles. Comuníquese con su docente.</p>
+                      )}
                     </div>
                   )}
-                  <button
-                    className="button is-link is-size-8 is-fullwidth"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      openModal(curso);
-                    }}
-                    disabled={estaSuscrito(curso._id)}
-                  >
-                    {estaSuscrito(curso._id) ? "Suscrito" : "Suscribirse"}
-                  </button>
+                  <div style={{ marginBottom: "10px" }}>
+                    <button
+                      className="button is-link is-size-8 is-fullwidth"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        openModal(curso);
+                      }}
+                      disabled={estaSuscrito(curso._id)}
+                    >
+                      {estaSuscrito(curso._id) ? "Suscrito" : "Suscribirse"}
+                    </button>
+                    {mensajeInscrito && (
+                      <p className="has-text-success is-size-7" style={{ marginTop: "5px" }}>
+                        ¡Ya estás inscrito, verifica los temas en el apartado de cursos!
+                      </p>
+                    )}
+                  </div>
+
                   {showSubscriptionPrompt && cursoSeleccionado && cursoSeleccionado._id === curso._id && (
                     <div
                       className="notification is-link is-light"
@@ -239,17 +260,21 @@ const CursosDisponibles = () => {
               <h2 className="title is-4">{cursoParaSuscribir.nombre}</h2>
               <p>Temas a aprender:</p>
               <ul>
-                {temas[cursoParaSuscribir._id] && temas[cursoParaSuscribir._id].map((tema) => (
-                  <li key={tema._id} className="has-text-black">
-                    ⊳ {tema.titulo}
-                  </li>
-                ))}
+                {temas[cursoParaSuscribir._id] && temas[cursoParaSuscribir._id].length > 0 ? (
+                  temas[cursoParaSuscribir._id].map((tema) => (
+                    <li key={tema._id} className="has-text-black">
+                      ⊳ {tema.titulo}
+                    </li>
+                  ))
+                ) : (
+                  <p>Temas no disponibles. Comuníquese con su docente.</p>
+                )}
               </ul>
               <p>¿Desea suscribirse a este curso?</p>
             </section>
             <footer className="modal-card-foot">
-              <button className="button is-success" onClick={handleSuscribirse} style={{marginRight:'10px'}}>Sí</button>
-              <button className="button" onClick={closeModal}style={{backgroundColor:'red'}}>No</button>
+              <button className="button is-success" onClick={handleSuscribirse} style={{ marginRight: '10px' }}>Sí</button>
+              <button className="button" onClick={closeModal} style={{ backgroundColor: 'red' }}>No</button>
             </footer>
           </div>
         </div>

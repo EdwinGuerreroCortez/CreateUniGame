@@ -15,7 +15,7 @@ const PieDePaginaAdmin = () => {
         <div style={{ marginTop: '20px' }}>
           <p>Síguenos en nuestras redes sociales:</p>
           <div className="buttons is-centered">
-            <a className="button is-light" href="https://facebook.com" aria-label="Facebook" style={styles.socialButton}>
+            <a className="button is-light" href="https://www.facebook.com/share/fpDSm77DTmYnd8AA/?mibextid=qi2Omg" aria-label="Facebook" style={styles.socialButton}>
               <FontAwesomeIcon icon={faFacebookF} />
             </a>
             <a className="button is-light" href="https://twitter.com" aria-label="Twitter" style={styles.socialButton}>

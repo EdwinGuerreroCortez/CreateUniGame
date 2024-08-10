@@ -1,6 +1,3 @@
-
-
-
 .navbar {
   background-color: #090A0C !important;
 }
@@ -32,7 +29,14 @@
   background-color: #090A0C !important;
   color: #48C78E !important;
 }
+.navbar-link, a.navbar-item {
+  background-color: rgba(0, 0, 0, 0.1) ;
+}
+.navbar-dropdown a.navbar-item:hover {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  color: #48C78E !important;
 
+}
 
 .navbar-dropdown .navbar-link:hover {
   background-color: rgba(72, 199, 142, 0.1) !important;

@@ -359,7 +359,7 @@ const fetchTemasDelCurso = async (cursoId) => {
           boxShadow: "0px 0px 10px 0px rgba(255,255,255,0.5)",
           marginTop: "20px",
           position: "relative",
-          minHeight: "200px", // Asegura que haya espacio para el mensaje de carga
+          minHeight: "200px", 
         }}
       >
         <button
