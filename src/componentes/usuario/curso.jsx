@@ -410,7 +410,7 @@ const Curso = () => {
                         onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
                         onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                       >
-                        <div className="card-content" style={{ padding: "20px" }}>
+                        <div className="card-content" style={{ padding: "20px" }} id="card_cc">
                           <p className="title is-4 has-text-white" style={{ fontSize: '1.2rem' }}>
                             <span style={{ fontSize: '1.5rem', marginRight: '10px' }}>·</span>
                             {tema.titulo}
@@ -446,7 +446,7 @@ const Curso = () => {
                           e.currentTarget.style.transform = "scale(1)"; // Restaurar tamaño
                         }}
                       >
-                        <div className="card-content">
+                        <div className="card-content" id="card_cc">
                           <p className="title is-5 has-text-white" style={{ fontSize: '1.25rem', fontWeight: 'bold', padding:'2px' }}>
                             {temaSeleccionado.titulo}
                           </p>
@@ -476,7 +476,7 @@ const Curso = () => {
                               onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'} // Efecto de escala al pasar el ratón
                               onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} // Restaurar escala
                             >
-                              <div className="card-content">
+                              <div className="card-content" id="card_cc">
                                 <p className="title is-6 has-text-white" style={{ fontSize: "1rem", fontWeight: "bold", padding: '2px' }}>
                                   {subtema.titulo}
                                 </p>
@@ -505,7 +505,7 @@ const Curso = () => {
                             onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'} // Efecto de escala al pasar el ratón
                             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} // Restaurar escala
                           >
-                            <div className="card-content" style={{ padding: "1rem" }}>
+                            <div className="card-content" style={{ padding: "1rem" }} id="card_cc">
                               <p className="title is-6 has-text-white" style={{ fontSize: "1rem", fontWeight: "bold",  padding:'2px' }}>
                                 Recursos
                               </p>

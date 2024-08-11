@@ -15,8 +15,12 @@
   margin-top: 2rem;
 
 }
-.card-content{
+/*.card-content{
   padding: 1px;
+}*/
+#card_cc{
+  padding: 1px;
+
 }
 
 .field {
