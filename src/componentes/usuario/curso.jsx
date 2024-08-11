@@ -495,7 +495,7 @@ const Curso = () => {
                             style={{
                               cursor: "pointer",
                               marginBottom: "0.5rem",
-                              backgroundColor: mostrarRecursos ? "#0056b3" : "#003366", // Colores de fondo ajustados
+                              backgroundColor: mostrarRecursos ? "#0056b3" : "#003366", 
                               borderRadius: "8px", // Bordes redondeados
                               boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)", // Sombra de la tarjeta
                               opacity: mostrarRecursos ? 0.8 : 1, // Opacidad ajustada
