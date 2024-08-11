@@ -224,7 +224,7 @@ const CursosDisponibles = () => {
                   overflow: "hidden",
                   backgroundColor: "#1c1c1c", // Fondo oscuro
                   color: "#ffffff", // Texto blanco para contraste
-                  padding:'15px'
+                  padding: '15px'
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
                 onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
@@ -262,48 +262,48 @@ const CursosDisponibles = () => {
                   )}
 
                 </div>
-                
-<br />
-{estaSuscrito(curso._id) ? (
-  <button
-    className="button is-static is-outlined"
-    style={{
-      backgroundColor: "#004085", // Azul fuerte para "Inscrito"
-      color: "#ffffff",
-      width: "100%",
-      fontWeight: "bold",
-      border: "none",
-      marginTop: '2px',
-      cursor: 'not-allowed', // Cambia el cursor para mostrar que está bloqueado
-    }}
-    disabled // Desactiva el botón para que no se pueda hacer clic
-  >
-    Inscrito
-  </button>
-) : (
-  <button
-    className="button is-outlined"
-    style={{
-      width: "100%",
-      backgroundColor: "#0056b3", // Azul más claro para "Inscribirse"
-      color: "#ffffff",
-      fontWeight: "bold",
-      border: "none",
-      marginTop: '2px',
-    }}
-    onClick={(e) => {
-      e.stopPropagation();
-      if (!mensajeInscrito) { // Solo abre el modal si el mensajeInscrito es falso
-        openModal(curso);
-      } else {
-        // Muestra una notificación si ya está inscrito
-        setSubscriptionMessage("¡Ya estás inscrito en este curso!");
-        setShowSubscriptionPrompt(true);
-      }
-    }}
-  >
-    Inscribirse
-  </button>
+
+                <br />
+                {estaSuscrito(curso._id) ? (
+                  <button
+                    className="button is-static is-outlined"
+                    style={{
+                      backgroundColor: "#004085", // Azul fuerte para "Inscrito"
+                      color: "#ffffff",
+                      width: "100%",
+                      fontWeight: "bold",
+                      border: "none",
+                      marginTop: '2px',
+                      cursor: 'not-allowed', // Cambia el cursor para mostrar que está bloqueado
+                    }}
+                    disabled // Desactiva el botón para que no se pueda hacer clic
+                  >
+                    Inscrito
+                  </button>
+                ) : (
+                  <button
+                    className="button is-outlined"
+                    style={{
+                      width: "100%",
+                      backgroundColor: "#0056b3", // Azul más claro para "Inscribirse"
+                      color: "#ffffff",
+                      fontWeight: "bold",
+                      border: "none",
+                      marginTop: '2px',
+                    }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      if (!mensajeInscrito) { // Solo abre el modal si el mensajeInscrito es falso
+                        openModal(curso);
+                      } else {
+                        // Muestra una notificación si ya está inscrito
+                        setSubscriptionMessage("¡Ya estás inscrito en este curso!");
+                        setShowSubscriptionPrompt(true);
+                      }
+                    }}
+                  >
+                    Inscribirse
+                  </button>
                 )}
               </div>
             </div>
