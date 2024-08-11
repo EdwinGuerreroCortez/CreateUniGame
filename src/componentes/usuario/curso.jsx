@@ -22,9 +22,9 @@ const Curso = () => {
   const [showSubscriptionPrompt, setShowSubscriptionPrompt] = useState(false);
   const [subscriptionMessage, setSubscriptionMessage] = useState("");
   const [isBanned, setIsBanned] = useState(false);
-  const [busqueda, setBusqueda] = useState(""); // Término de búsqueda
   const [isLoadingTemas, setIsLoadingTemas] = useState(false);
   const [cargandoTemas, setCargandoTemas] = useState(false);
+  const [busqueda, setBusqueda] = useState("");
 
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
@@ -292,15 +292,18 @@ const Curso = () => {
                       placeholder="Buscar curso..."
                       style={{
                         background: "#FFFFFF",
-                        color: "black",
-                        borderColor: "rgba(255, 255, 255, 0.3)",
+                        color: "#333333",
+                        borderColor: "#004080", // Color del borde mejorado
+                        borderWidth: "2px", // Bordes más gruesos
+                        borderRadius: "8px", // Bordes redondeados
                       }}
                     />
-                    <span className="icon is-small is-left">
+                    <span className="icon is-small is-left" style={{ color: "#004080" }}> {/* Color del icono mejorado */}
                       <i className="fas fa-search"></i>
                     </span>
                   </div>
                 </div>
+
                 <div>
                   {cursosActuales.map((curso) => (
                     <div
@@ -444,7 +447,7 @@ const Curso = () => {
                         }}
                       >
                         <div className="card-content">
-                          <p className="title is-5 has-text-white" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+                          <p className="title is-5 has-text-white" style={{ fontSize: '1.25rem', fontWeight: 'bold', padding:'2px' }}>
                             {temaSeleccionado.titulo}
                           </p>
                         </div>
@@ -503,7 +506,7 @@ const Curso = () => {
                             onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} // Restaurar escala
                           >
                             <div className="card-content" style={{ padding: "1rem" }}>
-                              <p className="title is-6 has-text-white" style={{ fontSize: "1rem", fontWeight: "bold" }}>
+                              <p className="title is-6 has-text-white" style={{ fontSize: "1rem", fontWeight: "bold",  padding:'2px' }}>
                                 Recursos
                               </p>
                             </div>

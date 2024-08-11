@@ -14,7 +14,8 @@ const CursosDisponibles = () => {
   const [mostrarTodos, setMostrarTodos] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [cursoParaSuscribir, setCursoParaSuscribir] = useState(null);
-  const [busqueda, setBusqueda] = useState(""); // Estado para el término de búsqueda
+  const [busqueda, setBusqueda] = useState("");
+  const [filtro, setFiltro] = useState("todos"); // Filtro para cursos
   const navigate = useNavigate();
   const [mensajeInscrito, setMensajeInscrito] = useState(false);
 
@@ -48,6 +49,7 @@ const CursosDisponibles = () => {
       for (const curso of cursos) {
         const response = await fetch(`http://localhost:3001/api/cursos/${curso._id}/temas`);
         const data = await response.json();
+        console.log(`Temas para el curso ${curso.nombre}:`, data); // Verifica aquí
         temasCargados[curso._id] = data.slice(0, 6); // Limitar a 6 temas
       }
       setTemas(temasCargados);
@@ -135,12 +137,36 @@ const CursosDisponibles = () => {
 
   const handleBusqueda = (e) => {
     setBusqueda(e.target.value);
-    const cursosFiltrados = cursos.filter(curso =>
-      curso.nombre.toLowerCase().includes(e.target.value.toLowerCase())
-    );
-    setCursosMostrados(cursosFiltrados.slice(0, mostrarTodos ? cursosFiltrados.length : 4));
+    const cursosFiltrados = cursos.filter(curso => {
+      return curso.nombre.toLowerCase().includes(e.target.value.toLowerCase());
+    });
+
+    // Aplicar el filtro seleccionado
+    const cursosFiltradosConFiltro = cursosFiltrados.filter(curso => {
+      if (filtro === "suscritos") return estaSuscrito(curso._id);
+      if (filtro === "no_suscritos") return !estaSuscrito(curso._id);
+      return true;
+    });
+
+    setCursosMostrados(cursosFiltradosConFiltro.slice(0, mostrarTodos ? cursosFiltradosConFiltro.length : 4));
   };
 
+  const handleFiltroChange = (e) => {
+    setFiltro(e.target.value);
+
+    // Filtrar cursos según el nuevo filtro y la búsqueda actual
+    const cursosFiltrados = cursos.filter(curso => {
+      return curso.nombre.toLowerCase().includes(busqueda.toLowerCase());
+    });
+
+    const cursosFiltradosConFiltro = cursosFiltrados.filter(curso => {
+      if (e.target.value === "suscritos") return estaSuscrito(curso._id);
+      if (e.target.value === "no_suscritos") return !estaSuscrito(curso._id);
+      return true;
+    });
+
+    setCursosMostrados(cursosFiltradosConFiltro.slice(0, mostrarTodos ? cursosFiltradosConFiltro.length : 4));
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -164,8 +190,8 @@ const CursosDisponibles = () => {
         <h2 className="title is-3 has-text-white has-text-centered">Cursos Disponibles</h2>
         <p className="has-text-centered has-text-grey-light">Pulse para más información</p>
         <br />
-        <div className="field">
-          <div className="control">
+        <div className="field is-grouped">
+          <div className="control is-expanded">
             <input
               className="input"
               type="text"
@@ -174,13 +200,45 @@ const CursosDisponibles = () => {
               placeholder="Buscar curso..."
             />
           </div>
+          <div className="control">
+            <div className="select">
+              <select value={filtro} onChange={handleFiltroChange}>
+                <option value="todos">Todos</option>
+                <option value="suscritos">Suscritos</option>
+                <option value="no_suscritos">No suscritos</option>
+              </select>
+            </div>
+          </div>
         </div>
         <div className="columns is-multiline is-centered">
           {cursosMostrados.map((curso) => (
             <div key={curso._id} className="column is-3">
-              <div className={`box curso-card ${cursoSeleccionado && cursoSeleccionado._id === curso._id ? "selected" : ""}`} onClick={() => seleccionarCurso(curso)}>
-                <div className="has-text-white" style={{ cursor: "pointer" }}>
-                  <span className="title is-4 has-text-white" style={{ fontSize: curso.nombre.length > 10 ? '1rem' : '1.5rem' }}>
+              <div
+                className={`box curso-card ${cursoSeleccionado && cursoSeleccionado._id === curso._id ? "selected" : ""}`}
+                onClick={() => seleccionarCurso(curso)}
+                style={{
+                  transition: "transform 0.3s, box-shadow 0.3s",
+                  border: "1px solid #ffffff",
+                  borderRadius: "8px",
+                  boxShadow: "0 4px 12px rgba(0, 0, 0, 0.4)",
+                  overflow: "hidden",
+                  backgroundColor: "#1c1c1c", // Fondo oscuro
+                  color: "#ffffff", // Texto blanco para contraste
+                  padding:'15px'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = "scale(1.05)"}
+                onMouseLeave={(e) => e.currentTarget.style.transform = "scale(1)"}
+              >
+                <div style={{ cursor: "pointer", padding: "15px" }}>
+                  <span
+                    className="title is-4 has-text-white"
+                    style={{
+                      fontSize: curso.nombre.length > 10 ? '1rem' : '1.5rem',
+                      textAlign: "center",
+                      display: "block",
+                      marginBottom: "1px",
+                      textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
+                    }}>
                     {curso.nombre}
                   </span>
                   {cursoSeleccionado && cursoSeleccionado._id === curso._id && (
@@ -202,83 +260,92 @@ const CursosDisponibles = () => {
                       )}
                     </div>
                   )}
-                  <div style={{ marginBottom: "10px" }}>
-                    <button
-                      className="button is-link is-size-8 is-fullwidth"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        openModal(curso);
-                      }}
-                      disabled={estaSuscrito(curso._id)}
-                    >
-                      {estaSuscrito(curso._id) ? "Suscrito" : "Suscribirse"}
-                    </button>
-                    {mensajeInscrito && (
-                      <p className="has-text-success is-size-7" style={{ marginTop: "5px" }}>
-                        ¡Ya estás inscrito, verifica los temas en el apartado de cursos!
-                      </p>
-                    )}
-                  </div>
 
-                  {showSubscriptionPrompt && cursoSeleccionado && cursoSeleccionado._id === curso._id && (
-                    <div
-                      className="notification is-link is-light"
-                      style={{
-                        padding: "0.9rem 1rem",
-                        fontSize: "0.9rem",
-                        marginTop: "20px",
-                      }}
-                    >
-                      {subscriptionMessage}
-                    </div>
-                  )}
                 </div>
+                
+<br />
+{estaSuscrito(curso._id) ? (
+  <button
+    className="button is-static is-outlined"
+    style={{
+      backgroundColor: "#004085", // Azul fuerte para "Inscrito"
+      color: "#ffffff",
+      width: "100%",
+      fontWeight: "bold",
+      border: "none",
+      marginTop: '2px',
+      cursor: 'not-allowed', // Cambia el cursor para mostrar que está bloqueado
+    }}
+    disabled // Desactiva el botón para que no se pueda hacer clic
+  >
+    Inscrito
+  </button>
+) : (
+  <button
+    className="button is-outlined"
+    style={{
+      width: "100%",
+      backgroundColor: "#0056b3", // Azul más claro para "Inscribirse"
+      color: "#ffffff",
+      fontWeight: "bold",
+      border: "none",
+      marginTop: '2px',
+    }}
+    onClick={(e) => {
+      e.stopPropagation();
+      if (!mensajeInscrito) { // Solo abre el modal si el mensajeInscrito es falso
+        openModal(curso);
+      } else {
+        // Muestra una notificación si ya está inscrito
+        setSubscriptionMessage("¡Ya estás inscrito en este curso!");
+        setShowSubscriptionPrompt(true);
+      }
+    }}
+  >
+    Inscribirse
+  </button>
+                )}
               </div>
             </div>
           ))}
+        </div>
+
+
+        <div className="buttons is-centered">
           {!mostrarTodos ? (
-            <div className="column is-12 has-text-centered">
-              <button className="button is-link" onClick={handleMostrarTodos}>Ver más</button>
-            </div>
+            <button className="button is-dark is-small" onClick={handleMostrarTodos}>Mostrar todos</button>
           ) : (
-            <div className="column is-12 has-text-centered">
-              <button className="button is-link" onClick={handleOcultar}>Ocultar</button>
-            </div>
+            <button className="button is-dark is-small" onClick={handleOcultar}>Ocultar</button>
           )}
         </div>
-      </div>
-
-      {showModal && (
-        <div className={`modal ${showModal ? "is-active" : ""}`}>
-          <div className="modal-background"></div>
-          <div className="modal-card">
-            <header className="modal-card-head">
-              <p className="modal-card-title">Confirmar Suscripción</p>
-              <button className="delete" aria-label="close" onClick={closeModal}></button>
-            </header>
-            <section className="modal-card-body">
-              <h2 className="title is-4">{cursoParaSuscribir.nombre}</h2>
-              <p>Temas a aprender:</p>
-              <ul>
-                {temas[cursoParaSuscribir._id] && temas[cursoParaSuscribir._id].length > 0 ? (
-                  temas[cursoParaSuscribir._id].map((tema) => (
-                    <li key={tema._id} className="has-text-black">
-                      ⊳ {tema.titulo}
-                    </li>
-                  ))
-                ) : (
-                  <p>Temas no disponibles. Comuníquese con su docente.</p>
+        {showModal && (
+          <div className="modal is-active">
+            <div className="modal-background" onClick={closeModal}></div>
+            <div className="modal-card">
+              <header className="modal-card-head">
+                <p className="modal-card-title">Confirmar Suscripción</p>
+                <button className="delete" aria-label="close" onClick={closeModal}></button>
+              </header>
+              <section className="modal-card-body">
+                <p>¿Deseas suscribirte al curso "{cursoParaSuscribir.nombre}"?</p>
+                {mensajeInscrito && (
+                  <p className="has-text-danger">¡Ya estás inscrito, verifica los temas en el apartado de cursos!</p>
                 )}
-              </ul>
-              <p>¿Desea suscribirse a este curso?</p>
-            </section>
-            <footer className="modal-card-foot">
-              <button className="button is-success" onClick={handleSuscribirse} style={{ marginRight: '10px' }}>Sí</button>
-              <button className="button" onClick={closeModal} style={{ backgroundColor: 'red' }}>No</button>
-            </footer>
+              </section>
+              <footer className="modal-card-foot">
+                <button className="button is-success" onClick={handleSuscribirse}>Suscribirse</button>
+                <button className="button" onClick={closeModal}>Cancelar</button>
+              </footer>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+        {showSubscriptionPrompt && (
+          <div className="notification is-primary">
+            <button className="delete" onClick={() => setShowSubscriptionPrompt(false)}></button>
+            {subscriptionMessage}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
