@@ -33,7 +33,7 @@ const SubirTemaDocente = () => {
     const fetchCursos = async () => {
       const userId = localStorage.getItem('userId');
       try {
-        const response = await fetch(`http://localhost:3001/api/usuario/${userId}/cursos`);
+        const response = await fetch(`http://172.16.19.1:3001/api/usuario/${userId}/cursos`);
         if (!response.ok) {
           throw new Error("Error al obtener los cursos.");
         }
@@ -141,7 +141,7 @@ const SubirTemaDocente = () => {
     formData.append("subtemas", JSON.stringify(subtemas));
 
     try {
-      const response = await fetch("http://localhost:3001/api/subirTema", {
+      const response = await fetch("http://172.16.19.1:3001/api/subirTema", {
         method: "POST",
         body: formData,
       });

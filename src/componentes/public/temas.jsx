@@ -9,7 +9,7 @@ const Temas = () => {
   useEffect(() => {
     const obtenerCursos = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/api/cursos');
+        const response = await axios.get('http://172.16.19.1:3001/api/cursos');
         const cursosConTemas = response.data.filter(curso => curso.temas && curso.temas.length > 0);
         const cursosAleatorios = cursosConTemas.sort(() => 0.5 - Math.random()).slice(0, 8);
         const cursosConTemasLimitados = cursosAleatorios.map(curso => ({

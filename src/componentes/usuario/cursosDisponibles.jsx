@@ -21,7 +21,7 @@ const CursosDisponibles = () => {
 
   const fetchCursos = async () => {
     try {
-      const response = await fetch("http://localhost:3001/api/cursos");
+      const response = await fetch("http://172.16.19.1:3001/api/cursos");
       const data = await response.json();
       const cursosRevueltos = revolverCursos(data);
       setCursos(cursosRevueltos);
@@ -35,7 +35,7 @@ const CursosDisponibles = () => {
   const fetchCursosSuscritos = async () => {
     const userId = localStorage.getItem("userId");
     try {
-      const response = await fetch(`http://localhost:3001/api/usuarios/${userId}/cursos-suscritos`);
+      const response = await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}/cursos-suscritos`);
       const data = await response.json();
       setCursosSuscritos(data.cursos);
     } catch (error) {
@@ -47,7 +47,7 @@ const CursosDisponibles = () => {
     try {
       const temasCargados = {};
       for (const curso of cursos) {
-        const response = await fetch(`http://localhost:3001/api/cursos/${curso._id}/temas`);
+        const response = await fetch(`http://172.16.19.1:3001/api/cursos/${curso._id}/temas`);
         const data = await response.json();
         console.log(`Temas para el curso ${curso.nombre}:`, data); // Verifica aquí
         temasCargados[curso._id] = data.slice(0, 6); // Limitar a 6 temas
@@ -67,7 +67,7 @@ const CursosDisponibles = () => {
     const userId = localStorage.getItem("userId");
     try {
       const response = await fetch(
-        `http://localhost:3001/api/usuarios/${userId}/suscribirse/${cursoId}`,
+        `http://172.16.19.1:3001/api/usuarios/${userId}/suscribirse/${cursoId}`,
         {
           method: "POST",
           headers: {

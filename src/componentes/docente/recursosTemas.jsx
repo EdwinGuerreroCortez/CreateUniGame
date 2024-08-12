@@ -19,7 +19,7 @@ const Recursos = () => {
   useEffect(() => {
     const userId = localStorage.getItem("userId");
     // Obtener cursos del usuario
-    axios.get(`http://localhost:3001/api/usuario/${userId}/cursos`)
+    axios.get(`http://172.16.19.1:3001/api/usuario/${userId}/cursos`)
       .then(response => {
         setCursos(response.data);
       })
@@ -27,7 +27,7 @@ const Recursos = () => {
         console.error("Error al obtener cursos:", error);
       });
 
-        axios.get(`http://localhost:3001/api/usuario/${userId}/temas`)
+        axios.get(`http://172.16.19.1:3001/api/usuario/${userId}/temas`)
       .then(response => {
         setTemas(response.data);
       })
@@ -64,7 +64,7 @@ const Recursos = () => {
         recursos: [...selectedTema.recursos, ...recursos]
       };
 
-      axios.put(`http://localhost:3001/api/temas/${selectedTema._id}/recursos`, { recursos })
+      axios.put(`http://172.16.19.1:3001/api/temas/${selectedTema._id}/recursos`, { recursos })
         .then(response => {
           setTemas(temas.map(tema => tema._id === selectedTema._id ? response.data : tema));
           setShowModal(false);
