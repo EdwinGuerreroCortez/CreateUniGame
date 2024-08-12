@@ -412,7 +412,7 @@ const Curso = () => {
                       >
                         <div className="card-content" style={{ padding: "20px" }} id="card_cc">
                           <p className="title is-4 has-text-white" style={{ fontSize: '1.2rem' }}>
-                            <span style={{ fontSize: '1.5rem', marginRight: '10px' }}>·</span>
+                            <span style={{ fontSize: '1.5rem', marginRight: '10px' }}></span>
                             {tema.titulo}
                           </p>
                         </div>
