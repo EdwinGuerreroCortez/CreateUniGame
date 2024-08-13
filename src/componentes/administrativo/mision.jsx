@@ -11,7 +11,7 @@ const MisionVisionForm = () => {
 
     const fetchMisionVision = async () => {
     try {
-      const response = await axios.get('http://172.16.19.1:3001/api/misionVision');
+      const response = await axios.get('http://localhost:3001/api/misionVision');
       setItems(response.data);
     } catch (error) {
       setAlert({ type: 'danger', message: 'Error al cargar los datos' });
@@ -27,7 +27,7 @@ const MisionVisionForm = () => {
     if (mision.trim() && vision.trim()) {
       const newItem = { mision, vision };
       try {
-        const response = await axios.post('http://172.16.19.1:3001/api/misionVision', newItem);
+        const response = await axios.post('http://localhost:3001/api/misionVision', newItem);
         setItems([...items, response.data]);
         setMision('');
         setVision('');
@@ -45,7 +45,7 @@ const MisionVisionForm = () => {
 
   const handleEliminar = async (index, id) => {
     try {
-      await axios.delete(`http://172.16.19.1:3001/api/misionVision/${id}`);
+      await axios.delete(`http://localhost:3001/api/misionVision/${id}`);
       setItems(items.filter((_, i) => i !== index));
       setAlert({ type: 'success', message: 'Misión y Visión eliminadas exitosamente' });
       hideAlert();

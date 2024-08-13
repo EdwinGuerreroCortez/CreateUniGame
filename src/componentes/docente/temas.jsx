@@ -32,7 +32,7 @@ const TemaFormDocente = () => {
 
   useEffect(() => {
     if (userId) {
-      fetch(`http://172.16.19.1:3001/api/usuario/${userId}/cursos`)
+      fetch(`http://localhost:3001/api/usuario/${userId}/cursos`)
         .then(response => response.json())
         .then(data => setUserCourses(data))
         .catch(error => console.error('Error fetching user courses:', error));
@@ -202,7 +202,7 @@ const TemaFormDocente = () => {
   };
 
   const handleDownloadTema = (id) => {
-    fetch(`http://172.16.19.1:3001/api/download-tema/${id}`)
+    fetch(`http://localhost:3001/api/download-tema/${id}`)
       .then((response) => response.blob())
       .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
@@ -223,7 +223,7 @@ const TemaFormDocente = () => {
   };
 
   const handleDownloadPlantilla = () => {
-    fetch(`http://172.16.19.1:3001/api/download-plantilla`)
+    fetch(`http://localhost:3001/api/download-plantilla`)
       .then((response) => response.blob())
       .then((blob) => {
         const url = window.URL.createObjectURL(new Blob([blob]));
@@ -253,7 +253,7 @@ const TemaFormDocente = () => {
     }
 
     setIsLoading(true);
-    fetch("http://172.16.19.1:3001/api/subir-temas", {
+    fetch("http://localhost:3001/api/subir-temas", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -331,7 +331,7 @@ const TemaFormDocente = () => {
       ),
     };
 
-    fetch(`http://172.16.19.1:3001/api/temas/${editTema._id}`, {
+    fetch(`http://localhost:3001/api/temas/${editTema._id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

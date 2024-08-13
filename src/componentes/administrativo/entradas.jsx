@@ -11,7 +11,7 @@ const Entradas = () => {
   useEffect(() => {
     const fetchEntradas = async () => {
       try {
-        const response = await axios.get('http://172.16.19.1:3001/api/entradas');
+        const response = await axios.get('http://localhost:3001/api/entradas');
         const sortedEntradas = response.data.sort((a, b) => b.visitas - a.visitas); // Ordenar en orden descendente
         setEntradas(sortedEntradas);
 

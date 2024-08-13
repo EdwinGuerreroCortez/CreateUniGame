@@ -34,7 +34,7 @@ const SubirTema = () => {
   useEffect(() => {
     const fetchCursos = async () => {
       try {
-        const response = await fetch("http://172.16.19.1:3001/api/cursos");
+        const response = await fetch("http://localhost:3001/api/cursos");
         if (!response.ok) {
           throw new Error("Error al obtener los cursos.");
         }
@@ -142,7 +142,7 @@ const SubirTema = () => {
     formData.append("subtemas", JSON.stringify(subtemas));
 
     try {
-      const response = await fetch("http://172.16.19.1:3001/api/subirTema", {
+      const response = await fetch("http://localhost:3001/api/subirTema", {
         method: "POST",
         body: formData,
       });
