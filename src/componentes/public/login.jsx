@@ -72,7 +72,7 @@ const FormRegistro = () => {
   useEffect(() => {
     const fetchVisitorCount = async () => {
       try {
-        const response = await fetch('http://172.16.19.1:3001/api/total-visitas');
+        const response = await fetch('http://localhost:3001/api/total-visitas');
         const data = await response.json();
         setVisitorCount(data.totalVisitas);
       } catch (error) {
@@ -86,7 +86,7 @@ const FormRegistro = () => {
     event.preventDefault();
     if (emailValid && password) {
       try {
-        const response = await fetch('http://172.16.19.1:3001/api/login', {
+        const response = await fetch('http://localhost:3001/api/login', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

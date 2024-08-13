@@ -34,7 +34,7 @@ const PieDePagina = () => {
   const [vision, setVision] = useState('');
 
   useEffect(() => {
-    fetch('http://172.16.19.1:3001/api/misionVision')
+    fetch('http://localhost:3001/api/misionVision')
       .then(response => response.json())
       .then(data => {
         if (data && data.length > 0) {

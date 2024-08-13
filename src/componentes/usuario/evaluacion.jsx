@@ -35,7 +35,7 @@ const Evaluacion = () => {
   useEffect(() => {
     const fetchEvaluacion = async () => {
       try {
-        const examenResponse = await fetch(`http://172.16.19.1:3001/api/examenes/${userId}/${decodedTemaId}`);
+        const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${decodedTemaId}`);
         if (examenResponse.status === 200) {
           const examenData = await examenResponse.json();
           if (examenData.examenPermitido) {
@@ -51,7 +51,7 @@ const Evaluacion = () => {
         }
 
         if (examenPermitido) {
-          const progresoResponse = await fetch(`http://172.16.19.1:3001/api/evaluacion/progreso/${userId}/${decodedTemaId}`);
+          const progresoResponse = await fetch(`http://localhost:3001/api/evaluacion/progreso/${userId}/${decodedTemaId}`);
           if (progresoResponse.status === 200) {
             const progresoData = await progresoResponse.json();
             setPreguntas(progresoData.preguntas);
@@ -64,7 +64,7 @@ const Evaluacion = () => {
             
             iniciarTemporizador(); // Iniciar el temporizador si ya hay progreso
           } else {
-            const response = await fetch(`http://172.16.19.1:3001/api/evaluaciones/${decodedTemaId}?limit=10`);
+            const response = await fetch(`http://localhost:3001/api/evaluaciones/${decodedTemaId}?limit=10`);
             const data = await response.json();
             if (data.evaluacion) {
               const preguntasAleatorias = data.evaluacion.sort(() => 0.5 - Math.random()).slice(0, 10);
@@ -128,7 +128,7 @@ const Evaluacion = () => {
 
   const guardarProgresoInicial = async (preguntasIniciales, fechaFin) => {
     try {
-      const response = await fetch(`http://172.16.19.1:3001/api/evaluacion/progreso`, {
+      const response = await fetch(`http://localhost:3001/api/evaluacion/progreso`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -157,7 +157,7 @@ const Evaluacion = () => {
   const guardarProgreso = async () => {
     try {
       if (!mostrarResultados) { // Solo guardar progreso si el examen no ha terminado
-        const response = await fetch(`http://172.16.19.1:3001/api/evaluacion/progreso`, {
+        const response = await fetch(`http://localhost:3001/api/evaluacion/progreso`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -187,7 +187,7 @@ const Evaluacion = () => {
   const eliminarProgreso = async () => {
     try {
       if (progresoId) {
-        await fetch(`http://172.16.19.1:3001/api/evaluacion/progreso/${progresoId}`, {
+        await fetch(`http://localhost:3001/api/evaluacion/progreso/${progresoId}`, {
           method: 'DELETE',
         });
         
@@ -252,7 +252,7 @@ const Evaluacion = () => {
     const porcentaje = (respuestas.filter(respuesta => respuesta.correcta).length / preguntas.length) * 10;
 
     try {
-      const examenResponse = await fetch(`http://172.16.19.1:3001/api/examenes`, {
+      const examenResponse = await fetch(`http://localhost:3001/api/examenes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -273,7 +273,7 @@ const Evaluacion = () => {
       const examenData = await examenResponse.json();
       const examenId = examenData.examen._id; // Obtener el ID del examen creado
 
-      await fetch(`http://172.16.19.1:3001/api/usuarios/${userId}/evaluaciones`, {
+      await fetch(`http://localhost:3001/api/usuarios/${userId}/evaluaciones`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -293,7 +293,7 @@ const Evaluacion = () => {
 
   const cargarUltimasRespuestas = async () => {
     try {
-      const examenResponse = await fetch(`http://172.16.19.1:3001/api/examenes/${userId}/${decodedTemaId}/ultimo`);
+      const examenResponse = await fetch(`http://localhost:3001/api/examenes/${userId}/${decodedTemaId}/ultimo`);
       if (examenResponse.ok) {
         const examenData = await examenResponse.json();
 
